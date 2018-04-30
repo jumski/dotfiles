@@ -1,0 +1,12 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: mom-matcher-frontend
+root: ~/work/mom-matcher-frontend
+pre: lein clean
+windows:
+  - garden: lein garden auto
+  - bash:
+  - vim: vim
+  - figwheel: lein figwheel dev
+  - bash:

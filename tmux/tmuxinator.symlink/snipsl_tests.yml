@@ -1,0 +1,12 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: snipsl_tests
+root: ~/work/snipsl_tests
+pre_window: rvm use ruby-`cat ~/work/snipsl-rails/.ruby-version`@`cat ~/work/snipsl-rails/.ruby-gemset` --create
+windows:
+  - bash:
+  - bash:
+  - vim: vim
+  - console:
+  - bash:

@@ -1,0 +1,26 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: freelance
+root: ~/work/freelance
+# pre:
+#   - google-chrome 'sprint.ly'
+#   - google-chrome 'kumdle.slack.com'
+#   - google-chrome 'https://github.com/conjune118/Freelance/pulls'
+pre_window: rvm use 2.2.3@freelance --create
+windows:
+  - server:
+      layout: main-vertical
+      panes:
+        - puma -p 3000 --pidfile tmp/pids/server.pid
+        - echo
+        # - bin/rake websocket_rails:start_server || true
+        - bundle exec sunspot-solr start -p 8982
+        - echo
+        # - mailcatcher
+  - bash:
+  - vim: vim
+  - console: echo #bin/rails c
+  - logs: tail -100f log/development.log
+  - guard: guard
+

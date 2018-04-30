@@ -1,0 +1,13 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: rescue
+project_root: ~/work/rescue-nil.com
+rvm: default
+tabs:
+- stuff: rails s
+- bash: todo @rescue
+- vim: vim
+- console: ls
+- bash: tail -f log/development.log
+

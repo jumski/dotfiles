@@ -1,0 +1,12 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: testy
+root: ~/work/testy
+pre_window:
+windows:
+  - bash:
+  - bash:
+  - vim: vim
+  - console:
+  - bash:

@@ -1,0 +1,6 @@
+name: amvp-chef-webapp
+root: ~/work/agencymvp-chef-core-webapp
+windows:
+  - bash:
+  - bash:
+  - vim: vim

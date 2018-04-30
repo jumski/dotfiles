@@ -1,0 +1,10 @@
+# ~/.tmuxinator/cljs-btcd.yml
+
+name: clojure-bitcoind
+root: ~/work/clojure-bitcoind
+
+windows:
+  - bash:
+  - bash:
+  - vim: vim
+  - repl: lein repl

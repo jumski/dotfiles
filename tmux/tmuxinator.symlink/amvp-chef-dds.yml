@@ -1,0 +1,6 @@
+name: amvp-chef-dds
+root: ~/work/agencymvp-chef-dds
+windows:
+  - bash:
+  - bash:
+  - vim: vim

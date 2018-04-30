@@ -1,0 +1,10 @@
+name: spree_payu_integration
+root: ~/work/spree_payu_integration
+pre_window: rvm use ruby-2.2.3@spree_payu_integration --create
+windows:
+  - bash:
+  - bash:
+  - vim: vim
+  - bash: rails c
+  - logs:
+

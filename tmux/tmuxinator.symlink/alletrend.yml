@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: alletrend
+root: ~/work/alletrend
+windows:
+  - bash:
+  - bash:
+  - vim: vim
+  - repl: lein repl
+  - bash:

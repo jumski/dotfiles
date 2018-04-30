@@ -1,0 +1,19 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: antykwariusz
+project_root: ~/work/antykwariusz
+# rvm: default
+rvm: ruby-1.9.3-p327-falcon@antykwariusz --create
+tabs:
+  - stuff:
+      layout: even-horizontal
+      panes:
+        - puma
+        - zeus start
+  - bash: todo @books
+  - vim: vim
+  - console: sleep 7 && zeus c
+  - bash: tail -f log/development.log
+  - bodhi: mosh bodhi tmux at
+

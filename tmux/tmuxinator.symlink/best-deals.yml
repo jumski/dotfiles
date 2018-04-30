@@ -1,0 +1,14 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: best-deals
+root: ~/work/best-deals
+pre_window: rvm use 2.1.5@best-deals --create
+windows:
+  - server: rails s
+  - bash:
+  - vim: vim
+  - console: bin/rails c
+  - logs: tail -100f log/development.log
+  - guard: guard
+

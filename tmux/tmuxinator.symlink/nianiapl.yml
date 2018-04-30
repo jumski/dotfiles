@@ -1,0 +1,23 @@
+# ~/.tmuxinator/nianiapl.yml
+
+name: nianiapl
+root: ~/work/nianiapl-scraper
+
+# Optional tmux socket
+# socket_name: foo
+
+# Runs before everything. Use it to start daemons etc.
+# pre: sudo /etc/rc.d/mysqld start
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+pre_window: rvm use default
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+windows:
+  - server: bundle exec rails s
+  - bash:
+  - vim: vim
+  - console: bundle exec rails c
+  - logs: tail -f logs/development.log

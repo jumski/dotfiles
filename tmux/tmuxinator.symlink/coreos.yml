@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: coreos
+project_root: ~/work/coreos
+rvm: default
+tabs:
+  - bash:
+  - bash:
+  - vim: vim
+  - mosh: mosh monitoring

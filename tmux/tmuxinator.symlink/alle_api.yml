@@ -1,0 +1,14 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: alle_api
+root: ~/work/alle_api
+
+pre_window: rvm use ruby-1.9.3-p327@alle_api --create
+windows:
+  - stuff:
+  - bash:
+  - vim: vim
+  - console:
+  - bash: tail -f log/development.log
+

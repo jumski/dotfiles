@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: bitcurex
+project_root: ~/work/bitcurex
+rvm: default
+tabs:
+  - bash:
+  - bash:
+  - vim: vim
+  - console: bin/console

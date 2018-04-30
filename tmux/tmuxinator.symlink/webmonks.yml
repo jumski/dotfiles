@@ -1,0 +1,8 @@
+project_name: webmonks
+project_root: ~/work/webmonks-chef-repo
+rvm: default
+tabs:
+  - ssh:
+  - bash:
+  - vim: vim
+  - chef-cache: "echo 'cd ~/chef-cache/web-accessible ; pkill -f SimpleHTTPServer ; python -m SimpleHTTPServer'"

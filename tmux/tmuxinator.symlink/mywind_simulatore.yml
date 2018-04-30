@@ -1,0 +1,13 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: mywind_simulatore
+project_root: ~/work/mywind_simulatore
+rvm: ruby-2.0.0-p247
+tabs:
+  - server: rackup -p 5000
+  - bash:
+  - vim: vim
+  - console:
+  - bash: tail -f log/development.log
+

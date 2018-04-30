@@ -1,0 +1,10 @@
+# ~/.tmuxinator/day-of-datomic.yml
+
+name: day-of-datomic
+root: ~/work/day-of-datomic
+
+windows:
+  - bash:
+  - bash:
+  - vim:
+  - repl: lein trampoline repl

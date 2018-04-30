@@ -1,0 +1,6 @@
+name: amvp-cli
+root: ~/work/cli-utils
+windows:
+  - bash:
+  - bash:
+  - vim: vim

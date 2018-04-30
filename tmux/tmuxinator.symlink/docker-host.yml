@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: docker-host
+project_root: ~/work/docker-host
+rvm: default
+tabs:
+  - bash:
+  - bash:
+  - vim: vim
+  - bash:

@@ -1,0 +1,17 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: hackathon
+project_root: ~/work/hackathon
+pre: default
+tabs:
+- stuff:
+    layout: even-horizontal
+    panes:
+      - ls
+      - ls
+- bash: todo @hackathon
+- vim: vim
+- console: ls
+- bash: tail -f log/development.log
+

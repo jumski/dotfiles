@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: foodform
+project_root: ~/work/foodform
+tabs:
+  - server: joodo server
+  - bash:
+  - vim: vim
+  - console: clojure
+  - bash:

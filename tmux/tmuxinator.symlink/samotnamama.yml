@@ -1,0 +1,13 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: samotnamama
+root: ~/work/samotna_mama
+pre_window: rvm use 2.0.0@samotnamama --create
+windows:
+  - server: rails s
+  - bash:
+  - vim: vim
+  - console: rails c
+  - bash:
+

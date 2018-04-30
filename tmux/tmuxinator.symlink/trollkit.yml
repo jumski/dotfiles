@@ -1,0 +1,10 @@
+# ~/.tmuxinator/trollkit.yml
+
+name: trollkit
+root: ~/work/trollkit
+
+windows:
+  - cljsbuild: lein cljsbuild auto
+  - bash:
+  - vim: vim
+  - repl: lein repl

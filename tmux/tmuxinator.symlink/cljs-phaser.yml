@@ -1,0 +1,10 @@
+# ~/.tmuxinator/cljs-btcd.yml
+
+name: cljs-phaser
+root: ~/work/cljs-phaser
+
+windows:
+  - bash: lein run
+  - bash: coltree
+  - vim: vim
+  - repl: lein repl

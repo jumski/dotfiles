@@ -1,0 +1,15 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: liturgicznie
+root: ~/work/liturgical_shop
+pre_window: rvm use ruby-2.2.3@liturgical_shop --create
+
+windows:
+  - server: rails s
+  - bash:
+  - vim: vim
+  - console: rails console
+  - bash: tail -f log/development.log
+  - ssh: ssh candles_staging@mudita -t 'tmux at || tmux'
+  - spree_core: cd `bundle show spree`

@@ -1,0 +1,13 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: tradeapp
+root: ~/work/tradeapp
+pre: export p=omghax
+pre_window: rvm use 2.0.0@tradeapp --create
+windows:
+  - server: rails s --pid=tmp/pids/server.pid
+  - bash:
+  - vim: vim
+  - console: rails c
+  - logs: tail -100f log/development.log

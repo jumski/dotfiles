@@ -1,0 +1,9 @@
+name: amvp-dmv
+root: ~/work/amvp-dmv/
+windows:
+  - server: shotgun
+  - bash:
+  - vim: vim
+  - console:
+  - bash: tail -100f log/development.log
+  - worker:

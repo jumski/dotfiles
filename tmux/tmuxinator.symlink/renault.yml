@@ -1,0 +1,16 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: renault
+project_root: ~/work/renault
+tabs:
+  - stuff:
+      layout: even-horizontal
+      panes:
+        -
+        -
+  - bash: todo @renault
+  - vim: vim
+  - console:
+  - bash: tail -f log/development.log
+

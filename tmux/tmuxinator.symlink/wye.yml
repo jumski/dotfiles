@@ -1,0 +1,13 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: wye
+project_root: ~/work/what-you-eat
+tabs:
+  - guard: guard
+  - bash:
+  - vim: vim
+  - console: rails console
+  - bash: tail -f log/development.log
+  - gem_home: cd `rvm gemdir`; ls
+

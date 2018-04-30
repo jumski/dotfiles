@@ -1,0 +1,7 @@
+name: amvp-ember
+root: ~/work/agencymvp.com/app-ember/
+windows:
+  - server: node_modules/.bin/ember s --proxy http://localhost:3000/
+  - bash:
+  - vim: vim
+  - bash:

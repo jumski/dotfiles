@@ -1,0 +1,15 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: dekoruje
+root: ~/work/dekoruje.com
+pre_window: rvm use ruby-1.9.3@dekoruje.com --create
+
+windows:
+  - server: rails s
+  - bash:
+  - vim: vim
+  - console: rails console
+  - bash: tail -f log/development.log
+  - ssh: ssh candles_production@mudita -t 'tmux at || tmux'
+  - spree_core: cd `bundle show spree_core`

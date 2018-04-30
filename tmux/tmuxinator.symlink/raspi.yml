@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: raspi
+project_root: ~/work/raspi
+rvm: default
+tabs:
+  - bash: ssh raspi
+  - bash:
+  - vim: vim
+  - bash:

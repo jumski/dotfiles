@@ -1,0 +1,12 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: clojure-sandbox
+root: ~/work/clojure-sandbox
+# pre_window: rvm use default
+windows:
+  - bash:
+  - bash:
+  - vim: vim
+  - repl: lein repl
+  - bash:

@@ -1,0 +1,13 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: ffa
+root: ~/work/ffa
+pre_window: rvm use ruby-1.9.3-p327@ffa --create
+windows:
+  - server: middleman server
+  - bash:
+  - vim: vim
+  - bash:
+  - bash:
+

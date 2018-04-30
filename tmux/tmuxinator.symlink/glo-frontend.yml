@@ -1,0 +1,10 @@
+# ~/.tmuxinator/glo-frontend.yml
+
+name: glo-frontend
+root: ~/work/glo-frontend
+
+windows:
+  - server: grunt server
+  - bash:
+  - vim:
+  - tests:

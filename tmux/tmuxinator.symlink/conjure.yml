@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: conjure
+project_root: ~/work/conjure
+tabs:
+  - bash:
+  - bash:
+  - vim: vim
+  - repl: lein repl
+  - bash:

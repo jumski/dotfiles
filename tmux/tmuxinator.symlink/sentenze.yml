@@ -1,0 +1,15 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: sentenze
+root: ~/work/sentenze
+pre_window: rvm use 2.0.0@sentenze --create
+windows:
+  - server: puma -t 16:16 --pidfile tmp/pids/server.pid
+  - bash: todo @sentenze
+  - vim: vim
+  - console: rails c
+  - log: tail -100f log/development.log
+  - ssh: ssh webmonks
+  - logs: tail -f log/development.log
+

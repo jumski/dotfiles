@@ -1,0 +1,11 @@
+# ~/.tmuxinator/dotfilez.yml
+# you can make as many tabs as you wish...
+
+name: dotfilez
+root: ~/dotfiles
+windows:
+  - todos: todo
+  - bash:
+  - vim: vim -p vim/ bash/
+  - shell: ls
+  - pry: pry

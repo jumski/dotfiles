@@ -1,0 +1,13 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: apps_for_good
+root: ~/work/apps_for_good
+pre_window: rvm use ruby-2.0.0-p598@apps_for_good --create
+windows:
+  - server: bin/rails server
+  - bash:
+  - vim: vim
+  - console: bin/rails c
+  - logs: tail -100f log/development.log
+

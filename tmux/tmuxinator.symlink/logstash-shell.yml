@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: logstash-shell
+project_root: ~/work/logstash-shell
+rvm: default
+tabs:
+  - bash:
+  - bash:
+  - vim: vim
+  - mosh: mosh monitoring

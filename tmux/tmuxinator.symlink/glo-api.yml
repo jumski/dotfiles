@@ -1,0 +1,10 @@
+# ~/.tmuxinator/glo-api.yml
+
+name: glo-api
+root: ~/work/glo-api
+
+windows:
+  - server: grunt server
+  - bash:
+  - vim:
+  - tests:

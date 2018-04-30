@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: mvnoanalytics
+root: ~/work/mvnoanalytics
+pre_window: default
+windows:
+  - bash:
+  - bash:
+  - vim: vim
+  - console: bundle exec pry --require './lib/mvno_analytics.rb' --exec 'Bundler.require'

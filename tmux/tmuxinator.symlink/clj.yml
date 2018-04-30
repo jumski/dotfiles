@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: clj
+project_root: ~/work/clj
+tabs:
+  - bash:
+  - bash:
+  - vim: vim
+  - repl: lein repl
+  - bash:

@@ -1,0 +1,13 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: taxipixi
+project_root: ~/work/taxipixi
+rvm: 2.0.0@taxipixi --create
+tabs:
+  - server: rails s
+  - bash: todo @taxipixi
+  - vim: vim
+  - console: rails c
+  - logs: tail -f log/development.log
+

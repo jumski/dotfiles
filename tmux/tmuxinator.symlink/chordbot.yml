@@ -1,0 +1,8 @@
+name: chordbot
+root: ~/work/chordbot/
+pre_window: nvm use stable
+windows:
+  - server: yarn run server
+  - bash:
+  - vim: vim
+  - bash:

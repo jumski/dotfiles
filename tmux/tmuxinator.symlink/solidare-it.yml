@@ -1,0 +1,9 @@
+name: solidare-it
+root: ~/work/solidareit2
+pre_window: rvm use ruby-2.2.4@solidare-it --create
+windows:
+  - server: sh runner.sh
+  - bash:
+  - vim: vim
+  - console: rails c
+  - bash: tail -100f log/development.log

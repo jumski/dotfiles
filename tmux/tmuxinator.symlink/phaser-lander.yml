@@ -1,0 +1,11 @@
+# ~/.tmuxinator/cljs-btcd.yml
+
+name: phaser-lander
+root: ~/work/phaser-lander
+
+windows:
+  - bash:
+  - bash:
+  - vim: vim
+  - repl:
+  # - repl: lein do cljsbuild once, repl

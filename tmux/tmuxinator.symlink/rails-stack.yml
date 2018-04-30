@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: rails-stack
+project_root: ~/work/rails-stack
+rvm: default
+tabs:
+  - bash:
+  - bash:
+  - vim: vim
+  - bash:

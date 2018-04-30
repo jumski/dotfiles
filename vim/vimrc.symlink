@@ -1,4 +1,17 @@
-syntax on
 
-" Wrap gitcommit file types at the appropriate length
-filetype indent plugin on
+source ~/.dotfiles/vim/init.vim
+
+source ~/.dotfiles/vim/plugins-via-plug.vim
+source ~/.dotfiles/vim/mappings.vim
+source ~/.dotfiles/vim/settings.vim
+source ~/.dotfiles/vim/functions.vim
+
+source ~/.dotfiles/vim/plugins-setup.vim
+
+source ~/.dotfiles/vim/filetypes.vim
+
+source ~/.dotfiles/vim/projections.vim
+source ~/.dotfiles/vim/abbreviations.vim
+
+" source ~/.dotfiles/vim/breakage-custom.vim
+" source ~/.dotfiles/vim/boostmove.vim

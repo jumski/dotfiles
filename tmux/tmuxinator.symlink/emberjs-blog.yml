@@ -1,0 +1,22 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+name: emberjs-blog
+root: ~/work/emberjs-blog
+# pre:
+#   - google-chrome 'toggl.com/app/timer'
+#   - google-chrome 'rebased.slack.com'
+#   - google-chrome 'http://guides.emberjs.com/v2.0.0/'
+#   - google-chrome 'https://mail.google.com/a/rebased.pl'
+pre_window: source ~/.nvm/nvm.sh && nvm use stable && rvm use 2.1.5@emberjs-blog --create
+windows:
+  - server:
+      layout: even-vertical
+      panes:
+        - rails s
+        - (cd emberapp && ember server --proxy http://localhost:3000/)
+  - bash: cd emberapp
+  - vim: cd emberapp && vim
+  - console: rails c
+  - logs: tail -100f log/development.log
+

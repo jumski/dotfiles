@@ -1,0 +1,11 @@
+# ~/.tmuxinator/default.yml
+# you can make as many tabs as you wish...
+
+project_name: tmux_status
+project_root: ~/work/tmux_status
+rvm: default
+tabs:
+  - bash:
+  - bash:
+  - vim: vim
+  - console: bundle exec pry -r bundler -e "Bundler.require"
