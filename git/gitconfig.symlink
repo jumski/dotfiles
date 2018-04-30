@@ -5,7 +5,7 @@
 [hub]
         protocol = https
 [core]
-        excludesfile = ~/.gitignore
+        excludesfile = ~/.gitignore_global
         editor = vim
 [apply]
         whitespace = nowarn
