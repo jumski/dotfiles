@@ -1,0 +1,33 @@
+#!/bin/bash
+
+branch_name="$1"
+stash_message="before hotfix '$branch_name'"
+
+if [[ -z "$branch_name" ]]; then
+  echo "Please provide valida branch name"
+  exit 1
+fi
+
+is_git_dirty() {
+  (git status | tail -n1 | grep -v "nothing to commit") 2> /dev/null >/dev/null
+}
+
+if is_git_dirty ; then
+  question="Do you want to add to index and stash all files? [y/N] " 
+  read -p "$question" answer
+  case "$answer" in
+    y) 
+      git add .
+      git stash save "$stash_message"
+      ;;
+    *) 
+      echo Please stash manually and try again
+      exit 1
+      ;;
+  esac
+fi
+
+git checkout -b "$branch_name"
+
+echo "On branch $branch_name"
+

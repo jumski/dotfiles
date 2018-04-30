@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# just commit all changes if no path provided
+[ "$2" == "" ] && git add .
+
+git commit -m "$1" $2

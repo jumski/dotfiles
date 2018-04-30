@@ -1,0 +1,18 @@
+#!/bin/bash
+
+glob="$1"
+rspec=rspec
+
+if [ -x bin/rspec ]; then
+  rspec=bin/rspec
+fi
+
+run_specs="
+  reset && clear &&
+  $rspec $glob \
+    && notify-send --urgency=low -i terminal 'RSpec success!' \
+    || notify-send --urgency=low -i error 'RSpec failed'
+"
+
+find {app,lib,spec} -iname '*.rb' | entr -r sh -c "$run_specs"
+ 

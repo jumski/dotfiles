@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# settings
+MAIN_BROWSER_WINDOW_CLASSNAME="chromium-browser"
+#MAIN_BROWSER_WINDOW_CLASSNAME="google-chrome"
+MAIN_TERMINAL_WINDOW_CLASSNAME="gnome-terminal"
+
+active_window_id=$( xdotool getactivewindow )
+browser_window_id=$( xdotool search --onlyvisible --classname "$MAIN_BROWSER_WINDOW_CLASSNAME" )
+terminal_window_id=$( xdotool search --onlyvisible --classname "$MAIN_TERMINAL_WINDOW_CLASSNAME" )
+
+echo "browser_window_id = $browser_window_id
+terminal_window_id = $terminal_window_id
+active_window_id = $active_window_id
+"
+
+if [ $active_window_id == $terminal_window_id ]; then
+  echo activating browser $MAIN_BROWSER_WINDOW_CLASSNAME
+  xdotool windowactivate $browser_window_id
+elif [ $active_window_id == $browser_window_id ]; then
+  echo activating terminal $MAIN_TERMINAL_WINDOW_CLASSNAME
+  xdotool windowactivate $terminal_window_id
+else
+  echo activating terminal $MAIN_TERMINAL_WINDOW_CLASSNAME
+  xdotool windowactivate $terminal_window_id
+fi 

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# abort immediately with non-zero code if any command fails
+set -e
+
+log() {
+  echo "> $@"
+}
+
+log Check if repo is clean
+git repo-is-clean
+
+log Fetch origin
+git fetch origin 
+
+log Rebase on master
+git rebase origin/master 
+
+log Checkout master
+git checkout master 
+
+log Merge last head
+git merge --no-ff @{-1}
+
+# run specs if present
+[[ -d spec ]] && log Run specs && bundle exec rspec spec/
+
+log Push the fucka!
+git push

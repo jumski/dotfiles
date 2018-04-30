@@ -1,0 +1,35 @@
+
+# set keyboard repeat
+xset r rate 250 100
+
+fn_keycode=248
+
+# disable repeat for FN key
+xset -r $fn_keycode
+
+# disable capslock (function, not the key) in case it is eanbled
+# and locked by this script
+###which python 2>&1 >/dev/null && python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'
+
+options="-option ctrl:menu_rctrl"
+options="$options -option -option ctrl:nocaps"
+options="$options -option altwin:ctrl_win"
+options="$options -option ralt_rctrl"
+#options="-option ctrl:menu_rctrl -option altwin:ctrl_win -option ctrl:nocaps -option compose:lwin"
+
+if [[ "swapcaps" == $1 ]]; then
+  options="$options -option ctrl:swapcaps"
+fi
+
+echo setxkbmap  $options
+setxkbmap $options
+
+pgrep -fl xcape 2>&1 >/dev/null || xcape
+
+# turn wqa keyboard backlight
+###echo 0 > /sys/class/leds/asus::kbd_backlight/brightness
+
+
+xmodmap ~/.Xmodmap
+
+echo `date` setup_keyboard >> ~/.startup.log

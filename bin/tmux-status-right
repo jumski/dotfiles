@@ -1,0 +1,7 @@
+#!/bin/bash
+
+time=`date +%H:%M`
+date=`date +%Y-%m-%d`
+battery=`acpi -V | egrep 'Battery.*charg' | awk '{print $4}' | sed 's/,//'`
+
+echo "$time" "$date" \| "$battery"

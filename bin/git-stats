@@ -1,0 +1,4 @@
+#!/bin/bash
+git log --pretty=format:%ae \
+  | gawk -- '{ ++c[$0]; } END { for(cc in c) printf "%5d %s\n",c[cc],cc; }' \
+  | sort -hr

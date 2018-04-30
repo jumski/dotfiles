@@ -1,0 +1,45 @@
+#!/bin/bash
+
+sleep 4
+
+echo "`date` START" >> ~/.startup.log
+
+$HOME/dotfiles/bin/autodpi
+
+sleep 4
+
+$HOME/dotfiles/bin/setup_input_devices
+
+# prevent mouse clicks
+# syndaemon -i 1.5 -t &
+
+mocp --server || rm ~/.moc/pid && mocp --server
+echo after mocp
+
+# PULSE_LATENCY_MSEC=30 skype &
+# echo after skype
+
+pidgin &
+echo after pidgin
+
+gnome-terminal --maximize --hide-menubar &
+echo after gnome-terminal
+
+$BROWSER &
+echo after chrome
+
+# redshift &
+
+# slack &
+# echo after slack
+
+# supervisord -c $HOME/dotfiles/conf/supervisord.conf &
+# echo after supervisor
+
+keepassx &
+echo after keepassx
+
+echo '===============' `date -I` `date +%H:%m` >> $HOME/upower.log
+upower -d | grep energy-full >> $HOME/upower.log
+
+echo "`date` DONE!" >> ~/.startup.log

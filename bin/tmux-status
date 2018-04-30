@@ -1,0 +1,24 @@
+#!/bin/bash
+
+source $HOME/dotfiles/bash/battery_functions.sh
+
+battery_indicator() {
+  if [ ! battery_present ]; then
+    return 0
+  fi
+
+  local state=$(battery_state)
+  if [ "$state" != "discharging" ]; then
+    return 0
+  fi
+
+  local percent=$(battery_percentage)
+  local battery_color="#[bg=colour196,fg=colour231]"
+
+  [ "$percent" -gt "15" ] && local battery_color="#[fg=colour148]"
+  [ "$percent" -gt "30" ] && local battery_color="#[fg=colour112]"
+
+  echo "${battery_color}$(battery_state_indicator)${percent}%${c_reset} "
+}
+
+echo -e "#[bg=colour16]#[fg=colour240]⮀#[fg=colour251]#[bg=colour16] $(nowplayin | cut -c -16)... $(date +"%H:%M %d-%m-%Y") #[fg=colour25]$(gsm-transfers) $(battery_color)$(battery_indicator)"

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+google-chrome "http://www.youtube.com/results?search_query=$(nowplayin)&page=&utm_source=opensearch"

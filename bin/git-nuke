@@ -1,12 +1,10 @@
-#!/bin/sh
-#
-# Nukes a branch locally and on the origin remote.
-#
-# $1 - Branch name.
-#
-# Examples
-#
-#   git nuke add-git-nuke
+#!/bin/bash
+read -p "Nuking '$1'. Continue (y/N)? " choice
+case "$choice" in 
+  y|Y )
+    git branch -D $1
+    git push origin :$1
+    git remote prune origin
+    ;;
+esac
 
-git branch -D $1
-git push origin :$1

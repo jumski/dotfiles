@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+window_name = ARGV[0]
+output_path = ARGV[1] || 'tmp.gif'
+
+if !window_name || !output_path
+    puts "Usage: "
+    puts
+    puts "  capture-window window_to_search [gif_path]" 
+    puts
+    puts "Example:"
+    puts "  capture-window Google-Chrome tmp.gif"
+    exit 1
+end
+
+window_id = `xdotool search #{window_name} 2>/dev/null`.scan(/\d+/).first
+
+unless window_id
+    puts "Window '#{window_name}' not found!"
+    exit 1
+end
+
+window_info = `xdotool getwindowgeometry #{window_id}`
+puts window_info
+
+x, y = window_info.scan(/Position: (\d+),(\d+)/).flatten
+w, h = window_info.scan(/Geometry: (\d+)x(\d+)/).flatten
+
+byzanz_cmd = "byzanz-record --duration=180 --delay=3 -x #{x} -y #{y} -h #{h} -w #{w} --verbose  #{output_path}"
+
+puts 
+puts byzanz_cmd
+puts
+system byzanz_cmd

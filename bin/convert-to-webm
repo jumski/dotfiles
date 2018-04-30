@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "avconv -i myvideo.mp4 -acodec libvorbis -aq 5 -ac 2 -qmax 25 -threads 2 myvideo.webm"

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+synclient TapButton3=3 TapButton2=2
+
+echo `date` setup_touchpad >> ~/.startup.log

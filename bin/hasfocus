@@ -1,0 +1,2 @@
+#!/bin/bash
+ag "(describe|context|it|specify|example|feature|scenario).*,.*:focus.*do" spec/

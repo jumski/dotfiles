@@ -1,0 +1,7 @@
+#!/bin/bash
+
+date_param="${@:-today}"
+journal_date=$(date -d "$date_param" +%Y-%m-%d)
+journal_path="$HOME/Dropbox/projects/journal/${journal_date}.txt"
+
+vim ${journal_path}

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+url="http://somafm.com/${1}130.pls"
+wget -O /tmp/playlist.pls "$url" 3>&1 2>&1 >/dev/null
+
+mocp --stop && 
+mocp --clear && 
+mocp --append /tmp/playlist.pls && 
+mocp --play
+
