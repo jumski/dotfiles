@@ -1,0 +1,93 @@
+[alias]
+  ci = commit
+  cim = !git-cim
+  wip = !git-cim 'wip'
+  s = status -sb
+  c = checkout
+  ps = push
+
+  pr = !sh -c 'git fetch origin pull/$0/head:pr-$0 && git checkout pr-$0'
+
+  amend = commit --amend
+  unstage = reset HEAD  # removes files from index
+  uncommit = reset --soft HEAD^
+  clfd = clean -fd
+  ignore = !git reset -- $1 && echo "$1" >> .gitignore && git add .gitignore
+
+  d = diff
+  wd = diff --word-diff=color
+  dc = diff --cached
+  b = branch
+  ba = branch -a
+  l = log
+  yesterday = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short --after=yesterday --author=Wojtek
+  today = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short --since='1 Day Ago' --date=relative --author=Wojtek
+  cap = !git commit && git push && cap deploy
+  mina = !git push && mina staging deploy
+  staging = !git push && mina staging deploy
+  deploy = !git pull --rebase && git push && cap deploy
+
+  chr = cherry -v
+  rmt = remote -v
+  wc = whatchanged --oneline
+  lp = log -p
+  hist = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short
+  h = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short
+  dstat = diff --stat
+  wtf = !git-wtf
+  trail = !git-trail
+  neck = !git-neck
+  churn = !git-churn
+  recent-branches = !git for-each-ref --sort=-committerdate --format='%(committerdate:short) %(refname)' refs/heads refs/remotes
+  head-sha = ! git log --pretty=format:'%h' -n 1
+  copy-head-sha = ! git log --pretty=format:'%h' -n 1 | xclip -sel clipboard
+  hierarchy = log --all --graph --decorate --oneline --simplify-by-decoration
+  lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+  lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+
+
+  conflicts = !git ls-files -u | cut -f 2 | sort -u
+  resolve = !vim -p $(git conflicts)
+  ours = checkout --ours
+  theirs = checkout --theirs
+
+  stats = !git-stats
+  rank = !git-rank-contributors
+
+  new = ls-files --others --exclude-standard
+  done = !git-done
+
+  ribbon = tag --force _ribbon origin/master
+  catchup = log --patch --reverse --topo-order _ribbon..origin/master
+  ctags = !.git/hooks/ctags
+  binstubs = !.git/hooks/install-binstubs
+
+  good = bisect good
+  bad  = bisect bad
+  next =!git add . && git rebase --continue
+  skip = rebase --skip
+  gemfile = !git checkout --ours Gemfile.lock && bundle && git add Gemfile.lock
+  schema = !git checkout --ours db/schema.rb && bundle exec rake db:migrate && git add db/schema.rb
+
+  up = !git fetch origin && git rebase origin/master
+  aa = add .
+  ap = add -p
+  plre = pull --rebase
+  ff = merge --ff-only
+  noff = merge --no-ff
+  prune-remotes = remote prune origin
+  nuke = !git-nuke
+  pfwlease = push --force-with-lease
+
+  axe = !git-axe
+  axer = !git-axer
+
+  ftp = !git-ftp
+
+  assume = update-index --assume-unchanged
+  unassume = update-index --no-assume-unchanged
+  list-assumed = !git ls-files -v `git rev-parse --show-toplevel` | grep "^[a-z]" | cut -c3-
+
+  hotfix = !git-hotfix
+  circle = !git-circle
+

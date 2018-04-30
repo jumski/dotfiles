@@ -35,14 +35,6 @@ end
 # clipboard (if you're on macOS).
 def cop
   last_value = IRB.CurrentContext.last_value
-  %x[echo '#{last_value}' | pbcopy]
+  %x[echo '#{last_value}' | xclip -sel clipboard]
   "copied \`#{last_value}' to your clipboard"
-end
-
-def me
-  User.find_by_login(ENV['USER'].strip)
-end
-
-def r
-  reload!
 end
