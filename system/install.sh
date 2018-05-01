@@ -5,3 +5,4 @@ sudo apt install -y \
   git-core \
   tmux \
   tig \
+  xclip \
