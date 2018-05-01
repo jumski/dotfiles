@@ -52,7 +52,7 @@ bind-key -r M-l resize-pane -R
 # copy/paste
 bind-key -n M-PPage copy-mode -u
 bind-key -n M-u copy-mode
-# bind-key -n M-i paste-buffer
+bind-key -n M-i paste-buffer
 bind-key p run-shell "xclip -o | tmux load-buffer - ; tmux paste-buffer"
 # # Vi copypaste
 # setw -g mode-keys vi
