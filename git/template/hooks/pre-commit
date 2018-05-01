@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ ! -d spec/ ]; then
+  exit 0
+fi
+
+ag_output=$(ag --color "(describe|context|it|specify|example|feature|scenario).*,.*:focus.*do" spec/ || true)
+
+if [ -n "$ag_output" ]; then
+  exec < /dev/tty
+
+  echo -e "$ag_output"
+  echo
+  echo -n "Do you want to commit with :focus tags in your specs? [y/N] "
+
+  read -e answer
+  for response in y Y yes YES Yes Sure sure SURE OK ok Ok t T tak Tak TAK
+  do
+    if [ "_$answer" == "_$response" ]
+    then
+      echo "  -> commiting"
+      exit 0
+    fi
+  done
+
+  echo "  -> canceled"
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+PATH="/usr/local/bin:$PATH"
+trap "rm -f .git/tags.$$" EXIT
+excludes="--exclude=node_modules/ --exclude=bower_components/ --exclude=*.js.map --exclude=*.min.map --exclude=*.min.js  --exclude=*.map.js --exclude=*.map --exclude=node_modules --exclude=bower_components --exclude=.git --exclude=app-ember"
+
+if [ -f gems.rb ] || [ -f Gemfile ]; then
+  which ripper-tags && ripper-tags --tag-relative -Rf.git/tags.$$ || true
+fi
+
+# touch .git/tags.$$
+ctags --append=yes --tag-relative -Rf.git/tags.$$ $excludes --languages=-sql --languages=-ruby 
+
+mv .git/tags.$$ .git/tags

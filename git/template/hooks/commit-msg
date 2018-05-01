@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# strip spaces from the beginning
+sed -i -e '1 s|^[[:space:]]*||' $1
+
+# upper-case first letter
+sed -i -e '1 s|^\([a-z]\)|\U\1|' $1
+

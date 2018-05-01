@@ -5,6 +5,7 @@
 *~
 .rvmrc
 .zeus.sock
+*.swo
 
 # Compiled source #
 ###################

@@ -7,6 +7,9 @@
 [core]
         excludesfile = ~/.gitignore_global
         editor = vim
+        autocrlf = input
+        whitespace = trailing-space,cr-at-eol
+        ;pager = /usr/share/doc/git/contrib/diff-highlight/diff-highlight | less
 [apply]
         whitespace = nowarn
 [mergetool]
@@ -22,6 +25,12 @@
         # Setting to git 2.0 default to suppress warning message
         default = simple
 
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+
 [color "diff"]
   commit = green
   meta = yellow
@@ -35,3 +44,17 @@
   oldHighlight = red bold 52
   newNormal = green bold
   newHighlight = green bold 22
+
+[branch]
+  # set up git pull to do a rebase instead of merge
+  autosetuprebase = always
+[interactive]
+  singlekey = true
+[github]
+	user = jumski
+[init]
+	templatedir = /home/jumski/dotfiles/git_template
+[mergetool "fugitive"]
+	cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
+[merge]
+	tool = fugitive
