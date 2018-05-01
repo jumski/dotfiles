@@ -24,11 +24,11 @@ fi
 echo setxkbmap  $options
 setxkbmap $options
 
-pgrep -fl xcape 2>&1 >/dev/null || xcape
+pkill -f xcape
+xcape -t 100
 
 # turn wqa keyboard backlight
 ###echo 0 > /sys/class/leds/asus::kbd_backlight/brightness
-
 
 xmodmap ~/.Xmodmap
 
