@@ -87,8 +87,14 @@ let g:rails_projections = {
   \ "app/views/shared/*": { "command": "sview" },
   \ "app-ember/tests/*.js": { "command": "jtest" },
   \ "app-ember/app/templates/*.hbs": { "command": "jtemplate" },
-  \ "app-ember/app/templates/components/*.hbs": { "command": "jctemplate" },
-  \ "app-ember/app/components/*.js": { "command": "jcomponent" },
+  \ "app-ember/app/templates/components/*.hbs": {
+  \   "command": "jctemplate",
+  \   "alternate": "app-ember/app/components/{}.js"
+  \ },
+  \ "app-ember/app/components/*.js": {
+  \   "command": "jcomponent",
+  \   "alternate": "app-ember/app/templates/components/{}.hbs"
+  \ },
   \ "app-ember/app/routes/*.js": { "command": "jroute" },
   \ "app-ember/app/controllers/*.js": { "command": "jcontroller" },
   \ "app-ember/app/helpers/*.js": { "command": "jhelper" },
