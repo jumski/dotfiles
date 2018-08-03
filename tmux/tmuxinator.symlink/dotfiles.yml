@@ -1,0 +1,9 @@
+# ~/.tmuxinator/dotfilez.yml
+# you can make as many tabs as you wish...
+
+name: dotfiles
+root: ~/.dotfiles
+windows:
+  - bash:
+  - bash: git status
+  - vim: vim .
