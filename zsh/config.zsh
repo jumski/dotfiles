@@ -18,7 +18,7 @@ setopt HIST_VERIFY
 setopt SHARE_HISTORY # share history between sessions ???
 setopt EXTENDED_HISTORY # add timestamps to history
 setopt PROMPT_SUBST
-setopt CORRECT
+# setopt CORRECT
 setopt COMPLETE_IN_WORD
 setopt IGNORE_EOF
 
@@ -31,12 +31,19 @@ setopt HIST_REDUCE_BLANKS
 #   like: git comm-[tab]
 setopt complete_aliases
 
-bindkey '^[^[[D' backward-word
-bindkey '^[^[[C' forward-word
-bindkey '^[[5D' beginning-of-line
-bindkey '^[[5C' end-of-line
-bindkey '^[[3~' delete-char
-bindkey '^?' backward-delete-char
+stty stop undef
+stty start undef
 
-# disable flow control
-stty -ixon
+bindkey -e
+bindkey '^P' up-line-or-search
+bindkey '^N' down-line-or-search
+# bindkey -e history-incremental-search-backward
+# bindkey -e forward-char
+# bindkey -e backward-char
+# bindkey -e beginning-of-line
+# bindkey -e end-of-line
+# bindkey -e backward-delete-word
+# bindkey -e delete-char
+# bindkey -e backward-word
+# bindkey -e forward-word
+# bindkey -e insert-last-word
