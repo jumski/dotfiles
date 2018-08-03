@@ -5,6 +5,7 @@ unbind C-b
 unbind r
 bind r source-file ~/.tmux.conf
 
+set-option -g default-shell /usr/bin/zsh
 setw -g mode-keys vi
 
 bind -n C-g send-prefix
@@ -131,7 +132,6 @@ bind b command-prompt "run 'exec google-chrome https://github.com/%%'"
 
 # <c-z>fg;alert
 bind F send-keys C-z 'fg;alert' Enter
-bind -n M-F send-keys C-z 'fg;alert' Enter
 
 #set -g status-utf8 on
 set -g status-justify left
