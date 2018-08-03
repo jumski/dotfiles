@@ -1,0 +1,1 @@
+alias mux=tmuxinator
