@@ -100,6 +100,8 @@ set -g main-pane-width 130
 set -g detach-on-destroy off
 
 setw -g automatic-rename off
+set-window-option -g automatic-rename off
+set-option -g allow-rename off
 
 # pull/send panes
 bind j command-prompt -p "join pane from:" "join-pane -h -s '%%'"
