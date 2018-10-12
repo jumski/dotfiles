@@ -1,3 +1,3 @@
 #!/bin/bash
 $ZSH/bin/setup_keyboard
-#$HOME/dotfiles/bin/setup_touchpad
+$ZSH/bin/setup_touchpad

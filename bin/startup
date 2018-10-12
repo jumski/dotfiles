@@ -10,9 +10,6 @@ sleep 4
 
 $HOME/dotfiles/bin/setup_input_devices
 
-# prevent mouse clicks
-syndaemon -i 1.5 -t -K &
-
 mocp --server || rm ~/.moc/pid && mocp --server
 echo after mocp
 

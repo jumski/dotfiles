@@ -21,7 +21,7 @@ if [[ "swapcaps" == $1 ]]; then
   options="$options -option ctrl:swapcaps"
 fi
 
-echo setxkbmap  $options
+# echo setxkbmap  $options
 setxkbmap $options
 
 pkill -f xcape
