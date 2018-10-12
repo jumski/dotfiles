@@ -40,6 +40,10 @@ stty start undef
 bindkey -e
 bindkey '^P' up-line-or-search
 bindkey '^N' down-line-or-search
+
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
 # bindkey -e history-incremental-search-backward
 # bindkey -e forward-char
 # bindkey -e backward-char
