@@ -17,7 +17,8 @@
   d = diff
   wd = diff --word-diff=color
   dc = diff --cached
-  b = branch
+  branch = branch -vv
+  b = branch -vv
   ba = branch -a
   l = log
   yesterday = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short --after=yesterday --author=Wojtek

@@ -7,6 +7,10 @@ then
 fi
 
 alias g=git
+compdef g=git
+
+alias t=tig
+alias ts='tig status'
 
 # The rest of my fun git aliases
 alias gl='git pull --prune'
@@ -20,10 +24,20 @@ alias gc='git commit'
 alias gca='git commit -a'
 alias gco='git checkout'
 alias gcb='git copy-branch-name'
-alias gb='git branch'
+alias gb='git branch -vv'
+# alias gbb='git branch -vv'
 alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
 alias gac='git add -A && git commit -m'
 alias ge='git-edit-new'
 
 alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify -m "--wip-- [skip ci]"'
 alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'
+
+alias gdiff='git diff --color-words=.'
+compdef _git gdiff='git-diff'
+
+alias gapan='git add --intent-to-add . && git add --patch'
+alias gap='git add --intent-to-add . && git add --patch'
+compdef _git gapan='git-add'
+compdef _git gap='git-add'
+
