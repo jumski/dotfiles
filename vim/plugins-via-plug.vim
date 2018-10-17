@@ -125,6 +125,8 @@ Plug  'tommcdo/vim-exchange'
 Plug  'junegunn/goyo.vim'
 Plug  'junegunn/limelight.vim'
 
+Plug  'editorconfig/editorconfig-vim'
+
 "Plug  'vim-scripts/zeavim.vim'
 
 call plug#end()
