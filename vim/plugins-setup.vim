@@ -96,7 +96,6 @@ let g:UltiSnipsExpandTrigger = "<C-z>"
 
 " " g:UltiSnipsListSnippets                <c-tab>
 "
-" let g:gist_clip_command = 'xclip -selection clipboard'
 "
 " " check if all is installed
 " if neobundle#exists_not_installed_bundles()
@@ -160,3 +159,5 @@ let g:deoplete#enable_at_startup = 1
 
 " highlight JSX in *.js files
 let g:jsx_ext_required = 0
+
+let g:gist_clip_command = 'xclip -selection clipboard'
