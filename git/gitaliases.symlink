@@ -14,9 +14,9 @@
   clfd = clean -fd
   ignore = !git reset -- $1 && echo "$1" >> .gitignore && git add .gitignore
 
-  d = diff
-  wd = diff --word-diff=color
-  dc = diff --cached
+  d = diff --ignore-space-change
+  wd = diff --word-diff=color --ignore-space-change
+  dc = diff --cached --ignore-space-change
   branch = branch -vv
   b = branch -vv
   ba = branch -a
