@@ -94,7 +94,9 @@ set t_Co=256
 set background=dark
 
 " show 80 columns marker
-set colorcolumn=80
+autocmd BufRead,BufNewFile * let &colorcolumn="80,".join(range(140,999),",")
+set winwidth=80
+let &colorcolumn="80,140"
 
 " use solarized scheme
 let g:solarized_termtrans = 1
