@@ -18,7 +18,7 @@ scr(){
 
   if [ -n "$1" ]; then
     local scratch_title=$( echo "$1" | sed 's/[^a-zA-Z0-9_-]/_/g')
-    local new_scratch_dir+="--${scratch_title}"
+    local new_scratch_dir="${new_scratch_dir}--${scratch_title}"
 
     local window_title="scratch: ${scratch_title}"
   else
