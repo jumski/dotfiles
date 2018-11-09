@@ -58,3 +58,6 @@
 	cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
 [merge]
 	tool = fugitive
+[filter "tabspace"]
+	smudge = unexpand --tabs=4 --first-only
+	clean = expand --tabs=4 --initial
