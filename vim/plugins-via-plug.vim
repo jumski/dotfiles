@@ -24,6 +24,7 @@ Plug  'kchmck/vim-coffee-script'
 Plug  'Glench/Vim-Jinja2-Syntax'
 Plug  'chase/vim-ansible-yaml'
 
+Plug 'thoughtbot/vim-rspec'
 
 
 Plug  'vim-scripts/matchit.zip'

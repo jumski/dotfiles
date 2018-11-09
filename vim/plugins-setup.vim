@@ -39,6 +39,13 @@ let g:ruby_doc_ruby_mapping='<leader>dR'
 let g:rspec_doc_ruby_mapping='<leader>ds'
 let g:rails_doc_ruby_mapping='<leader>dr'
 
+" RSpec.vim mappings with vim-dispatch integration
+map <Leader>t :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
+let g:rspec_command = "compiler rspec | set makeprg=bin/rspec | Make rspec {spec}"
+
 " vimux
 " let VimuxHeight = "50"
 " let VimuxOrientation = "h"
