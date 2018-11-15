@@ -50,16 +50,6 @@ let g:rspec_command = "compiler rspec | set makeprg=bin/rspec | Make rspec {spec
 " let VimuxHeight = "50"
 " let VimuxOrientation = "h"
 
-" syntastic
-let g:syntastic_mode_map = { 'passive_filetypes': ['haml', 'sass', 'slim'] }
-let g:syntastic_javascript_checkers = ['jshint', 'jslint']
-" let g:syntastic_mode_map = { 'mode': 'passive',
-"                            \ 'active_filetypes': ['ruby', 'erb', 'javascript', 'coffee'],
-"                            \ 'passive_filetypes': [] }
-"
-"
-" let g:syntastic_disabled_filetypes = ["haml", "sass"]
-
 " YouCompleteMe
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_collect_identifiers_from_tags_files = 1
