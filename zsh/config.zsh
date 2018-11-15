@@ -37,6 +37,9 @@ setopt complete_aliases
 stty stop undef
 stty start undef
 
+# disable completion cache
+zstyle ":completion:*:commands" rehash 1
+
 bindkey -e
 bindkey '^P' up-line-or-search
 bindkey '^N' down-line-or-search
