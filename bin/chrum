@@ -11,4 +11,4 @@ else
     echo > ~/.chromium-browser.init
 fi
 
-exec chromium-browser
+# exec chromium-browser
