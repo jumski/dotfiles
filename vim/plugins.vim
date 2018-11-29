@@ -1,5 +1,5 @@
 if &compatible
-  set nocompatible
+  " set nocompatible
 endif
 
 call plug#begin('~/.vim/plugged')
@@ -65,7 +65,7 @@ Plug  'tpope/vim-projectionist'
 Plug  'vim-ruby/vim-ruby'
 Plug  'mattn/gist-vim'
 " " Plug  'vim-scripts/ack.vim'
-Plug  'rking/ag.vim'
+" Plug  'rking/ag.vim'
 Plug  'vim-scripts/file-line'
 Plug  'ecomba/vim-ruby-refactoring'
 Plug  'sjl/gundo.vim'
@@ -96,7 +96,7 @@ Plug  'mxw/vim-jsx'
 
 Plug  'kana/vim-textobj-user'
 Plug  'nelstrom/vim-textobj-rubyblock'
-Plug  'abijr/colorpicker'
+" Plug  'abijr/colorpicker'
 Plug  'othree/html5.vim'
 Plug  'vim-scripts/closetag.vim'
 Plug  'junegunn/rainbow_parentheses.vim'
@@ -127,6 +127,11 @@ Plug  'junegunn/goyo.vim'
 Plug  'junegunn/limelight.vim'
 
 Plug  'editorconfig/editorconfig-vim'
+Plug '~/.fzf'
+Plug 'junegunn/fzf.vim'
+
+Plug 'KabbAmine/vCoolor.vim'
+
 
 "Plug  'vim-scripts/zeavim.vim'
 

@@ -47,8 +47,6 @@ cnoremap <c-k> <C-\>estrpart(getcmdline(), 0, getcmdpos()-1)<cr>>
 " set statusline+=%f\ %2*%m\ %1*%h
 " " generic warning message
 " set statusline+=%#warningmsg#
-" " Syntastic status
-" set statusline+=%{SyntasticStatuslineFlag()}
 "
 " " FuGITive status
 " set statusline+=%{fugitive#statusline()}

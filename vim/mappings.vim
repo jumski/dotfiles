@@ -105,6 +105,9 @@ nnoremap <leader>\ "xyiw:tabnew<CR>:Ag <C-R>x<space>
 vnoremap <LocalLeader>\ "xy:tabnew<CR>:Ag "<C-R>x"<space>
 " nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
+" FZF search
+nnoremap <LocalLeader>s :tabnew<CR>:FZF<CR>
+
 " Rails specific
 map <leader>rr :topleft :tabnew config/routes.rb<cr>
 map <leader>rg :topleft 100 :tabnew Gemfile<cr>

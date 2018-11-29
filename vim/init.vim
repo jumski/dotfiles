@@ -1,4 +1,4 @@
-set nocompatible               " be iMproved
+" set nocompatible               " be iMproved
 filetype off                   " required!
 
 if has('vim_starting')
