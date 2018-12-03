@@ -159,4 +159,6 @@ let g:jsx_ext_required = 0
 
 let g:gist_clip_command = 'xclip -selection clipboard'
 
-
+" ALE
+" do not link when inserting stuff in insert mode
+let g:ale_lint_on_text_changed = 'normal'
