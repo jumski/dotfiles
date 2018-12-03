@@ -12,61 +12,12 @@ let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=black
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=NONE
 
-" GOYO
-function! s:goyo_enter()
-  silent !tmux set status off
-  set noshowmode
-  set noshowcmd
-  set scrolloff=999
-endfunction
-
-function! s:goyo_leave()
-  silent !tmux set status on
-  set showmode
-  set showcmd
-  set scrolloff=5
-  " Limelight!
-  " ...
-endfunction
-let g:limelight_conceal_ctermfg = 0
-" let g:limelight_conceal_ctermfg = 240
-
-autocmd! User GoyoEnter nested call <SID>goyo_enter()
-autocmd! User GoyoLeave nested call <SID>goyo_leave()
-
-" vim-ruby-doc
-let g:ruby_doc_ruby_mapping='<leader>dR'
-let g:rspec_doc_ruby_mapping='<leader>ds'
-let g:rails_doc_ruby_mapping='<leader>dr'
-
 " TODO: RSpec.vim mappings with vim-dispatch integration
 " map <Leader>t :call RunCurrentSpecFile()<CR>
 " map <Leader>s :call RunNearestSpec()<CR>
 " map <Leader>l :call RunLastSpec()<CR>
 " map <Leader>a :call RunAllSpecs()<CR>
 " let g:rspec_command = "compiler rspec | set makeprg=bin/rspec | Make rspec {spec}"
-
-" vimux
-" let VimuxHeight = "50"
-" let VimuxOrientation = "h"
-
-" YouCompleteMe
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_seed_identifiers_with_syntax = 0
-let g:ycm_allow_changing_updatetime = 0
-let g:ycm_complete_in_comments_and_strings = 1
-
-" ctrlp
-" let g:ctrlp_map = '<leader>z'
-" let g:ctrlp_map = '<leader>v'
-" let g:ctrlp_cmd = 'CtrlPMRU'
-" let g:ctrlp_custom_ignore = {
-"   \ 'dir':  '\.git$5\|\.hg$\|\.svn$',
-"   \ 'file': '\.exe$\|\.so$\|\.dll$',
-"   \ }
-" let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
-" \ 'link': 'some_bad_symbolic_links',
 
 " EasyMotion
 " let g:EasyMotion_Leader_key = ',,'
@@ -77,30 +28,11 @@ let g:ycm_complete_in_comments_and_strings = 1
 " vim-powerline
 let g:Powerline_symbols = 'fancy'
 
-
-" coffee script
-let coffee_compile_vert = 1
-
-" use vim-pasta in coffeescript
-" let g:pasta_disabled_filetypes = ["python", "markdown", "coffee", "haml", "sass"]
-
-
 " """ ULTISNIPS
 let g:UltiSnipsEditSplit = "vertical"
 let g:UltiSnipsSnippetsDir = "~/dotfiles/ultisnips"
 let g:UltiSnipsSnippetDirectories = ["UltiSnips", "../../../dotfiles/ultisnips"]
 let g:UltiSnipsExpandTrigger = "<C-z>"
-
-" " g:UltiSnipsListSnippets                <c-tab>
-"
-"
-" " check if all is installed
-" if neobundle#exists_not_installed_bundles()
-"   echomsg 'Not installed bundles : ' .
-"         \ string(neobundle#get_not_installed_bundle_names())
-"   echomsg 'Please execute ":NeoBundleInstall" command.'
-"   "finish
-" endif
 
 " rainbow_parentheses.vim
 augroup rainbow_lisp
@@ -114,12 +46,6 @@ let g:rainbow#blacklist = [12, 14]
 " au Syntax * RainbowParenthesesLoadRound
 " au Syntax * RainbowParenthesesLoadSquare
 " au Syntax * RainbowParenthesesLoadBraces
-
-" Uncomment the following to have Vim jump to the last position when
-" reopening a file
-if has("autocmd")
- au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
 
 " plugin specific mappings
 nnoremap <leader>gu :GundoToggle<CR>
@@ -135,18 +61,11 @@ nnoremap <leader>gs :Gstatus<CR>
 " clojure mappings
 nnoremap <leader>R :Require<CR>
 
-" Sayonara
-nnoremap <leader>q :Sayonara<cr>
-nnoremap <leader>Q :Sayonara!<cr>
-
 " Figwheel
-command! Figwheel :Piggieback! (do (require 'figwheel-sidecar.repl-api) (figwheel-sidecar.repl-api/cljs-repl))
+" command! Figwheel :Piggieback! (do (require 'figwheel-sidecar.repl-api) (figwheel-sidecar.repl-api/cljs-repl))
 
 " vim-dispatch
 noremap <leader>d :Dispatch<cr>
-
-" command-t
-" noremap <leader>` :CommandT<cr>
 
 nnoremap <leader>vu :UltiSnipsEdit<cr>
 nnoremap <leader>vb :NeoBundleInstall<cr>
