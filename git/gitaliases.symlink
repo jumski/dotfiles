@@ -72,7 +72,7 @@
 
   up = !git fetch origin && git rebase origin/master
   aa = add .
-  ap = add -p
+  ap = !git add --intent-to-add . && git add --patch
   plre = pull --rebase
   ff = merge --ff-only
   noff = merge --no-ff
