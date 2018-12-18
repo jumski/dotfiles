@@ -46,3 +46,7 @@ alias path="echo $PATH | tr ':' '\n'"
 
 alias random_mac='sudo ifconfig wlan0 ether `openssl rand -hex 6 | sed "s/\(..\)/\1:/g; s/.$//"`'
 alias compile_tags="ctags -R --exclude=.git --exclude=log * $GEM_HOME/gems/*"
+
+alias preview="fzf --preview 'bat --color \"always\" {}'"
+# add support for ctrl+o to open selected file in VS Code
+export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(vim {})+abort'"
