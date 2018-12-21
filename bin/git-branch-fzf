@@ -1,2 +1,2 @@
 #!/bin/bash
-git branch -vv --color=always | fzf-tmux -d 15 --ansi | cut -b 3- | awk '{print $1}'
+git branch -vv --color=always | fzf-tmux -d 15 --ansi | cut -b 3- | cut -d' ' -f1
