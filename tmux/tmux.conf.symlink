@@ -135,59 +135,8 @@ bind b command-prompt "run 'exec google-chrome https://github.com/%%'"
 # <c-z>fg;alert
 bind F send-keys C-z 'fg;alert' Enter
 
-#set -g status-utf8 on
-set -g status-justify left
-set -g status-bg colour240
-set -g status-fg white
-set -g status-interval 1
-setw -g window-status-format "#[bg=colour236]#[fg=colour240]⮀#[fg=white]#[bg=colour236]#I#[bg=colour247]#[fg=colour236]⮀ #W#[bg=colour240]#[fg=colour247]⮀"
-setw -g window-status-current-format "#[bg=white]#[fg=colour240]⮀#[fg=black]#[bg=white]#I#[fg=white]#[bg=colour236]⮀ #W#[bg=colour240]#[fg=colour236]⮀"
-set-option -g status-right-length 120
-#set-option -g status-right "#(cat ~/.pomo_stat) #(~/.rvm/bin/current_ruby ~/work/tmux_status/bin/tmux-status music_player,date_time,transfer,battery,temperature)"
-
-# bash tmux status
-set-option -g status-right "#(/home/jumski/dotfiles/bin/tmux-status-right)"
-
 # history
 set -g history-limit 10000
 
-
-
-
-
-
-
-
-##### Start COLOUR (Solarized dark)
-#
-## default statusbar colors
-#set-option -g status-bg black #base02
-#set-option -g status-fg yellow #yellow
-#set-option -g status-attr default
-#
-## default window title colors
-#set-window-option -g window-status-fg brightblue #base0
-#set-window-option -g window-status-bg default
-##set-window-option -g window-status-attr dim
-#
-## active window title colors
-#set-window-option -g window-status-current-fg brightred #orange
-#set-window-option -g window-status-current-bg default
-##set-window-option -g window-status-current-attr bright
-#
-## pane border
-#set-option -g pane-border-fg black #base02
-#set-option -g pane-active-border-fg brightgreen #base01
-#
-## message text
-#set-option -g message-bg black #base02
-#set-option -g message-fg brightred #orange
-#
-## pane number display
-#set-option -g display-panes-active-colour blue #blue
-#set-option -g display-panes-colour brightred #orange
-#
-## clock
-#set-window-option -g clock-mode-colour green #green
-#
-##### End COLOUR (Solarized dark)
+# include theme
+source-file /home/jumski/.dotfiles/tmux/gruvbox.conf

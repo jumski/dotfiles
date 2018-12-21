@@ -97,8 +97,20 @@ set winwidth=80
 let &colorcolumn="80,140"
 
 " use solarized scheme
-let g:solarized_termtrans = 1
-colorscheme solarized
+" let g:solarized_termtrans = 1
+" colorscheme solarized
+
+""" Gruvbox truecolor theme
+"""
+""" order of following is important
+""" 1. escape codes
+set t_8f=[38;2;%lu;%lu;%lum
+set t_8b=[48;2;%lu;%lu;%lum
+""" 2. colorcheme
+colorscheme gruvbox
+""" 3. set termguicolors
+set termguicolors
+let g:gruvbox_italic=1
 
 " do not redraw while executing macros etc
 set lazyredraw
