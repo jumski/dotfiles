@@ -13,5 +13,11 @@ which bat || (
   rm /tmp/bat.deb
 )
 
+# install theme
+mkdir -p "$(bat cache --config-dir)/themes"
+cd "$(bat cache --config-dir)/themes"
+git clone https://github.com/jumski/Colorsublime-Themes
+bat cache --init
+
 sudo ln -sf $ZSH/bin/chrum /usr/bin/chrum
 sudo chmod +x /usr/bin/chrum
