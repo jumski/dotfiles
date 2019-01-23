@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # set keyboard repeat
 xset r rate 250 100
@@ -17,7 +18,7 @@ options="$options -option altwin:ctrl_win"
 options="$options -option ralt_rctrl"
 #options="-option ctrl:menu_rctrl -option altwin:ctrl_win -option ctrl:nocaps -option compose:lwin"
 
-if [[ "swapcaps" == $1 ]]; then
+if [[ "swapcaps" == "$1" ]]; then
   options="$options -option ctrl:swapcaps"
 fi
 
@@ -31,5 +32,3 @@ xcape -t 100
 ###echo 0 > /sys/class/leds/asus::kbd_backlight/brightness
 
 xmodmap ~/.Xmodmap
-
-echo `date` setup_keyboard >> ~/.startup.log
