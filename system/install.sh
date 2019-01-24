@@ -6,6 +6,7 @@ sudo apt install -y \
   tmux \
   tig \
   xclip \
+  silversearcher-ag \
 
 sudo ln -sf $ZSH/bin/chrum /usr/bin/chrum
 sudo chmod +x /usr/bin/chrum
