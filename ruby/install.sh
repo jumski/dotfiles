@@ -20,7 +20,3 @@ which ruby-install || {
   cd ruby-install-0.6.1/
   sudo make install
 }
-
-echo Install deb packages required
-sudo apt install -y \
-  libssl-dev \

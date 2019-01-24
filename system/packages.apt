@@ -1,0 +1,10 @@
+build-essential
+xcape
+vim
+htop
+git-core
+tmux
+tig
+xclip
+silversearcher-ag
+
