@@ -41,4 +41,6 @@ alias gap='git add --intent-to-add . && git add --patch'
 compdef _git gapan='git-add'
 compdef _git gap='git-add'
 
-alias gcob='git checkout $(git-branch-fzf)'
+alias gcob='git checkout $(git-branch-fzf --sort=-committerdate)'
+alias gcoba='git checkout $(git-branch-fzf --sort=-committerdate --all)'
+alias gbf=git-branch-fzf
