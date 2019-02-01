@@ -1,0 +1,11 @@
+bundler
+solargraph
+gist
+interactive_editor
+gem-browse
+gem-ctags
+tmuxinator
+github
+rubygems-bundler
+libnotify
+pry
