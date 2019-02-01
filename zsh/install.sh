@@ -1,5 +1,3 @@
-sudo apt install -y zsh
-
 # install colorscheme
 mkdir -p ~/installed
 if [ ! -d ~/installed/base16-gruvbox ]; then
@@ -17,3 +15,6 @@ if [ ! -d ~/installed/monaco-nerd-fonts ]; then
   sudo cp ~/installed/monaco-nerd-fonts/fonts/* /usr/share/fonts/monaco-nerd-fonts
   sudo fc-cache -fv
 fi
+
+# change shell for current user
+sudo chsh -s $(which zsh) jumski
