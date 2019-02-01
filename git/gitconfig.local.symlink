@@ -1,3 +1,5 @@
 [user]
         name = Wojtek Majewski
         email = jumski@gmail.com
+[credential]
+        helper = cache
