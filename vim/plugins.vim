@@ -10,16 +10,20 @@ Plug 'KabbAmine/vCoolor.vim'
 Plug 'Lokaltog/vim-powerline'
 Plug 'Shougo/vimproc'
 Plug 'SirVer/ultisnips'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
 Plug 'beloglazov/vim-online-thesaurus'
 Plug 'bronson/vim-visual-star-search'
 Plug 'chase/vim-ansible-yaml'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'danchoi/ri.vim'
+" Plug 'danchoi/ri.vim'
 Plug 'ecomba/vim-ruby-refactoring'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'ekalinin/Dockerfile.vim'
-Plug 'ervandew/supertab'
+" Plug 'ervandew/supertab'
 Plug 'godlygeek/tabular'
 Plug 'guns/vim-clojure-highlight'
 Plug 'guns/vim-clojure-static'

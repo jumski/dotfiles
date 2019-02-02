@@ -81,3 +81,10 @@ let g:gist_clip_command = 'xclip -selection clipboard'
 " ALE
 " do not link when inserting stuff in insert mode
 let g:ale_lint_on_text_changed = 'normal'
+
+" solargraph and language client
+let g:LanguageClient_serverCommands = {
+    \ 'ruby': ['tcp://localhost:7658']
+    \ }
+let g:LanguageClient_autoStop = 0
+autocmd FileType ruby setlocal omnifunc=LanguageClient#complete
