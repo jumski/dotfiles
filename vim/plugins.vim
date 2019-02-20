@@ -11,19 +11,17 @@ Plug 'Lokaltog/vim-powerline'
 Plug 'Shougo/vimproc'
 Plug 'SirVer/ultisnips'
 Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
+  \ 'branch': 'next',
+  \ 'do': 'bash install.sh',
+  \ }
 Plug 'beloglazov/vim-online-thesaurus'
 Plug 'bronson/vim-visual-star-search'
 Plug 'chase/vim-ansible-yaml'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'christoomey/vim-tmux-navigator'
-" Plug 'danchoi/ri.vim'
 Plug 'ecomba/vim-ruby-refactoring'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'ekalinin/Dockerfile.vim'
-" Plug 'ervandew/supertab'
 Plug 'godlygeek/tabular'
 Plug 'guns/vim-clojure-highlight'
 Plug 'guns/vim-clojure-static'
@@ -31,7 +29,6 @@ Plug 'guns/vim-sexp'
 Plug 'haya14busa/incsearch.vim'
 Plug 'jaxbot/semantic-highlight.vim'
 Plug 'jgdavey/vim-blockle'
-Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
@@ -47,6 +44,7 @@ Plug 'nathanaelkane/vim-indent-guides'
 Plug 'nelstrom/vim-textobj-rubyblock'
 Plug 'nono/vim-handlebars'
 Plug 'othree/html5.vim'
+Plug 'rking/ag.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'sickill/vim-pasta'
 Plug 'sjl/gundo.vim'
@@ -86,7 +84,6 @@ Plug 'vim-scripts/nginx.vim'
 Plug 'vim-scripts/repeat.vim'
 Plug 'vimwiki/vimwiki'
 Plug 'w0rp/ale'
-Plug '~/.fzf'
 
 if !has('nvim')
   Plug 'roxma/nvim-yarp'
@@ -95,17 +92,20 @@ endif
 
 " DISABLED PLUGINS:
 " Plug 'abijr/colorpicker'
+" Plug 'danchoi/ri.vim'
 " Plug 'delimitMate.vim'
+" Plug 'ervandew/supertab'
 " Plug 'jelera/vim-javascript-syntax'
 " Plug 'jumski/vim-colors-solarized'
+" Plug 'junegunn/fzf.vim'
 " Plug 'logstash.vim'
 " Plug 'mhinz/vim-sayonara'
 " Plug 'othree/yajs.vim'
-" Plug 'rking/ag.vim'
 " Plug 'tomtom/tcomment_vim'
 " Plug 'tpope/vim-leiningen'
 " Plug 'vim-scripts/ack.vim'
 " Plug 'vim-scripts/zeavim.vim'
+" Plug '~/.fzf'
 
 call plug#end()
 
