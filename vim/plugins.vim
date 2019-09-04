@@ -41,6 +41,7 @@ Plug 'rking/ag.vim'
 Plug 'sheerun/vim-polyglot' " all the language packs in one repo
 Plug 'sickill/vim-pasta'
 Plug 'suan/vim-instant-markdown'
+Plug 'suy/vim-context-commentstring' " needed for vim-commentary to work in *.vue
 Plug 'thoughtbot/vim-rspec'
 Plug 'tommcdo/vim-exchange' " exchange two words with 'cxiw' on each one
 Plug 'tpope/vim-abolish'
