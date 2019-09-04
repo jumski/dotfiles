@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# find all repositories.apt so we can add new repositories and their keys before installing packages
+find . -name repositories.apt -exec bash {} \;
+
+# update in case we got some new repos
+sudo apt update
+
 # find all packages.apt so we can install dependencies before everything else
 apt_packages=$(find . -name packages.apt -exec cat {} \; | tr '\n' ' ')
 echo "Installing apt packages..."
