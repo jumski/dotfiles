@@ -1,1 +1,13 @@
+build-essential
+libcurl4-openssl-dev
+libffi-dev
+libpq-dev
+libreadline-dev
+libsqlite3-dev
 libssl-dev
+libxml2-dev
+libxslt1-dev
+libyaml-dev
+software-properties-common
+sqlite3
+zlib1g-dev
