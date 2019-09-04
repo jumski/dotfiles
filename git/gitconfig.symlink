@@ -3,7 +3,7 @@
 [include]
         path = ~/.gitaliases
 [hub]
-        protocol = https
+	protocol = git
 [core]
         excludesfile = ~/.gitignore_global
         editor = vim
