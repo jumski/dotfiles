@@ -48,8 +48,8 @@ set autoread
 " display incomplete commands
 set showcmd
 
-" display the mode you're in
-set showmode
+" do not display the mode you're in, because of status line
+set noshowmode
 
 " do not reindent when inserting :
 set cinkeys-=:
