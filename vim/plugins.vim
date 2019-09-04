@@ -14,6 +14,7 @@ Plug 'autozimu/LanguageClient-neovim', {
   \ 'do': 'bash install.sh',
   \ }
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'dense-analysis/ale'
 Plug 'ecomba/vim-ruby-refactoring'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'ekalinin/Dockerfile.vim'
@@ -72,7 +73,6 @@ Plug 'vim-scripts/file-line'
 Plug 'vim-scripts/matchit.zip'
 Plug 'vim-scripts/nginx.vim'
 Plug 'vim-scripts/repeat.vim'
-Plug 'w0rp/ale'
 
 if !has('nvim')
   Plug 'roxma/nvim-yarp'
