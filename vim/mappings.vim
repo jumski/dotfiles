@@ -3,9 +3,6 @@
 let mapleader=","
 let g:mapleader = ","
 
-" experimental ESC mapping
-inoremap kj <esc>
-
 """"" CUSTOM MAPPINGS
 " noremap <C-k><C-k> <C-w><C-w>
 " noremap <C-k>k <C-w><C-w>
