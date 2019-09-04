@@ -8,10 +8,5 @@ set -e
 
 cd "$(dirname $0)"/..
 
-# find all packages.apt so we can install dependencies before everything else
-apt_packages=$(find . -name packages.apt -exec cat {} \; | tr '\n' ' ')
-echo "Installing apt packages..."
-sudo apt install -y $apt_packages
-
 # find the installers and run them iteratively
 find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
