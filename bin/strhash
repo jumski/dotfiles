@@ -1,0 +1,8 @@
+#!/bin/bash
+
+string_to_hash="$@"
+
+hashed_string=$(echo "$string_to_hash" | gpg --print-md sha1 | tr -d ' ')
+
+echo "$hashed_string" | xclip -sel clipboard
+echo "$hashed_string"
