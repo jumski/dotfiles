@@ -14,6 +14,7 @@ au BufNewFile,BufRead *.json set ft=javascript
 au BufNewFile,BufRead *.hamlc setfiletype haml
 au BufNewFile,BufRead Dockerfile setfiletype conf
 au BufNewFile,BufRead .psqlrc setfiletype sql
+au BufNewFile,BufRead .gitaliases setfiletype gitconfig
 
 " force tabwidth per filetype
 autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
