@@ -14,4 +14,3 @@ source ~/.dotfiles/vim/projections.vim
 source ~/.dotfiles/vim/abbreviations.vim
 
 " source ~/.dotfiles/vim/breakage-custom.vim
-" source ~/.dotfiles/vim/boostmove.vim
