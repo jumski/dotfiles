@@ -6,7 +6,7 @@ source ~/.dotfiles/vim/mappings.vim
 source ~/.dotfiles/vim/settings.vim
 source ~/.dotfiles/vim/functions.vim
 
-source ~/.dotfiles/vim/plugins-setup.vim
+source ~/.dotfiles/vim/setup-plugins.vim
 
 source ~/.dotfiles/vim/filetypes.vim
 
