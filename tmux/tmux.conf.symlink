@@ -112,7 +112,7 @@ bind B break-pane -d -t :
 bind -n M-m command-prompt "split-window -h 'exec man %%'"
 
 # open main alsamixer
-bind v split-window -l 14 -h '/home/jumski/dotfiles/bin/main-alsamixer'
+bind v split-window -l 14 -h '/home/jumski/.dotfiles/bin/main-alsamixer'
 
 # toggle mocp
 bind P run 'mocp -G'
