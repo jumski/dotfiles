@@ -1,6 +1,5 @@
 build-essential
 xcape
-vim
 htop
 git-core
 tmux
