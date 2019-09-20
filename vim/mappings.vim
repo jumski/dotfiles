@@ -49,18 +49,18 @@ nnoremap <C-y> 3<C-y>
 
 " easy access/surce vimrc and other
 nnoremap <leader>vs :source ~/.vimrc<CR>
-nnoremap <leader>vm :tabnew ~/dotfiles/vim/mappings.vim<cr>
-nnoremap <leader>vp :tabnew ~/dotfiles/vim/plugins.vim<cr>
-nnoremap <leader>vv :tabnew ~/dotfiles/vim/plugins.vim<cr>:vs ~/dotfiles/vim/settings.vim<cr>:sp ~/dotfiles/vim/mappings.vim<cr><C-w>h:sp ~/dotfiles/vim/projections.vim<cr>
-  " \ :sp     ~/dotfiles/settings.vim<cr>
-  " \ :sp     ~/dotfiles/mappings.vim<cr>
-  " \ :vs     ~/dotfiles/macros.vim<cr><c-k><c-k>
+nnoremap <leader>vm :tabnew ~/.dotfiles/vim/mappings.vim<cr>
+nnoremap <leader>vp :tabnew ~/.dotfiles/vim/plugins.vim<cr>
+nnoremap <leader>vv :tabnew ~/.dotfiles/vim/plugins.vim<cr>:vs ~/.dotfiles/vim/settings.vim<cr>:sp ~/.dotfiles/vim/mappings.vim<cr><C-w>h:sp ~/.dotfiles/vim/projections.vim<cr>
+  " \ :sp     ~/.dotfiles/settings.vim<cr>
+  " \ :sp     ~/.dotfiles/mappings.vim<cr>
+  " \ :vs     ~/.dotfiles/macros.vim<cr><c-k><c-k>
 nnoremap <leader>vp :tabnew config/projections.json<cr>
 
 " some custom stuff
 nnoremap <leader>op :15sp /home/jumski/Dropbox/projects/`basename \`pwd\``/todos.txt<cr>
-nnoremap <leader>ow :15sp `/home/jumski/dotfiles/bin/worklog-path`<cr>
-" nnoremap <leader>oW :Ex $(dirname `/home/jumski/dotfiles/bin/worklog-path`)<cr>
+nnoremap <leader>ow :15sp `/home/jumski/.dotfiles/bin/worklog-path`<cr>
+" nnoremap <leader>oW :Ex $(dirname `/home/jumski/.dotfiles/bin/worklog-path`)<cr>
 
 " Split line(opposite to S-J joining line)
 " nnoremap <C-J> gEa<CR><ESC>

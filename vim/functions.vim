@@ -15,7 +15,7 @@ endfunction
 command! -bar Glbrowse call OpenGitlabForCurrentFile()
 nnoremap <leader>og :Glbrowse<cr>
 
-command Til :tabe ~/dotfiles/TIL.md
+command Til :tabe ~/.dotfiles/TIL.md
 
 function! Browser ()
   let line = getline(".")

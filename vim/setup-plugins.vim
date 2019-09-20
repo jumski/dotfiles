@@ -30,8 +30,8 @@ let g:Powerline_symbols = 'fancy'
 
 " """ ULTISNIPS
 let g:UltiSnipsEditSplit = "vertical"
-let g:UltiSnipsSnippetsDir = "~/dotfiles/ultisnips"
-let g:UltiSnipsSnippetDirectories = ["UltiSnips", "../../../dotfiles/ultisnips"]
+let g:UltiSnipsSnippetsDir = "~/.dotfiles/ultisnips"
+let g:UltiSnipsSnippetDirectories = ["UltiSnips", "../../../.dotfiles/ultisnips"]
 let g:UltiSnipsExpandTrigger = "<C-z>"
 
 " rainbow_parentheses.vim
