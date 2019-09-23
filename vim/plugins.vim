@@ -26,6 +26,7 @@ Plug 'haya14busa/incsearch.vim'
 Plug 'itchyny/lightline.vim'
 Plug 'jaxbot/semantic-highlight.vim'
 Plug 'jgdavey/vim-blockle'
+Plug 'joukevandermaas/vim-ember-hbs'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'kana/vim-fakeclip' " paste-clipboard support for tmux
 Plug 'kana/vim-textobj-user' " vim-textobj-rubyblock dependency
