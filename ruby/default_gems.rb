@@ -1,11 +1,11 @@
 bundler
-solargraph
-gist
-interactive_editor
 gem-browse
 gem-ctags
-tmuxinator
+gist
 github
-rubygems-bundler
+interactive_editor
 libnotify
 pry
+rubygems-bundler
+solargraph
+tmuxinator
