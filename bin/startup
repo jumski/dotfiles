@@ -1,5 +1,5 @@
 #!/bin/bash
-$HOME/dotfiles/bin/setup_input_devices
+$HOME/.dotfiles/bin/setup_input_devices
 gnome-terminal --maximize --hide-menubar
 $BROWSER
 slack
