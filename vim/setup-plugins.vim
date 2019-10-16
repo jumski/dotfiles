@@ -19,9 +19,6 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=NONE
 " map <Leader>a :call RunAllSpecs()<CR>
 " let g:rspec_command = "compiler rspec | set makeprg=bin/rspec | Make rspec {spec}"
 
-" EasyMotion
-" let g:EasyMotion_Leader_key = ',,'
-
 " require matchit manually
 " runtime macros/matchit.vim
 
