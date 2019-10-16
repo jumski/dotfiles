@@ -9,7 +9,7 @@
         editor = vim
         autocrlf = input
         whitespace = trailing-space,cr-at-eol
-        ;pager = /usr/share/doc/git/contrib/diff-highlight/diff-highlight | less
+        pager = diff-so-fancy | less --tabs=4 -RFX
 [apply]
         whitespace = nowarn
 [mergetool]
@@ -30,20 +30,21 @@
 	diff = auto
 	interactive = auto
 	status = auto
+	ui = true
 
 [color "diff"]
-  commit = green
-  meta = yellow
-  frag = cyan
-  old = red
-  new = green
-  whitespace = red reverse
+	commit = "yellow"
+	meta = 11
+	frag = "magenta"
+	old = "red"
+	new = "green"
+	whitespace = red reverse
 
 [color "diff-highlight"]
-  oldNormal = red bold
-  oldHighlight = red bold 52
-  newNormal = green bold
-  newHighlight = green bold 22
+	oldNormal = "red"
+	oldHighlight = "red 52"
+	newNormal = "green"
+	newHighlight = "green 22"
 
 [branch]
   # set up git pull to do a rebase instead of merge
