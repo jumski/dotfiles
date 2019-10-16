@@ -2,7 +2,6 @@
 
 # settings
 MAIN_BROWSER_WINDOW_CLASSNAME="chromium-browser"
-#MAIN_BROWSER_WINDOW_CLASSNAME="google-chrome"
 MAIN_TERMINAL_WINDOW_CLASSNAME="gnome-terminal"
 
 active_window_id=$( xdotool getactivewindow )
@@ -14,13 +13,18 @@ terminal_window_id = $terminal_window_id
 active_window_id = $active_window_id
 "
 
-if [ $active_window_id == $terminal_window_id ]; then
-  echo activating browser $MAIN_BROWSER_WINDOW_CLASSNAME
+# commented out lines is searching and activating in 1 command, left for future
+
+if [ "$active_window_id" == "$terminal_window_id" ]; then
+  echo activating browser $MAIN_BROWSER_WINDOW_CLASSNAME | tee -a ~/.focus_konsoles.log
   xdotool windowactivate $browser_window_id
-elif [ $active_window_id == $browser_window_id ]; then
-  echo activating terminal $MAIN_TERMINAL_WINDOW_CLASSNAME
+  # xdotool search --onlyvisible --classname "$MAIN_BROWSER_WINDOW_CLASSNAME" windowactivate
+elif [ "$active_window_id" == "$browser_window_id" ]; then
+  echo activating terminal $MAIN_TERMINAL_WINDOW_CLASSNAME | tee -a ~/.focus_konsoles.log
   xdotool windowactivate $terminal_window_id
+  # xdotool search --onlyvisible --classname "$MAIN_TERMINAL_WINDOW_CLASSNAME" windowactivate
 else
-  echo activating terminal $MAIN_TERMINAL_WINDOW_CLASSNAME
+  echo activating terminal $MAIN_TERMINAL_WINDOW_CLASSNAME | tee -a ~/.focus_konsoles.log
   xdotool windowactivate $terminal_window_id
-fi 
+  # xdotool search --onlyvisible --classname "$MAIN_TERMINAL_WINDOW_CLASSNAME" windowactivate
+fi
