@@ -48,7 +48,7 @@
 
 [branch]
   # set up git pull to do a rebase instead of merge
-  autosetuprebase = always
+  #autosetuprebase = always
 [interactive]
   singlekey = true
 [github]

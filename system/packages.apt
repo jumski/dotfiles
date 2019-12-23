@@ -8,3 +8,6 @@ xclip
 silversearcher-ag
 gnome-terminal
 zstd
+entr
+dtrx
+tree

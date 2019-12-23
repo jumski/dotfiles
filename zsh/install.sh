@@ -1,7 +1,7 @@
 # install colorscheme
 mkdir -p ~/installed
 if [ ! -d ~/installed/base16-gruvbox ]; then
-  git clone git://github.com:jumski/base16-gruvbox.git ~/installed/base16-gruvbox
+  git clone git@github.com:jumski/base16-gruvbox.git ~/installed/base16-gruvbox
 
   cd ~/installed/base16-gruvbox/gnome-terminal
   chmod +x ./base16-gruvbox.dark.sh
