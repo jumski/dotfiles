@@ -37,7 +37,9 @@ Plug 'morhetz/gruvbox' " colortheme
 Plug 'mxw/vim-jsx'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'nelstrom/vim-textobj-rubyblock' " toggle block type in ruby
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nono/vim-handlebars'
+Plug 'nullvoxpopuli/coc-ember', {'do': 'yarn install --frozen-lockfile'}
 Plug 'othree/html5.vim'
 Plug 'rking/ag.vim'
 Plug 'sheerun/vim-polyglot' " all the language packs in one repo
