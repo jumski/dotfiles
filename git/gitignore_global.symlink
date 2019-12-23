@@ -32,7 +32,6 @@
 # Logs and databases #
 ######################
 *.log
-*.sql
 *.sqlite
 
 # OS generated files #
@@ -50,3 +49,4 @@ Thumbs.db
 /bin/failing
 /bin/pending
 Session.vim
+nohup.out
