@@ -1,0 +1,12 @@
+# ~/.tmuxinator/dotfilez.yml
+# you can make as many tabs as you wish...
+
+name: postgres-sandbox
+root: ~/work/postgres-sandbox
+on_project_start:
+  - docker-compose up -d postgres
+windows:
+  - bash:
+  - bash: git status
+  - vim: vim .
+  - psql: bin/psql
