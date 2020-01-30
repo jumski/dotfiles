@@ -4,6 +4,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
+Plug 'alcesleo/vim-uppercase-sql'
 Plug 'chrisbra/Colorizer' " colorizes hex color codes
 Plug 'DataWraith/auto_mkdir'
 Plug 'KabbAmine/vCoolor.vim' " color-picker
@@ -26,6 +27,7 @@ Plug 'haya14busa/incsearch.vim'
 Plug 'itchyny/lightline.vim'
 Plug 'jaxbot/semantic-highlight.vim'
 Plug 'jgdavey/vim-blockle'
+Plug 'joukevandermaas/vim-ember-hbs'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'kana/vim-fakeclip' " paste-clipboard support for tmux
 Plug 'kana/vim-textobj-user' " vim-textobj-rubyblock dependency
@@ -36,7 +38,9 @@ Plug 'morhetz/gruvbox' " colortheme
 Plug 'mxw/vim-jsx'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'nelstrom/vim-textobj-rubyblock' " toggle block type in ruby
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nono/vim-handlebars'
+Plug 'nullvoxpopuli/coc-ember', {'do': 'yarn install --frozen-lockfile'}
 Plug 'othree/html5.vim'
 Plug 'rking/ag.vim'
 Plug 'sheerun/vim-polyglot' " all the language packs in one repo

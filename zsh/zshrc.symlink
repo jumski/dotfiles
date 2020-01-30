@@ -50,3 +50,4 @@ bindkey "^[[A" up-line-or-beginning-search # Up
 bindkey "^[[B" down-line-or-beginning-search # Down
 
 [[ -s /home/jumski/.rsvm/rsvm.sh ]] && . /home/jumski/.rsvm/rsvm.sh # This loads RSVM
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

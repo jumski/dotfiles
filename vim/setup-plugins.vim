@@ -19,9 +19,6 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=NONE
 " map <Leader>a :call RunAllSpecs()<CR>
 " let g:rspec_command = "compiler rspec | set makeprg=bin/rspec | Make rspec {spec}"
 
-" EasyMotion
-" let g:EasyMotion_Leader_key = ',,'
-
 " require matchit manually
 " runtime macros/matchit.vim
 
@@ -89,11 +86,21 @@ let g:LanguageClient_serverCommands = {
 let g:LanguageClient_autoStop = 0
 autocmd FileType ruby setlocal omnifunc=LanguageClient#complete
 
+" COC
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+" nmap <silent> gd <Plug>(coc-implementation)
+nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gd :tabedit %<CR><Plug>(coc-definition)
+" nmap <silent> gd tabedit % | call CocAction('jumpDefinition')
+
+" Lightline
 let g:lightline = {
       \ 'colorscheme': 'powerline',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ],
+      \             [ 'cocstatus', 'coccurrentfunction', 'gitbranch', 'readonly', 'filename', 'modified' ] ],
       \   'right': [ [ 'lineinfo' ],
       \              [ 'percent' ],
       \              [ 'fileformat', 'fileencoding', 'filetype', 'charvaluehex' ] ]
@@ -102,6 +109,8 @@ let g:lightline = {
       \   'charvaluehex': '0x%B'
       \ },
       \ 'component_function': {
+      \   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction',
       \   'gitbranch': 'fugitive#head'
       \ },
       \ }
