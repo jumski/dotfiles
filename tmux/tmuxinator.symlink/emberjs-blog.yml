@@ -8,7 +8,7 @@ root: ~/work/emberjs-blog
 #   - google-chrome 'rebased.slack.com'
 #   - google-chrome 'http://guides.emberjs.com/v2.0.0/'
 #   - google-chrome 'https://mail.google.com/a/rebased.pl'
-pre_window: source ~/.nvm/nvm.sh && nvm use stable && rvm use 2.1.5@emberjs-blog --create
+pre_window: asdf local nodejs nightly
 windows:
   - server:
       layout: even-vertical

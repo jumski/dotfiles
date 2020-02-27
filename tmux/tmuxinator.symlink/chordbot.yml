@@ -1,6 +1,6 @@
 name: chordbot
 root: ~/work/chordbot/
-pre_window: nvm use stable
+pre_window: asdf local nodejs nightly
 windows:
   - server: yarn run server
   - bash:
