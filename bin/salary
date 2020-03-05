@@ -1,0 +1,15 @@
+#!/bin/bash
+
+gross_salary=$(echo "$@" | tr -d ' ' | tr ',' '.')
+
+math="
+  gross_salary = $gross_salary
+  without_vat = gross_salary / 1.23
+  vat = gross_salary - without_vat
+  pit = without_vat * 0.19
+
+  gross_salary - pit - vat
+"
+
+echo netto =
+echo -ne "$math" | bc -l
