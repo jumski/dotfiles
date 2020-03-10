@@ -114,3 +114,6 @@ let g:lightline = {
       \   'gitbranch': 'fugitive#head'
       \ },
       \ }
+
+" YankCode mapping
+map <leader>y <plug>YankCode

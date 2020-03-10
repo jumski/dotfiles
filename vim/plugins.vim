@@ -5,6 +5,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'alcesleo/vim-uppercase-sql'
+Plug 'AaronLasseigne/yank-code'
 Plug 'chrisbra/Colorizer' " colorizes hex color codes
 Plug 'DataWraith/auto_mkdir'
 Plug 'KabbAmine/vCoolor.vim' " color-picker
