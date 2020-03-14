@@ -9,5 +9,8 @@ for plugin_name in $(cut -d' ' -f1 tool-versions.symlink | tr '\n' ' '); do
   asdf plugin-add $plugin_name
 done
 
+# import PGP keys for node
+bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+
 # install all versions from tool-versions.symlink
 asdf install
