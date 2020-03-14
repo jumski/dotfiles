@@ -77,19 +77,11 @@ cdproject() {
     project_name="$1"
   fi
 
-  if [ -d ./.git/.project_dir ]; then
-    project_path="./.git/.project_dir"
-  fi
-
   if [ -z "$project_name" ]; then
     project_name=$(basename `pwd`)
   fi
 
-  if [ -z "$project_path" ]; then
-    project_path="~/projects/$project_name"
-  fi
-
-  cd "$project_path"
+  cd ~/Dropbox/projects/${project_name}/
 }
 
 cdwork() {
