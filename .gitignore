@@ -12,3 +12,4 @@ atom.symlink/recovery
 git/gitconfig.local.symlink
 clojure/lein.symlink/repl-history
 clojure/lein.symlink/self-installs
+node_modules/
