@@ -8,5 +8,8 @@ set -e
 
 cd "$(dirname $0)"/..
 
-# find the installers and run them iteratively
+### Run special installers first, so rest can depend on them
+find . -name priority_install.sh | while read installer ; do sh -c "${installer}" ; done
+
+### Run rest of installers
 find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
