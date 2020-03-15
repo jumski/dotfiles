@@ -117,3 +117,14 @@ let g:lightline = {
 
 " YankCode mapping
 map <leader>y <plug>YankCode
+
+" Fix netrw stealing split movement mappings
+augroup netrw_mapping
+  autocmd!
+  autocmd filetype netrw call NetrwMapping()
+augroup END
+
+function! NetrwMapping()
+  unmap <buffer> <C-l>
+  nmap <C-l> <C-W>l
+endfunction
