@@ -3,6 +3,7 @@
 # settings
 MAIN_BROWSER_WINDOW_CLASSNAME="chromium-browser"
 MAIN_TERMINAL_WINDOW_CLASSNAME="gnome-terminal"
+# MAIN_TERMINAL_WINDOW_CLASSNAME="alacritty"
 
 active_window_id=$( xdotool getactivewindow )
 browser_window_id=$( xdotool search --onlyvisible --classname "$MAIN_BROWSER_WINDOW_CLASSNAME" )
