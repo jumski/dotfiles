@@ -13,7 +13,8 @@ let g:projectionist_heuristics = {
 \       "alternate": "src/{}.clj",
 \       "template": [
 \         "(ns {dot|hyphenate}-test",
-\         "  (:require [{dot|hyphenate} :as {basename}]))"
+\         "  (:require [midje.sweet :refer :all]",
+\         "            [{dot|hyphenate} :as {basename}]))"
 \       ]
 \     }
 \   }
