@@ -1,0 +1,18 @@
+#!/bin/bash
+
+current_dir=`pwd`
+start_dir=${1:-$current_dir}
+start_dir=$(readlink -f $start_dir)/
+session_name=$(basename $start_dir | tr -cd '[:alnum:]')
+
+tmux start-server
+tmux attach-session -s $session_name ||
+  tmux \
+    start-server \;\
+    new-session -A -d -c $start_dir -s $session_name \;\
+    rename-window -t 1 server \;\
+    new-window -n bash -c $start_dir \;\
+    new-window -n vim -c $start_dir \;\
+    new-window -n repl -c $start_dir \;\
+    attach-session
+
