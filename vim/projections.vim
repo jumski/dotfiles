@@ -1,3 +1,23 @@
+let g:projectionist_heuristics = {
+\   "project.clj" : {
+\     "project.clj": {
+\       "command": "project"
+\     },
+\     "src/*.clj": {
+\       "command": "src",
+\       "alternate": "test/{}_test.clj",
+\       "template": ["(ns {dot|hyphenate})"]
+\     },
+\     "test/*_test.clj": {
+\       "command": "test",
+\       "alternate": "src/{}.clj",
+\       "template": [
+\         "(ns {dot|hyphenate}-test",
+\         "  (:require [{dot|hyphenate} :as {basename}]))"
+\       ]
+\     }
+\   }
+\ }
 let g:rails_projections = {
   \ "app/models/concerns/*.rb": {
   \   "command": "concern",
