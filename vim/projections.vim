@@ -6,7 +6,8 @@ let g:projectionist_heuristics = {
 \     "src/*.clj": {
 \       "command": "src",
 \       "alternate": "test/{}_test.clj",
-\       "template": ["(ns {dot|hyphenate})"]
+\       "template": ["(ns {dot|hyphenate})"],
+\       "dispatch": ":Require"
 \     },
 \     "test/*_test.clj": {
 \       "command": "test",
@@ -15,7 +16,8 @@ let g:projectionist_heuristics = {
 \         "(ns {dot|hyphenate}-test",
 \         "  (:require [midje.sweet :refer :all]",
 \         "            [{dot|hyphenate} :as {basename}]))"
-\       ]
+\       ],
+\       "dispatch": ":Require"
 \     }
 \   }
 \ }
