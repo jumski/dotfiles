@@ -56,7 +56,7 @@ nnoremap <leader>gr :Gread<CR>
 nnoremap <leader>gs :Gstatus<CR>
 
 " clojure mappings
-nnoremap <leader>R :Require<CR>
+nnoremap <leader>r :Require<CR>
 
 " Figwheel
 " command! Figwheel :Piggieback! (do (require 'figwheel-sidecar.repl-api) (figwheel-sidecar.repl-api/cljs-repl))

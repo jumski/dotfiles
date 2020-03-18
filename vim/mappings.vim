@@ -89,10 +89,6 @@ vnoremap <LocalLeader>\ "xy:tabnew<CR>:Ag "<C-R>x"<space>
 " FZF search
 nnoremap <LocalLeader>s :tabnew<CR>:FZF<CR>
 
-" Rails specific
-map <leader>rr :topleft :tabnew config/routes.rb<cr>
-map <leader>rg :topleft 100 :tabnew Gemfile<cr>
-
 " improve movement on wrapped lines
 nnoremap j gj
 nnoremap k gk
