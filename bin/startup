@@ -3,4 +3,5 @@
 gnome-terminal --maximize --hide-menubar
 $BROWSER
 slack
-keepassx
+spotify
+discord
