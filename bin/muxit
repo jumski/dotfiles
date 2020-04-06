@@ -6,6 +6,11 @@ start_dir=${1:-$current_dir}
 # expand relative path to absolute one
 start_dir=$(readlink -f $start_dir)/
 
+if [ ! -d "$start_dir" ]; then
+  echo "Directory '$start_dir' does not exists! Exiting."
+  exit 1
+fi
+
 session_name=$(basename $start_dir | tr -cd '[:alnum:]')
 
 tmux start-server
