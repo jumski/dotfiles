@@ -16,6 +16,7 @@ Plug 'autozimu/LanguageClient-neovim', {
   \ 'do': 'bash install.sh',
   \ }
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'delphinus/vim-firestore'
 Plug 'dense-analysis/ale'
 Plug 'ecomba/vim-ruby-refactoring'
 Plug 'editorconfig/editorconfig-vim'
@@ -35,7 +36,6 @@ Plug 'mattn/gist-vim'
 Plug 'mattn/webapi-vim' " dependency of gist-vim
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'morhetz/gruvbox' " colortheme
-Plug 'mxw/vim-jsx'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'nelstrom/vim-textobj-rubyblock' " toggle block type in ruby
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -78,6 +78,9 @@ Plug 'vim-scripts/file-line'
 Plug 'vim-scripts/matchit.zip'
 Plug 'vim-scripts/nginx.vim'
 Plug 'vim-scripts/repeat.vim'
+
+Plug 'yuezk/vim-js'
+Plug 'maxmellon/vim-jsx-pretty'
 
 if !has('nvim')
   Plug 'roxma/nvim-yarp'

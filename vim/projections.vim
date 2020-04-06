@@ -1,7 +1,20 @@
 let g:projectionist_heuristics = {
+\   "package.json": {
+\     "src/*.js": { "command": "src" },
+\     "src/components/*.js": { "command": "component" },
+\     "package.json": { "command": "packagejson" },
+\   },
+\   "src/features/": {
+\     "src/features/*.js": { "command": "feature" },
+\     "src/*Slice.js": { "command": "slice" },
+\     "src/app/store.js": { "command": "store" },
+\   },
 \   "project.clj" : {
 \     "project.clj": {
 \       "command": "project"
+\     },
+\     "test/resources/*": {
+\       "command": "resource"
 \     },
 \     "src/*.clj": {
 \       "command": "src",
