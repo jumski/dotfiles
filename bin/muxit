@@ -14,7 +14,7 @@ fi
 session_name=$(basename $start_dir | tr -cd '[:alnum:]')
 
 tmux start-server
-tmux attach-session -s $session_name ||
+tmux attach-session -t $session_name ||
   tmux \
     start-server \;\
     new-session -A -d -c $start_dir -s $session_name \;\
