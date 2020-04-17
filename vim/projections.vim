@@ -16,6 +16,12 @@ let g:projectionist_heuristics = {
 \     "test/resources/*": {
 \       "command": "resource"
 \     },
+\     "src/*.cljs": {
+\       "command": "src",
+\       "alternate": "test/{}_test.cljs",
+\       "template": ["(ns {dot|hyphenate})"],
+\       "dispatch": ":Require"
+\     },
 \     "src/*.clj": {
 \       "command": "src",
 \       "alternate": "test/{}_test.clj",
