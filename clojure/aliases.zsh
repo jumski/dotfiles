@@ -1,2 +1,1 @@
-
-alias shadow-cljs='npx shadow-cljs'
+alias scljs="`yarn global bin`/shadow-cljs"
