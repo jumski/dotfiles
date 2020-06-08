@@ -1,2 +1,0 @@
-alias cat=bat
-
