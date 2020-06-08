@@ -4,12 +4,12 @@ if [ ! -d spec/ ]; then
   exit 0
 fi
 
-ag_output=$(ag --color "(describe|context|it|specify|example|feature|scenario).*,.*:focus.*do" spec/ || true)
+rg_output=$(rg --color "(describe|context|it|specify|example|feature|scenario).*,.*:focus.*do" spec/ || true)
 
-if [ -n "$ag_output" ]; then
+if [ -n "$rg_output" ]; then
   exec < /dev/tty
 
-  echo -e "$ag_output"
+  echo -e "$rg_output"
   echo
   echo -n "Do you want to commit with :focus tags in your specs? [y/N] "
 

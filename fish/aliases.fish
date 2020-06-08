@@ -36,8 +36,12 @@ alias :wq="echo This is not vim, stupid!"
 alias :q="confirm 'Quit terminal? [Y/n]' && exit"
 alias p="pgrep -fl"
 
-alias ack=ack-grep
-alias agp="ag --pager='less -R'"
+alias ack-grep=rg
+alias ack=rg
+alias ag=rg
+function rgp
+  rg --pretty $argv | less -R
+end
 
 alias biggest="du -hs * | sort -h | column -t"
 function xevx
