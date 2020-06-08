@@ -1,3 +1,1 @@
-function preview
-  fzf --preview 'bat --color \"always\" {}'
-end
+alias preview="fzf --preview 'bat --color \"always\" {}'"

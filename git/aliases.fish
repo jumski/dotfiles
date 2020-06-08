@@ -1,14 +1,10 @@
 # Use `hub` as our git wrapper:
 #   http://defunkt.github.com/hub/
 if which hub &>/dev/null
-  function git
-    hub $argv
-  end
+  alias git=hub
 end
 
-function g
-  git $argv
-end
+alias g=git
 
 
 # The rest of my fun git aliases

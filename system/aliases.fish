@@ -1,18 +1,10 @@
 # grc overides for ls
 if which gls &>/dev/null
-  function ls
-    gls -F --color
-  end
+  alias ls="gls -F --color"
 
-  function l
-    gls -lAh --color
-  end
+  alias l="gls -lAh --color"
 
-  function ll
-    gls -l --color
-  end
+  alias ll="gls -l --color"
 
-  function la
-    gls -A --color
-  end
+  alias la="gls -A --color"
 end

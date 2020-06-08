@@ -1,4 +1,2 @@
-function cat
-  bat $argv
-end
+alias cat=bat
 

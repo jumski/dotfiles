@@ -1,6 +1,4 @@
-function mux
-  tmuxinator $argv
-end
+alias mux=tmuxinator
 
 function mxf
   set preview_cmd 'bat --number --paging=never --color=always /home/jumski/.tmuxinator/{}.yml'
