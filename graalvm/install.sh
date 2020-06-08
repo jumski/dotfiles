@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO: take care of me...
+exit 0
+
 # install graalvm
 if ! which gu 2>&1 >/dev/null; then
   release_url=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.0.0/graalvm-ce-java11-linux-amd64-20.0.0.tar.gz
