@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# find all packages.pacman so we can install dependencies before everything else
+pacman_packages=$(find . -name packages.pacman -exec cat {} \; | tr '\n' ' ')
+echo "Installing pacman packages..."
+sudo pacman -S --noconfirm $pacman_packages

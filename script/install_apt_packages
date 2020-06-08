@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo skipping becuz manjaro
+exit 0
+
 # find all repositories.apt so we can add new repositories and their keys before installing packages
 find . -name repositories.apt -exec bash {} \;
 
