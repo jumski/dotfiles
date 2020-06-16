@@ -1,0 +1,16 @@
+- link:
+    ~/.alacritty.yml: alacritty/alacritty.yml.symlink
+    ~/.lein: clojure/lein.symlink
+    ~/.gitaliases: git/gitaliases.symlink
+    ~/.gitconfig: git/gitconfig.symlink
+    ~/.gitignore_global: git/gitignore_global.symlink
+    ~/.psqlrc: postgres/psqlrc.symlink
+    ~/.default-gems: ruby/default-gems.symlink
+    ~/.gemrc: ruby/gemrc.symlink
+    ~/.irbrc: ruby/irbrc.symlink
+    ~/.agignore: system/agignore.symlink
+    ~/.tmux.conf: tmux/tmux.conf.symlink
+    ~/.tmuxinator: tmux/tmuxinator.symlink
+    ~/.tool-versions: tool-versions.symlink
+    ~/.vimrc: vim/vimrc.symlink
+    ~/.Xmodmap: zsh/Xmodmap.symlink
