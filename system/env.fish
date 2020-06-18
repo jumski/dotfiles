@@ -1,2 +1,2 @@
-set -x EDITOR vim
-set -x GPG_TTY (tty)
+set -U EDITOR vim
+set -U GPG_TTY (tty)
