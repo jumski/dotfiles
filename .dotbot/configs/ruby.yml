@@ -1,0 +1,4 @@
+- link:
+    ~/.default-gems: ruby/default-gems.symlink
+    ~/.gemrc: ruby/gemrc.symlink
+    ~/.irbrc: ruby/irbrc.symlink

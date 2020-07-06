@@ -1,0 +1,5 @@
+- link:
+    ~/.Xmodmap: zsh/Xmodmap.symlink
+    ~/.agignore: system/agignore.symlink
+    ~/.psqlrc: postgres/psqlrc.symlink
+    ~/.tool-versions: tool-versions.symlink
