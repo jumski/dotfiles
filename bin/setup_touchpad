@@ -3,6 +3,4 @@
 # synclient TapButton3=3 TapButton2=2
 
 pkill -f syndaemon
-which syndaemon && syndaemon -i 1.5 -t -K &
-
-echo `date` setup_touchpad >> ~/.startup.log
+which syndaemon &>/dev/null && syndaemon -i 1.5 -t -K &
