@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -e
+
+BASE_CONFIG="base"
+CONFIG_SUFFIX=".yml"
+
+META_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BASE_DIR="$(dirname ${META_DIR})"
+
+PLUGIN_DIR="${META_DIR}/plugins"
+CONFIG_DIR="${META_DIR}/configs"
+
+DOTBOT_DIR="${META_DIR}/dotbot"
+DOTBOT_BIN="bin/dotbot"
+
+cd "${BASE_DIR}"
+git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
+git submodule update --init --recursive "${DOTBOT_DIR}"
+
+for config in ${CONFIG_DIR}/*${CONFIG_SUFFIX}; do
+    echo -e "\nConfigure $config"
+    configFile="$(mktemp)" ; echo -e "$(<"${META_DIR}/${BASE_CONFIG}${CONFIG_SUFFIX}")\n$(<"${config%.*}${CONFIG_SUFFIX}")" > "$configFile"
+    # echo "${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASE_DIR}" --plugin-dir "${PLUGIN_DIR}/dotbot-*" -c "$configFile"
+    "${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASE_DIR}" --plugin-dir "${PLUGIN_DIR}/dotbot-*" -c "$configFile" ; rm -f "$configFile"
+done
