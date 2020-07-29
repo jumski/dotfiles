@@ -8,6 +8,9 @@ set -e
 
 cd "$(dirname $0)"/..
 
+### Install pacman packages before everything
+script/install_pacman_packages
+
 ### Run special installers first, so rest can depend on them
 find . -name priority_install.sh | while read installer ; do sh -c "${installer}" ; done
 
