@@ -1,8 +1,14 @@
 - link:
-    ~/.config/fish/functions: fish/functions
+    ~/.config/fish/functions:
+      path: fish/functions/*.fish
+      glob: true
+    ~/.config/fish/completions:
+      path: fish/functions/*.fish
+      glob: true
     ~/.config/fish/config.fish: fish/config.fish
     ~/.config/fish/aliases.fish: fish/aliases.fish
     ~/.config/fish/fish_variables: fish/fish_variables
+    ~/.config/fish/fishfile: fish/fishfile
 
 - shell:
   - command: |
