@@ -1,0 +1,1 @@
+alias acli=arduino-cli
