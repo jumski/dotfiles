@@ -1,0 +1,4 @@
+- link:
+    ~/.arduino15/arduino-cli.yaml:
+      path: arduino/arduino-cli.yaml
+      create: true

@@ -1,0 +1,15 @@
+board_manager:
+  additional_urls: []
+daemon:
+  port: "50051"
+directories:
+  data: /home/jumski/.arduino15
+  downloads: /home/jumski/.arduino15/staging
+  user: /home/jumski/Arduino
+logging:
+  file: ""
+  format: text
+  level: info
+telemetry:
+  addr: :9090
+  enabled: true
