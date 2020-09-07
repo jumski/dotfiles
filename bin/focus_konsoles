@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # settings
-# MAIN_BROWSER_WINDOW_CLASSNAME="chromium-browser"
-MAIN_BROWSER_WINDOW_CLASSNAME="firefox"
+MAIN_BROWSER_WINDOW_CLASSNAME="chromium-browser"
+# MAIN_BROWSER_WINDOW_CLASSNAME="firefox"
 MAIN_TERMINAL_WINDOW_CLASSNAME="gnome-terminal"
 # MAIN_TERMINAL_WINDOW_CLASSNAME="alacritty"
 
