@@ -16,3 +16,6 @@ find . -name priority_install.sh | while read installer ; do sh -c "${installer}
 
 ### Run rest of installers
 find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
+
+# link everything
+.dotbot/install
