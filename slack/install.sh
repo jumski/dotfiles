@@ -1,3 +1,5 @@
 #!/bin/bash
 
-sudo snap install slack --classic
+if ! which slack &>/dev/null; then
+  yay -S slack-desktop
+fi
