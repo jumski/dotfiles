@@ -1,0 +1,4 @@
+ca-certificates
+curl
+docker
+docker-compose
