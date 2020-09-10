@@ -80,11 +80,11 @@ nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 " replase word under cursor in whole file
 nnoremap <leader>: "xyiw:%s/<C-R>x/
 
-" Ag search
-nnoremap <LocalLeader>\ :tabnew<CR>:Ag<space>
-" Ag search for word under cursor
-nnoremap <leader>\ "xyiw:tabnew<CR>:Ag <C-R>x<space>
-vnoremap <LocalLeader>\ "xy:tabnew<CR>:Ag "<C-R>x"<space>
+" Rg search
+nnoremap <LocalLeader>\ :tabnew<CR>:Rg<space>
+" Rg search for word under cursor
+nnoremap <leader>\ "xyiw:tabnew<CR>:Rg <C-R>x<space>
+vnoremap <LocalLeader>\ "xy:tabnew<CR>:Rg "<C-R>x"<space>
 
 " FZF search
 nnoremap <LocalLeader>s :tabnew<CR>:FZF<CR>

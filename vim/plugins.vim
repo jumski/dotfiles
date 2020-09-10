@@ -41,7 +41,7 @@ Plug 'nelstrom/vim-textobj-rubyblock' " toggle block type in ruby
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nono/vim-handlebars'
 Plug 'othree/html5.vim'
-Plug 'rking/ag.vim'
+Plug 'jremmen/vim-ripgrep'
 Plug 'sheerun/vim-polyglot' " all the language packs in one repo
 Plug 'sickill/vim-pasta'
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}

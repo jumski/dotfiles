@@ -128,3 +128,6 @@ function! NetrwMapping()
   unmap <buffer> <C-l>
   nmap <C-l> <C-W>l
 endfunction
+
+" Make Rg use smart case by default
+let g:rg_command = 'rg --vimgrep -S'
