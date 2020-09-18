@@ -93,7 +93,7 @@ set -g base-index 1
 set -g pane-base-index 1
 
 # resize window to smallest client only if actively using window
-setw -g aggressive-resize on
+# setw -g aggressive-resize on
 
 set -g main-pane-width 130
 
@@ -130,7 +130,7 @@ bind T split-window -h 'tig'
 bind I split-window -h 'irb'
 
 # browse github repo
-bind b command-prompt "run 'exec google-chrome https://github.com/%%'"
+bind b command-prompt "run 'exec xdg-open https://github.com/%%'"
 
 # <c-z>fg;alert
 bind F send-keys C-z 'fg;alert' Enter
