@@ -64,3 +64,4 @@
 	clean = expand --tabs=4 --initial
 [pull]
 	rebase = false
+	ff = true

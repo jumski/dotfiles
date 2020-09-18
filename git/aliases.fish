@@ -16,9 +16,9 @@ alias g=git
 alias gd='git diff --color | sed "s/^\([^-+ ]*\)[-+ ]/\\1/" | less -r'
 #
 alias gc='git commit'
-#alias gca='git commit -a'
-#alias gco='git checkout'
-#alias gcb='git copy-branch-name'
+# alias gca='git commit -a'
+# alias gco='git checkout'
+# alias gcb='git copy-branch-name'
 alias gb='git branch -vv'
 ## alias gbb='git branch -vv'
 alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
@@ -36,6 +36,6 @@ alias gap='git add --intent-to-add . && git add --patch'
 #compdef _git gapan='git-add'
 #compdef _git gap='git-add'
 #
-#alias gcob='git checkout $(git-branch-fzf --sort=-committerdate)'
-#alias gcoba='git checkout $(git-branch-fzf --sort=-committerdate --all)'
+alias gcob='git checkout (git-branch-fzf --sort=-committerdate)'
+alias gcoba='git checkout (git-branch-fzf --sort=-committerdate --all)'
 alias gbf=git-branch-fzf
