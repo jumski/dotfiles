@@ -1,4 +1,14 @@
 let g:projectionist_heuristics = {
+\   "Gemfile": {
+\     "app/services/*.rb": { "command": "service", "alternate": "spec/services/{}_spec.rb" },
+\     "app/services/syncers/*.rb": { "command": "syncer", "alternate": "spec/services/syncers/{}_spec.rb" },
+\     "app/services/sai_connector.rb": { "command": "connector", "alternate": "spec/services/sai_connector_spec.rb" },
+\     "app/services/sai_connector/*.rb": { "command": "connector", "alternate": "spec/services/sai_connector/{}.rb" },
+\     "app/services/sai_entities/*.rb": { "command": "entity", "alternate": "spec/services/sai_entities/{}.rb" },
+\     "app/services/query/*.rb": { "command": "query", "alternate": "spec/services/query/{}.rb" },
+\     "app/resources/*.rb": { "command": "resource", "alternate": "spec/services/{}_spec.rb" },
+\     "spec/*_spec.rb": { "command": "spec", "alternate": "app/{}_spec.rb" }
+\   },
 \   "package.json": {
 \     "src/*.js": { "command": "src" },
 \     "src/components/*.js": { "command": "component" },
