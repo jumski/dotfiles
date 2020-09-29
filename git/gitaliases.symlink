@@ -14,6 +14,7 @@
   clfd = clean -fd
   ignore = !git reset -- $1 && echo "$1" >> .gitignore && git add .gitignore
 
+  ap = !gap
   d = diff --ignore-space-change
   wd = diff --word-diff=color --ignore-space-change
   dc = diff --cached --ignore-space-change
