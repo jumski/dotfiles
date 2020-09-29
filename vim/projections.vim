@@ -7,7 +7,7 @@ let g:projectionist_heuristics = {
 \     "app/services/sai_entities/*.rb": { "command": "entity", "alternate": "spec/services/sai_entities/{}.rb" },
 \     "app/services/query/*.rb": { "command": "query", "alternate": "spec/services/query/{}.rb" },
 \     "app/resources/*.rb": { "command": "resource", "alternate": "spec/services/{}_spec.rb" },
-\     "spec/*_spec.rb": { "command": "spec", "alternate": "app/{}_spec.rb" }
+\     "spec/*_spec.rb": { "command": "spec", "alternate": "app/{}.rb" }
 \   },
 \   "package.json": {
 \     "src/*.js": { "command": "src" },
