@@ -37,7 +37,7 @@ bind -n C-\ run "(tmux display-message -p '#{pane_current_command}' | grep -iq v
 bind C-q last-window
 bind q last-window
 bind -n M-\; last-window
-bind -n M-\ split-window -h
+bind -n M-\\ split-window -h
 bind -n M-- split-window -v
 bind -n M-= select-layout even-horizontal
 bind -n M-+ select-layout even-vertical
