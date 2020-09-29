@@ -1,3 +1,2 @@
 #!/bin/sh
-.git/hooks/ctags &>/dev/null &
-  which hookup &>/dev/null && hookup post-checkout "$@" || true
+.git/hooks/ctags &>/dev/null
