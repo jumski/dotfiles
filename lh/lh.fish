@@ -14,6 +14,23 @@ alias lhb="docker-compose -f docker-compose.yml -f docker-compose.app.yml build"
 
 # attach bash shell to first running docker container (the app)
 function lhe
-    docker exec -it  (docker ps | grep -m 1 start_docker | awk '{print $1}') /bin/bash
+  if set -q argv[1]
+    set command $argv
+  else
+    set command /bin/bash
+  end
+
+  docker exec -it (docker ps | grep -m 1 start_docker | awk '{print $1}') $command
+end
+
+
+function lhx
+  if set -q argv[1]
+    set command $argv
+  else
+    set command /bin/bash
+  end
+
+  docker exec -it -u (id -u):(id -g) (docker ps | grep -m 1 start_docker | awk '{print $1}') $command
 end
 
