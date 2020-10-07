@@ -23,7 +23,6 @@ function lhe
   docker exec -it (docker ps | grep -m 1 start_docker | awk '{print $1}') $command
 end
 
-
 function lhx
   if set -q argv[1]
     set command $argv
@@ -33,25 +32,3 @@ function lhx
 
   docker exec -it -u (id -u):(id -g) (docker ps | grep -m 1 start_docker | awk '{print $1}') $command
 end
-
-# # kubernetes
-# kexec() {
-#   PROMPT="Select pod to execute \"$@\" (current context: `kubectl config current-context`): "
-
-#   local pod
-#   pod=$(kubectl get pods | grep Running | awk '{ print $1 }' 2> /dev/null | fzf +m --prompt $PROMPT) &&
-#   kubectl exec -it $pod -- $@
-# }
-
-# # Print the pod's logs (requires fzf being installed)
-# klogs() {
-#   local pod
-#   pod=$(kubectl get pods | awk '{ print $1 }' 2> /dev/null | fzf +m) &&
-#   kubectl logs -f $pod
-# }
-
-# kdesc() {
-#   kubectl get po | fzf --header-lines=1 --multi --preview 'kubectl describe po {+1}' --bind 'ctrl-r:reload(kubectl get po)' --header 'Press CTRL-R to reload'
-# }
-
-# export KUBECONFIG=~/.kube/config:~/.kube/config.lh
