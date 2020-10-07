@@ -78,6 +78,11 @@ let g:gist_clip_command = 'xclip -selection clipboard'
 " ALE
 " do not link when inserting stuff in insert mode
 let g:ale_lint_on_text_changed = 'normal'
+let g:ale_sign_error = "◉"
+let g:ale_sign_warning = "◉"
+let g:ale_linters = {'ruby': ['ruby', 'rubocop']}
+let g:ale_ruby_rubocop_executable = "docker exec -it -u `id -u`:`id -g` `docker ps | grep -m 1 start_docker | awk '{print $1}'` rubocop"
+
 
 " solargraph and language client
 let g:LanguageClient_serverCommands = {
