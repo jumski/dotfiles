@@ -6,3 +6,5 @@ function ping
     prettyping --nolegend $argv
   end
 end
+
+alias dotfiles="muxit ~/.dotfiles"
