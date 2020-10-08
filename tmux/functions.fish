@@ -1,0 +1,3 @@
+
+
+alias dotfiles="muxit ~/.dotfiles"
