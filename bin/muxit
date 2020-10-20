@@ -13,6 +13,10 @@ fi
 
 session_name=$(basename $start_dir | tr -cd '[:alnum:]')
 
+# if [ -n "$TMUX" ]; then
+#   echo "Already inside Tmux session, looking for $session_name"
+# fi
+
 tmux start-server
 tmux attach-session -t $session_name ||
   tmux \
