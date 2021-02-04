@@ -65,3 +65,5 @@
 [pull]
 	rebase = false
 	ff = true
+[rerere]
+	enabled = true

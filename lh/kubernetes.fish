@@ -7,21 +7,31 @@ function k-kibana
 end
 
 function k-fzf-running-pod
+  set current_context (kubectx --current)
+  set PROMPT "Pods on $current_context > "
   kubectl get pods | grep Running | awk '{ print $1 }' 2> /dev/null | fzf +m --prompt $PROMPT
 end
 function k-fzf-pod
+  set current_context (kubectx --current)
+  set PROMPT "Pods on $current_context > "
   kubectl get pods | awk '{ print $1 }' 2> /dev/null | fzf +m --prompt $PROMPT
+end
+
+function kexec
+  set pod (k-fzf-running-pod)
+
+  kubectl exec $pod -it -- $argv
 end
 
 # Example usage:
 # kexec bash
 # kexec bin/maintenance cli
-function kexec
-  set PROMPT "Select pod to execute \"$argv\" (current context: `kubectl config current-context`): "
-  set -l pod
-  set pod (lh-fzf-pod) &&
-  kubectl exec -it $pod -- $argv
-end
+# function kexec
+#   set PROMPT "Select pod to execute \"$argv\" (current context: `kubectl config current-context`): "
+#   set -l pod
+#   set pod (k-fzf-running-pod) &&
+#   kubectl exec -it $pod -- $argv
+# end
 
 # Print the pod's logs (requires fzf being installed)
 function klogs

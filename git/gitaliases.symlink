@@ -14,7 +14,6 @@
   clfd = clean -fd
   ignore = !git reset -- $1 && echo "$1" >> .gitignore && git add .gitignore
 
-  ap = !gap
   d = diff --ignore-space-change
   wd = diff --word-diff=color --ignore-space-change
   dc = diff --cached --ignore-space-change
@@ -25,10 +24,6 @@
   l = log
   yesterday = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short --after=yesterday --author=Wojtek
   today = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short --since='1 Day Ago' --date=relative --author=Wojtek
-  cap = !git commit && git push && cap deploy
-  mina = !git push && mina staging deploy
-  staging = !git push && mina staging deploy
-  deploy = !git pull --rebase && git push && cap deploy
 
   chr = cherry -v
   rmt = remote -v
@@ -74,7 +69,10 @@
 
   up = !git fetch origin && git rebase origin/master
   aa = add .
-  ap = !git add --intent-to-add . && git add --patch
+  ap = add --patch
+  xxx = !echo
+  ; ap = !git add --patch
+  ; ap = !git add --intent-to-add . && git add --patch
   plre = pull --rebase
   ff = merge --ff-only
   noff = merge --no-ff
