@@ -1,5 +1,6 @@
 let g:projectionist_heuristics = {
 \   "Gemfile": {
+\     "app/controllers/*.rb": { "command": "controller", "alternate": "spec/controllers/{}_spec.rb" },
 \     "app/services/*.rb": { "command": "service", "alternate": "spec/services/{}_spec.rb" },
 \     "app/services/syncers/*.rb": { "command": "syncer", "alternate": "spec/services/syncers/{}_spec.rb" },
 \     "app/services/sai_connector.rb": { "command": "connector", "alternate": "spec/services/sai_connector_spec.rb" },
