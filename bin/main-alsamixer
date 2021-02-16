@@ -1,6 +1,6 @@
 #!/bin/bash
 
-main_card=$(aplay -l | grep UMC1820 || aplay -l | grep MAYA44 || aplay -l | grep 'USB Audio CODEC' || aplay -l | grep "Sennheiser USB headset" || aplay -l | grep "HDA Intel PCH")
+main_card=$(aplay -l | grep UMC1820)
 main_card_number=$(echo "$main_card" | awk '{print $2}' | cut -c -1)
 
 alsamixer -c$main_card_number
