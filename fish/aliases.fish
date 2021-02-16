@@ -49,7 +49,7 @@ function xevx
 end
 alias humandate="date +\"%Y-%m-%d\""
 alias prettyjson="python -mjson.tool"
-#alias bc="bc -l"
+alias bc="bc -l"
 alias vi=vim
 alias path="echo $PATH | tr ':' '\n'"
 
