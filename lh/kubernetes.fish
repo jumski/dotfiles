@@ -9,14 +9,14 @@ end
 function k-fzf-running-pod
   set current_context (kubectx --current)
   set PROMPT "Pods on $current_context > "
-  set service_name (basename $PWD)
-  kubectl get pods | grep Running | awk '{ print $1 }' 2> /dev/null | fzf +m --prompt $PROMPT --query $service_name
+  # set service_name (basename $PWD)
+  kubectl get pods | grep Running | awk '{ print $1 }' 2> /dev/null | fzf +m --prompt $PROMPT #--query $service_name
 end
 function k-fzf-pod
   set current_context (kubectx --current)
   set PROMPT "Pods on $current_context > "
-  set service_name (basename $PWD)
-  kubectl get pods | awk '{ print $1 }' 2> /dev/null | fzf +m --prompt $PROMPT --query $service_name
+  # set service_name (basename $PWD)
+  kubectl get pods | awk '{ print $1 }' 2> /dev/null | fzf +m --prompt $PROMPT #--query $service_name
 end
 
 function kexec
