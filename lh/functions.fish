@@ -16,7 +16,7 @@ function lhservice
   muxit $services_path/$service_name
 end
 
-function lhdc
+function lhdc --wraps "docker-compose"
   set config_flags
 
   if test -f docker-compose.yml
