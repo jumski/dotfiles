@@ -33,3 +33,17 @@ function lhdc --wraps "docker-compose"
 
   docker-compose $config_flags $argv
 end
+
+function lh-consume
+  set metrics_pod (kubectl get pods | grep metrics | grep Running | awk '{print $1}' | head -1)
+
+  set topic $argv[1]
+  # set offset '-1'
+  # set partition '0'
+  # set flags "-t $topic -o $offset -p $partition"
+  set command "kafkacat -b \$KAFKA_BROKERS -C -t $topic $flags -e -D '' -f %s\\n | ruby -rjson -rmsgpack -n -e 'puts \$_'"
+  # set command "kafkacat -b \$KAFKA_BROKERS -C $flags -e -D '' -f %s\\n | ruby -rjson -rmsgpack -n -e 'puts JSON.dump(MessagePack.unpack(\$_[0..-2]))'"
+  # set command time
+
+  kubectl exec -it $metrics_pod -- sh -c $command
+end
