@@ -56,6 +56,7 @@ set cinkeys-=:
 
 " file type highlighting and configuration
 syntax enable
+set re=0 " fix slow typescript highlighting
 filetype on
 filetype plugin on
 filetype indent on
@@ -187,7 +188,7 @@ set nomodeline
 set sessionoptions=buffers,winsize,tabpages,winpos,winsize
 
 " ES5 for typescript
-au BufEnter,BufNew *.ts set makeprg=tsc\ -t\ ES5\ %
+" au BufEnter,BufNew *.ts set makeprg=tsc\ -t\ ES5\ %
 
 " automatically strip whitespaces
 fun! <SID>StripTrailingWhitespaces()
