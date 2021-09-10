@@ -11,10 +11,10 @@ Plug 'DataWraith/auto_mkdir'
 Plug 'KabbAmine/vCoolor.vim' " color-picker
 Plug 'Lokaltog/vim-powerline'
 Plug 'SirVer/ultisnips'
-Plug 'autozimu/LanguageClient-neovim', {
-  \ 'branch': 'next',
-  \ 'do': 'bash install.sh',
-  \ }
+" Plug 'autozimu/LanguageClient-neovim', {
+"   \ 'branch': 'next',
+"   \ 'do': 'bash install.sh',
+"   \ }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'delphinus/vim-firestore'
 Plug 'dense-analysis/ale'
@@ -38,7 +38,7 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'morhetz/gruvbox' " colortheme
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'nelstrom/vim-textobj-rubyblock' " toggle block type in ruby
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nono/vim-handlebars'
 Plug 'othree/html5.vim'
 Plug 'jremmen/vim-ripgrep'

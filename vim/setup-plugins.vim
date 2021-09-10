@@ -85,20 +85,20 @@ let g:ale_ruby_rubocop_executable = "docker exec -it -u `id -u`:`id -g` `docker 
 
 
 " solargraph and language client
-let g:LanguageClient_serverCommands = {
-    \ 'ruby': ['tcp://localhost:7658']
-    \ }
-let g:LanguageClient_autoStop = 0
-autocmd FileType ruby setlocal omnifunc=LanguageClient#complete
+" let g:LanguageClient_serverCommands = {
+"     \ 'ruby': ['tcp://localhost:7658']
+"     \ }
+" let g:LanguageClient_autoStop = 0
+" autocmd FileType ruby setlocal omnifunc=LanguageClient#complete
 
 " COC
-function! CocCurrentFunction()
-    return get(b:, 'coc_current_function', '')
-endfunction
-" nmap <silent> gd <Plug>(coc-implementation)
-nmap <silent> gd <Plug>(coc-definition)
-" nmap <silent> gd :tabedit %<CR><Plug>(coc-definition)
-" nmap <silent> gd tabedit % | call CocAction('jumpDefinition')
+" function! CocCurrentFunction()
+"     return get(b:, 'coc_current_function', '')
+" endfunction
+  " nmap <silent> gd <Plug>(coc-implementation)
+" nmap <silent> gd <Plug>(coc-definition)
+  " nmap <silent> gd :tabedit %<CR><Plug>(coc-definition)
+  " nmap <silent> gd tabedit % | call CocAction('jumpDefinition')
 
 " Lightline
 let g:lightline = {
