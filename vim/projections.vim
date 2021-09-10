@@ -6,7 +6,7 @@ let g:projectionist_heuristics = {
 \     "app/services/sai_connector.rb": { "command": "connector", "alternate": "spec/services/sai_connector_spec.rb" },
 \     "app/services/sai_connector/*.rb": { "command": "connector", "alternate": "spec/services/sai_connector/{}.rb" },
 \     "app/services/sai_entities/*.rb": { "command": "entity", "alternate": "spec/services/sai_entities/{}.rb" },
-\     "app/services/query/*.rb": { "command": "query", "alternate": "spec/services/query/{}.rb" },
+\     "app/queries/*.rb": { "command": "query", "alternate": "spec/services/queries/{}.rb" },
 \     "app/resources/*.rb": { "command": "resource", "alternate": "spec/services/{}_spec.rb" },
 \     "spec/*_spec.rb": { "command": "spec", "alternate": "app/{}.rb" }
 \   },
@@ -138,26 +138,10 @@ let g:rails_projections = {
   \   "template": "class %SFormMixin\nend"
   \ },
   \ "app/views/shared/*": { "command": "sview" },
-  \ "app-ember/tests/*.js": { "command": "jtest" },
-  \ "app-ember/app/templates/*.hbs": { "command": "jtemplate" },
-  \ "app-ember/app/templates/components/*.hbs": {
-  \   "command": "jctemplate",
-  \   "alternate": "app-ember/app/components/{}.js"
-  \ },
-  \ "app-ember/app/components/*.js": {
-  \   "command": "jcomponent",
-  \   "alternate": "app-ember/app/templates/components/{}.hbs"
-  \ },
-  \ "app-ember/app/routes/*.js": { "command": "jroute" },
-  \ "app-ember/app/controllers/*.js": { "command": "jcontroller" },
-  \ "app-ember/app/helpers/*.js": { "command": "jhelper" },
-  \ "app-ember/app/services/*.js": { "command": "jservice" },
-  \ "app-ember/app/mixins/*.js": { "command": "jmixin" },
-  \ "app-ember/app/initializers/*.js": { "command": "jinitializer" },
-  \ "app-ember/app/adapters/*.js": { "command": "jadapter" },
-  \ "app-ember/app/serializers/*.js": { "command": "jserializer" },
-  \ "app-ember/app/models/*.js": { "command": "jmodel" },
-  \ "app-ember/app/templates/shared/*.hbs": { "command": "jpartial" }
+  \ "app/javascript/controllers/*.js": { "command": "jcontroller" },
+  \ "app/javascript/channels/*.js": { "command": "jchannel" },
+  \ "app/javascript/packs/*.js": { "command": "jpack" },
+  \ "app/javascript/scss/*.scss": { "command": "jscsc" }
   \}
 
 " [vim-rails] gem projections - typing `:Efactory users` will open the users factory, etc.
