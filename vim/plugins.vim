@@ -4,6 +4,9 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
+
+Plug 'yasuhiroki/circleci.vim'
+
 Plug 'alcesleo/vim-uppercase-sql'
 Plug 'AaronLasseigne/yank-code'
 Plug 'chrisbra/Colorizer' " colorizes hex color codes
