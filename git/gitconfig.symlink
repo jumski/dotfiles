@@ -54,7 +54,7 @@
 [github]
 	user = jumski
 [init]
-	templatedir = /home/jumski/.dotfiles/git/template
+	; templatedir = /home/jumski/.dotfiles/git/template
 [mergetool "fugitive"]
 	cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
 [merge]
