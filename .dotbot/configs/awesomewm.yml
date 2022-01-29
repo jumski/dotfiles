@@ -1,0 +1,9 @@
+- link:
+    ~/.config/awesome/autostart.sh:
+      create: true
+      path: awesome/autostart.sh
+
+    ~/.config/awesome:
+      path: awesome/*.lua
+      glob: true
+      relink: true

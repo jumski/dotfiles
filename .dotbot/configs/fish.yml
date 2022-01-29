@@ -9,13 +9,13 @@
     ~/.config/fish/aliases.fish: fish/aliases.fish
     ~/.config/fish/fish_variables: fish/fish_variables
     ~/.config/fish/fishfile: fish/fishfile
-- shell:
-  - command: |
-      fish -c \
-      'if functions -q fisher
-        fisher self-update
-      else
-        curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
-      end'
-    description: Installing/Updating Fisher
-  - [fish -c fisher, Updating fish plugins]
+# - shell:
+#   - command: |
+#       fish -c \
+#       'if functions -q fisher
+#         fisher self-update
+#       else
+#         curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
+#       end'
+#     description: Installing/Updating Fisher
+#   - [fish -c fisher, Updating fish plugins]
