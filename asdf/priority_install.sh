@@ -8,7 +8,7 @@ source ~/.asdf/asdf.sh
 
 # Install all asdf plugins
 for plugin_name in $(cut -d' ' -f1 tool-versions.symlink | tr '\n' ' '); do
-  asdf plugin-add $plugin_name
+  asdf plugin add $plugin_name
 done
 
 # import PGP keys for node
