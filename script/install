@@ -8,14 +8,23 @@ set -e
 
 cd "$(dirname $0)"/..
 
+log_section() {
+  echo
+  echo
+  echo === $1
+  echo ==============================================================
+}
+
 ### Install pacman packages before everything
+log_section script/install_pacman_packages
 script/install_pacman_packages
 
 ### Run special installers first, so rest can depend on them
-find . -name priority_install.sh | while read installer ; do sh -c "${installer}" ; done
+find . -name priority_install.sh | while read installer; do log_section "${installer}"; sh -c "${installer}"; done
 
 ### Run rest of installers
-find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
+find . -name install.sh | while read installer; do log_section "${installer}"; sh -c "${installer}"; done
 
 # link everything
+log_section .dotbot/install
 .dotbot/install
