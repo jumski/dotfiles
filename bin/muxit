@@ -1,17 +1,17 @@
 #!/bin/bash
 
 current_dir=`pwd`
-start_dir=${1:-$current_dir}
+start_dir="${1:-$current_dir}"
 
 # expand relative path to absolute one
-start_dir=$(readlink -f $start_dir)/
+start_dir=$(readlink -f "$start_dir")/
 
 if [ ! -d "$start_dir" ]; then
   echo "Directory '$start_dir' does not exists! Exiting."
   exit 1
 fi
 
-session_name=$(basename $start_dir | tr -cd '[:alnum:]')
+session_name=$(basename "$start_dir" | tr -cd '[:alnum:]')
 
 # if [ -n "$TMUX" ]; then
 #   echo "Already inside Tmux session, looking for $session_name"
@@ -21,10 +21,10 @@ tmux start-server
 tmux attach-session -t $session_name ||
   tmux \
     start-server \;\
-    new-session -A -d -c $start_dir -s $session_name \;\
+    new-session -A -d -c "$start_dir" -s $session_name \;\
     rename-window -t 1 server \;\
-    new-window -n bash -c $start_dir \;\
-    new-window -n vim -c $start_dir \;\
-    new-window -n repl -c $start_dir \;\
+    new-window -n bash -c "$start_dir" \;\
+    new-window -n vim -c "$start_dir" \;\
+    new-window -n repl -c "$start_dir" \;\
     attach-session
 
