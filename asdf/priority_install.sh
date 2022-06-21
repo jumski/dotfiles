@@ -15,7 +15,7 @@ done
 bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
 
 # make sure we have top-level .tool-versions linked
-ln `realpath tool-versions.symlink` $HOME/.tool-versions
+ln --force `realpath tool-versions.symlink` $HOME/.tool-versions
 
 # install all versions from tool-versions.symlink
 asdf install
