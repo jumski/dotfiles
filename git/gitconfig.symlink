@@ -9,7 +9,8 @@
         editor = vim
         autocrlf = input
         whitespace = trailing-space,cr-at-eol
-        pager = diff-so-fancy | less --tabs=4 -RFX
+        pager = delta
+	; pager = diff-so-fancy | less --tabs=4 -RFX
 [apply]
         whitespace = nowarn
 [mergetool]
@@ -51,6 +52,7 @@
   #autosetuprebase = always
 [interactive]
   singlekey = true
+  diffFilter = delta --color-only
 [github]
 	user = jumski
 [init]
@@ -59,6 +61,9 @@
 	cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
 [merge]
 	tool = fugitive
+	conflictstyle = diff3
+[diff]
+	colorMove = default
 [filter "tabspace"]
 	smudge = unexpand --tabs=4 --first-only
 	clean = expand --tabs=4 --initial
@@ -69,3 +74,6 @@
 	enabled = true
 [url "git@github.com:"]
 	insteadOf = https://github.com/
+
+[delta]
+	navigate = true # n and N to move between sections

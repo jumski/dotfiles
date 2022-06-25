@@ -138,6 +138,7 @@ let g:rails_projections = {
   \   "template": "class %SFormMixin\nend"
   \ },
   \ "app/views/shared/*": { "command": "sview" },
+  \ "app/javascript/*.js": { "command": "javascript" },
   \ "app/javascript/controllers/*.js": { "command": "jcontroller" },
   \ "app/javascript/channels/*.js": { "command": "jchannel" },
   \ "app/javascript/packs/*.js": { "command": "jpack" },

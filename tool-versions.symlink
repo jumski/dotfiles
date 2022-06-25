@@ -1,5 +1,6 @@
 ruby 2.7.0
-python 3.7.4
+python 3.10.0
 rust nightly
-nodejs 15.3.0
+nodejs 18.4.0
 golang 1.12.17
+lua 5.4.3
