@@ -67,7 +67,7 @@
   gemfile = !git checkout --ours Gemfile.lock && bundle && git add Gemfile.lock
   schema = !git checkout --ours db/schema.rb && bundle exec rake db:migrate && git add db/schema.rb
 
-  up = !git fetch origin && git rebase origin/master
+  up = !sh -c 'git pull --rebase --prune && git log --pretty=format:\"%Cred%ae %Creset- %C(yellow)%s %Creset(%ar)\" HEAD@{1}..'
   aa = add .
   ap = add --patch
   xxx = !echo
