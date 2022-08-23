@@ -1,15 +1,18 @@
 
+" enable mouse, yeah, it is the time...
+set mouse=a
+
 " default file encoding
-" TODO: this is provided probably by neovim
 set fileencodings=utf-8,latin2
 set encoding=utf-8
 
 " intuitive backspacing in insert mode
-" TODO: vim-sensible adds this?
 set backspace=indent,eol,start
 
+" maintain long history
+set history=5000
+
 " set swap files dirs
-set noswapfile
 set nowritebackup
 
 " set tags file location
@@ -21,6 +24,12 @@ set tags=TAGS;~/
 " !!!!!!!!!!!
 " set cursorline
 
+" disable line numbering
+set nonu
+
+" always show status line
+set laststatus=2
+
 " make the command mode less annyoing
 cnoremap <c-a> <Home>
 cnoremap <c-e> <End>
@@ -30,6 +39,16 @@ cnoremap <c-b> <Left>
 cnoremap <c-o><c-f> <Right>
 cnoremap <c-d> <Del>
 cnoremap <c-k> <C-\>estrpart(getcmdline(), 0, getcmdpos()-1)<cr>>
+
+" automatically read file if it changes
+" this does not happen if file is deleted
+set autoread
+
+" display incomplete commands
+set showcmd
+
+" do not display the mode you're in, because of status line
+set noshowmode
 
 " do not reindent when inserting :
 set cinkeys-=:
@@ -47,11 +66,16 @@ filetype plugin indent on
 " slower with the new regex engine.
 set re=1
 
+
 " set number of colors
 set t_Co=256
 
+" use dark background
+set background=dark
+
 " show 80 columns marker
 autocmd BufRead,BufNewFile * let &colorcolumn="80,".join(range(140,999),",")
+set winwidth=80
 let &colorcolumn="80,140"
 
 " use solarized scheme
@@ -64,7 +88,14 @@ let &colorcolumn="80,140"
 """ 1. escape codes
 set t_8f=[38;2;%lu;%lu;%lum
 set t_8b=[48;2;%lu;%lu;%lum
+""" 2. colorcheme
+colorscheme gruvbox
+""" 3. set termguicolors
+set termguicolors
+let g:gruvbox_italic=1
 
+" do not redraw while executing macros etc
+set lazyredraw
 
 augroup ft_rb
     au!
@@ -78,16 +109,82 @@ autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
 " " disable some features for certain filetypes
 " au BufRead *.yml,*.json se nomodeline
 
+" use ack as grep
+set grepprg=ag\ --nogroup\ --nocolor
+
+" change behaviour of <TAB> completion of commands
+" to similar to bash completion
+set wildmenu
+set wildmode=list:longest,list:full
+
 " ignore files
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+
+" ignore case when <TAB>completing filenames
+set wildignorecase
+
+" command history window height
+set cmdwinheight=10
+
+" indicates a fast terminal connection
+" more characters will be sent to the screen for redrawing
+set ttyfast
+
+" time out on mapping after three seconds
+" time out on key codes after a tenth of a second
+set timeoutlen=800
+set ttimeoutlen=100
 
 " add char pairs that can be navigated with %
 set matchpairs+=<:>
 set matchpairs+=/:/
 
+" show matching bracket for 2 seconds when inserter
+set showmatch
+set matchtime=2
+
 " in ruby ? and : can be a part of keyword
 set iskeyword+=?
 set iskeyword+=!
+
+"================ TABS AND SPACES
+set expandtab     " all tabs expands to spaces
+set sw=2          " automagic indent width
+set tabstop=2     " size of tab in spaces
+set ts=2          " size of tab
+set shiftround    " round indent to multiple of 'shiftwidth', applies to > and <
+set smarttab
+set softtabstop=2 " number of spaces that a <Tab> counts for
+                  " while performing editing operations
+
+" new splits always bo to the right
+" " or below current window
+set splitbelow
+set splitright
+
+" 1. The current buffer can be put to the background without writing to disk
+" 2. When a background buffer becomes current again, marks and
+"    undo-history are remembered
+set hidden
+
+" show results during typing the search
+set incsearch
+
+" search will be case sensitive only when
+" capital letter is present
+set ignorecase
+set smartcase
+
+" maintain context around the cursor
+" when scrolling near the edge of screen
+set scrolloff=3
+set sidescrolloff=5
+
+" disable reading modelines
+set nomodeline
+
+" session saving options
+set sessionoptions=buffers,winsize,tabpages,winpos,winsize
 
 " ES5 for typescript
 " au BufEnter,BufNew *.ts set makeprg=tsc\ -t\ ES5\ %
