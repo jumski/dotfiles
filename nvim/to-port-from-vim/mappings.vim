@@ -1,6 +1,16 @@
 
+" more useful leader
+let mapleader=","
+let g:mapleader = ","
+
 " this allows all window commands in insert mode and i'm not accidentally deleting words anymore :-)"
 imap <C-w> <C-o><C-w>
+
+" tab mappings
+nmap <silent> <leader>c :tabnew %<CR>
+nmap <silent> <leader><Tab> :tabp<CR>
+nmap <silent> <leader>f :tabn<CR>
+nmap <silent> <leader>x :tabclose<CR>
 
 " reformat whole file
 noremap <leader>G mggg=G'g
