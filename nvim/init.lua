@@ -1,2 +1,2 @@
 require 'plugins/packer'
--- require 'mappings'
+require 'envs'
