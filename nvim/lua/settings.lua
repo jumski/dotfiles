@@ -43,7 +43,7 @@ opt.sidescrolloff = 5       -- always show at least n-chars before and after cur
 opt.wildmenu = true         -- change behaviour of <TAB> completion of commands
                             -- to similar to bash completion
 opt.wildmode= 'list:longest,list:full'
-opt.colorcolumn = 80        -- back to the 80s XD
+opt.colorcolumn = '80'      -- back to the 80s XD
 
 
 --- Typing / characters / matching
