@@ -47,14 +47,11 @@ filetype plugin indent on
 " slower with the new regex engine.
 set re=1
 
-
 " set number of colors
 set t_Co=256
 
-
 " show 80 columns marker
 autocmd BufRead,BufNewFile * let &colorcolumn="80,".join(range(140,999),",")
-set winwidth=80
 let &colorcolumn="80,140"
 
 " use solarized scheme
@@ -67,10 +64,6 @@ let &colorcolumn="80,140"
 """ 1. escape codes
 set t_8f=[38;2;%lu;%lu;%lum
 set t_8b=[48;2;%lu;%lu;%lum
-""" 2. colorcheme
-colorscheme gruvbox
-""" 3. set termguicolors
-let g:gruvbox_italic=1
 
 
 augroup ft_rb
