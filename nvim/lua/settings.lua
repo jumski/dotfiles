@@ -24,6 +24,8 @@ opt.ttimeoutlen = 100       -- time out on key codes after a tenth of a second
 --- Style / themes
 opt.background = 'dark'     -- use dark background
 opt.termguicolors = true    -- needed to properly show colors in tmux
+cmd [[colorscheme gruvbox]]
+g.gruvbox_italic = true     -- enable italics because we are in tmux
 
 --- UI
 opt.number = false          -- do not show line numbering
@@ -41,6 +43,7 @@ opt.sidescrolloff = 5       -- always show at least n-chars before and after cur
 opt.wildmenu = true         -- change behaviour of <TAB> completion of commands
                             -- to similar to bash completion
 opt.wildmode= 'list:longest,list:full'
+opt.colorcolumn = 80        -- back to the 80s XD
 
 
 --- Typing / characters / matching
