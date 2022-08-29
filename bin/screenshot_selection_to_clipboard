@@ -1,0 +1,7 @@
+#!/bin/bash
+scrot \
+  -e 'xclip -selection clipboard -t image/png -i $f' \
+  -s # select area
+
+which notify-send && notify-send --urgency=low --expire-time=1000 --app-name=scrot 'Selection copied to clipboard'
+
