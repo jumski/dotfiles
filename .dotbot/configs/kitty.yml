@@ -1,0 +1,4 @@
+- link:
+    ~/.config/kitty:
+      path: kitty/*.conf
+      glob: true
