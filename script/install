@@ -20,10 +20,10 @@ log_section script/install_pacman_packages
 script/install_pacman_packages
 
 ### Run special installers first, so rest can depend on them
-find . -name priority_install.sh | while read installer; do log_section "${installer}"; sh -c "${installer}"; done
+find . -executable -name priority_install.sh | while read installer; do log_section "${installer}"; sh -c "${installer}"; done
 
 ### Run rest of installers
-find . -name install.sh | while read installer; do log_section "${installer}"; sh -c "${installer}"; done
+find . -executable -name install.sh | while read installer; do log_section "${installer}"; sh -c "${installer}"; done
 
 # link everything
 log_section .dotbot/install
