@@ -5,8 +5,7 @@ if !which fish &>/dev/null; then
 fi
 
 if which fisher &>/dev/null; then
-  echo Updating fisher
-  fisher self-update
+  echo Fisher installed, skipping
 else
   echo Installing fisher
   curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
