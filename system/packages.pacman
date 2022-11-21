@@ -21,3 +21,6 @@ neovim
 tcpdump
 scrot
 unzip
+xorg-xev
+appimagelauncher
+bind-tools
