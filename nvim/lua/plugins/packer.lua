@@ -39,6 +39,8 @@ return packer.startup(function(use)
   use 'tpope/vim-unimpaired'
   use 'tpope/vim-vinegar'
 
-  -- styles / visuals
+  use 'christoomey/vim-tmux-navigator'
+
+  -- styles/visuals
   use {"ellisonleao/gruvbox.nvim", requires = {"rktjmp/lush.nvim"}}
 end)
