@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e # fail on error
+
+# task="db:migrate:down VERSION={}"
+
+# cmd="echo ------------------------ $task"
+# cmd="$cmd && docker compose run web rails $task"
+
+# git diff --name-only main db/migrate/ \
+#   | sort -r \
+#   | ruby -ne 'puts $_.scan(/db\/migrate\/(\d+)_.*.rb/).first' \
+#   | xargs -I '{}' --open-tty sh -c "$cmd"
+
+# docker compose run web rails db:migrate:status
+
+
+
+
+
+versions=$(
+  git diff --name-only main db/migrate/ \
+    | sort -r \
+    | ruby -ne 'puts $_.scan(/db\/migrate\/(\d+)_.*.rb/).first'
+)
+
+cmd="true"
+
+for version in $versions; do
+  cmd="$cmd && echo ----------------------------------"
+  cmd="$cmd && echo --- Downing version $version"
+  cmd="$cmd && echo ----------------------------------"
+  cmd="$cmd && bin/rails db:migrate:down VERSION=$version"
+done
+
+cmd="$cmd && bin/rails db:migrate:status"
+
+docker-compose run web sh -c "$cmd"
