@@ -1,9 +1,7 @@
 Plug 'yasuhiroki/circleci.vim'
 
-Plug 'alcesleo/vim-uppercase-sql'
 Plug 'AaronLasseigne/yank-code'
 Plug 'chrisbra/Colorizer' " colorizes hex color codes
-Plug 'DataWraith/auto_mkdir'
 Plug 'KabbAmine/vCoolor.vim' " color-picker
 Plug 'Lokaltog/vim-powerline'
 Plug 'SirVer/ultisnips'
@@ -11,17 +9,12 @@ Plug 'SirVer/ultisnips'
 "   \ 'branch': 'next',
 "   \ 'do': 'bash install.sh',
 "   \ }
-Plug 'christoomey/vim-tmux-navigator'
 Plug 'delphinus/vim-firestore'
 Plug 'dense-analysis/ale'
 Plug 'ecomba/vim-ruby-refactoring'
-Plug 'editorconfig/editorconfig-vim'
-Plug 'ekalinin/Dockerfile.vim'
-Plug 'godlygeek/tabular'
 Plug 'guns/vim-clojure-highlight'
 Plug 'guns/vim-clojure-static'
 Plug 'guns/vim-sexp'
-Plug 'haya14busa/incsearch.vim'
 Plug 'itchyny/lightline.vim'
 Plug 'jaxbot/semantic-highlight.vim'
 Plug 'jgdavey/vim-blockle'
@@ -30,9 +23,6 @@ Plug 'kana/vim-fakeclip' " paste-clipboard support for tmux
 Plug 'kana/vim-textobj-user' " vim-textobj-rubyblock dependency
 Plug 'mattn/gist-vim'
 Plug 'mattn/webapi-vim' " dependency of gist-vim
-Plug 'michaeljsmith/vim-indent-object'
-Plug 'nathanaelkane/vim-indent-guides'
-Plug 'nelstrom/vim-textobj-rubyblock' " toggle block type in ruby
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nono/vim-handlebars'
 Plug 'othree/html5.vim'
@@ -44,11 +34,7 @@ Plug 'suy/vim-context-commentstring' " needed for vim-commentary to work in *.vu
 Plug 'thoughtbot/vim-rspec'
 Plug 'tommcdo/vim-exchange' " exchange two words with 'cxiw' on each one
 Plug 'vim-ruby/vim-ruby'
-Plug 'vim-scripts/closetag.vim'
-Plug 'vim-scripts/file-line'
-Plug 'vim-scripts/matchit.zip'
 Plug 'vim-scripts/nginx.vim'
-Plug 'vim-scripts/repeat.vim'
 
 Plug 'yuezk/vim-js'
 Plug 'maxmellon/vim-jsx-pretty'

@@ -31,7 +31,6 @@ return packer.startup(function(use)
   use 'tpope/vim-rails'
   use 'tpope/vim-rake'
   use 'tpope/vim-rhubarb'
-
   use 'tpope/vim-sensible'
   use 'tpope/vim-sexp-mappings-for-regular-people'
   use 'tpope/vim-sleuth'
@@ -39,8 +38,24 @@ return packer.startup(function(use)
   use 'tpope/vim-unimpaired'
   use 'tpope/vim-vinegar'
 
+  -- language specific
+  use 'alcesleo/vim-uppercase-sql'
+  use 'ekalinin/Dockerfile.vim'
+  -- use 'nelstrom/vim-textobj-rubyblock' -- toggle block type in ruby
+
+  -- useful stuff
+  use 'DataWraith/auto_mkdir'
   use 'christoomey/vim-tmux-navigator'
   use 'duane9/nvim-rg'
+  use 'editorconfig/editorconfig-vim'
+  use 'godlygeek/tabular'
+  use 'haya14busa/incsearch.vim'
+  use 'michaeljsmith/vim-indent-object'
+  use 'nathanaelkane/vim-indent-guides'
+  use 'vim-scripts/repeat.vim'
+  use 'vim-scripts/closetag.vim'
+  use 'vim-scripts/file-line'
+  use 'vim-scripts/matchit.zip'
 
   -- styles/visuals
   use {"ellisonleao/gruvbox.nvim", requires = {"rktjmp/lush.nvim"}}
