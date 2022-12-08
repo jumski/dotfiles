@@ -56,6 +56,7 @@ return packer.startup(function(use)
   use 'vim-scripts/closetag.vim'
   use 'vim-scripts/file-line'
   use 'vim-scripts/matchit.zip'
+  use 'gpanders/editorconfig.nvim'
 
   -- styles/visuals
   use {"ellisonleao/gruvbox.nvim", requires = {"rktjmp/lush.nvim"}}
