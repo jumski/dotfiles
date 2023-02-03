@@ -41,7 +41,19 @@ return packer.startup(function(use)
   -- language specific
   use 'alcesleo/vim-uppercase-sql'
   use 'ekalinin/Dockerfile.vim'
+  -- use {
+  --   'salkin-mada/openscad.nvim',
+  --   config = function ()
+  --     require('openscad')
+  --     -- load snippets, note requires
+  --     vim.g.openscad_load_snippets = true
+  --   end,
+  --   requires = 'L3MON4D3/LuaSnip'
+  -- }
   -- use 'nelstrom/vim-textobj-rubyblock' -- toggle block type in ruby
+
+  -- snippets
+  use({"L3MON4D3/LuaSnip", tag = "v<CurrentMajor>.*"})
 
   -- useful stuff
   use 'DataWraith/auto_mkdir'

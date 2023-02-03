@@ -1,4 +1,5 @@
 require 'plugins/packer'
+require 'plugins/luasnip'
 require 'envs'
 require 'settings'
 require 'mappings'
