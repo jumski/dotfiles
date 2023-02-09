@@ -1,4 +1,4 @@
-ruby 2.7.0
+ruby 3.1.2
 python 3.10.0
 rust nightly
 nodejs 18.4.0
