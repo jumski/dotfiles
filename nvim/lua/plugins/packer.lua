@@ -84,4 +84,10 @@ return packer.startup(function(use)
 
   -- styles/visuals
   use {"ellisonleao/gruvbox.nvim", requires = {"rktjmp/lush.nvim"}}
+
+  -- integration from other clients
+  -- use {
+  --   'glacambre/firenvim',
+  --   run = function() vim.fn['firenvim#install'](0) end
+  -- }
 end)
