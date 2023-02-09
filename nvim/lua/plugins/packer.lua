@@ -85,6 +85,10 @@ return packer.startup(function(use)
 
   -- styles/visuals
   use {"ellisonleao/gruvbox.nvim", requires = {"rktjmp/lush.nvim"}}
+  use {
+    'nvim-lualine/lualine.nvim',
+    requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+  }
 
   -- integration from other clients
   -- use {
