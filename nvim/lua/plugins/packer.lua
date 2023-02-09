@@ -38,6 +38,10 @@ return packer.startup(function(use)
   use 'tpope/vim-unimpaired'
   use 'tpope/vim-vinegar'
 
+  -- language server stuff
+  use 'neovim/nvim-lspconfig'
+  use 'lspcontainers/lspcontainers.nvim'
+
   -- language specific
   use 'alcesleo/vim-uppercase-sql'
   use 'ekalinin/Dockerfile.vim'
