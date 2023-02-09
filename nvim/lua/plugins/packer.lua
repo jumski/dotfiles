@@ -41,6 +41,14 @@ return packer.startup(function(use)
   -- language server stuff
   use 'neovim/nvim-lspconfig'
   use 'lspcontainers/lspcontainers.nvim'
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-cmdline'
+  use 'hrsh7th/nvim-cmp'
+  -- use 'L3MON4D3/LuaSnip'
+  -- use 'saadparwaiz1/cmp_luasnip'
+
 
   -- language specific
   use 'alcesleo/vim-uppercase-sql'
