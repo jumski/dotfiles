@@ -9,5 +9,5 @@ map('n', '<leader>c', ':tabnew %<CR>', default_opts)
 map('n', '<leader><Tab>', ':tabp<CR>', default_opts)
 map('n', '<leader>f', ':tabn<CR>', default_opts)
 map('n', '<leader>x', ':tabclose<CR>', default_opts)
-
-
+map('n', '<C-s>', ':w<CR>', default_opts)
+map('i', '<C-s>', '<Esc>:w<CR>', default_opts)
