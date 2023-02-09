@@ -38,7 +38,7 @@ return packer.startup(function(use)
   use 'tpope/vim-unimpaired'
   use 'tpope/vim-vinegar'
 
-  -- language server stuff
+  -- language server stuff and autocompletes
   use 'neovim/nvim-lspconfig'
   use 'lspcontainers/lspcontainers.nvim'
   use 'hrsh7th/cmp-nvim-lsp'
@@ -46,6 +46,7 @@ return packer.startup(function(use)
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/nvim-cmp'
+  use { 'codota/tabnine-nvim', run = "./dl_binaries.sh" }
   -- use 'L3MON4D3/LuaSnip'
   -- use 'saadparwaiz1/cmp_luasnip'
 
