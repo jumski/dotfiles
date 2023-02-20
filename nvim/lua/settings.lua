@@ -67,3 +67,8 @@ opt.smartcase = true        -- case sensitive search only when first letter is c
 --- Programs
 opt.grepprg = 'rg --nogroup --nocolor' -- us ripgrep as grep
 
+
+
+--- auto commands
+--- make all vim windows same size everytime vim window is resized
+cmd [[autocmd VimResized * wincmd =]]
