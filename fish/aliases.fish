@@ -26,9 +26,9 @@ alias :wq="echo This is not vim, stupid!"
 alias :q="confirm 'Quit terminal? [Y/n]' && exit"
 alias p="pgrep -fl"
 
-alias ack-grep=rg
-alias ack=rg
-alias ag=rg
+#alias ack-grep=rg
+#alias ack=rg
+#alias ag=rg
 function rgp
   rg --pretty $argv | less -R
 end

@@ -1,6 +1,9 @@
 #!/bin/bash
 
-if ! test -f $HOME/.local/share/nvim/site/autoload/plug.vim; then
-  sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+packer_dir=~/.local/share/nvim/site/pack/packer/start/packer.nvim
+
+if test -d $packer_dir; then
+  echo packer installed, skipping
+else
+  git clone --depth 1 https://github.com/wbthomason/packer.nvim $packer_dir
 fi

@@ -1,0 +1,11 @@
+au BufRead,BufNewFile *.nghaml set filetype=haml
+au BufNewFile,BufRead *.erb.deface setfiletype eruby
+au BufNewFile,BufRead *.haml.deface setfiletype eruby
+au BufNewFile,BufRead *.hamlc setfiletype haml
+au BufNewFile,BufRead *.js.erb set filetype=eruby.javascript
+au BufNewFile,BufRead *.json set ft=javascript
+au BufNewFile,BufRead *.json set ft=json
+au BufNewFile,BufRead .gitaliases setfiletype gitconfig
+au BufNewFile,BufRead .psqlrc setfiletype sql
+au BufNewFile,BufRead Dockerfile setfiletype conf
+au BufNewFile,BufRead Rakefile,Capfile,Guardfile,Gemfile,Vagrantfile,pryrc,*.god,*.cap,*.rake setfiletype ruby
