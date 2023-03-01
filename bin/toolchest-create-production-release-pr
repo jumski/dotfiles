@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Define variables
+PR_DESCRIPTION=""
+PR_NUMBERS=()
+TODAYS_DATE=$(date +"%Y-%m-%d")
+
+# Stash local changes
+git stash
+
+# Update main and production branches
+git checkout main && git pull && git checkout production && git pull
+
+# Compare main and production and create a list of commits that are present on main but are lacking on production
+MISSING_COMMITS=$(git log --pretty=format:"%H" production..main)
+
+# Get the pull request numbers for each missing commit
+for COMMIT_HASH in $MISSING_COMMITS
+do
+  PR_NUMBER=$(gh pr list --state merged --base main --json "number" | jq -r '.[] | select(.head.sha == '\"$COMMIT_HASH\"') | .number')
+  PR_NUMBERS+=($PR_NUMBER)
+done
+
+# Remove duplicate pull request numbers
+PR_NUMBERS=($(echo "${PR_NUMBERS[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+
+# Build the pull request description
+for PR_NUMBER in "${PR_NUMBERS[@]}"
+do
+  PR=$(gh pr view $PR_NUMBER --json "number, title, user.login, body" | jq -r '"### PR #\(.number) - \(.title)\n\nAuthor: \(.user.login)\n\(.body)"')
+  TRELLO_LINK=$(echo "$PR" | grep -o 'https://trello.com/b/[a-zA-Z0-9]\+' || true)
+  if [ -n "$TRELLO_LINK" ]; then
+    PR_DESCRIPTION+="\n$PR\nTrello: $TRELLO_LINK\n"
+  else
+    PR_DESCRIPTION+="\n$PR\n"
+  fi
+done
+
+echo "Production Release $TODAYS_DATE"
+echo
+echo
+echo
+echo
+echo "$PR_DESCRIPTION"
+
+
+# Create the pull request
+gh pr create --title "Production Release $TODAYS_DATE" --body "$PR_DESCRIPTION" --label "Production Release" --base production --head main --web
