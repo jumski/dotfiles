@@ -115,6 +115,9 @@ setw -g automatic-rename off
 set-window-option -g automatic-rename off
 set-option -g allow-rename off
 
+# focus-events required by neovim autoread
+set-option -g focus-events on
+
 # pull/send panes
 bind j command-prompt -p "join pane from:" "join-pane -h -s '%%'"
 bind J command-prompt -p "join pane to:" "join-pane -h -t '%%'"
