@@ -4,28 +4,30 @@ set -e # Exit with nonzero exit code if anything fails
 
 # Get the current date in YYYY-MM-DD format
 current_date=$(date +%F)
+new_branch="demo/$current_date"
 
 # Ask for confirmation before pushing to staging
-read -p "Are you sure you want to deploy to staging? (y/n) " confirm
+read -p "Are you sure you want to deploy latest 'main' branch to staging? (y/N) " confirm
 if [ "$confirm" != "y" ]; then
     echo "Deployment to staging aborted."
     exit 1
 fi
 
-# Stash any uncommitted changes
+echo Stashing uncommitted changes...
 git add .
 git stash save "before staging deploy"
 
-# Switch to the main branch and pull latest changes
+echo Switching to main branch and pulling latest changes...
 git checkout main
 git pull
 
-# Create a new demo branch with today's date
-new_branch="demo/$current_date"
+echo Updating "$new_branch" to latest main...
+git branch -D "$new_branch" || true
 git checkout -b "$new_branch"
+git push origin "$new_branch" --force-with-lease
 
-# Push changes to Heroku staging environment
+echo Pushing changes to Heroku staging environment...
 git push heroku-staging "$new_branch":master --force-with-lease
 
-# Run database migrations
+echo Running database migrations...
 heroku run --app toolchest-staging bin/rails db:migrate db:migrate:status
