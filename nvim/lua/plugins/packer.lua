@@ -47,6 +47,7 @@ return packer.startup(function(use)
   use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/nvim-cmp'
   use 'github/copilot.vim'
+  cmd [[ highlight CopilotSuggestion guifg=#02a7a9 ctermfg=8 ]]
   -- use { 'codota/tabnine-nvim', run = "./dl_binaries.sh" }
   -- use 'L3MON4D3/LuaSnip'
   -- use 'saadparwaiz1/cmp_luasnip'
