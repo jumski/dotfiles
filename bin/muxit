@@ -6,6 +6,10 @@ start_dir="${1:-$current_dir}"
 # expand relative path to absolute one
 start_dir=$(readlink -f "$start_dir")/
 
+# check if $start_dir exists and if not, abort
+#
+
+
 if [ ! -d "$start_dir" ]; then
   echo "Directory '$start_dir' does not exists! Exiting."
   exit 1
@@ -13,9 +17,15 @@ fi
 
 session_name=$(basename "$start_dir" | tr -cd '[:alnum:]')
 
-# if [ -n "$TMUX" ]; then
-#   echo "Already inside Tmux session, looking for $session_name"
-# fi
+echo "Making sure your keyboard is setup properly..."
+setup_input_devices
+
+echo "Do you want me to start SSH Agent? [y/N]"
+read answer
+if [ "$answer" == "y" ]; then
+  eval `ssh-agent`
+  ssh-add
+fi
 
 tmux start-server
 tmux attach-session -t $session_name ||
