@@ -1,0 +1,41 @@
+#!/bin/bash
+
+compare_versions() {
+  echo -e "$1\n$2" | sort -V | tail -1
+}
+
+extract_version() {
+  grep -E "^Name=Logseq" "$file" | sed -E 's/Name=Logseq \(([0-9]+\.[0-9]+\.[0-9]+)\).*/\1/'
+}
+
+# Get all Logseq.desktop files
+logseq_files=$(find ~/.local/share/applications -name "*-Logseq.desktop")
+
+# Initialize variables
+max_version=""
+max_file=""
+
+# Iterate through all Logseq.desktop files
+for file in $logseq_files; do
+  # Extract the version from the Name field
+  version=$(extract_version "$file")
+
+  # Compare the version with the max_version
+  if [[ -z "$max_version" ]] || [[ "$(compare_versions "$version" "$max_version")" == "$version" ]]; then
+    max_version="$version"
+    max_file="$file"
+  fi
+done
+
+# Remove other Logseq.desktop files
+for file in $logseq_files; do
+  if [[ "$file" != "$max_file" ]]; then
+    version=$(extract_version "$file")
+    filename=$(basename "$file")
+    echo " - removing version $version ($filename)"
+    rm "$file"
+  fi
+done
+
+echo Removed outdated Logseq.desktop files.
+echo Latest version: $max_version
