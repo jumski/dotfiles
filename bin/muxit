@@ -1,7 +1,11 @@
 #!/bin/bash
 
-current_dir=`pwd`
-start_dir="${1:-$current_dir}"
+start_dir="$1"
+if [ -z "$1" ]; then
+  start_dir=$(find /home/jumski/work/ -type d -name .git -exec dirname {} \; | fzf --preview '/home/jumski/.dotfiles/bin/preview_readme {}' --preview-window right,65%)
+fi
+# current_dir=`pwd`
+# start_dir="${1:-$current_dir}"
 
 # expand relative path to absolute one
 start_dir=$(readlink -f "$start_dir")/
