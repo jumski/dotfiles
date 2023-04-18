@@ -1,10 +1,13 @@
 function debug_with_gpt
   # Capture the current pane's content
-    set pane_content (tmux capture-pane -p | tail -10)
+    set pane_content (tmux capture-pane -p -S 0 -E - | head -n -4 | tail -n 20)
+
+    # echo -e "$pane_content"
+    # return
 
     # prompt
-    set pre_prompt "These are contents of my tmux pane:"
-    set post_prompt "First: ignore output or command 'debug_with_gpt'. Your job is to understand output of previous command and suggest a solution if there was any kind of error, warning or failure."
+    set pre_prompt "These are contents of my terminal:"
+    set post_prompt "Provide suggestion how to fix error/failure/warning that comes before i run 'debug_with_gpt' command:"
 
     # Construct the JSON payload using jq
     set json_payload (echo '{}' | jq --arg content "$pre_prompt\n\n$pane_content\n\n$post_prompt" '.model = "gpt-3.5-turbo" | .messages = [{"role": "user", "content": $content}] | .temperature = 0.7')
