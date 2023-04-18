@@ -11,6 +11,8 @@ cmd([[
 return packer.startup(function(use)
   use 'wbthomason/packer.nvim'
 
+  use 'nvim-treesitter/nvim-treesitter'
+
   -- tpope
   use 'tpope/vim-abolish'
   use 'tpope/vim-bundler'
