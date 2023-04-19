@@ -39,6 +39,7 @@ return packer.startup(function(use)
   use 'tpope/vim-surround'
   use 'tpope/vim-unimpaired'
   use 'tpope/vim-vinegar'
+  use 'tpope/vim-dadbod'
 
   -- language server stuff and autocompletes
   use 'neovim/nvim-lspconfig'
