@@ -1,4 +1,4 @@
-require'lspconfig'.solargraph.setup {
-  cmd = require'lspcontainers'.command('solargraph');
-}
+-- require'lspconfig'.solargraph.setup {
+--   cmd = require'lspcontainers'.command('solargraph');
+-- }
 
