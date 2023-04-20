@@ -2,7 +2,7 @@
 
 start_dir="$1"
 if [ -z "$1" ]; then
-  start_dir=$(find /home/jumski/{work,Code}/ -type d -name .git -exec dirname {} \; | fzf --preview '/home/jumski/.dotfiles/bin/preview_readme {}' --preview-window right,65%)
+  start_dir=$(find /home/jumski/Code -type d -name .git -exec dirname {} \; | fzf --preview '/home/jumski/.dotfiles/bin/preview_readme {}' --preview-window right,65%)
 fi
 # current_dir=`pwd`
 # start_dir="${1:-$current_dir}"
