@@ -49,8 +49,22 @@ return packer.startup(function(use)
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/nvim-cmp'
-  use 'github/copilot.vim'
-  cmd [[ highlight CopilotSuggestion guifg=#02a7a9 ctermfg=8 ]]
+
+  use {
+    'Exafunction/codeium.vim',
+    -- config = function ()
+    --   -- Change '<C-g>' here to any keycode you like.
+    --   vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, { expr = true })
+    --   vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
+    --   vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
+    --   vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
+    -- end
+  }
+  cmd [[ highlight CodeiumSuggestion guifg=#02a7a9 ctermfg=8 ]]
+
+  -- use 'github/copilot.vim'
+  -- cmd [[ highlight CopilotSuggestion guifg=#02a7a9 ctermfg=8 ]]
+
   -- use { 'codota/tabnine-nvim', run = "./dl_binaries.sh" }
   -- use 'L3MON4D3/LuaSnip'
   -- use 'saadparwaiz1/cmp_luasnip'
