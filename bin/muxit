@@ -1,19 +1,18 @@
 #!/bin/bash
 
 start_dir="$1"
-if [ -z "$1" ]; then
-  start_dir=$(find /home/jumski/Code -type d -name .git -exec dirname {} \; | fzf --preview '/home/jumski/.dotfiles/bin/preview_readme {}' --preview-window right,65%)
+
+if [ -z "$start_dir" ]; then
+  dir_name=$(fd -H -t d --exec echo {//} \; --glob .git /home/jumski/Code |
+    sed 's|/home/jumski/Code/||' |
+    fzf --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,65%)
+  start_dir="/home/jumski/Code/$dir_name"
 fi
-# current_dir=`pwd`
-# start_dir="${1:-$current_dir}"
 
 # expand relative path to absolute one
 start_dir=$(readlink -f "$start_dir")/
 
 # check if $start_dir exists and if not, abort
-#
-
-
 if [ ! -d "$start_dir" ]; then
   echo "Directory '$start_dir' does not exists! Exiting."
   exit 1
@@ -41,4 +40,3 @@ tmux attach-session -t $session_name ||
     new-window -n vim -c "$start_dir" \;\
     new-window -n repl -c "$start_dir" \;\
     attach-session
-
