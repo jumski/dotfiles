@@ -2,6 +2,6 @@ ruby 3.1.2
 python 3.8.16
 rust nightly
 nodejs 18.4.0
-golang 1.12.17
+golang 1.20.3
 lua 5.4.3
 poetry 1.4.0
