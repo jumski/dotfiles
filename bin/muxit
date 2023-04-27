@@ -5,7 +5,14 @@ start_dir="$1"
 if [ -z "$start_dir" ]; then
   dir_name=$(fd -H -t d --exec echo {//} \; --glob .git /home/jumski/Code |
     sed 's|/home/jumski/Code/||' |
-    fzf --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,65%)
+    while read -r line; do
+      first_part=$(echo "$line" | cut -d/ -f1)
+      second_part=$(echo "$line" | cut -d/ -f2)
+      printf "\033[95m%s" "$first_part"
+      printf "\033[0m/"
+      printf "\033[92m%s\n" "$second_part"
+    done |
+    fzf --ansi --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,65%)
   start_dir="/home/jumski/Code/$dir_name"
 fi
 
