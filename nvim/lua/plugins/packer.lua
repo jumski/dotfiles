@@ -49,6 +49,7 @@ return packer.startup(function(use)
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/nvim-cmp'
+  use 'madox2/vim-ai'
 
   use {
     'Exafunction/codeium.vim',
