@@ -14,6 +14,31 @@ vim.g.vim_ai_chat = {
   }
 }
 
+local vim = vim
+local api = vim.api
+
+function git_commit_message_fn()
+  local diff = vim.fn.system('git --no-pager diff --staged')
+  local prompt = "generate a short commit message from the diff below:\n" .. diff
+  local range = 0
+  local config = {
+    engine = "chat",
+    options = {
+      model = "gpt-3.5-turbo",
+      initial_prompt = ">>> system\nyou are a code assistant",
+      temperature = 1,
+    },
+  }
+  vim.call('vim_ai#AIRun', range, config, prompt)
+end
+
+print("Hello World!")
+
+
+-- vim.cmd("command! XdKek lua Gcx()")
+vim.cmd('command! -nargs=0 GitCommitMessage lua git_commit_message_fn()')
+-- api.nvim_command('command! -nargs=0 GitCommitMessage lua git_commit_message_fn()')
+
 -- vim.g.vim_ai_chat = {
 --   options = {
 --     model = "gpt-3.5-turbo",

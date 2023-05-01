@@ -6,7 +6,7 @@
 	protocol = git
 [core]
         excludesfile = ~/.gitignore_global
-        editor = vim
+	editor = nvim
         autocrlf = input
         whitespace = trailing-space,cr-at-eol
         pager = delta
