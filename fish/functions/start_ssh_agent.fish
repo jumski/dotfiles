@@ -1,16 +1,13 @@
 function start_ssh_agent
-    # Check if ssh-agent is already running
-    if not set -q SSH_AGENT_PID
-      eval (ssh-agent -c)
-      set -gx SSH_AGENT_PID
-      set -gx SSH_AUTH_SOCK
+  if ssh-add -l >/dev/null 2>&1 || ssh-add -L >/dev/null 2>&1
+    echo "SSH agent already running and/or authenticated"
+    return
+  end
 
-      # # Start ssh-agent
-      # set -gx SSH_AUTH_SOCK (mktemp -u --suffix=agent.sock)
-      # ssh-agent -a $SSH_AUTH_SOCK | source
+  ssh-agent -c | source
+  ssh-add -t 12h # expire key so when laptop is stolen it doesn't get maliciously used
 
-
-      # Add your private key to the agent
-      ssh-add
-    end
+  # Export the environment variables
+  set -gx SSH_AUTH_SOCK $SSH_AUTH_SOCK
+  set -gx SSH_AGENT_PID $SSH_AGENT_PID
 end
