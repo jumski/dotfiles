@@ -9,13 +9,14 @@ function muxit
             sed 's|/home/jumski/Code/||' |
             split_and_colorize |
             awk -v padding_width="$selector_width" '{printf "%" padding_width "s\n", $0}' |
-            fzf --ansi --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,$fzf_preview_width |
-            sed 's/^ *//')
+            fzf --ansi --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,$fzf_preview_width)
 
-            # return if interrupted
-            if test $status -eq 130
-              return
-            end
+        # return if interrupted
+        if test $status -eq 130
+          return
+        end
+
+        set dir_name (echo -e "$dir_name" | sed 's/^ *//')
         set start_dir "/home/jumski/Code/$dir_name"
     end
 
