@@ -4,18 +4,7 @@ function muxit
     if test -z "$start_dir"
         set dir_name (fd -H -t d --exec echo {//} \; --glob .git /home/jumski/Code |
             sed 's|/home/jumski/Code/||' |
-
-            while read -r line
-                if string match -r "/*/*" "$line"
-                    set first_part (echo "$line" | cut -d/ -f1)
-                    set second_part (echo "$line" | cut -d/ -f2)
-                    printf "\033[95m%s" "$first_part"
-                    printf "\033[0m/"
-                    printf "\033[92m%s\n" "$second_part"
-                else
-                    printf "\033[92m%s\n" "$line"
-                end
-            end |
+            split_and_colorize |
             fzf --ansi --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,65%)
         set start_dir "/home/jumski/Code/$dir_name"
     end
