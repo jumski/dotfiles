@@ -31,13 +31,20 @@ function git_commit_message_fn()
   }
   vim.call('vim_ai#AIRun', range, config, prompt)
 end
-
-print("Hello World!")
-
-
--- vim.cmd("command! XdKek lua Gcx()")
 vim.cmd('command! -nargs=0 GitCommitMessage lua git_commit_message_fn()')
--- api.nvim_command('command! -nargs=0 GitCommitMessage lua git_commit_message_fn()')
+
+vim.cmd([[
+function! CodeReviewFn(range) range
+  let l:prompt = "programming syntax is " . &filetype . ", review the code below"
+  let l:config = {
+  \  "options": {
+  \    "initial_prompt": ">>> system\nyou are a clean code expert",
+  \  },
+  \}
+  '<,'>call vim_ai#AIChatRun(a:range, l:config, l:prompt)
+endfunction
+command! -range CodeReview <line1>,<line2>call CodeReviewFn(<range>)
+]])
 
 -- vim.g.vim_ai_chat = {
 --   options = {
