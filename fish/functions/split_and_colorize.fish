@@ -7,7 +7,8 @@ function split_and_colorize
         set parts_arr (string split / $line)
         set left_parts_arr $parts_arr[1..-2]
 
-        set left_part (string join / $left_parts_arr)/
+        # set left_part (string join / $left_parts_arr)/
+        set left_part (string join / $left_parts_arr)
         set right_part (echo $parts_arr[-1])
       else
         set left_part ""
@@ -17,6 +18,14 @@ function split_and_colorize
       set left_part_colorized (set_color 5c5c5c; echo $left_part)
       set right_part_colorized (set_color green; echo $right_part)
 
-      echo $left_part_colorized$right_part_colorized
+      echo -n $right_part_colorized
+      set_color 5c5c5c
+
+      if test $right_part_colorized != ""
+        echo " ($left_part_colorized)"
+      else
+        echo
+      end
+      # echo $left_part_colorized$right_part_colorized
     end
 end
