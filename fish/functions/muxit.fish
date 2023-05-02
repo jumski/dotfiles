@@ -1,14 +1,16 @@
 function muxit
     set start_dir $argv[1]
 
+    set -l selector_width 70
+    set -l fzf_preview_width (math (tput cols) - $selector_width)
+
     if test -z "$start_dir"
         set dir_name (fd -H -t d --exec echo {//} \; --glob .git /home/jumski/Code |
             sed 's|/home/jumski/Code/||' |
             split_and_colorize |
-            fzf --ansi --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,65%)
-
-            # fzf --no-hscroll --ansi --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,65%)
-            # awk '{ printf "%-60s\n", $0 }' |
+            awk -v padding_width="$selector_width" '{printf "%" padding_width "s\n", $0}' |
+            fzf --ansi --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,$fzf_preview_width |
+            sed 's/^ *//')
 
             # return if interrupted
             if test $status -eq 130
@@ -16,8 +18,6 @@ function muxit
             end
         set start_dir "/home/jumski/Code/$dir_name"
     end
-
-
 
     set start_dir (readlink -f "$start_dir")/
 
