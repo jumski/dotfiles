@@ -6,8 +6,18 @@ function muxit
             sed 's|/home/jumski/Code/||' |
             split_and_colorize |
             fzf --ansi --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,65%)
+
+            # fzf --no-hscroll --ansi --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,65%)
+            # awk '{ printf "%-60s\n", $0 }' |
+
+            # return if interrupted
+            if test $status -eq 130
+              return
+            end
         set start_dir "/home/jumski/Code/$dir_name"
     end
+
+
 
     set start_dir (readlink -f "$start_dir")/
 
