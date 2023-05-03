@@ -64,13 +64,26 @@ function muxit
 
     start_ssh_agent
 
-    tmux start-server
-    tmux attach-session -t $session_name ||
+    if test -z "$TMUX"
+        # Outside of tmux
+        tmux start-server
+        tmux attach-session -t $session_name ||
+            tmux \
+                new-session -A -d -c "$start_dir" -s $session_name \;\
+                rename-window -t 1 server \;\
+                new-window -n bash -c "$start_dir" \;\
+                new-window -n vim -c "$start_dir" \;\
+                new-window -n repl -c "$start_dir" \;\
+                attach-session
+    else
+        # Inside tmux
         tmux \
-            new-session -A -d -c "$start_dir" -s $session_name \;\
-            rename-window -t 1 server \;\
-            new-window -n bash -c "$start_dir" \;\
-            new-window -n vim -c "$start_dir" \;\
-            new-window -n repl -c "$start_dir" \;\
-            attach-session
+            new-session -d -c "$start_dir" -s $session_name \;\
+            rename-window -t $session_name:1 server \;\
+            new-window -n bash -c "$start_dir" -t $session_name \;\
+            new-window -n vim -c "$start_dir" -t $session_name \;\
+            new-window -n repl -c "$start_dir" -t $session_name
+        # Switch to the new session after creating all the windows
+        tmux switch-client -t $session_name
+    end
 end
