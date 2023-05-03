@@ -92,7 +92,6 @@ return packer.startup(function(use)
   use 'DataWraith/auto_mkdir'
   use 'christoomey/vim-tmux-navigator'
   use 'duane9/nvim-rg'
-  use 'editorconfig/editorconfig-vim'
   use 'godlygeek/tabular'
   use 'haya14busa/incsearch.vim'
   use 'michaeljsmith/vim-indent-object'
