@@ -1,17 +1,41 @@
+function process_paths
+    while read -l path
+        set dirname (dirname $path)
+        if test "$dirname" = "."
+          set dirname ""
+        else
+          set dirname "$dirname/"
+        end
+        set basename (basename $path)
+        set left_half_width $argv[1]
+
+        set dirname_length (string length $dirname)
+        set basename_length (string length $basename)
+
+        set_color grey
+        printf %{$left_half_width}s $dirname
+        set_color green
+        echo $basename
+        set_color normal
+    end
+end
+
 function muxit
     set start_dir $argv[1]
 
-    set -l selector_width 70
-    set -l fzf_preview_width (math (tput cols) - $selector_width)
+    set term_width (/usr/bin/tput cols)
+    set left_half_width (math -s0 "round(($term_width / 2) / 2) * 2")
+    set fzf_prompt_padding (math $left_half_width + 2)
+    set fzf_prompt (printf %{$fzf_prompt_padding}s "")
 
     if test -z "$start_dir"
-        set dir_name (fd -H -t d --exec echo {//} \; --glob .git /home/jumski/Code |
-            sed 's|/home/jumski/Code/||' |
-            split_and_colorize |
-            awk -v padding_width="$selector_width" '{printf "%" padding_width "s\n", $0}' |
-            fzf --ansi --preview '/home/jumski/.dotfiles/bin/preview_readme /home/jumski/Code/{}' --preview-window right,$fzf_preview_width)
+        set dir_name (
+          fd -H -t d --exec echo {//} \; --glob .git /home/jumski/Code |
+          sed 's|/home/jumski/Code/||' |
+          process_paths $left_half_width |
+          fzf --ansi --keep-right --margin=20%,0 --border=none --prompt="$fzf_prompt"
+          )
 
-        # return if interrupted
         if test $status -eq 130
           return
         end
