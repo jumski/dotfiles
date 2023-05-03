@@ -30,3 +30,6 @@ map('x', '<leader>r', ':AIRedo<CR>', vim_ai_opts)
 -- :AI
 map('n', '<leader>a', ':AI<CR>', vim_ai_opts)
 map('x', '<leader>a', ':AI<CR>', vim_ai_opts)
+
+-- :GitCommitMessage
+map('n', '<leader>g', ':GitCommitMessage<CR>', vim_ai_opts)
