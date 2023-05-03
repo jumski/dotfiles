@@ -8,7 +8,8 @@ function process_paths
         end
         set basename (basename $path)
         set term_width (/usr/bin/tput cols)
-        set left_half_width (math -s0 "$term_width / 2 - 10")
+        set term_width 89
+        set left_half_width (math -s0 "round(($term_width / 2) / 2) * 2")
 
         set dirname_length (string length $dirname)
         set basename_length (string length $basename)
