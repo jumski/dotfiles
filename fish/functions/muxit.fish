@@ -32,6 +32,7 @@ function muxit
         set dir_name (
           fd -H -t d --exec echo {//} \; --glob .git /home/jumski/Code |
           sed 's|/home/jumski/Code/||' |
+          sed '1i\.dotfiles' |
           process_paths $left_half_width |
           fzf --ansi --keep-right --margin=20%,0 --border=none --prompt="$fzf_prompt"
           )
@@ -41,7 +42,12 @@ function muxit
         end
 
         set dir_name (echo -e "$dir_name" | sed 's/^ *//')
-        set start_dir "/home/jumski/Code/$dir_name"
+
+        if test "$dir_name" = ".dotfiles"
+          set start_dir "/home/jumski/$dir_name"
+        else
+          set start_dir "/home/jumski/Code/$dir_name"
+        end
     end
 
     set start_dir (readlink -f "$start_dir")/
