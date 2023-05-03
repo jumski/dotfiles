@@ -15,7 +15,7 @@ function process_paths
         set basename_length (string length $basename)
 
         set_color grey
-        printf "%38s" $dirname
+        printf %{$left_half_width}s $dirname
         set_color green
         echo $basename
         set_color normal
