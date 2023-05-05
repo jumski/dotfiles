@@ -25,9 +25,9 @@ function muxit
 
   set term_width (/usr/bin/tput cols)
   set popup_width (math -s0 "round((0.8 * $term_width) / 2) * 2")
-  set left_half_width (math -s0 "round(($popup_width / 2) / 2) * 2 - 20")
+  set left_half_width (math -s0 "round(($popup_width / 2) / 2) * 2 - 45")
   set fzf_prompt_padding (math $left_half_width + 2)
-  set fzf_prompt (printf %{$popup_width}s "")
+  set fzf_prompt (printf %{$fzf_prompt_padding}s "")
 
   if test -z "$start_dir"
     set dir_name (
@@ -35,10 +35,16 @@ function muxit
     sed 's|/home/jumski/Code/||' |
     sed '1i\.dotfiles' |
     process_paths $left_half_width |
-    fzf-tmux -p 60%,60% -- --ansi --keep-right --margin=0,0 --border=none --prompt="$fzf_prompt"
+    fzf-tmux -p 50%,50% -- --ansi --keep-right --margin=0,0 --prompt="$fzf_prompt"
     )
 
     if test $status -eq 130
+      echo "Error in directory search!"
+      return
+    end
+
+    if test -z "$dir_name"
+      echo "Directory not found!"
       return
     end
 
