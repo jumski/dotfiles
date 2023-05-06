@@ -5,5 +5,7 @@ function aichat
     set aichat_path (mktemp ~/Code/jumski/aichats/tempXXXXXX.aichat)
   end
 
+  echo -e ">>> user\n\n" >> "$aichat_path"
+  read --prompt-str "Prompt > " >> "$aichat_path"
   vim -c AIChat -c startinsert "$aichat_path"
 end
