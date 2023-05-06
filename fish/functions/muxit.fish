@@ -24,8 +24,10 @@ function muxit
   set start_dir $argv[1]
 
   set term_width (/usr/bin/tput cols)
-  set popup_width (math -s0 "round((0.8 * $term_width) / 2) * 2")
-  set left_half_width (math -s0 "round(($popup_width / 2) / 2) * 2 - 45")
+  # set popup_width (math -s0 "round((0.8 * $term_width) / 2) * 2")
+  set popup_width 80
+  set left_half_width 30
+  # set left_half_width (math -s0 "round(($popup_width / 2) / 2) * 2")
   set fzf_prompt_padding (math $left_half_width + 2)
   set fzf_prompt (printf %{$fzf_prompt_padding}s "")
 
@@ -35,7 +37,7 @@ function muxit
     sed 's|/home/jumski/Code/||' |
     sed '1i\.dotfiles' |
     process_paths $left_half_width |
-    fzf-tmux -p 50%,50% -- --ansi --keep-right --margin=0,0 --prompt="$fzf_prompt"
+    fzf-tmux -p $popup_width,10 -- --ansi --keep-right --margin=0,0 --prompt="$fzf_prompt"
     )
 
     if test $status -eq 130
