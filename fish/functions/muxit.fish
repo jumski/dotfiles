@@ -66,7 +66,9 @@ function muxit
     return 1
   end
 
+  echo pre
   set session_name (basename "$start_dir" | tr -cd '[:alnum:]')
+  echo post
 
   echo "Making sure your keyboard is set up properly..."
   setup_input_devices
@@ -85,6 +87,11 @@ function muxit
       new-window -n repl -c "$start_dir" \;\
       attach-session
   else
+    echo '--------------------------'
+    echo start_dir $start_dir
+    echo session_name $session_name
+    echo '--------------------------'
+
     # Inside tmux
     tmux \
       new-session -d -c "$start_dir" -s $session_name \;\
@@ -93,6 +100,9 @@ function muxit
       new-window -n vim -c "$start_dir" -t $session_name \;\
       new-window -n repl -c "$start_dir" -t $session_name
     # Switch to the new session after creating all the windows
+
+    echo between
+
     tmux switch-client -t $session_name
   end
 end
