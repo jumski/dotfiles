@@ -13,7 +13,7 @@ function aichat
 
     set slug (slugify "$prompt" | string sub -l 80)
 
-    set aichat_path (mktemp "$aichats_dir/"{$slug}"_XXXXXX.aichat")
+    set aichat_path (mktemp --tmpdir="$aichats_dir" --suffix=.aichat {$slug}_XXXXXX)
   end
 
   echo -e ">>> user\n\n$prompt\n\n" >> "$aichat_path"
