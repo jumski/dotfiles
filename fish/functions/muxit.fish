@@ -37,7 +37,7 @@ function muxit
     sed 's|/home/jumski/Code/||' |
     sed '1i\.dotfiles' |
     process_paths $left_half_width |
-    fzf-tmux -p $popup_width,10 -- --ansi --keep-right --margin=0,0 --prompt="$fzf_prompt"
+    fzf --ansi --keep-right --margin=0,0 --prompt="$fzf_prompt"
     )
 
     if test $status -eq 130
