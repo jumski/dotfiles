@@ -11,6 +11,7 @@ vim.g.vim_ai_chat = {
     model = "gpt-3.5-turbo",
     -- model = "gpt-4",
     temperature = 0.7,
+    initial_prompt = initial_chat_prompt
   }
 }
 
