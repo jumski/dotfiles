@@ -1,5 +1,10 @@
 function aichat
-  set aichats_dir "/home/jumski/ObszaryOdpowiedzialnosci/Komputery i Internet/aichats"
+  set aichats_dir ~/aichats
+
+  if test ! -d $aichats_dir
+    echo "$aichats_dir does not exist"
+    return 1
+  end
 
   if test -n "$1"
     set aichat_path "$1"
