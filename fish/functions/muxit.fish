@@ -68,6 +68,24 @@ function muxit
 
   set session_name (basename "$start_dir" | tr -cd '[:alnum:]')
 
+
+  # switch to existing session if possible to speed up the process
+  if test -n "$TMUX"
+    echo inside tmux
+    if tmux list-sessions | grep -q $session_name
+      echo has session and switching
+      tmux switch-client -t $session_name
+      return
+    end
+  else
+    echo outside tmux
+    if tmux has-session -t $session_name
+      echo has session and attaching
+      tmux attach-session -t $session_name
+      return
+    end
+  end
+
   echo "Making sure your keyboard is set up properly..."
   setup_input_devices
 
