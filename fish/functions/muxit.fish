@@ -71,16 +71,12 @@ function muxit
 
   # switch to existing session if possible to speed up the process
   if test -n "$TMUX"
-    echo inside tmux
     if tmux list-sessions | grep -q $session_name
-      echo has session and switching
       tmux switch-client -t $session_name
       return
     end
   else
-    echo outside tmux
     if tmux has-session -t $session_name
-      echo has session and attaching
       tmux attach-session -t $session_name
       return
     end
@@ -104,7 +100,6 @@ function muxit
   else
     # Outside of tmux
     tmux start-server
-    tmux attach-session -t $session_name ||
     tmux \
       new-session -A -d -c "$start_dir" -s $session_name \;\
       rename-window -t 1 server \;\
