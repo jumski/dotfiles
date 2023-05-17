@@ -54,3 +54,4 @@ nohup.out
 \'
 
 .env
+.chromadb
