@@ -104,6 +104,7 @@ return packer.startup(function(use)
   use 'gpanders/editorconfig.nvim'
 
   -- styles/visuals
+  -- use "clinstid/eink.vim"
   use {"ellisonleao/gruvbox.nvim", requires = {"rktjmp/lush.nvim"}}
   use "junegunn/limelight.vim"
   -- use {

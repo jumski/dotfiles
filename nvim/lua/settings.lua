@@ -22,9 +22,11 @@ opt.timeoutlen = 800        -- time out on mapping
 opt.ttimeoutlen = 100       -- time out on key codes after a tenth of a second
 
 --- Style / themes
-opt.background = 'dark'     -- use dark background
 opt.termguicolors = true    -- needed to properly show colors in tmux
+-- cmd [[colorscheme eink]]
+-- opt.background = 'light'     -- use dark background
 cmd [[colorscheme gruvbox]]
+opt.background = 'dark'     -- use dark background
 g.gruvbox_italic = true     -- enable italics because we are in tmux
 
 --- UI
