@@ -1,1 +1,1 @@
-alias esphome="docker run -it ghcr.io/esphome/esphome"
+alias esphome="docker run --rm --privileged --device=/dev/ttyUSB0 -v .:/config -it ghcr.io/esphome/esphome"
