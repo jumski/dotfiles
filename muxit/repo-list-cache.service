@@ -1,0 +1,11 @@
+[Unit]
+Description=Custom Daemon Service
+After=network.target
+
+[Service]
+ExecStart=/home/jumski/.dotfiles/muxit/repo-list-cache.sh --watch-dir="/home/jumski/Code" --cache-file=/home/jumski/.repo-list.cache
+Restart=always
+User=jumski
+
+[Install]
+WantedBy=multi-user.target

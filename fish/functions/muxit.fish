@@ -1,3 +1,6 @@
+set -g REPOSITORIES_DIR /home/jumski/Code/
+set -g REPOSITORIES_CACHE /home/jumski/.repositories.cache
+
 function process_paths
   while read -l path
     set dirname (dirname $path)
@@ -20,8 +23,20 @@ function process_paths
   end
 end
 
+function repo_list
+  set repo_list (
+    if test -f /home/jumski/.repo-list.cache
+      cat /home/jumski/.repo-list.cache
+    else
+      fd -H -t d --exec echo {//} \; --glob .git /home/jumski/Code
+    end
+  )
+end
+
 function muxit
   set start_dir $argv[1]
+  set repo_list_cache /home/jumski/.repo-list.cache
+  set code_dir /home/jumski/Code/
 
   set term_width (/usr/bin/tput cols)
   # set popup_width (math -s0 "round((0.8 * $term_width) / 2) * 2")
@@ -33,8 +48,8 @@ function muxit
 
   if test -z "$start_dir"
     set dir_name (
-    fd -H -t d --exec echo {//} \; --glob .git /home/jumski/Code |
-    sed 's|/home/jumski/Code/||' |
+    repo_list |
+    sed "s|"$REPOSITORIES_DIR"||" |
     sed '1i\.dotfiles' |
     process_paths $left_half_width |
     fzf --ansi --keep-right --margin=0,0 --prompt="$fzf_prompt"
