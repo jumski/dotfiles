@@ -103,6 +103,11 @@ return packer.startup(function(use)
   use 'vim-scripts/matchit.zip'
   use 'gpanders/editorconfig.nvim'
 
+  use {
+    'ldelossa/gh.nvim',
+    requires = { { 'ldelossa/litee.nvim' } }
+  }
+
   -- styles/visuals
   -- use "clinstid/eink.vim"
   use {"ellisonleao/gruvbox.nvim", requires = {"rktjmp/lush.nvim"}}
