@@ -1,18 +1,9 @@
 
-" this allows all window commands in insert mode and i'm not accidentally deleting words anymore :-)"
-imap <C-w> <C-o><C-w>
-
 " reformat whole file
 noremap <leader>G mggg=G'g
 
-
 " disable Ex mode, use its mapping for repeating a macro
 nmap Q @@
-
-" save with C-S
-noremap <silent> <C-s> :update<CR>
-vnoremap <silent> <C-s> <C-C>:update<CR>
-inoremap <silent> <C-s> <Esc>:update<CR>
 
 " open file under curson in vsplit
 " nmap <C-X>gf :vs %<CR>gf

@@ -62,3 +62,10 @@ map('n', 'Y', 'y$', default_opts)
 map('n', "'", '`', default_opts)
 map('n', '`', "'", default_opts)
 
+-- save with C-S
+map('n', '<C-s>', ':update<CR>', default_opts)
+map('v', '<C-s>', '<C-C>:update<CR>', default_opts)
+map('i', '<C-s>', '<Esc>:update<CR>', default_opts)
+
+-- this allows all window commands in insert mode and i'm not accidentally deleting words anymore :-)"
+map('i', '<C-w>', '<C-o><C-w>', default_opts)
