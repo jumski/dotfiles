@@ -81,14 +81,6 @@ autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
 " ignore files
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 
-" add char pairs that can be navigated with %
-set matchpairs+=<:>
-set matchpairs+=/:/
-
-" in ruby ? and : can be a part of keyword
-set iskeyword+=?
-set iskeyword+=!
-
 " ES5 for typescript
 " au BufEnter,BufNew *.ts set makeprg=tsc\ -t\ ES5\ %
 

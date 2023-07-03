@@ -74,3 +74,10 @@ opt.grepprg = 'rg --nogroup --nocolor' -- us ripgrep as grep
 --- auto commands
 --- make all vim windows same size everytime vim window is resized
 cmd [[autocmd VimResized * wincmd =]]
+
+-- " add char pairs that can be navigated with %
+opt.matchpairs:append("<:>")
+
+-- in ruby ? and : can be a part of keyword
+opt.iskeyword:append('?')
+opt.iskeyword:append('!')
