@@ -1,10 +1,11 @@
--- This prompt instructs model to work with syntax highlighting
-initial_chat_prompt = [[
->>> system
-
-You are a general assistant.
+syntax_highlighting_prompt = [[
 If you attach a code block add syntax type after ``` to enable syntax highlighting.
 ]]
+
+initial_chat_prompt = [[
+>>> system
+You are a concise helpful assistant and expert programmer.
+]] .. syntax_highlighting_prompt
 
 vim.g.vim_ai_chat = {
   options = {
@@ -26,7 +27,7 @@ function git_commit_message_fn()
     engine = "chat",
     options = {
       model = "gpt-3.5-turbo",
-      initial_prompt = ">>> system\nyou are a code assistant",
+      initial_prompt = ">>> system\nyou are a code assistant.",
       temperature = 1,
     },
   }
@@ -46,20 +47,3 @@ function! CodeReviewFn(range) range
 endfunction
 command! -range CodeReview <line1>,<line2>call CodeReviewFn(<range>)
 ]])
-
--- vim.g.vim_ai_chat = {
---   options = {
---     model = "gpt-3.5-turbo",
---     max_tokens = 1000,
---     temperature = 1,
---     request_timeout = 20,
---     selection_boundary = "",
---     initial_prompt = s.initial_chat_prompt,
---   },
---   ui = {
---     code_syntax_enabled = 1,
---     populate_options = 0,
---     open_chat_command = "preset_below",
---     scratch_buffer_keep_open = 0,
---   },
--- }
