@@ -45,3 +45,20 @@ map('v', 'k', 'gk', default_opts)
 map('v', '$', 'g$', default_opts)
 map('v', '^', 'g^', default_opts)
 map('v', '0', 'g0', default_opts)
+
+-- replase word under cursor in whole file
+map('n', '<leader>:', '"xyiw:%s/<C-R>x/', {noremap = true})
+
+-- keeps visual mode after indenting
+map('v', '>', '>gv', default_opts)
+map('v', '<', '<gv', default_opts)
+
+-- Y yanks to the end of line
+map('n', 'Y', 'y$', default_opts)
+
+-- `a jumps to line and column marked ma
+-- 'a jumps only to line marked ma
+-- so we swap each other because ' have easy access
+map('n', "'", '`', default_opts)
+map('n', '`', "'", default_opts)
+

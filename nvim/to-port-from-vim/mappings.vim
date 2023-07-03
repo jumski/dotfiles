@@ -47,24 +47,8 @@ noremap <leader>9 :s/:\(\S\+\)\s\+=>\s\+/\1: /g<cr>
 nnoremap <leader>n :cnext<CR>
 nnoremap <leader>N :cprevious<CR>
 
-" `a jumps to line and column marked ma
-" 'a jumps only to line marked ma
-" so we swap each other because ' have easy access
-noremap ' `
-noremap ` '
-
-" Y yanks to the end of line
-map Y y$
-
-" keeps visual mode after indenting
-vmap > >gv
-vmap < <gv
-
 " select last changed/pasted text
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
-
-" replase word under cursor in whole file
-nnoremap <leader>: "xyiw:%s/<C-R>x/
 
 " Rg search
 nnoremap <LocalLeader>\ :tabnew<CR>:Rg<space>
