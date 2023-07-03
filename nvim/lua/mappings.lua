@@ -33,3 +33,7 @@ map('x', '<leader>a', ':AI<CR>', vim_ai_opts)
 
 -- :GitCommitMessage
 map('n', '<leader>g', ':GitCommitMessage<CR>', vim_ai_opts)
+
+-- Change behavior of line-up/line-down in normal mode
+map('n', 'j', 'gj', default_opts)
+map('n', 'k', 'gk', default_opts)
