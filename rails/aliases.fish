@@ -12,3 +12,14 @@ alias db-redo='devdb-redo && testdb-redo'
 alias dev-redo='docker compose build web && docker compose run web yarn install && docker compose run web bundle install && docker compose build web'
 
 alias full-redo='dev-redo && db-redo'
+
+
+# function deploy-branch-on-staging --wraps 'git branch' --description 'git push heroku-staging && db migrate'
+function deploy-branch-on-staging
+  set branch $argv[1]
+
+  if git branch -a | grep -E "^\s*\b{$branch}\b"
+    echo git push heroku-staging $branch:master
+    echo heroku run --app toolchest-staging bin/rails db:migrate db:migrate:status
+  end
+end
