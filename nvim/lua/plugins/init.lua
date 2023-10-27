@@ -122,4 +122,11 @@ return packer.startup(function(use)
   --   'glacambre/firenvim',
   --   run = function() vim.fn['firenvim#install'](0) end
   -- }
+
+  require 'plugins.configs.luasnip'
+  require 'plugins.configs.lspcontainers'
+  require 'plugins.configs.nvim-cmp'
+  require 'plugins.configs.vim-commentary'
+  require 'plugins.configs.vim-ai'
+  require 'plugins.configs.codi'
 end)

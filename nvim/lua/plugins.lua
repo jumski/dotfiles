@@ -1,8 +1,0 @@
-require 'plugins/configs/luasnip'
-require 'plugins/configs/lspcontainers'
-require 'plugins/configs/nvim-cmp'
-require 'plugins/configs/vim-commentary'
-require 'plugins/configs/vim-ai'
-require 'plugins/configs/codi'
--- require 'plugins/configs/tabnine'
--- require 'plugins/configs/lualine'
