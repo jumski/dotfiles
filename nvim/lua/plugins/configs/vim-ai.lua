@@ -10,7 +10,8 @@ You are a concise helpful assistant and expert programmer.
 vim.g.vim_ai_chat = {
   options = {
     -- model = "gpt-3.5-turbo",
-    model = "gpt-4",
+    -- model = "gpt-4",
+    model = "gpt-4-1106-preview",
     temperature = 0.7,
     initial_prompt = initial_chat_prompt
   }
