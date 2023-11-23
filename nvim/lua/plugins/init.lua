@@ -11,6 +11,8 @@ cmd([[
 return packer.startup(function(use)
   use 'wbthomason/packer.nvim'
 
+  use 'nvim-treesitter/nvim-treesitter'
+
   -- tpope
   use 'tpope/vim-abolish'
   use 'tpope/vim-bundler'
@@ -37,6 +39,7 @@ return packer.startup(function(use)
   use 'tpope/vim-surround'
   use 'tpope/vim-unimpaired'
   use 'tpope/vim-vinegar'
+  use 'tpope/vim-dadbod'
 
   -- language server stuff and autocompletes
   use 'neovim/nvim-lspconfig'
@@ -46,7 +49,25 @@ return packer.startup(function(use)
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/nvim-cmp'
-  use { 'codota/tabnine-nvim', run = "./dl_binaries.sh" }
+  use 'madox2/vim-ai'
+  use 'metakirby5/codi.vim'
+
+  use {
+    'Exafunction/codeium.vim',
+    -- config = function ()
+    --   -- Change '<C-g>' here to any keycode you like.
+    --   vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, { expr = true })
+    --   vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
+    --   vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
+    --   vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
+    -- end
+  }
+  cmd [[ highlight CodeiumSuggestion guifg=#02a7a9 ctermfg=8 ]]
+
+  -- use 'github/copilot.vim'
+  -- cmd [[ highlight CopilotSuggestion guifg=#02a7a9 ctermfg=8 ]]
+
+  -- use { 'codota/tabnine-nvim', run = "./dl_binaries.sh" }
   -- use 'L3MON4D3/LuaSnip'
   -- use 'saadparwaiz1/cmp_luasnip'
 
@@ -72,7 +93,6 @@ return packer.startup(function(use)
   use 'DataWraith/auto_mkdir'
   use 'christoomey/vim-tmux-navigator'
   use 'duane9/nvim-rg'
-  use 'editorconfig/editorconfig-vim'
   use 'godlygeek/tabular'
   use 'haya14busa/incsearch.vim'
   use 'michaeljsmith/vim-indent-object'
@@ -83,8 +103,15 @@ return packer.startup(function(use)
   use 'vim-scripts/matchit.zip'
   use 'gpanders/editorconfig.nvim'
 
+  use {
+    'ldelossa/gh.nvim',
+    requires = { { 'ldelossa/litee.nvim' } }
+  }
+
   -- styles/visuals
+  -- use "clinstid/eink.vim"
   use {"ellisonleao/gruvbox.nvim", requires = {"rktjmp/lush.nvim"}}
+  use "junegunn/limelight.vim"
   -- use {
   --   'nvim-lualine/lualine.nvim',
   --   requires = { 'kyazdani42/nvim-web-devicons', opt = true }
@@ -95,4 +122,11 @@ return packer.startup(function(use)
   --   'glacambre/firenvim',
   --   run = function() vim.fn['firenvim#install'](0) end
   -- }
+
+  require 'plugins.configs.luasnip'
+  require 'plugins.configs.lspcontainers'
+  require 'plugins.configs.nvim-cmp'
+  require 'plugins.configs.vim-commentary'
+  require 'plugins.configs.vim-ai'
+  require 'plugins.configs.codi'
 end)

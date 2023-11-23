@@ -41,6 +41,7 @@ alias humandate="date +\"%Y-%m-%d\""
 alias prettyjson="python -mjson.tool"
 alias bc="bc -l"
 alias vi=vim
-alias path="echo $PATH | tr ':' '\n'"
+
+alias print_path_var="echo $PATH | tr ':' '\n'"
 
 alias compile_tags="ctags -R --exclude=.git --exclude=log * $GEM_HOME/gems/*"

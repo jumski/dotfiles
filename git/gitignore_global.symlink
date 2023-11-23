@@ -52,3 +52,6 @@ Session.vim
 nohup.out
 
 \'
+
+.env
+.chromadb

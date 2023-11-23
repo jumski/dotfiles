@@ -10,7 +10,6 @@ entr
 tree
 xdotool
 zstd
-ripgrep
 discord
 socat
 yay
@@ -34,3 +33,4 @@ jo
 jq
 figlet
 xorg-xwininfo
+figlet

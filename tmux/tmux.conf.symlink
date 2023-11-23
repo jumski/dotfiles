@@ -115,6 +115,9 @@ setw -g automatic-rename off
 set-window-option -g automatic-rename off
 set-option -g allow-rename off
 
+# focus-events required by neovim autoread
+set-option -g focus-events on
+
 # pull/send panes
 bind j command-prompt -p "join pane from:" "join-pane -h -s '%%'"
 bind J command-prompt -p "join pane to:" "join-pane -h -t '%%'"
@@ -146,6 +149,12 @@ bind b command-prompt "run 'exec xdg-open https://github.com/%%'"
 
 # <c-z>fg;alert
 bind F send-keys C-z 'fg;alert' Enter
+
+# aichat popup
+bind a popup -E -w 60% -h 60% "fish -C 'aichat && exit 0'"
+
+# aichat popup
+bind m popup -E -w 60% -h 60% "fish -C 'muxit && exit 0'"
 
 # history
 set -g history-limit 10000

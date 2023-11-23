@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ -f "$1"/README.md ]; then
+    bat --color always --style plain "$1"/README.md
+else
+    echo "No README.md found."
+fi

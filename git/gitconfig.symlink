@@ -6,7 +6,7 @@
 	protocol = git
 [core]
         excludesfile = ~/.gitignore_global
-        editor = vim
+	editor = nvim
         autocrlf = input
         whitespace = trailing-space,cr-at-eol
         pager = delta
@@ -78,3 +78,8 @@
 
 [delta]
 	navigate = true # n and N to move between sections
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

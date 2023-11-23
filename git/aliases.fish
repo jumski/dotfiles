@@ -43,6 +43,14 @@ function gunwip
   git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1
 end
 
+function gp --wraps "git push"
+  git push $argv
+end
+
+function gpfl --wraps "git push --force-with-lease"
+  git push --force-with-lease $argv
+end
+
 # The rest of my fun git aliases
 #alias gl='git pull --prune'
 #alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"

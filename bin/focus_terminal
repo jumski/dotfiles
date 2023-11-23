@@ -1,0 +1,3 @@
+#!/bin/bash
+
+xdotool windowactivate $(xdotool search --classname "Kitty")

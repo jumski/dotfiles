@@ -1,0 +1,6 @@
+app/assets/builds/
+node_modules/
+yarn.lock
+Gemfile.lock
+tmp/
+log/
