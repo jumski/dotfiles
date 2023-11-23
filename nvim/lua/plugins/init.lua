@@ -40,7 +40,6 @@ return {
   'hrsh7th/cmp-cmdline',
   'hrsh7th/nvim-cmp',
   'madox2/vim-ai',
-  'metakirby5/codi.vim',
 
   {
     'Exafunction/codeium.vim',
