@@ -8,7 +8,6 @@ return {
   'tpope/vim-bundler',
   'tpope/vim-capslock',
   'tpope/vim-classpath',
-  'tpope/vim-commentary',
   'tpope/vim-dispatch',
   'tpope/vim-dotenv',
   'tpope/vim-endwise',
@@ -32,33 +31,7 @@ return {
   'tpope/vim-dadbod',
 
   -- language server stuff and autocompletes
-  'neovim/nvim-lspconfig',
-  'lspcontainers/lspcontainers.nvim',
-  'hrsh7th/cmp-nvim-lsp',
-  'hrsh7th/cmp-buffer',
-  'hrsh7th/cmp-path',
-  'hrsh7th/cmp-cmdline',
-  'hrsh7th/nvim-cmp',
-  'madox2/vim-ai',
 
-  {
-    'Exafunction/codeium.vim',
-    -- config = function ()
-    --   -- Change '<C-g>' here to any keycode you like.
-    --   vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, { expr = true })
-    --   vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
-    --   vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
-    --   vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
-    -- end
-  },
-  ---- TODO
-  ----------------------cmd [[ highlight CodeiumSuggestion guifg=#02a7a9 ctermfg=8 ]]
-
-  -- use 'github/copilot.vim'
-  -- cmd [[ highlight CopilotSuggestion guifg=#02a7a9 ctermfg=8 ]]
-
-  -- use { 'codota/tabnine-nvim', run = "./dl_binaries.sh" }
-  -- use 'L3MON4D3/LuaSnip'
   -- use 'saadparwaiz1/cmp_luasnip'
 
 
@@ -102,10 +75,6 @@ return {
   -- use "clinstid/eink.vim"
   {"ellisonleao/gruvbox.nvim", dependencies = {"rktjmp/lush.nvim"}},
   "junegunn/limelight.vim",
-  -- use {
-  --   'nvim-lualine/lualine.nvim',
-  --   dependencies = { 'kyazdani42/nvim-web-devicons', opt = true }
-  -- }
 
   -- integration from other clients
   -- use {
