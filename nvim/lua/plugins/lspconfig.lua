@@ -11,9 +11,15 @@ return {
 
     lspconfig['solargraph'].setup{
       cmd = container_command('solargraph', {
-        image = "jumski/lspcontainers-solargraph:latest"
+        image = "toolchest-rails-web"
+        -- image = "jumski/lspcontainers-solargraph:latest"
       }),
-      capabilities = capabilities
+      capabilities = capabilities,
+      settings = {
+        solargraph = {
+          diagnostics = true
+        }
+      }
     }
     lspconfig['lua_ls'].setup{
       cmd = container_command('lua_ls'),
