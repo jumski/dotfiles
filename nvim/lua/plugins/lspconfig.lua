@@ -27,11 +27,5 @@ return {
       cmd = container_command('tsserver'),
       capabilities = capabilities
     }
-
-    -- -- Set up lspconfig.
-    -- -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-    -- require('lspconfig')['solargraph'].setup {
-    --   capabilities = capabilities
-    -- }
   end
 }
