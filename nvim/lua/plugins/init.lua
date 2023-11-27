@@ -1,8 +1,6 @@
 return {
   'wbthomason/packer.nvim',
 
-  'nvim-treesitter/nvim-treesitter',
-
   -- tpope
   'tpope/vim-abolish',
   'tpope/vim-bundler',
