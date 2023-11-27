@@ -35,7 +35,12 @@ return {
         ['<C-e>'] = cmp.mapping.abort(),
         ['<C-CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
       }),
+  -- {name = 'path'},
+  -- {name = 'nvim_lsp', keyword_length = 1},
+  -- {name = 'buffer', keyword_length = 3},
+  -- {name = 'luasnip', keyword_length = 2},
       sources = cmp.config.sources({
+        -- { name = 'path ' },
         { name = 'nvim_lsp' },
         -- { name = 'vsnip' }, -- For vsnip users.
         { name = 'luasnip' }, -- For luasnip users.
@@ -44,7 +49,21 @@ return {
         { name = 'nvim_lsp_signature_help' },
       }, {
         { name = 'buffer' },
-      })
+      }),
+      formatting = {
+        fields = { 'menu', 'abbr', 'kind' },
+        format = function(entry, item)
+          local menu_icon = {
+            nvim_lsp = 'λ',
+            luasnip = '⋗',
+            buffer = 'Ω',
+            path = '🖫',
+          }
+
+          item.menu = menu_icon[entry.source.name]
+          return item
+        end,
+      }
     })
 
     -- Set configuration for specific filetype.
@@ -75,4 +94,3 @@ return {
     })
   end
 }
-
