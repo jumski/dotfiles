@@ -2,7 +2,6 @@ return {
   'neovim/nvim-lspconfig',
   dependencies = {
     'lspcontainers/lspcontainers.nvim',
-
   },
   config = function()
     local lspconfig = require('lspconfig')
@@ -23,7 +22,14 @@ return {
     }
     lspconfig['lua_ls'].setup{
       cmd = container_command('lua_ls'),
-      capabilities = capabilities
+      capabilities = capabilities,
+      settings = {
+        Lua = {
+          diagnostics = {
+            globals = { 'vim' }
+          }
+        }
+      }
     }
     lspconfig['pyright'].setup{
       cmd = container_command('pyright'),
