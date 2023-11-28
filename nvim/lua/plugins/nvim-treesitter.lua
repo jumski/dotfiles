@@ -19,13 +19,14 @@ return {
         "vimdoc",
         "yaml",
       },
+      auto_install = true,
+      sync_install = false,
       highlight = {
         enable = true,
         disable = { }
       },
       incremental_selection = { enable = true },
       textobjects = { enable = true },
-      auto_install = false
     }
   end
 }

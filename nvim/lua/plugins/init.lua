@@ -71,7 +71,6 @@ return {
 
   -- styles/visuals
   -- use "clinstid/eink.vim"
-  {"ellisonleao/gruvbox.nvim", dependencies = {"rktjmp/lush.nvim"}},
   "junegunn/limelight.vim",
 
   -- integration from other clients

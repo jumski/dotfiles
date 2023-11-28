@@ -25,9 +25,7 @@ opt.ttimeoutlen = 100       -- time out on key codes after a tenth of a second
 opt.termguicolors = true    -- needed to properly show colors in tmux
 -- cmd [[colorscheme eink]]
 -- opt.background = 'light'     -- use dark background
-cmd [[colorscheme gruvbox]]
 opt.background = 'dark'     -- use dark background
-g.gruvbox_italic = true     -- enable italics because we are in tmux
 
 --- UI
 opt.number = false          -- do not show line numbering
@@ -81,3 +79,18 @@ opt.matchpairs:append("<:>")
 -- in ruby ? and : can be a part of keyword
 opt.iskeyword:append('?')
 opt.iskeyword:append('!')
+
+
+
+local sign = function(opts)
+  vim.fn.sign_define(opts.name, {
+    texthl = opts.name,
+    text = opts.text,
+    numhl = ''
+  })
+end
+
+sign({name = 'DiagnosticSignError', text = '✘'})
+sign({name = 'DiagnosticSignWarn', text = '▲'})
+sign({name = 'DiagnosticSignHint', text = '⚑'})
+sign({name = 'DiagnosticSignInfo', text = '»'})
