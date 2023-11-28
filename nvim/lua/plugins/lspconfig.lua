@@ -25,9 +25,15 @@ return {
       capabilities = capabilities,
       settings = {
         Lua = {
+          runtime = { version = 'LuaJIT' },
           diagnostics = {
-            globals = { 'vim' }
-          }
+            globals = { 'vim', 'require' }
+          },
+          workspace = {
+            -- Make the server aware of Neovim runtime files
+            library = vim.api.nvim_get_runtime_file("", true)
+          },
+          telemetry = { enable = false }
         }
       }
     }
