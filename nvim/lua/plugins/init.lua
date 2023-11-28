@@ -1,32 +1,30 @@
 return {
-  'wbthomason/packer.nvim',
-
   -- tpope
   'tpope/vim-abolish',
-  'tpope/vim-bundler',
-  'tpope/vim-capslock',
-  'tpope/vim-classpath',
-  'tpope/vim-dispatch',
+  { 'tpope/vim-bundler', ft = "ruby" },
+  { 'tpope/vim-capslock', event = "VeryLazy" },
+  { 'tpope/vim-classpath', ft = "clojure" },
+  { 'tpope/vim-dispatch', event = "VeryLazy" },
   'tpope/vim-dotenv',
   'tpope/vim-endwise',
   'tpope/vim-eunuch',
-  'tpope/vim-fireplace',
-  'tpope/vim-fugitive',
+  { 'tpope/vim-fireplace', ft = "clojure" },
+  { 'tpope/vim-fugitive', event = "VeryLazy" },
   'tpope/vim-git',
   'tpope/vim-haml',
-  'tpope/vim-markdown',
+  { 'tpope/vim-markdown', ft = "markdown" },
   'tpope/vim-obsession',
-  'tpope/vim-projectionist',
-  'tpope/vim-rails',
-  'tpope/vim-rake',
+  { 'tpope/vim-projectionist', event = "VeryLazy" },
+  { 'tpope/vim-rails', event = "VeryLazy" },
+  { 'tpope/vim-rake', event = "VeryLazy" },
   'tpope/vim-rhubarb',
   'tpope/vim-sensible',
   'tpope/vim-sexp-mappings-for-regular-people',
   'tpope/vim-sleuth',
-  'tpope/vim-surround',
+  { 'tpope/vim-surround', event = "VeryLazy" },
   'tpope/vim-unimpaired',
   'tpope/vim-vinegar',
-  'tpope/vim-dadbod',
+  { 'tpope/vim-dadbod', event = "VeryLazy" },
 
   -- language server stuff and autocompletes
 
@@ -34,8 +32,8 @@ return {
 
 
   -- language specific
-  'alcesleo/vim-uppercase-sql',
-  'ekalinin/Dockerfile.vim',
+  { 'alcesleo/vim-uppercase-sql', ft = "sql" },
+  { 'ekalinin/Dockerfile.vim', ft = "dockerfile" },
   -- use {
   --   'salkin-mada/openscad.nvim',
   --   config = function ()
@@ -51,7 +49,7 @@ return {
   ------use({"L3MON4D3/LuaSnip", tag = "v<CurrentMajor>.*"})
 
   -- useful stuff
-  'DataWraith/auto_mkdir',
+  { 'DataWraith/auto_mkdir', event = "VeryLazy" },
   'christoomey/vim-tmux-navigator',
   'duane9/nvim-rg',
   'godlygeek/tabular',

@@ -1,7 +1,7 @@
 return {
   "ellisonleao/gruvbox.nvim",
+  lazy = false,
   priority = 1000,
-  config = true,
   dependencies = {"rktjmp/lush.nvim"},
   config = function()
     vim.o.background = "dark" -- or "light" for light mode

@@ -1,8 +1,8 @@
 return {
   'neovim/nvim-lspconfig',
+  lazy = false,
   dependencies = {
     'lspcontainers/lspcontainers.nvim',
-
   },
   config = function()
     local lspconfig = require('lspconfig')
