@@ -30,7 +30,7 @@ return {
       local config = {
         engine = "chat",
         options = {
-          model = "gpt-3.5-turbo",
+          model = "gpt-4-1106-preview",
           initial_prompt = ">>> system\nyou are a code assistant.",
           temperature = 1,
         },
