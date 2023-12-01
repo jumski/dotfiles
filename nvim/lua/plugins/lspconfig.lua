@@ -8,11 +8,17 @@ return {
     local container_command = require('lspcontainers').command
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
+    local solargraph_cmd = container_command('solargraph', {
+      image = "toolchest-rails-web"
+      -- image = "jumski/lspcontainers-solargraph:latest"
+    })
+    table.insert(solargraph_cmd, "bundle")
+    table.insert(solargraph_cmd, "exec")
+    table.insert(solargraph_cmd, "solargraph")
+    table.insert(solargraph_cmd, "stdio")
+
     lspconfig['solargraph'].setup{
-      cmd = container_command('solargraph', {
-        image = "toolchest-rails-web"
-        -- image = "jumski/lspcontainers-solargraph:latest"
-      }),
+      cmd = solargraph_cmd,
       capabilities = capabilities,
       settings = {
         solargraph = {
