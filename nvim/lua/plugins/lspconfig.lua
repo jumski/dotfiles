@@ -6,19 +6,48 @@ return {
   config = function()
     local lspconfig = require('lspconfig')
     local container_command = require('lspcontainers').command
+
+    -- returns true/false depending on the presence of bin/restore_pg_dump
+    local function need_custom_solargraph_config()
+      local path_to_check = vim.fn.getcwd() .. "/bin/restore_pg_dump"
+      local file = io.open(path_to_check, "r")
+
+      if file ~= nil then
+        io.close(file)
+
+        return true
+      end
+
+      return false
+    end
+
+    -- this functions configures solargraph command differently
+    -- for one of the projects
+    local function solargraph_command()
+      local solargraph_cmd
+
+      if need_custom_solargraph_config() then
+
+        solargraph_cmd = container_command('solargraph', {
+          image = "toolchest-rails-web"
+        })
+        table.insert(solargraph_cmd, "bundle")
+        table.insert(solargraph_cmd, "exec")
+        table.insert(solargraph_cmd, "solargraph")
+        table.insert(solargraph_cmd, "stdio")
+      else
+        solargraph_cmd = container_command('solargraph', {
+          image = "jumski/lspcontainers-solargraph:latest"
+        })
+      end
+
+      return solargraph_cmd
+    end
+
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-    local solargraph_cmd = container_command('solargraph', {
-      image = "toolchest-rails-web"
-      -- image = "jumski/lspcontainers-solargraph:latest"
-    })
-    table.insert(solargraph_cmd, "bundle")
-    table.insert(solargraph_cmd, "exec")
-    table.insert(solargraph_cmd, "solargraph")
-    table.insert(solargraph_cmd, "stdio")
-
     lspconfig['solargraph'].setup{
-      cmd = solargraph_cmd,
+      cmd = solargraph_command(),
       capabilities = capabilities,
       settings = {
         solargraph = {
