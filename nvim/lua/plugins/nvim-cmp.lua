@@ -6,7 +6,8 @@ return {
     'hrsh7th/cmp-buffer',
     'hrsh7th/cmp-path',
     'hrsh7th/cmp-cmdline',
-    'lspcontainers/lspcontainers.nvim'
+    'lspcontainers/lspcontainers.nvim',
+    'kristijanhusak/vim-dadbod-completion',
   },
   config = function()
     local opt = vim.opt -- global/buffer/windows-scoped options
@@ -40,15 +41,12 @@ return {
   -- {name = 'buffer', keyword_length = 3},
   -- {name = 'luasnip', keyword_length = 2},
       sources = cmp.config.sources({
-        -- { name = 'path ' },
         { name = 'nvim_lsp' },
-        -- { name = 'vsnip' }, -- For vsnip users.
         { name = 'luasnip' }, -- For luasnip users.
-        -- { name = 'ultisnips' }, -- For ultisnips users.
-        -- { name = 'snippy' }, -- For snippy users.
         { name = 'nvim_lsp_signature_help' },
       }, {
         { name = 'buffer' },
+        { name = 'vim-dadbod-completion' },
       }),
       formatting = {
         fields = { 'menu', 'abbr', 'kind' },

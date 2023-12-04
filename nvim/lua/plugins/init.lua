@@ -26,7 +26,6 @@ return {
   'tpope/vim-surround',
   'tpope/vim-unimpaired',
   'tpope/vim-vinegar',
-  'tpope/vim-dadbod',
 
   -- language server stuff and autocompletes
 
