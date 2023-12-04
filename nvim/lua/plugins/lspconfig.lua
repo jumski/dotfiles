@@ -55,6 +55,10 @@ return {
         }
       }
     }
+    lspconfig['sorbet'].setup{
+      cmd = { 'bundle', 'exec', 'srb', 'tc', '--lsp', '--disable-watchman' },
+      capabilities = capabilities
+    }
     lspconfig['lua_ls'].setup{
       cmd = container_command('lua_ls'),
       capabilities = capabilities,
