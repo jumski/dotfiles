@@ -94,3 +94,41 @@ sign({name = 'DiagnosticSignError', text = '✘'})
 sign({name = 'DiagnosticSignWarn', text = '▲'})
 sign({name = 'DiagnosticSignHint', text = '⚑'})
 sign({name = 'DiagnosticSignInfo', text = '»'})
+
+--------------------------------
+--- SIGN COLUMN ----------------
+--------------------------------
+
+
+-- Function to update the sign column color
+local function update_sign_column_color()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local signs = vim.fn.sign_getplaced(bufnr, {group = '*'})[1].signs
+  local has_signs = #signs > 0
+
+  -- Define your colors for empty and non-empty sign column
+  local color_empty = 'SignColumn'
+  local color_non_empty = 'WarningMsg' -- Change to your preferred highlight group
+
+  -- Apply the highlight based on whether there are signs
+  if has_signs then
+    vim.cmd('highlight! link SignColumn ' .. color_non_empty)
+  else
+    vim.cmd('highlight! link SignColumn ' .. color_empty)
+  end
+end
+
+-- Autocommand to trigger the sign column color update on certain events
+vim.api.nvim_create_autocmd(
+  {'BufEnter', 'CursorHold', 'TextChanged', 'DiagnosticChanged', 'InsertLeave', 'BufWinEnter'},
+  {
+    pattern = '*',
+    callback = update_sign_column_color,
+  }
+)
+
+-- Ensure that the sign column is always visible
+vim.wo.signcolumn = 'yes'
+
+
+-- vim.cmd('highlight CustomSignColumnNonEmpty guibg=#FF0000 guifg=#FFFFFF')
