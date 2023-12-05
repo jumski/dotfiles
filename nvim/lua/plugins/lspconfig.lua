@@ -45,6 +45,7 @@ return {
     end
 
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
+    local home_path = os.getenv('HOME')
 
     lspconfig['solargraph'].setup{
       cmd = solargraph_command(),
@@ -82,6 +83,13 @@ return {
     }
     lspconfig['tsserver'].setup{
       cmd = container_command('tsserver'),
+      capabilities = capabilities
+    }
+    lspconfig['cssmodules_ls'].setup{ capabilities = capabilities }
+
+    local cssls_binary = home_path .. '/.dotfiles/node_modules/.bin/vscode-css-language-server'
+    lspconfig['cssls'].setup{
+      cmd = { cssls_binary, '--stdio' },
       capabilities = capabilities
     }
   end
