@@ -12,13 +12,14 @@ return {
       local path_to_check = vim.fn.getcwd() .. "/bin/restore_pg_dump"
       local file = io.open(path_to_check, "r")
 
-      if file ~= nil then
-        io.close(file)
+      return true
+      -- if file ~= nil then
+      --   io.close(file)
 
-        return true
-      end
+      --   return true
+      -- end
 
-      return false
+      -- return false
     end
 
     -- this functions configures solargraph command differently
