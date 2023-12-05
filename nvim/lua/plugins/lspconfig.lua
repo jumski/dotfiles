@@ -84,5 +84,10 @@ return {
       cmd = container_command('tsserver'),
       capabilities = capabilities
     }
+    lspconfig['cssmodules_ls'].setup{ capabilities = capabilities }
+    lspconfig['cssls'].setup{
+      cmd = { '/home/jumski/.dotfiles/node_modules/.bin/vscode-css-language-server', '--stdio' },
+      capabilities = capabilities
+    }
   end
 }
