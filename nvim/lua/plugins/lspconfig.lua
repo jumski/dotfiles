@@ -93,5 +93,11 @@ return {
       cmd = { cssls_binary, '--stdio' },
       capabilities = capabilities
     }
+
+    local sqlls_binary = home_path .. '/.dotfiles/node_modules/.bin/sql-language-server'
+    lspconfig['sqlls'].setup{
+      cmd = { sqlls_binary, 'up', '--method', '--stdio' },
+      capabilities = capabilities
+    }
   end
 }
