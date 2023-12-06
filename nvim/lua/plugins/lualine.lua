@@ -1,19 +1,21 @@
+      -- tabline = {},
 return {
   'nvim-lualine/lualine.nvim',
-  enabled = false,
+  enabled = true,
   dependencies = { 'kyazdani42/nvim-web-devicons', lazy = true },
   config = function()
     require('lualine').setup {
       theme = 'gruvbox_material',
       tabline = {
-          lualine_a = {},
-          lualine_b = {'branch'},
-          lualine_c = {'filename'},
-          lualine_x = {},
-          lualine_y = {},
-          lualine_z = {}
+          -- -- lualine_a = {'buffers'},
+          -- -- lualine_b = {'branch'},
+          -- -- lualine_c = {'filename'},
+          -- -- lualine_x = {},
+          -- -- lualine_y = {},
+          -- lualine_a = {'tabs', 'buffers'}
       },
-      sections = {lualine_c = {'lsp_progress'}, lualine_x = {'tabnine'}}
+      -- sections = {lualine_c = {'lsp_progress'}, lualine_x = {'tabnine'}}
+
       -- options = {
       --   icons_enabled = true,
       --   theme = 'auto',
