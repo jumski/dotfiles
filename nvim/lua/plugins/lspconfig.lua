@@ -34,7 +34,6 @@ return {
       local solargraph_cmd
 
       if need_custom_solargraph_config() then
-
         solargraph_cmd = container_command('solargraph', {
           image = "toolchest-rails-web"
         })
@@ -51,6 +50,16 @@ return {
       return solargraph_cmd
     end
 
+    local function setup_keybindings(_, _)
+      vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, {})
+      vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {})
+      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
+      -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
+      vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {})
+      vim.keymap.set('n', 'gr', vim.lsp.buf.references, {})
+      vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+    end
+
     -------------------------------------
     -- Language Servers -----------------
     -------------------------------------
@@ -58,6 +67,7 @@ return {
     lspconfig['solargraph'].setup{
       cmd = solargraph_command(),
       capabilities = capabilities,
+      on_attach = setup_keybindings,
       settings = {
         solargraph = {
           diagnostics = true
@@ -66,11 +76,13 @@ return {
     }
     lspconfig['sorbet'].setup{
       cmd = { 'bundle', 'exec', 'srb', 'tc', '--lsp', '--disable-watchman' },
-      capabilities = capabilities
+      capabilities = capabilities,
+      on_attach = setup_keybindings
     }
     lspconfig['lua_ls'].setup{
       cmd = container_command('lua_ls'),
       capabilities = capabilities,
+      on_attach = setup_keybindings,
       settings = {
         Lua = {
           runtime = { version = 'LuaJIT' },
@@ -87,29 +99,35 @@ return {
     }
     lspconfig['pyright'].setup{
       cmd = container_command('pyright'),
-      capabilities = capabilities
+      capabilities = capabilities,
+      on_attach = setup_keybindings
     }
     lspconfig['tsserver'].setup{
       cmd = container_command('tsserver'),
-      capabilities = capabilities
+      capabilities = capabilities,
+      on_attach = setup_keybindings
     }
     lspconfig['cssmodules_ls'].setup{
       cmd = { node_bin('cssmodules-language-server'), '--stdio' },
-      capabilities = capabilities
+      capabilities = capabilities,
+      on_attach = setup_keybindings
     }
 
     lspconfig['cssls'].setup{
       cmd = { node_bin('vscode-css-language-server'), '--stdio' },
-      capabilities = capabilities
+      capabilities = capabilities,
+      on_attach = setup_keybindings
     }
 
     lspconfig['sqlls'].setup{
       cmd = { node_bin('sql-language-server'), 'up', '--method', '--stdio' },
-      capabilities = capabilities
+      capabilities = capabilities,
+      on_attach = setup_keybindings
     }
 
     lspconfig['clojure_lsp'].setup{
-      capabilities = capabilities
+      capabilities = capabilities,
+      on_attach = setup_keybindings
     }
   end
 }
