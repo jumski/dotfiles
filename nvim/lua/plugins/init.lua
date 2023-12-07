@@ -1,6 +1,4 @@
 return {
-  'wbthomason/packer.nvim',
-
   -- tpope
   'tpope/vim-abolish',
   'tpope/vim-bundler',
