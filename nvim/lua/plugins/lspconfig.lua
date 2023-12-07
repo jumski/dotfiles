@@ -6,6 +6,12 @@ return {
   config = function()
     local lspconfig = require('lspconfig')
     local container_command = require('lspcontainers').command
+    local home_path = os.getenv('HOME')
+    local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+    local function node_bin(name)
+      return home_path .. '/.dotfiles/node_modules/.bin/' .. name
+    end
 
     -- returns true/false depending on the presence of bin/restore_pg_dump
     local function need_custom_solargraph_config()
@@ -45,8 +51,9 @@ return {
       return solargraph_cmd
     end
 
-    local capabilities = require('cmp_nvim_lsp').default_capabilities()
-    local home_path = os.getenv('HOME')
+    -------------------------------------
+    -- Language Servers -----------------
+    -------------------------------------
 
     lspconfig['solargraph'].setup{
       cmd = solargraph_command(),
@@ -86,17 +93,18 @@ return {
       cmd = container_command('tsserver'),
       capabilities = capabilities
     }
-    lspconfig['cssmodules_ls'].setup{ capabilities = capabilities }
-
-    local cssls_binary = home_path .. '/.dotfiles/node_modules/.bin/vscode-css-language-server'
-    lspconfig['cssls'].setup{
-      cmd = { cssls_binary, '--stdio' },
+    lspconfig['cssmodules_ls'].setup{
+      cmd = { node_bin('cssmodules-language-server'), '--stdio' },
       capabilities = capabilities
     }
 
-    local sqlls_binary = home_path .. '/.dotfiles/node_modules/.bin/sql-language-server'
+    lspconfig['cssls'].setup{
+      cmd = { node_bin('vscode-css-language-server'), '--stdio' },
+      capabilities = capabilities
+    }
+
     lspconfig['sqlls'].setup{
-      cmd = { sqlls_binary, 'up', '--method', '--stdio' },
+      cmd = { node_bin('sql-language-server'), 'up', '--method', '--stdio' },
       capabilities = capabilities
     }
 
