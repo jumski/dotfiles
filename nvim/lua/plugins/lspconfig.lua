@@ -99,5 +99,9 @@ return {
       cmd = { sqlls_binary, 'up', '--method', '--stdio' },
       capabilities = capabilities
     }
+
+    lspconfig['clojure_lsp'].setup{
+      capabilities = capabilities
+    }
   end
 }

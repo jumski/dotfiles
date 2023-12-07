@@ -14,3 +14,4 @@ clojure/lein.symlink/repl-history
 clojure/lein.symlink/self-installs
 node_modules/
 fish/fish_variables
+.cache
