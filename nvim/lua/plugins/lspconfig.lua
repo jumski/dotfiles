@@ -60,6 +60,10 @@ return {
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
     end
 
+    local function git_root_dir()
+      return lspconfig.util.root_pattern('.git');
+    end
+
     -------------------------------------
     -- Language Servers -----------------
     -------------------------------------
@@ -122,6 +126,7 @@ return {
     lspconfig['sqlls'].setup{
       cmd = { node_bin('sql-language-server'), 'up', '--method', '--stdio' },
       capabilities = capabilities,
+      root_dir = git_root_dir(),
       on_attach = setup_keybindings
     }
 
