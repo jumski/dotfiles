@@ -129,5 +129,11 @@ return {
       capabilities = capabilities,
       on_attach = setup_keybindings
     }
+
+    lspconfig['svelte'].setup{
+      cmd = { node_bin('svelte-language-server'), '--stdio' },
+      capabilities = capabilities,
+      on_attach = setup_keybindings
+    }
   end
 }
