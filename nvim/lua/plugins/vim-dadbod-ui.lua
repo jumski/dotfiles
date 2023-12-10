@@ -24,5 +24,15 @@ return {
             vim.opt_local.foldenable = false
         end,
     })
+
+    vim.g.db_ui_auto_execute_table_helpers = 1
+    vim.g.db_ui_table_helpers = {
+      postgresql = {
+        List = 'select * from {table} limit 100',
+      }
+    }
+
+    -- change indentation of the sidebar items
+    vim.o.shiftwidth = 2
   end,
 }
