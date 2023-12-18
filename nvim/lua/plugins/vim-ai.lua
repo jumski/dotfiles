@@ -1,11 +1,11 @@
 return {
   'madox2/vim-ai',
   config = function()
-    syntax_highlighting_prompt = [[
+    local syntax_highlighting_prompt = [[
     If you attach a code block add syntax type after ``` to enable syntax highlighting.
     ]]
 
-    initial_chat_prompt = [[
+    local initial_chat_prompt = [[
     >>> system
     You are a concise helpful assistant and expert programmer.
     ]] .. syntax_highlighting_prompt
@@ -21,9 +21,8 @@ return {
     }
 
     local vim = vim
-    local api = vim.api
 
-    function git_commit_message_fn()
+    function Git_commit_message_fn()
       local diff = vim.fn.system('git --no-pager diff --staged')
       local prompt = "generate a short commit message from the diff below:\n" .. diff
       local range = 0
@@ -37,7 +36,7 @@ return {
       }
       vim.call('vim_ai#AIRun', range, config, prompt)
     end
-    vim.cmd('command! -nargs=0 GitCommitMessage lua git_commit_message_fn()')
+    vim.cmd('command! -nargs=0 GitCommitMessage lua Git_commit_message_fn()')
 
     vim.cmd([[
     function! CodeReviewFn(range) range
