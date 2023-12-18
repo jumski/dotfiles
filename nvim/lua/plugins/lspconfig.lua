@@ -51,8 +51,8 @@ return {
     end
 
     local function setup_keybindings(_, _)
-      vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, {})
-      vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {})
+      -- vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, {})
+      -- vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {})
       vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
       -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
       vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {})
@@ -101,8 +101,13 @@ return {
         }
       }
     }
+    -- lspconfig['pyright'].setup{
+    --   cmd = container_command('pyright'),
+    --   capabilities = capabilities,
+    --   on_attach = setup_keybindings
+    -- }
     lspconfig['pyright'].setup{
-      cmd = container_command('pyright'),
+      cmd = { 'poetry', 'run', 'pyright-langserver', '--stdio' },
       capabilities = capabilities,
       on_attach = setup_keybindings
     }
