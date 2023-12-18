@@ -46,7 +46,8 @@ return {
           local menu_icon = {
             nvim_lsp = 'λ',
             luasnip = '⋗',
-            buffer = 'Ω',
+            buffer = ' ',
+            -- buffer = 'Ω',
             path = '🖫',
           }
 
