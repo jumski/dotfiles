@@ -12,20 +12,6 @@ map('n', '<leader>x', ':tabclose<CR>', default_opts)
 map('n', '<C-s>', ':w<CR>', default_opts)
 map('i', '<C-s>', '<Esc>:w<CR>', default_opts)
 
--- vim-ai mappings
-vim_ai_opts = {noremap = true}
-
--- :AIChat
-map('n', '<leader>d', ':AIChat<CR>', vim_ai_opts)
-map('x', '<leader>d', ':AIChat ', vim_ai_opts)
-
--- :AIEdit
-map('n', '<leader>e', ':AIEdit ', vim_ai_opts)
-map('x', '<leader>e', ':AIEdit ', vim_ai_opts)
-
--- :GitCommitMessage
-map('n', '<leader>g', ':GitCommitMessage<CR>', vim_ai_opts)
-
 -- Change behavior of line-up/line-down in normal mode
 map('n', 'j', 'gj', default_opts)
 map('n', 'k', 'gk', default_opts)

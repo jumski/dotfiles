@@ -50,5 +50,21 @@ return {
     endfunction
     command! -range CodeReview <line1>,<line2>call CodeReviewFn(<range>)
     ]])
+
+    -- vim-ai mappings
+    local vim_ai_opts = {noremap = true}
+    local map = vim.api.nvim_set_keymap
+
+    -- :AIChat
+    map('n', '<leader>d', ':AIChat<CR>', vim_ai_opts)
+    map('x', '<leader>d', ':AIChat ', vim_ai_opts)
+
+    -- :AIEdit
+    -- map('n', '<leader>e', ':AIEdit ', vim_ai_opts)
+    -- map('x', '<leader>e', ':AIEdit ', vim_ai_opts)
+
+    -- :GitCommitMessage
+    -- map('n', '<leader>g', ':GitCommitMessage<CR>', vim_ai_opts)
+
   end
 }
