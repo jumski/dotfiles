@@ -6,3 +6,7 @@ function ping
     prettyping --nolegend $argv
   end
 end
+
+function coltree
+  tree -C $argv | less -R
+end
