@@ -25,6 +25,8 @@ return {
         require("conjure.mapping")["on-filetype"]()
     end,
     init = function()
+        local helpers = require("core.helpers")
+
 	       -- Set configuration options here
         vim.g["conjure#debug"] = true
 
@@ -33,6 +35,8 @@ return {
 
         -- Rebind it from K to <prefix>gk
         vim.g["conjure#mapping#doc_word"] = "gk"
+
+        vim.g["conjure#client#python#command"] = helpers.project_python_runtime()
 
         -- Reset it to the default unprefixed K (note the special table wrapped syntax)
         -- vim.g["conjure#mapping#doc_word"] = {"K"}
