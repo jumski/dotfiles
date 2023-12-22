@@ -91,7 +91,10 @@ return {
         Lua = {
           runtime = { version = 'LuaJIT' },
           diagnostics = {
-            globals = { 'vim', 'require' }
+            globals = {
+              'vim', 'require', -- nvim config globals
+              'awesome', 'client', -- awesomewm config globals
+            }
           },
           workspace = {
             -- Make the server aware of Neovim runtime files
