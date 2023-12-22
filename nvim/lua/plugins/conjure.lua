@@ -28,7 +28,7 @@ return {
         local helpers = require("core.helpers")
 
 	       -- Set configuration options here
-        vim.g["conjure#debug"] = true
+        -- vim.g["conjure#debug"] = true
 
         -- Disable the documentation mapping
         -- vim.g["conjure#mapping#doc_word"] = false
