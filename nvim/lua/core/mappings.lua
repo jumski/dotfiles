@@ -3,6 +3,7 @@ local default_opts = {noremap = true, silent = true}
 local cmd = vim.cmd
 
 vim.g.mapleader = ','
+vim.g.maplocalleader = ','
 
 -- tab mappings
 map('n', '<leader>c', ':tabnew %<CR>', default_opts)
