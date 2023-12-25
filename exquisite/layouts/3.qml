@@ -5,17 +5,17 @@ Item {
     property var windows: [
         {
             column: 0,
+            rowSpan: 3,
+            row: 0, columnSpan: 12 // full height
+        },
+        {
+            column: 3,
+            rowSpan: 7,
+            row: 0, columnSpan: 12 // full height
+        },
+        {
+            column: 10,
             rowSpan: 2,
-            row: 0, columnSpan: 12 // full height
-        },
-        {
-            column: 2,
-            rowSpan: 5,
-            row: 0, columnSpan: 12 // full height
-        },
-        {
-            column: 7,
-            rowSpan: 5,
             row: 0, columnSpan: 12 // full height
         }
     ]
