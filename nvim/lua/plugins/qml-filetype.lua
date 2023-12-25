@@ -1,3 +1,4 @@
 return {
-  'peterhoeg/vim-qml'
+  'peterhoeg/vim-qml',
+  ft = {'qml'}
 }
