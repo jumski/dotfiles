@@ -1,0 +1,3 @@
+return {
+  'peterhoeg/vim-qml'
+}
