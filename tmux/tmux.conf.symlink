@@ -2,6 +2,9 @@ set -g prefix C-q
 
 unbind C-b
 
+# enabling True colors (termguicolors)
+set-option -sa terminal-features ',xterm-kitty:RGB'
+
 unbind r
 bind r source-file ~/.tmux.conf \; display-message "Configuration reloaded!"
 
