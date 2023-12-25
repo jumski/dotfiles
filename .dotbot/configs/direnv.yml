@@ -1,2 +1,4 @@
 - link:
-  ~/.envrc: envrc.symlink
+   ~/.envrc:
+      path: envrc.symlink
+      force: true
