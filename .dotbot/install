@@ -22,5 +22,5 @@ for config in ${CONFIG_DIR}/*${CONFIG_SUFFIX}; do
     echo -e "\nConfigure $config"
     configFile="$(mktemp)" ; echo -e "$(<"${META_DIR}/${BASE_CONFIG}${CONFIG_SUFFIX}")\n$(<"${config%.*}${CONFIG_SUFFIX}")" > "$configFile"
     # echo "${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASE_DIR}" --plugin-dir "${PLUGIN_DIR}/dotbot-*" -c "$configFile"
-    "${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASE_DIR}" --plugin-dir "${PLUGIN_DIR}/dotbot-*" -c "$configFile" ; rm -f "$configFile"
+    "${DOTBOT_DIR}/${DOTBOT_BIN}" --verbose -d "${BASE_DIR}" --plugin-dir "${PLUGIN_DIR}/dotbot-*" -c "$configFile" ; rm -f "$configFile"
 done
