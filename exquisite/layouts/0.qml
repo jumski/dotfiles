@@ -1,20 +1,17 @@
 import QtQuick 2.6
 
 Item {
-    property string name: "Two Vertical Split"
+    property string name: "Half and Half"
     property var windows: [
         {
-            x: 0,
-            y: 0,
-            width: 6,
-            height: 12
+            column: 0,
+            rowSpan: 6,
+            row: 0, columnSpan: 12 // full height
         },
         {
-            x: 6,
-            y: 0,
-            width: 6,
-            height: 12
+            column: 6,
+            rowSpan: 6,
+            row: 0, columnSpan: 12 // full height
         }
     ]
 }
-

@@ -1,8 +1,7 @@
 # ~/.local/share/kwin/scripts/exquisite/contents/layouts/
 - link:
     ~/.local/share/kwin/scripts/exquisite/contents/layouts:
-      path: exquisite/layouts/*.qml
-      glob: true
+      path: exquisite/layouts
       create: true
       relink: true
     ~/.local/share/kwin/scripts/exquisite/contents/config/main.xml:

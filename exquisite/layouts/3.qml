@@ -1,25 +1,22 @@
 import QtQuick 2.6
 
 Item {
-    property string name: "One Left Two Right"
+    property string name: "One Fifth and Two Fifths"
     property var windows: [
         {
-            x: 6,
-            y: 0,
-            width: 6,
-            height: 6
+            column: 0,
+            rowSpan: 2,
+            row: 0, columnSpan: 12 // full height
         },
         {
-            x: 6,
-            y: 6,
-            width: 6,
-            height: 6
+            column: 2,
+            rowSpan: 5,
+            row: 0, columnSpan: 12 // full height
         },
         {
-            x: 0,
-            y: 0,
-            width: 6,
-            height: 12
+            column: 7,
+            rowSpan: 5,
+            row: 0, columnSpan: 12 // full height
         }
     ]
 }
