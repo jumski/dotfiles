@@ -3,7 +3,7 @@ set -g prefix C-q
 unbind C-b
 
 unbind r
-bind r source-file ~/.tmux.conf
+bind r source-file ~/.tmux.conf \; display-message "Configuration reloaded!"
 
 set-option -g default-shell /usr/bin/fish
 setw -g mode-keys vi
