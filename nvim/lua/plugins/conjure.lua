@@ -36,7 +36,9 @@ return {
         -- Rebind it from K to <prefix>gk
         vim.g["conjure#mapping#doc_word"] = "gk"
 
-        vim.g["conjure#client#python#command"] = helpers.project_python_runtime()
+        local python_command_list = helpers.project_python_runtime()
+        local python_command_string = table.concat(python_command_list, ' ')
+        vim.g["conjure#client#python#command"] =  python_command_string
 
         -- Reset it to the default unprefixed K (note the special table wrapped syntax)
         -- vim.g["conjure#mapping#doc_word"] = {"K"}

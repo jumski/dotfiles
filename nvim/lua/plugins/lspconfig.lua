@@ -4,6 +4,7 @@ return {
     'lspcontainers/lspcontainers.nvim',
   },
   config = function()
+    local helpers = require('core.helpers')
     local lspconfig = require('lspconfig')
     local container_command = require('lspcontainers').command
     local home_path = os.getenv('HOME')
@@ -104,13 +105,17 @@ return {
         }
       }
     }
-    -- lspconfig['pyright'].setup{
-    --   cmd = container_command('pyright'),
-    --   capabilities = capabilities,
-    --   on_attach = setup_keybindings
-    -- }
+
+    local function get_pyright_cmd()
+      if helpers.has_poetry() then
+        return { 'poetry', 'run', 'pyright-langserver', '--stdio' }
+      else
+        return { 'pyright-langserver', '--stdio' }
+      end
+    end
+
     lspconfig['pyright'].setup{
-      cmd = { 'poetry', 'run', 'pyright-langserver', '--stdio' },
+      cmd = get_pyright_cmd(),
       capabilities = capabilities,
       on_attach = setup_keybindings
     }

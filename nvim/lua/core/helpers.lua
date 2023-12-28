@@ -26,7 +26,29 @@ end
 -- Return fixed python runtime for now
 -- TODO: use just 'python -iq' and leverage direnv to overwrite what 'python' means
 function M.project_python_runtime()
-  return "poetry run python -iq"
+  if M.has_poetry() then
+    return { "poetry", "run", "python", "-iq" }
+  end
+
+  return { "python",  "-iq" }
+end
+
+function M.has_poetry()
+  local project_root = M.find_project_root()
+
+  local files = {
+    'poetry.lock',
+    'pyproject.toml',
+    'poetry.toml'
+  }
+
+  for _, file in ipairs(files) do
+    if vim.fn.filereadable(project_root .. "/" .. file) == 1 then
+      return true
+    end
+  end
+
+  return false
 end
 
 return M
