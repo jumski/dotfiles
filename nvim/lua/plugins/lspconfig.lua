@@ -74,11 +74,11 @@ return {
       on_attach = setup_keybindings
     }
 
-    lspconfig['sqlls'].setup{
-      capabilities = capabilities,
-      root_dir = helpers.find_project_root,
-      on_attach = setup_keybindings
-    }
+    -- lspconfig['sqlls'].setup{
+    --   capabilities = capabilities,
+    --   root_dir = helpers.find_project_root,
+    --   on_attach = setup_keybindings
+    -- }
 
     lspconfig['clojure_lsp'].setup{
       capabilities = capabilities,
