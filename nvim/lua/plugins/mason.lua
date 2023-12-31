@@ -22,6 +22,7 @@ return {
         'sorbet',
         'sqlls',
         'svelte',
+        'tailwindcss',
         'tsserver',
       },
       automatic_installation = true

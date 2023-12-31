@@ -85,5 +85,10 @@ return {
       capabilities = capabilities,
       on_attach = setup_keybindings
     }
+
+    lspconfig['tailwindcss'].setup{
+      capabilities = capabilities,
+      on_attach = setup_keybindings
+    }
   end
 }
