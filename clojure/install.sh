@@ -8,5 +8,3 @@ if ! which clj 2>&1 >/dev/null; then
     sudo ./$clojure_installer
   popd
 fi
-
-yarn global add shadow-cljs
