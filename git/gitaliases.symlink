@@ -1,6 +1,5 @@
 [alias]
   ci = commit
-  cim = !git-cim
   wip = !git-cim 'wip'
   s = status -sb
   c = checkout
