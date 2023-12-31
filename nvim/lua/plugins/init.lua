@@ -68,7 +68,6 @@ return {
 
   -- styles/visuals
   -- use "clinstid/eink.vim"
-  "junegunn/limelight.vim",
 
   -- integration from other clients
   -- use {
