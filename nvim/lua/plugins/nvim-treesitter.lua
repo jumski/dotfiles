@@ -16,6 +16,7 @@ return {
         "rust",
         "scss",
         "sql",
+        "svelte",
         "typescript",
         "vim",
         "vimdoc",
@@ -37,6 +38,8 @@ return {
         }
       },
       textobjects = { enable = true },
+      modules = {},
+      ignore_install = {},
     }
   end
 }
