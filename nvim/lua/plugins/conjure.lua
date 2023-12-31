@@ -40,5 +40,13 @@ return {
 
         -- Reset it to the default unprefixed K (note the special table wrapped syntax)
         -- vim.g["conjure#mapping#doc_word"] = {"K"}
+
+        -- disable lsp diagnostics in conjure-log buffers
+        vim.api.nvim_create_autocmd("BufNewFile", {
+          group = vim.api.nvim_create_augroup("conjure_log_disable_lsp", { clear = true }),
+          pattern = { "conjure-log-*" },
+          callback = function() vim.diagnostic.disable(0) end,
+          desc = "Conjure Log disable LSP diagnostics",
+        })
     end,
 }
