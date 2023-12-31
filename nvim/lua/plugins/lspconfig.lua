@@ -1,12 +1,8 @@
 return {
   'neovim/nvim-lspconfig',
-  -- dependencies = {
-  --   'lspcontainers/lspcontainers.nvim',
-  -- },
   config = function()
     local lspconfig = require('lspconfig')
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
-    local helpers = require('core.helpers')
 
     local function setup_keybindings(_, _)
       -- vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, {})
@@ -76,7 +72,7 @@ return {
 
     -- lspconfig['sqlls'].setup{
     --   capabilities = capabilities,
-    --   root_dir = helpers.find_project_root,
+    --   root_dir = require('core.helpers').find_project_root,
     --   on_attach = setup_keybindings
     -- }
 
