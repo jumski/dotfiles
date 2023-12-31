@@ -31,6 +31,10 @@ return {
       capabilities = capabilities,
       on_attach = setup_keybindings
     }
+    lspconfig['standardrb'].setup{
+      capabilities = capabilities,
+      on_attach = setup_keybindings
+    }
     lspconfig['lua_ls'].setup{
       capabilities = capabilities,
       on_attach = setup_keybindings,
