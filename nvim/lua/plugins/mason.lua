@@ -12,17 +12,17 @@ return {
     mason.setup({})
     mason_lspconfig.setup({
       ensure_installed = {
-        'solargraph',
-        'sorbet',
+        'clojure_lsp',
+        'cssls',
+        'cssmodules_ls',
         'lua_ls',
         'pyright',
         'pyright',
-        'tsserver',
-        'cssmodules_ls',
-        'cssls',
+        'solargraph',
+        'sorbet',
         'sqlls',
-        'clojure_lsp',
-        'svelte'
+        'svelte',
+        'tsserver',
       },
       automatic_installation = true
     })
