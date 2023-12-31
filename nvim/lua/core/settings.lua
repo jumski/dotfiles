@@ -4,6 +4,8 @@ local fn = vim.fn       				-- call Vim functions
 local g = vim.g         				-- global variables
 local opt = vim.opt         		-- global/buffer/windows-scoped options
 
+opt.shell = '/bin/sh' -- vim must use POSIX shell and fish is not POSIX
+
 --- General
 opt.mouse = 'a'             -- enable mouse support
 opt.swapfile = false        -- do not use swapfile
