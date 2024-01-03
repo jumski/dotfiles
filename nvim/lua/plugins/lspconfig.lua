@@ -12,6 +12,12 @@ return {
       vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {})
       vim.keymap.set('n', 'gr', vim.lsp.buf.references, {})
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+
+      vim.keymap.set("n", "<leader>li", ":LspInfo<cr>", { silent = true })
+      vim.keymap.set("n", "<leader>ll", ":LspLog<cr>", { silent = true })
+      vim.keymap.set("n", "<leader>lr", ":LspRestart<cr>", { silent = true })
+      vim.keymap.set("n", "<leader>ls", ":LspStart<cr>", { silent = true })
+      vim.keymap.set("n", "<leader>lq", ":LspStop<cr>", { silent = true })
     end
 
     -------------------------------------
