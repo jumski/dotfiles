@@ -15,6 +15,7 @@ return {
         'clojure_lsp',
         'cssls',
         'cssmodules_ls',
+        'denols',
         'lua_ls',
         'pyright',
         'pyright',
