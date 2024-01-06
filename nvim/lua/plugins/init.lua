@@ -31,7 +31,7 @@ return {
 
 
   -- language specific
-  'alcesleo/vim-uppercase-sql',
+  -- 'alcesleo/vim-uppercase-sql',
   'ekalinin/Dockerfile.vim',
   -- use {
   --   'salkin-mada/openscad.nvim',
