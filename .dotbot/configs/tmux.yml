@@ -1,3 +1,5 @@
 - link:
     ~/.tmux.conf: tmux/tmux.conf.symlink
     ~/.tmuxinator: tmux/tmuxinator.symlink
+    ~/.config/tmux-powerline/config.sh: tmux/tmux-powerline-config.sh
+    ~/.config/tmux-powerline/themes: tmux/tmux-powerline-themes/
