@@ -7,6 +7,7 @@ pacman_packages=$(find . -name packages.pacman -exec cat {} \; | tr '\n' ' ')
 pacman_missing_packages=""
 
 # build list of missing packages
+echo "Building list of packages to install..."
 for pkg in $pacman_packages; do
     if ! pacman -Qi $pkg &> /dev/null; then
         pacman_missing_packages="$pacman_missing_packages $pkg"
@@ -15,8 +16,8 @@ done
 
 # Install missing packages, if any
 if [ -n "$pacman_missing_packages" ]; then
-    echo "Installing pacman packages..."
+    echo " -> installing packages..."
     sudo pacman -S --noconfirm $pacman_missing_packages
 else
-    echo "No missing packages to install."
+    echo " -> no new packages to install"
 fi
