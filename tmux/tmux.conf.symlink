@@ -159,8 +159,11 @@ bind a popup -E -w 60% -h 60% "fish -C 'aichat && exit 0'"
 # aichat popup
 bind m popup -E -w 60% -h 60% "fish -C 'muxit && exit 0'"
 
-# aichat popup
-bind d popup -E -w 60% -h 60% "fish -C 'cd ~/.dotfiles'"
+# dotfiles popup
+bind D popup -E -w 60% -h 60% "nvim ~/.dotfiles"
+
+# detach tmux
+bind d detach
 
 # history
 set -g history-limit 10000
