@@ -55,6 +55,7 @@ opt.matchtime = 2           -- show it for 2 seconds
 opt.ignorecase = true       -- ignore capitals when searching
 opt.smartcase = true        -- case sensitive search only when first letter is capital
 
+opt.tabstop = 2
 -- "================ TABS AND SPACES
 -- set expandtab     " all tabs expands to spaces
 -- set sw=2          " automagic indent width
