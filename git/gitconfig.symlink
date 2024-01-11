@@ -18,7 +18,6 @@
     show = delta --tabs=2
 [delta]
 	tabs = 2
-	syntax-theme = "Gruvbox"
 
 [apply]
         whitespace = nowarn
