@@ -4,6 +4,16 @@ return {
   opts = {
     -- auto_open = true,
     auto_close = true,
+    auto_preview = false, -- in case of true - <esc> to exit preview
+    cycle_results = false,
+    signs = {
+      -- icons / text used for a diagnostic
+      error = "✘",
+      warning = "▲",
+      hint = "",
+      information = "»",
+      other = "",
+    },
   },
   config = function(_, opts)
     local trouble = require('trouble')
