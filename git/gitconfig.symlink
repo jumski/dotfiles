@@ -9,8 +9,16 @@
 	editor = nvim
         autocrlf = input
         whitespace = trailing-space,cr-at-eol
-        pager = delta
+	; pager = delta
 	; pager = diff-so-fancy | less --tabs=4 -RFX
+[pager]
+    diff = delta --tabs=2
+    log = delta --tabs=2
+    reflog = delta --tabs=2
+    show = delta --tabs=2
+[delta]
+	tabs = 2
+
 [apply]
         whitespace = nowarn
 [mergetool]

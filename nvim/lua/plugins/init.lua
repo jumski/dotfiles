@@ -14,7 +14,6 @@ return {
   'tpope/vim-haml',
   'tpope/vim-markdown',
   'tpope/vim-obsession',
-  'tpope/vim-projectionist',
   'tpope/vim-rails',
   'tpope/vim-rake',
   'tpope/vim-rhubarb',
