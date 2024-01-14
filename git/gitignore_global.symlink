@@ -62,3 +62,5 @@ nohup.out
 .para-resource
 .para-resources
 .para-archive
+
+__pycache__
