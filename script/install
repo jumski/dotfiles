@@ -9,11 +9,22 @@ set -e
 cd "$(dirname $0)"/..
 
 log_section() {
+  local grey="\033[0;37m"
+  local blue="\033[0;34m"
+  local reset="\033[0m"
+
+  echo -e "${grey}"
   echo
-  echo
-  echo === $1
-  echo ==============================================================
+  echo -e "=== ${blue}$1${grey}"
+  echo -e ==============================================================${reset}
 }
+
+if sudo -n true 2>/dev/null >/dev/null; then
+  echo -e "\033[0;32mSudo unlocked, proceeding further\033[0m"
+else
+  echo -e "\033[0;31mUnlock sudo now to not be surprised by sudo prompts later\033[0m"
+  sudo -v
+fi
 
 ### Install pacman packages before everything
 log_section script/install_pacman_packages
