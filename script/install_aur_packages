@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+
+# find all packages.aur so we can install AUR packages before everything else
+aur_packages=$(find . -name packages.aur -exec cat {} \; | tr '\n' ' ')
+aur_missing_packages=""
+
+# build list of missing AUR packages
+echo "Building list of AUR packages to install..."
+for pkg in $aur_packages; do
+    if ! yay -Qi $pkg &> /dev/null; then
+        aur_missing_packages="$aur_missing_packages $pkg"
+    fi
+done
+
+# Install missing AUR packages, if any
+if [ -n "$aur_missing_packages" ]; then
+    echo " -> installing AUR packages..."
+    yay -S --noconfirm $aur_missing_packages
+else
+    echo " -> no new AUR packages to install"
+fi
