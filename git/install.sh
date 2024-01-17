@@ -1,7 +1,9 @@
-
-#git clone git://github.com/glidenote/hub-zsh-completion.git /tmp/
-#sudo cp /tmp/hub-zsh-completion/_git /usr/share/zsh/site-functions/
-#exec zsh
+#!/bin/bash
 
 # make sure `git add -p` can be accepted with single keypress
-sudo cpan Term::ReadKey
+if perl -MTerm::ReadKey -e '' 2>/dev/null; then
+    echo "Term::ReadKey is already installed."
+else
+    echo "Term::ReadKey is not installed, installing now..."
+    sudo cpan Term::ReadKey
+fi
