@@ -68,27 +68,56 @@ return {
     }
     lspconfig['tsserver'].setup{
       capabilities = capabilities,
-      single_file_support = false,
+      -- single_file_support = false,
       on_attach = setup_keybindings,
-      root_dir = function()
-        -- we assume that deno project can be nested inside ts project,
-        -- so we need to check immediate parents not current working dir
-        local current_file_dir = vim.fn.expand('%:p:h')
-        local is_deno_project =  lspconfig.util.root_pattern("deno.json", "import_map.json")(current_file_dir)
+      -- root_dir = function()
+      --   -- we assume that deno project can be nested inside ts project,
+      --   -- so we need to check immediate parents not current working dir
+      --   local current_file_dir = vim.fn.expand('%:p:h')
+      --   local is_deno_project =  lspconfig.util.root_pattern("deno.json", "import_map.json")(current_file_dir)
 
-        if is_deno_project then
-          return nil
-        else
-          return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd())
-        end
-      end
+      --   if is_deno_project then
+      --     return nil
+      --   else
+      --     return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd())
+      --   end
+      -- end
     }
 
-    lspconfig['denols'].setup{
+
+    lspconfig['denols'].setup({
+      root_dir = lspconfig.util.root_pattern("deno.json"),
       capabilities = capabilities,
-      single_file_support = true,
-      on_attach = setup_keybindings,
-    }
+      -- single_file_support = true,
+      -- on_attach = setup_keybindings,
+      init_options = {
+        lint = true,
+        unstable = true,
+        suggest = {
+          imports = {
+            hosts = {
+              ["https://deno.land"] = true,
+              ["https://cdn.nest.land"] = true,
+              ["https://crux.land"] = true,
+            },
+          },
+        },
+      },
+      on_attach = function()
+        local active_clients = vim.lsp.get_active_clients()
+        for _, client in pairs(active_clients) do
+          -- stop tsserver if denols is already active
+          if client.name == "tsserver" then
+            client.stop()
+          end
+        end
+      end,
+    })
+    -- lspconfig['denols'].setup{
+    --   capabilities = capabilities,
+    --   single_file_support = true,
+    --   on_attach = setup_keybindings,
+    -- }
     lspconfig['cssmodules_ls'].setup{
       capabilities = capabilities,
       on_attach = setup_keybindings
