@@ -11,12 +11,10 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup({
-  import = "plugins",
-  options = {
-    change_detection = {
-      enabled = true,
-      notify = false
-    }
+require("lazy").setup("plugins", {
+  lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json",
+  change_detection = {
+    enabled = true,
+    notify = false
   }
 })
