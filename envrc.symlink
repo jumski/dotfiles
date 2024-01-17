@@ -1,2 +1,1 @@
 use asdf
-PATH_add $HOME/.dotfiles/node_modules/.bin
