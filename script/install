@@ -19,6 +19,37 @@ log_section() {
   echo -e ==============================================================${reset}
 }
 
+echo_time() {
+  date +%s.%N
+}
+
+print_elapsed_time() {
+  export LC_NUMERIC=C
+
+  local start_time="$1"
+  local end_time="$2"
+  local color_dim='\033[2m'
+  local color_reset='\033[0m'
+
+  local elapsed_time=$(echo "scale=2; $end_time - $start_time" | bc)
+  local formatted_time=$(printf "%.2f" $elapsed_time)
+
+  printf "${color_dim} -- done in ${formatted_time}s${color_reset}\n"
+}
+
+with_time() {
+  export LC_NUMERIC=C
+
+  local start_time=$(echo_time)
+
+  # Execute the command passed as arguments
+  "$@"
+
+  local end_time=$(echo_time)
+
+  print_elapsed_time "$start_time" "$end_time"
+}
+
 if sudo -n true 2>/dev/null >/dev/null; then
   echo -e "\033[0;32mSudo unlocked, proceeding further\033[0m"
 else
@@ -28,14 +59,16 @@ fi
 
 ### Install pacman packages before everything
 log_section script/install_pacman_packages
-script/install_pacman_packages
+with_time script/install_pacman_packages
 
 ### Run special installers first, so rest can depend on them
-find . -executable -name priority_install.sh | while read installer; do log_section "${installer}"; sh -c "${installer}"; done
+find . -executable -name priority_install.sh | while read installer; do log_section "${installer}"; with_time sh -c "${installer}"; done
 
 ### Run rest of installers
-find . -executable -name install.sh | while read installer; do log_section "${installer}"; sh -c "${installer}"; done
+find . -executable -name install.sh | while read installer; do log_section "${installer}"; with_time sh -c "${installer}"; done
 
 # link everything
 log_section .dotbot/install
-.dotbot/install
+with_time .dotbot/install
+echo
+echo
