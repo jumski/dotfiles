@@ -4,7 +4,7 @@ function start_ssh_agent
     return
   end
 
-  ssh-agent -c | source
+  eval (ssh-agent -c)
   ssh-add -t 12h # expire key so when laptop is stolen it doesn't get maliciously used
 
   # Export the environment variables
