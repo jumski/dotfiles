@@ -12,6 +12,7 @@ return {
         "lua",
         "python",
         "query",
+        "regex",
         "ruby",
         "rust",
         "scss",
