@@ -7,6 +7,7 @@ return {
         "c",
         "clojure",
         "css",
+        "elvish",
         "fish",
         "javascript",
         "lua",

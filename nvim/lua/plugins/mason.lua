@@ -18,7 +18,6 @@ return {
         'denols',
         'lua_ls',
         'pyright',
-        'pyright',
         'solargraph',
         'sorbet',
         'sqlls',
