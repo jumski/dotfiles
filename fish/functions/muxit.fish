@@ -1,3 +1,7 @@
+function __define_muxit
+set left_half_width 30
+#######################
+
 function process_paths
   while read -l path
     set dirname (dirname $path)
@@ -7,7 +11,8 @@ function process_paths
       set dirname "$dirname/"
     end
     set basename (basename $path)
-    set left_half_width $argv[1]
+    echo "LEFT $left_half_width"
+    # set left_half_width $argv[1]
 
     set dirname_length (string length $dirname)
     set basename_length (string length $basename)
@@ -20,25 +25,28 @@ function process_paths
   end
 end
 
-function muxit
-  set start_dir $argv[1]
-
-  set term_width (/usr/bin/tput cols)
-  # set popup_width (math -s0 "round((0.8 * $term_width) / 2) * 2")
-  set popup_width 80
-  set left_half_width 30
-  # set left_half_width (math -s0 "round(($popup_width / 2) / 2) * 2")
+function _fzf_prompt
   set fzf_prompt_padding (math $left_half_width + 2)
   set fzf_prompt (printf %{$fzf_prompt_padding}s "")
 
-  if test -z "$start_dir"
-    set dir_name (
-    fd -H -t d --glob .git --no-ignore-vcs --exec echo {//} \; /home/jumski/Code |
+  cat | fzf --ansi --keep-right --margin=0,0 --prompt="$fzf_prompt"
+end
+
+function select_dir
+  set glob_pattern '{.git,turbo.json,pnpm-workspace.yaml,pnpm-lock.yaml}'
+
+  fd -H --glob "$glob_pattern" --no-ignore-vcs --exec echo {//} \; /home/jumski/Code |
     sed 's|/home/jumski/Code/||' |
     sed '1i\.dotfiles' |
     process_paths $left_half_width |
-    fzf --ansi --keep-right --margin=0,0 --prompt="$fzf_prompt"
-    )
+    _fzf_prompt
+end
+
+function muxit
+  set start_dir $argv[1]
+
+  if test -z "$start_dir"
+    set dir_name (select_dir)
 
     if test $status -eq 130
       echo "Error in directory search!"
@@ -109,3 +117,7 @@ function muxit
       attach-session
   end
 end
+
+#############################
+end # function __define_muxit
+__define_muxit
