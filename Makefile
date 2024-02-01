@@ -1,4 +1,4 @@
 .PHONY: install
 
 install:
-	script/install
+	@script/install
