@@ -14,7 +14,7 @@ alias ..="cd .."
 
 alias ...="cd ..."
 
-alias ll="ls -alF"
+alias ll="ls -alF --group-directories-first"
 alias la="ls -A"
 alias l="ls -CF"
 alias lh="ls --color=always -lasth | less -R"
