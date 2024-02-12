@@ -2,6 +2,7 @@ return {
   'folke/trouble.nvim',
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   opts = {
+    mode = 'document_diagnostics', -- or 'workspace_diagnostics', "quickfix", "lsp_references", "loclist"
     -- auto_open = true,
     auto_close = true,
     auto_preview = false, -- in case of true - <esc> to exit preview
