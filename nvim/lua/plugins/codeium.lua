@@ -1,5 +1,6 @@
 return {
   'Exafunction/codeium.vim',
+  event = 'BufEnter',
   config = function()
     -- vim.cmd [[ highlight CodeiumSuggestion guifg=#02a7a9 ctermfg=8 ]]
 
