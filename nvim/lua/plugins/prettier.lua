@@ -15,6 +15,7 @@ return {
       "javascriptreact",
       "json",
       "less",
+      "lua",
       "markdown",
       "scss",
       "typescript",
