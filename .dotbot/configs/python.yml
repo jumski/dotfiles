@@ -1,2 +1,3 @@
 - link:
     ~/.default-python-packages: python/default-packages.symlink
+    ~/.config/pdm/config.toml: pdm/config.toml
