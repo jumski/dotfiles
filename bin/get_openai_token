@@ -1,0 +1,3 @@
+#!/bin/bash
+
+bw get item beta.openai.com | jq --raw-output '.fields[] | select(.name == "cli_token") | .value'
