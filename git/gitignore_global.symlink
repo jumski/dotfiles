@@ -64,3 +64,4 @@ nohup.out
 .para-archive
 
 __pycache__
+.pdm-python
