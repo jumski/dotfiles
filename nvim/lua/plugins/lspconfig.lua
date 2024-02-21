@@ -62,7 +62,8 @@ return {
       }
     }
     lspconfig['pyright'].setup{
-      cmd = { 'poetry', 'run', 'pyright-langserver', '--stdio' },
+      cmd = { 'pdm', 'run', 'pyright-langserver', '--stdio' },
+      -- cmd = { 'poetry', 'run', 'pyright-langserver', '--stdio' },
       capabilities = capabilities,
       on_attach = setup_keybindings
     }
