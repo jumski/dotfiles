@@ -5,6 +5,8 @@ unbind C-b
 # enabling True colors (termguicolors)
 set-option -sa terminal-features ',xterm-kitty:RGB'
 
+set-option -g status-position bottom
+
 unbind r
 bind r source-file ~/.tmux.conf \; display-message "Configuration reloaded!"
 
