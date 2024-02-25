@@ -17,4 +17,4 @@ refuse-dirty-repo:
 	}
 
 pull:
-	git pull --ff-only && exit 1
+	git pull --ff-only
