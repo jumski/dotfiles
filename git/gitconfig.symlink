@@ -11,6 +11,10 @@
         whitespace = trailing-space,cr-at-eol
 	; pager = delta
 	; pager = diff-so-fancy | less --tabs=4 -RFX
+
+  # FSMonitor speeds up git status by monitoring files
+  fsmonitor = true
+  untrackedcache = true
 [pager]
     diff = delta --tabs=2
     log = delta --tabs=2
