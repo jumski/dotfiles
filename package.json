@@ -5,6 +5,7 @@
     "shadow-cljs": "^2.26.2",
     "sql-language-server": "^1.7.0",
     "svelte-language-server": "^0.16.1",
+    "tree-sitter-cli": "^0.21.0",
     "typescript": "^5.3.2",
     "vscode-langservers-extracted": "^4.8.0"
   }
