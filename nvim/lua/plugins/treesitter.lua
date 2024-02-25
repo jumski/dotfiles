@@ -2,7 +2,11 @@ return {
   'nvim-treesitter/nvim-treesitter',
   build = ':TSUpdate',
   config = function()
+    local parser_install_dir = "$HOME/.local/share/treesitter"
+    vim.opt.runtimepath:append(parser_install_dir)
+
     require('nvim-treesitter.configs').setup {
+      parser_install_dir = parser_install_dir,
       ensure_installed = {
         "c",
         "clojure",
