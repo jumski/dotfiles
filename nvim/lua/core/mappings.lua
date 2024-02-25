@@ -48,3 +48,7 @@ map('i', '<C-s>', '<Esc>:update<CR>', default_opts)
 
 -- this allows all window commands in insert mode and i'm not accidentally deleting words anymore :-)"
 map('i', '<C-w>', '<C-o><C-w>', default_opts)
+
+-- easier pasting from OS
+map('n', '<leader>p', '"+p', default_opts)
+-- map('n', '<leader>c', '"+c', default_opts) -- conflicts with new-tab
