@@ -50,5 +50,5 @@ map('i', '<C-s>', '<Esc>:update<CR>', default_opts)
 map('i', '<C-w>', '<C-o><C-w>', default_opts)
 
 -- easier pasting from OS
-map('n', '<leader>p', '"+p', default_opts)
+map('n', '<leader>p', 'o<ESC>"+p', default_opts) -- create new line below and paste into it
 -- map('n', '<leader>c', '"+c', default_opts) -- conflicts with new-tab
