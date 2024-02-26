@@ -1,7 +1,6 @@
 return {
   'folke/aerial.nvim',
-  xdkek = function()
-  end,
+  enabled = false,
   config = function()
     require('aerial').setup({
       layout = {
