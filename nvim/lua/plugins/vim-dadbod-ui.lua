@@ -17,7 +17,10 @@ return {
     vim.g.db_ui_execute_on_save = 0
 
     -- vim.g.db_ui_disable_mappings = 1
-    -- vim.keymap.set('n', '<CR>', '<Plug>(DBUI_SelectLine)', { noremap = true, silent = true })
+
+    -- TODO: make this work
+    -- vim.keymap.set('n', '<leader>D', '%DB<CR>', { noremap = true, silent = true })
+    -- vim.keymap.set('v', '<leader>D', ':DB<CR>', { noremap = true, silent = true })
 
     -- Lua autocmd for FileType dbout to setlocal nofoldenable
     vim.api.nvim_create_autocmd("FileType", {
