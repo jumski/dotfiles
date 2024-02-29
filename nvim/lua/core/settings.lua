@@ -135,3 +135,9 @@ sign({name = 'DiagnosticSignInfo', text = '»'})
 
 
 -- vim.cmd('highlight CustomSignColumnNonEmpty guibg=#FF0000 guifg=#FFFFFF')
+
+vim.filetype.add({
+  extension = {
+    postcss = 'css',
+  }
+})
