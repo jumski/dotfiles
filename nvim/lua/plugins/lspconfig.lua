@@ -129,6 +129,8 @@ return {
       on_attach = setup_keybindings
     }
 
+    -- TODO: add something for raw html
+
     -- lspconfig['sqlls'].setup{
     --   capabilities = capabilities,
     --   root_dir = require('core.helpers').find_project_root,
