@@ -2,7 +2,7 @@
 
 SHELL := /bin/bash
 
-all: sync
+all: install
 
 sync: refuse-dirty-repo pull install
 	@echo "Repository synchronized."
