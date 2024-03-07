@@ -15,6 +15,7 @@ return {
         -- model = "gpt-3.5-turbo",
         -- model = "gpt-4",
         -- model = "gpt-4-1106-preview",
+        -- model = 'codellama:34b',
         model = 'dolphin-mixtral',
         endpoint_url = "http://jumski-manjaro-pc.local:11434/v1/chat/completions",
         temperature = 0.7,
