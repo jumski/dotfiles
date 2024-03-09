@@ -3,7 +3,7 @@ pre-commit:
   commands:
     lua/check:
       glob: "*.lua"
-      run: luac {staged_files}
+      run: luac -o /dev/null {staged_files}
 # EXAMPLE USAGE:
 #
 #   Refer for explanation to following link:
