@@ -60,6 +60,10 @@ fi
 ### Install pacman packages before everything
 log_section script/install_pacman_packages
 with_time script/install_pacman_packages
+#
+### Install AUR packages before everything
+log_section script/install_aur_packages
+with_time script/install_aur_packages
 
 ### Run special installers first, so rest can depend on them
 find . -executable -name priority_install.sh | while read installer; do log_section "${installer}"; with_time sh -c "${installer}"; done
