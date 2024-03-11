@@ -6,7 +6,7 @@ vim.g.mapleader = ','
 vim.g.maplocalleader = ','
 
 -- tab mappings
-map('n', '<leader>c', ':tabnew %<CR>', default_opts)
+-- map('n', '<leader>c', ':tabnew %<CR>', default_opts)
 map('n', '<leader><Tab>', ':tabp<CR>', default_opts)
 map('n', '<leader>f', ':tabn<CR>', default_opts)
 map('n', '<leader>q', ':tabclose<CR>', default_opts)
