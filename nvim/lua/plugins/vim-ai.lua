@@ -59,8 +59,8 @@ return {
     local map = vim.api.nvim_set_keymap
 
     -- :AIChat
-    map('n', '<leader>d', ':AIChat<CR>', vim_ai_opts)
-    map('x', '<leader>d', ':AIChat ', vim_ai_opts)
+    -- map('n', '<leader>d', ':AIChat<CR>', vim_ai_opts)
+    -- map('x', '<leader>d', ':AIChat ', vim_ai_opts)
 
     -- :AIEdit
     -- map('n', '<leader>e', ':AIEdit ', vim_ai_opts)
