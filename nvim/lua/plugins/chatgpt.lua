@@ -1,5 +1,6 @@
 local CHAT_API =
-  'ollama';
+  -- 'ollama';
+  'groq';
   -- 'openai';
 
 local WHICH_KEY_MAPPINGS = {
@@ -75,6 +76,32 @@ local ollama_config = {
   keymap = UI_MAPPINGS
 }
 
+local groq_config = {
+  api_host_cmd = 'echo -n https://api.groq.com/openai',
+  api_key_cmd = HOME_PATH .. "/.get_groq_token",
+  openai_params = {
+    model = "mixtral-8x7b-32768",
+    -- model = "llama2-70b-4096",
+    -- model = "gemma-7b-it",
+    frequency_penalty = 0,
+    presence_penalty = 0,
+    max_tokens = 500,
+    temperature = 0,
+    top_p = 1,
+    n = 1,
+  },
+  openai_edit_params = {
+    model = "mixtral-8x7b-32768",
+    frequency_penalty = 0,
+    presence_penalty = 0,
+    temperature = 0,
+    top_p = 1,
+    n = 1,
+  },
+  keymap = UI_MAPPINGS
+
+}
+
 return {
   "jackMort/ChatGPT.nvim",
   -- enabled = false,
@@ -82,6 +109,8 @@ return {
   config = function()
     if CHAT_API == 'openai' then
       require("chatgpt").setup(openai_config)
+    elseif CHAT_API == 'groq' then
+      require("chatgpt").setup(groq_config)
     else
       require("chatgpt").setup(ollama_config)
     end
