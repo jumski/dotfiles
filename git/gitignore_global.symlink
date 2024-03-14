@@ -65,3 +65,6 @@ nohup.out
 
 __pycache__
 .pdm-python
+
+# taskell linked tasks
+.taskell

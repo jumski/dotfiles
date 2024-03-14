@@ -1,3 +1,9 @@
 #!/bin/bash
+
+if [[ -z "$DISPLAY" ]]; then
+  echo No \$DISPLAY available - skipping input device setup
+  exit 0
+fi
+
 $HOME/.dotfiles/bin/setup_keyboard
 $HOME/.dotfiles/bin/setup_touchpad

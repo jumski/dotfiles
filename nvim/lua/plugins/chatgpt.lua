@@ -1,5 +1,6 @@
 local CHAT_API =
   'ollama';
+  -- 'groq';
   -- 'openai';
 
 local WHICH_KEY_MAPPINGS = {
@@ -40,7 +41,7 @@ local UI_MAPPINGS = {
   delete_message = "d",
   toggle_settings = "<C-o>",
   toggle_sessions = "<C-p>",
-  toggle_help = "<C-h>",
+  toggle_help = "<C-/>",
   toggle_message_role = "<C-r>",
   toggle_system_role_open = "<C-s>",
   stop_generating = "<C-x>",
@@ -49,7 +50,16 @@ local UI_MAPPINGS = {
 local HOME_PATH = vim.fn.expand("$HOME")
 local openai_config = {
   api_key_cmd = HOME_PATH .. "/.get_openai_token",
-  keymap = UI_MAPPINGS
+  keymap = UI_MAPPINGS,
+  openai_params = {
+    model = "gpt-4-turbo-preview",
+    frequency_penalty = 0,
+    presence_penalty = 0,
+    max_tokens = 500,
+    temperature = 0,
+    top_p = 1,
+    n = 1,
+  },
 }
 
 local ollama_config = {
@@ -75,6 +85,32 @@ local ollama_config = {
   keymap = UI_MAPPINGS
 }
 
+local groq_config = {
+  api_host_cmd = 'echo -n https://api.groq.com/openai',
+  api_key_cmd = HOME_PATH .. "/.get_groq_token",
+  openai_params = {
+    model = "mixtral-8x7b-32768",
+    -- model = "llama2-70b-4096",
+    -- model = "gemma-7b-it",
+    frequency_penalty = 0,
+    presence_penalty = 0,
+    max_tokens = 500,
+    temperature = 0,
+    top_p = 1,
+    n = 1,
+  },
+  openai_edit_params = {
+    model = "mixtral-8x7b-32768",
+    frequency_penalty = 0,
+    presence_penalty = 0,
+    temperature = 0,
+    top_p = 1,
+    n = 1,
+  },
+  keymap = UI_MAPPINGS
+
+}
+
 return {
   "jackMort/ChatGPT.nvim",
   -- enabled = false,
@@ -82,6 +118,8 @@ return {
   config = function()
     if CHAT_API == 'openai' then
       require("chatgpt").setup(openai_config)
+    elseif CHAT_API == 'groq' then
+      require("chatgpt").setup(groq_config)
     else
       require("chatgpt").setup(ollama_config)
     end
