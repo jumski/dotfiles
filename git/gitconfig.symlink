@@ -1,3 +1,8 @@
+[user]
+        name = Wojtek Majewski
+        email = wojciech.majewski@pm.me
+[credential]
+        helper = cache
 [include]
         path = ~/.gitconfig.local
 [include]
