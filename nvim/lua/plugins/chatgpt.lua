@@ -1,6 +1,6 @@
 local CHAT_API =
-  -- 'ollama';
-  'groq';
+  'ollama';
+  -- 'groq';
   -- 'openai';
 
 local WHICH_KEY_MAPPINGS = {
@@ -41,7 +41,7 @@ local UI_MAPPINGS = {
   delete_message = "d",
   toggle_settings = "<C-o>",
   toggle_sessions = "<C-p>",
-  toggle_help = "<C-h>",
+  toggle_help = "<C-/>",
   toggle_message_role = "<C-r>",
   toggle_system_role_open = "<C-s>",
   stop_generating = "<C-x>",
@@ -50,7 +50,16 @@ local UI_MAPPINGS = {
 local HOME_PATH = vim.fn.expand("$HOME")
 local openai_config = {
   api_key_cmd = HOME_PATH .. "/.get_openai_token",
-  keymap = UI_MAPPINGS
+  keymap = UI_MAPPINGS,
+  openai_params = {
+    model = "gpt-4-turbo-preview",
+    frequency_penalty = 0,
+    presence_penalty = 0,
+    max_tokens = 500,
+    temperature = 0,
+    top_p = 1,
+    n = 1,
+  },
 }
 
 local ollama_config = {
