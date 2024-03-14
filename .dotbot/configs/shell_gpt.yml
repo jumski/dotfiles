@@ -1,0 +1,4 @@
+- link:
+    ~/.config/shell_gpt/.sgptrc: /home/jumski/SynologyDrive/Areas/Dev/shell_gpt/sgptrc
+    ~/.config/shell_gpt/roles: /home/jumski/SynologyDrive/Areas/Dev/shell_gpt/roles
+    ~/.config/shell_gpt/functions: /home/jumski/SynologyDrive/Areas/Dev/shell_gpt/functions
