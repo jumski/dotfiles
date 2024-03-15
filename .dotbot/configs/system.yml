@@ -3,4 +3,7 @@
     ~/.agignore: system/agignore.symlink
     ~/.psqlrc: postgres/psqlrc.symlink
     ~/.tool-versions: tool-versions.symlink
-    ~/.ssh/config: /home/jumski/SynologyDrive/Areas/Dev/ssh-config
+    ~/.ssh/config:
+      path: /home/jumski/SynologyDrive/Areas/Dev/ssh-config
+      ignore-missing: true
+      create: true

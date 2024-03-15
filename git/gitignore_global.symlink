@@ -68,3 +68,5 @@ __pycache__
 
 # taskell linked tasks
 .taskell
+
+.cache
