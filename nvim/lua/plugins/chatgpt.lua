@@ -1,6 +1,6 @@
 local CHAT_API =
-  'ollama';
-  -- 'groq';
+  -- 'ollama';
+  'groq';
   -- 'openai';
 
 local WHICH_KEY_MAPPINGS = {
