@@ -134,20 +134,8 @@ bind -n M-m command-prompt "split-window -h 'exec man %%'"
 # open main alsamixer
 bind v split-window -l 14 -h '/home/jumski/.dotfiles/bin/main-alsamixer'
 
-# toggle mocp
-bind P run 'mocp -G'
-
 # open htop
 bind h split-window -v 'htop'
-
-# open tail -f log/development.log
-bind t split-window -l 120 -h 'tail -100f log/development.log'
-
-# open tig
-bind T split-window -h 'tig'
-
-# open irb
-bind I split-window -h 'irb'
 
 # browse github repo
 bind b command-prompt "run 'exec xdg-open https://github.com/%%'"
@@ -155,14 +143,14 @@ bind b command-prompt "run 'exec xdg-open https://github.com/%%'"
 # <c-z>fg;alert
 bind F send-keys C-z 'fg;alert' Enter
 
-# aichat popup
-bind a popup -E -w 60% -h 60% "fish -C 'aichat && exit 0'"
-
-# aichat popup
+# muxit popup
 bind m popup -E -w 60% -h 60% "fish -C 'muxit && exit 0'"
 
 # dotfiles popup
 bind D popup -E -w 60% -h 60% "nvim ~/.dotfiles"
+
+# # todos popup
+# bind t popup -E -w 60% -h 60% "todo"
 
 # detach tmux
 bind d detach
