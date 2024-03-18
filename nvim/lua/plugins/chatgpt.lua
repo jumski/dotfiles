@@ -1,7 +1,23 @@
 local CHAT_API =
-  'ollama';
-  -- 'groq';
   -- 'openai';
+  -- 'groq';
+  'ollama';
+
+local OPENAI_MODEL =
+  'gpt-4-1106-preview';
+  -- 'gpt-4';
+  -- 'gpt-3.5-turbo';
+
+local GROQ_MODEL =
+  "mixtral-8x7b-32768";
+  -- "llama2-70b-4096";
+  -- "gemma-7b-it";
+  -- "gemma-2b-it";
+
+local OLLAMA_MODEL =
+  'deepseek-coder:33b-instruct-q5_K_M';
+  -- 'codellama:34b';
+  -- 'dolphin-mixtral';
 
 local WHICH_KEY_MAPPINGS = {
   c = {
@@ -52,7 +68,7 @@ local openai_config = {
   api_key_cmd = HOME_PATH .. "/.get_openai_token",
   keymap = UI_MAPPINGS,
   openai_params = {
-    model = "gpt-4-turbo-preview",
+    model = OPENAI_MODEL,
     frequency_penalty = 0,
     presence_penalty = 0,
     max_tokens = 500,
@@ -66,7 +82,7 @@ local ollama_config = {
   api_host_cmd = 'echo -n http://pc.netbird.cloud:11434',
   api_key_cmd = 'echo whatever',
   openai_params = {
-    model = "dolphin-mixtral",
+    model = OLLAMA_MODEL,
     frequency_penalty = 0,
     presence_penalty = 0,
     max_tokens = 500,
@@ -75,7 +91,7 @@ local ollama_config = {
     n = 1,
   },
   openai_edit_params = {
-    model = "dolphin-mixtral",
+    model = OLLAMA_MODEL,
     frequency_penalty = 0,
     presence_penalty = 0,
     temperature = 0,
@@ -89,9 +105,7 @@ local groq_config = {
   api_host_cmd = 'echo -n https://api.groq.com/openai',
   api_key_cmd = HOME_PATH .. "/.get_groq_token",
   openai_params = {
-    model = "mixtral-8x7b-32768",
-    -- model = "llama2-70b-4096",
-    -- model = "gemma-7b-it",
+    model = GROQ_MODEL,
     frequency_penalty = 0,
     presence_penalty = 0,
     max_tokens = 500,
@@ -100,7 +114,7 @@ local groq_config = {
     n = 1,
   },
   openai_edit_params = {
-    model = "mixtral-8x7b-32768",
+    model = GROQ_MODEL,
     frequency_penalty = 0,
     presence_penalty = 0,
     temperature = 0,
