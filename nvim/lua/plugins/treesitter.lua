@@ -51,5 +51,6 @@ return {
       modules = {},
       ignore_install = {},
     }
+    vim.treesitter.language.register('markdown', 'chatgpt')
   end
 }
