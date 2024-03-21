@@ -1,23 +1,38 @@
+local WHICH_KEY_MAPPINGS = {
+  l = {
+    name = "Language Server",
+    -- l = { "", "" },
+    r = { vim.lsp.buf.rename, "Rename symbol" },
+    a = { vim.lsp.buf.code_action, "Code action" },
+    d = { vim.lsp.buf.definition, "Go to definition" },
+    t = { vim.lsp.buf.type_definition, "Go to type definition" },
+    i = { vim.lsp.buf.implementation, "Go to implementation" },
+    g = { vim.lsp.buf.declaration, "Go to declaration" },
+    s = { vim.lsp.buf.signature_help, "Signature help" },
+    f = { vim.lsp.buf.format, "Format buffer" },
+  },
+}
+
 return {
   'neovim/nvim-lspconfig',
   config = function()
     local lspconfig = require('lspconfig')
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-    local function setup_keybindings(_, _)
-      -- vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, {})
-      -- vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {})
-      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-      -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
-      vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {})
-      vim.keymap.set('n', 'gr', vim.lsp.buf.references, {})
-      vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+    local telescopeDropdown = require('telescope.themes').get_dropdown({})
+    local function lsp_references_dropdown()
+      -- require('telescope.builtin').lsp_references(telescopeDropdown)
+      require('telescope.builtin').lsp_references( {layout_strategy='horizontal',layout_config={width=1}})
+    end
 
-      vim.keymap.set("n", "<leader>li", ":LspInfo<cr>", { silent = true })
-      vim.keymap.set("n", "<leader>ll", ":LspLog<cr>", { silent = true })
-      vim.keymap.set("n", "<leader>lr", ":LspRestart<cr>", { silent = true })
-      vim.keymap.set("n", "<leader>ls", ":LspStart<cr>", { silent = true })
-      vim.keymap.set("n", "<leader>lq", ":LspStop<cr>", { silent = true })
+    require("which-key").register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
+
+    local function setup_keybindings(_, _)
+      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
+      vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
+      vim.keymap.set('n', 'gr', lsp_references_dropdown, {})
+      -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, {})
+      vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
     end
 
     -------------------------------------
