@@ -1,7 +1,7 @@
 local CHAT_API =
   -- 'openai';
-  -- 'groq';
-  'ollama';
+  'groq';
+  -- 'ollama';
 
 local OPENAI_MODEL =
   'gpt-4-1106-preview';
@@ -15,6 +15,7 @@ local GROQ_MODEL =
   -- "gemma-2b-it";
 
 local OLLAMA_MODEL =
+  -- 'deepseek-coder:6.7b-instruct-q8_0';
   'deepseek-coder:33b-instruct-q5_K_M';
   -- 'codellama:34b';
   -- 'dolphin-mixtral';
@@ -71,7 +72,7 @@ local openai_config = {
     model = OPENAI_MODEL,
     frequency_penalty = 0,
     presence_penalty = 0,
-    max_tokens = 500,
+    max_tokens = 2000,
     temperature = 0,
     top_p = 1,
     n = 1,
@@ -85,7 +86,7 @@ local ollama_config = {
     model = OLLAMA_MODEL,
     frequency_penalty = 0,
     presence_penalty = 0,
-    max_tokens = 500,
+    max_tokens = 2000,
     temperature = 0,
     top_p = 1,
     n = 1,
@@ -108,7 +109,7 @@ local groq_config = {
     model = GROQ_MODEL,
     frequency_penalty = 0,
     presence_penalty = 0,
-    max_tokens = 500,
+    max_tokens = 2000,
     temperature = 0,
     top_p = 1,
     n = 1,
