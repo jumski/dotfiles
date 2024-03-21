@@ -8,6 +8,7 @@ return {
     require('nvim-treesitter.configs').setup {
       parser_install_dir = parser_install_dir,
       ensure_installed = {
+        "bash",
         "c",
         "clojure",
         "css",
@@ -15,6 +16,8 @@ return {
         "fish",
         "javascript",
         "lua",
+        "markdown",
+        "markdown_inline",
         "python",
         "query",
         "regex",
