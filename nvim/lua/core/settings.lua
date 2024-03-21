@@ -17,11 +17,13 @@ opt.hidden = true           -- 1. The current buffer can be put to the backgroun
 opt.sessionoptions = 'buffers,winsize,tabpages,winpos,winsize' -- session saving options
 
 --- Performance
-opt.lazyredraw = true       -- do not redraw while executing macros etc
 opt.ttyfast = true          -- indicates a fast terminal connection
                             -- (more characters will be sent to the screen for redrawing)
 opt.timeoutlen = 800        -- time out on mapping
 opt.ttimeoutlen = 100       -- time out on key codes after a tenth of a second
+
+-- disabled because noice.nvim complained about it
+-- opt.lazyredraw = true       -- do not redraw while executing macros etc
 
 --- Style / themes
 opt.termguicolors = true    -- needed to properly show colors in tmux
