@@ -66,9 +66,9 @@ local UI_MAPPINGS = {
 }
 
 local HOME_PATH = vim.fn.expand("$HOME")
+
 local openai_config = {
   api_key_cmd = HOME_PATH .. "/.get_openai_token",
-  keymap = UI_MAPPINGS,
   openai_params = {
     model = OPENAI_MODEL,
     frequency_penalty = 0,
@@ -100,7 +100,6 @@ local ollama_config = {
     top_p = 1,
     n = 1,
   },
-  keymap = UI_MAPPINGS
 }
 
 local groq_config = {
@@ -123,8 +122,6 @@ local groq_config = {
     top_p = 1,
     n = 1,
   },
-  keymap = UI_MAPPINGS
-
 }
 
 return {
@@ -132,14 +129,21 @@ return {
   -- enabled = false,
   event = "VeryLazy",
   config = function()
+    local config
     if CHAT_API == 'openai' then
-      require("chatgpt").setup(openai_config)
+      config = openai_config
     elseif CHAT_API == 'groq' then
-      require("chatgpt").setup(groq_config)
+      config = groq_config
     else
-      require("chatgpt").setup(ollama_config)
+      config = ollama_config
     end
 
+    config.keymap = UI_MAPPINGS
+    config.actions_paths = {
+      HOME_PATH .. "/.dotfiles/nvim/lua/plugins/chatgpt-actions.json",
+    }
+
+    require("chatgpt").setup(config)
     require("which-key").register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
   end,
   dependencies = {
