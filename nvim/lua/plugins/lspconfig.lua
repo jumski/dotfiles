@@ -19,10 +19,10 @@ return {
     local lspconfig = require('lspconfig')
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-    local telescopeDropdown = require('telescope.themes').get_dropdown({})
+    local telescopeDropdown = require('telescope.themes').get_dropdown({layout_strategy = 'horizontal', layout_config = {width = 1.0}})
     local function lsp_references_dropdown()
-      -- require('telescope.builtin').lsp_references(telescopeDropdown)
-      require('telescope.builtin').lsp_references( {layout_strategy='horizontal',layout_config={width=1}})
+      require('telescope.builtin').lsp_references(telescopeDropdown)
+      -- require('telescope.builtin').lsp_references( {layout_strategy='horizontal',layout_config={width=1.0}})
     end
 
     require("which-key").register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
