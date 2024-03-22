@@ -1,71 +1,71 @@
 [user]
-        name = Wojtek Majewski
-        email = wojciech.majewski@pm.me
+  name = Wojtek Majewski
+  email = wojciech.majewski@pm.me
 [credential]
-        helper = cache
+  helper = cache
 [include]
-        path = ~/.gitconfig.local
+  path = ~/.gitconfig.local
 [include]
-        path = ~/.gitaliases
+  path = ~/.gitaliases
 [hub]
-	protocol = git
+  protocol = git
 [core]
-        excludesfile = ~/.gitignore_global
-	editor = nvim
-        autocrlf = input
-        whitespace = trailing-space,cr-at-eol
-	; pager = delta
-	; pager = diff-so-fancy | less --tabs=4 -RFX
+  excludesfile = ~/.gitignore_global
+  editor = nvim
+  autocrlf = input
+  whitespace = trailing-space,cr-at-eol
+  ; pager = delta
+  ; pager = diff-so-fancy | less --tabs=4 -RFX
 
   # FSMonitor speeds up git status by monitoring files
   fsmonitor = true
   untrackedcache = true
 [pager]
-    difftool = true
-    ;diff = delta --tabs=2
-    ;log = delta --tabs=2
-    ;reflog = delta --tabs=2
-    ;show = delta --tabs=2
+  difftool = true
+  ;diff = delta --tabs=2
+  ;log = delta --tabs=2
+  ;reflog = delta --tabs=2
+  ;show = delta --tabs=2
 [delta]
-	tabs = 2
+  tabs = 2
 
 [apply]
-        whitespace = nowarn
+  whitespace = nowarn
 [mergetool]
-        keepBackup = false
+  keepBackup = false
 [difftool]
-        prompt = false
+  prompt = false
 [difftool "difftastic"]
-        cmd = difft "$LOCAL" "$REMOTE"
+  cmd = difft "$LOCAL" "$REMOTE"
 [help]
-        autocorrect = 1
+  autocorrect = 1
 [push]
-        # See `git help config` (search for push.default)
-        # for more information on different options of the below setting.
-        #
-        # Setting to git 2.0 default to suppress warning message
-	default = current
+  # See `git help config` (search for push.default)
+  # for more information on different options of the below setting.
+  #
+  # Setting to git 2.0 default to suppress warning message
+  default = current
 
 [color]
-	branch = auto
-	diff = auto
-	interactive = auto
-	status = auto
-	ui = true
+  branch = auto
+  diff = auto
+  interactive = auto
+  status = auto
+  ui = true
 
 [color "diff"]
-	commit = "yellow"
-	meta = 11
-	frag = "magenta"
-	old = "red"
-	new = "green"
-	whitespace = red reverse
+  commit = "yellow"
+  meta = 11
+  frag = "magenta"
+  old = "red"
+  new = "green"
+  whitespace = red reverse
 
 [color "diff-highlight"]
-	oldNormal = "red"
-	oldHighlight = "red 52"
-	newNormal = "green"
-	newHighlight = "green 22"
+  oldNormal = "red"
+  oldHighlight = "red 52"
+  newNormal = "green"
+  newHighlight = "green 22"
 
 [branch]
   # set up git pull to do a rebase instead of merge
@@ -74,34 +74,34 @@
   singlekey = true
   diffFilter = delta --color-only
 [github]
-	user = jumski
+  user = jumski
 [init]
-	defaultBranch = main
-	; templatedir = /home/jumski/.dotfiles/git/template
+  defaultBranch = main
+  ; templatedir = /home/jumski/.dotfiles/git/template
 [mergetool "fugitive"]
-	cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
+  cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
 [merge]
-	tool = fugitive
-	conflictstyle = diff3
+  tool = fugitive
+  conflictstyle = diff3
 [diff]
   external = difft
   ;tool = difftastic
-	colorMove = default
+  colorMove = default
 [filter "tabspace"]
-	smudge = unexpand --tabs=4 --first-only
-	clean = expand --tabs=4 --initial
+  smudge = unexpand --tabs=4 --first-only
+  clean = expand --tabs=4 --initial
 [pull]
-	rebase = false
-	ff = true
+  rebase = false
+  ff = true
 [rerere]
-	enabled = true
+  enabled = true
 [url "git@github.com:"]
-	insteadOf = https://github.com/
+  insteadOf = https://github.com/
 
 [delta]
-	navigate = true # n and N to move between sections
+  navigate = true # n and N to move between sections
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
