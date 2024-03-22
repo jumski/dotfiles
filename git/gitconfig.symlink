@@ -26,17 +26,27 @@
   ;log = delta --tabs=2
   ;reflog = delta --tabs=2
   ;show = delta --tabs=2
+[diff]
+  external = difft --display inline
+  ;tool = difftastic
+  colorMove = default
+[difftool]
+  prompt = false
+[difftool "difftastic"]
+  cmd = difft --display inline "$LOCAL" "$REMOTE"
 [delta]
   tabs = 2
+  navigate = true # n and N to move between sections
+[merge]
+  tool = fugitive
+  conflictstyle = diff3
+[mergetool "fugitive"]
+  cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
 
 [apply]
   whitespace = nowarn
 [mergetool]
   keepBackup = false
-[difftool]
-  prompt = false
-[difftool "difftastic"]
-  cmd = difft --display inline "$LOCAL" "$REMOTE"
 [help]
   autocorrect = 1
 [push]
@@ -53,19 +63,19 @@
   status = auto
   ui = true
 
-[color "diff"]
-  commit = "yellow"
-  meta = 11
-  frag = "magenta"
-  old = "red"
-  new = "green"
-  whitespace = red reverse
-
-[color "diff-highlight"]
-  oldNormal = "red"
-  oldHighlight = "red 52"
-  newNormal = "green"
-  newHighlight = "green 22"
+; [color "diff"]
+;   commit = "yellow"
+;   meta = 11
+;   frag = "magenta"
+;   old = "red"
+;   new = "green"
+;   whitespace = red reverse
+;
+; [color "diff-highlight"]
+;   oldNormal = "red"
+;   oldHighlight = "red 52"
+;   newNormal = "green"
+;   newHighlight = "green 22"
 
 [branch]
   # set up git pull to do a rebase instead of merge
@@ -78,15 +88,6 @@
 [init]
   defaultBranch = main
   ; templatedir = /home/jumski/.dotfiles/git/template
-[mergetool "fugitive"]
-  cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
-[merge]
-  tool = fugitive
-  conflictstyle = diff3
-[diff]
-  external = difft --display inline
-  ;tool = difftastic
-  colorMove = default
 [filter "tabspace"]
   smudge = unexpand --tabs=4 --first-only
   clean = expand --tabs=4 --initial
@@ -98,8 +99,6 @@
 [url "git@github.com:"]
   insteadOf = https://github.com/
 
-[delta]
-  navigate = true # n and N to move between sections
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
