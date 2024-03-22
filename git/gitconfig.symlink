@@ -36,7 +36,7 @@
 [difftool]
   prompt = false
 [difftool "difftastic"]
-  cmd = difft "$LOCAL" "$REMOTE"
+  cmd = difft --display inline "$LOCAL" "$REMOTE"
 [help]
   autocorrect = 1
 [push]
@@ -84,7 +84,7 @@
   tool = fugitive
   conflictstyle = diff3
 [diff]
-  external = difft
+  external = difft --display inline
   ;tool = difftastic
   colorMove = default
 [filter "tabspace"]
