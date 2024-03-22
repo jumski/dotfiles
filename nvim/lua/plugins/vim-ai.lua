@@ -1,5 +1,6 @@
 return {
   'madox2/vim-ai',
+  enabled = false,
   config = function()
     local syntax_highlighting_prompt = [[
     If you attach a code block add syntax type after ``` to enable syntax highlighting.
