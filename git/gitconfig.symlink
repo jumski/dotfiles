@@ -21,10 +21,11 @@
   fsmonitor = true
   untrackedcache = true
 [pager]
-    diff = delta --tabs=2
-    log = delta --tabs=2
-    reflog = delta --tabs=2
-    show = delta --tabs=2
+    difftool = true
+    ;diff = delta --tabs=2
+    ;log = delta --tabs=2
+    ;reflog = delta --tabs=2
+    ;show = delta --tabs=2
 [delta]
 	tabs = 2
 
@@ -34,6 +35,8 @@
         keepBackup = false
 [difftool]
         prompt = false
+[difftool "difftastic"]
+        cmd = difft "$LOCAL" "$REMOTE"
 [help]
         autocorrect = 1
 [push]
@@ -81,6 +84,8 @@
 	tool = fugitive
 	conflictstyle = diff3
 [diff]
+  external = difft
+  ;tool = difftastic
 	colorMove = default
 [filter "tabspace"]
 	smudge = unexpand --tabs=4 --first-only
