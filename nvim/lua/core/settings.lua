@@ -148,5 +148,7 @@ vim.filetype.add({
   pattern = {
     ["*.gitconfig*"] = "gitconfig",
     ["gitconfig.symlink"] = "gitconfig",
+    ["*.gitaliases*"] = "gitconfig",
+    ["gitaliases.symlink"] = "gitconfig",
   },
 })
