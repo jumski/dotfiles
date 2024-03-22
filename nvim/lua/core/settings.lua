@@ -143,3 +143,10 @@ vim.filetype.add({
     postcss = 'css',
   }
 })
+
+vim.filetype.add({
+  pattern = {
+    ["*.gitconfig*"] = "gitconfig",
+    ["gitconfig.symlink"] = "gitconfig",
+  },
+})
