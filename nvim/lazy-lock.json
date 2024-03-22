@@ -2,6 +2,7 @@
   "ChatGPT.nvim": { "branch": "main", "commit": "df53728e05129278d6ea26271ec086aa013bed90" },
   "Comment.nvim": { "branch": "master", "commit": "0236521ea582747b58869cb72f70ccfa967d2e89" },
   "Dockerfile.vim": { "branch": "master", "commit": "2a31e6bcea5977209c05c728c4253d82fd873c82" },
+  "aerial.nvim": { "branch": "master", "commit": "2393af45907fe1d33333a71dc8731aa8ba400503" },
   "alpha-nvim": { "branch": "main", "commit": "41283fb402713fc8b327e60907f74e46166f4cfd" },
   "auto_mkdir": { "branch": "master", "commit": "377ea6fea37b952d18a5a34f7d5fe03d29e01219" },
   "closetag.vim": { "branch": "master", "commit": "77572b488175c9b33917980540c487ceed471be4" },

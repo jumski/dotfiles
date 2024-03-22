@@ -1,6 +1,14 @@
+local WHICH_KEY_MAPPINGS = {
+  a = {
+    name = "Aerial",
+    a = { "<cmd>AerialNavToggle<CR>", "Nav Toggle" },
+    A = { "<cmd>AerialToggle!<CR>", "Sidebar Toggle" },
+  },
+}
+
 return {
   'folke/aerial.nvim',
-  enabled = false,
+  -- enabled = false,
   config = function()
     require('aerial').setup({
       layout = {
@@ -8,13 +16,15 @@ return {
         resize_to_content = true,
       },
       -- optionally use on_attach to set keymaps when aerial has attached to a buffer
-      on_attach = function(bufnr)
-        -- Jump forwards/backwards with '{' and '}'
-        vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', {buffer = bufnr})
-        vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', {buffer = bufnr})
-      end
+      -- on_attach = function(bufnr)
+      --   -- Jump forwards/backwards with '{' and '}'
+      --   vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', {buffer = bufnr})
+      --   vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', {buffer = bufnr})
+      -- end
     })
     -- You probably also want to set a keymap to toggle aerial
-    vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>')
+    -- vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>')
+
+    require('which-key').register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
   end
 }
