@@ -19,7 +19,7 @@ opt.sessionoptions = 'buffers,winsize,tabpages,winpos,winsize' -- session saving
 --- Performance
 opt.ttyfast = true          -- indicates a fast terminal connection
                             -- (more characters will be sent to the screen for redrawing)
-opt.timeoutlen = 800        -- time out on mapping
+opt.timeoutlen = 300        -- time out on mapping
 opt.ttimeoutlen = 100       -- time out on key codes after a tenth of a second
 
 -- disabled because noice.nvim complained about it
