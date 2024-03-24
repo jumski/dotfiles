@@ -1,6 +1,20 @@
+local WHICH_KEY_MAPPINGS = {
+  n = {
+    name = "Noice",
+    n = { "<cmd>Noice<CR>", "Noice" },
+    d = { "<cmd>Noice dismiss<CR>", "Dismiss" },
+    h = { "<cmd>Noice history<CR>", "History" },
+    r = { "<cmd>Noice reload<CR>", "Reload" },
+    s = { "<cmd>Noice search<CR>", "Search" },
+  }
+}
 return {
   "folke/noice.nvim",
   event = "VeryLazy",
+  config = function(_, opts)
+    require("noice").setup(opts)
+    require("which-key").register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
+  end,
   opts = {
     lsp = {
       -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
@@ -18,21 +32,64 @@ return {
       -- inc_rename = false, -- enables an input dialog for inc-rename.nvim
       lsp_doc_border = true, -- add a border to hover docs and signature help
     },
+    routes = {
+      {
+        filter = {
+          event = "msg_show",
+          kind = "",
+          find = "written",
+        },
+        view = "mini"
+        -- opts = { skip = true },
+      },
+    },
     views = {
       cmdline_popup = {
         position = {
-          row = '50%',
-          col = '50%',
+          row = '20%',
+          col = '80%',
+        },
+        size = {
+          widh = 60,
+          height = "auto",
         },
         border = {
           style = "none",
-          padding = { 0, 1 },
+          padding = { 2, 3 },
         },
         filter_options = {},
         win_options = {
           winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
         },
       },
+      -- cmdline_popup = {
+      --   position = {
+      --     row = 5,
+      --     col = "50%",
+      --   },
+      --   size = {
+      --     width = 60,
+      --     height = "auto",
+      --   },
+      -- },
+      -- popupmenu = {
+      --   relative = "editor",
+      --   position = {
+      --     row = 8,
+      --     col = "50%",
+      --   },
+      --   size = {
+      --     width = 60,
+      --     height = 10,
+      --   },
+      --   border = {
+      --     style = "rounded",
+      --     padding = { 0, 1 },
+      --   },
+      --   win_options = {
+      --     winhighlight = { Normal = "Normal", FloatBorder = "DiagnosticInfo" },
+      --   },
+      -- },
     },
     -- add any options here
   },
