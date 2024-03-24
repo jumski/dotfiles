@@ -16,6 +16,21 @@ setw -g mode-keys vi
 bind -n C-g send-prefix
 bind-key -n C-g send-prefix
 
+set -g @plugin 'tmux-plugins/tpm'
+
+set -g @plugin 'tmux-plugins/tmux-pain-control'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-logging'
+
+set -g @plugin 'fabioluciano/tmux-tokyo-night'
+
+### Tokyo Night Theme configuration
+set -g @theme_variation 'moon'
+set -g @theme_left_separator ''
+set -g @theme_right_separator ''
+
+run '~/.tmux/plugins/tpm/tpm'
+
 # improve flow control, so tmux is workable even when large files are cat'ed
 #setw -g c0-change-trigger 10
 #setw -g c0-change-interval 100

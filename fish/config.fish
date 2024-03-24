@@ -13,7 +13,7 @@ if status is-interactive
     source $file
   end
 
-  theme_gruvbox dark || echo "Fisher not installed: theme_gruvbox not found"
+  # theme_gruvbox dark || echo "Fisher not installed: theme_gruvbox not found"
 
   # remove greeting
   set fish_greeting
