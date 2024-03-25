@@ -7,3 +7,4 @@
       path: /home/jumski/SynologyDrive/Areas/Dev/ssh-config
       ignore-missing: true
       create: true
+    ~/.config/starship.toml: starship/starship.toml
