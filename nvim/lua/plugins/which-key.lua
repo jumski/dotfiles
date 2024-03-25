@@ -6,7 +6,7 @@ return {
       border = "none",
       position = "bottom",
       margin = { 0, 0, 0, 0 },
-      padding = { 0, 0, 0, 0 },
+      padding = { 1, 1, 1, 1 },
     },
     layout = {
       align="center",
