@@ -1,0 +1,2 @@
+ACTION=="add", ATTRS{address}=="d8:bb:c1:8d:03:c5", RUN+="/usr/sbin/ethtool -s  wol g"
+

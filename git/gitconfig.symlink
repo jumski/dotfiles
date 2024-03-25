@@ -21,19 +21,19 @@
   fsmonitor = true
   untrackedcache = true
 [pager]
-  difftool = true
+  ;;;;;;;difftool = true
   ;diff = delta --tabs=2
   ;log = delta --tabs=2
   ;reflog = delta --tabs=2
   ;show = delta --tabs=2
 [diff]
-  external = difft --display inline
+  ;;;;;;;external = difft --display inline
   ;tool = difftastic
   colorMove = default
 [difftool]
   prompt = false
 [difftool "difftastic"]
-  cmd = difft --display inline "$LOCAL" "$REMOTE"
+  ;;;;;;;cmd = difft --display inline "$LOCAL" "$REMOTE"
 [delta]
   tabs = 2
   navigate = true # n and N to move between sections
