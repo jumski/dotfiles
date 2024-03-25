@@ -8,6 +8,7 @@ local WHICH_KEY_MAPPINGS = {
     s = { "<cmd>Noice search<CR>", "Search" },
   }
 }
+
 return {
   "folke/noice.nvim",
   event = "VeryLazy",
