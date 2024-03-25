@@ -1,5 +1,6 @@
 return {
   'mvllow/modes.nvim',
+  enabled = false,
   config = true,
   opts = {
     colors = {
