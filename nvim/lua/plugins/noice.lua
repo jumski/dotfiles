@@ -1,6 +1,19 @@
+local WHICH_KEY_MAPPINGS = {
+  n = {
+    name = "Noice",
+    n = { "<cmd>Noice<CR>", "Noice" },
+    d = { "<cmd>NoiceDismiss<CR>", "Dismiss" },
+
+  }
+}
+
 return {
   "folke/noice.nvim",
   event = "VeryLazy",
+  config = function(_, opts)
+    require("noice").setup(opts)
+    require("which-key").register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
+  end,
   opts = {
     lsp = {
       -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
