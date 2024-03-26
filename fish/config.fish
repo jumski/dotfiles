@@ -13,7 +13,7 @@ if status is-interactive
     source $file
   end
 
-  source fish/themes/tokyonight_storm.fish.theme
+  source $DOTFILES_PATH/fish/themes/tokyonight_storm.fish.theme
   # theme_gruvbox dark || echo "Fisher not installed: theme_gruvbox not found"
 
   # remove greeting
