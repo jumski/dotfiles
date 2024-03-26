@@ -17,11 +17,16 @@ local GROQ_MODEL =
 local OLLAMA_MODEL =
   -- 'dolphincoder:15b-starcoder2-q8_0';
   -- 'deepseek-coder:6.7b-instruct-q8_0';
-  -- 'deepseek-coder:33b-instruct-q5_K_M';
+  -- 'codellama:7b',
+  -- 'codellama:13b',
   -- 'codellama:34b';
-  'dolphin-mixtral';
-  -- 'dolphin-mixtral:8x7b-v2.7-q3_K_L';
+  'dolphin-mixtral:8x7b-v2.7-q3_K_L';
   -- 'dolphin-mixtral:8x7b-v2.7-q2_K';
+  --
+  -- DOES NOT FIT IN RAM:
+  -- 'codellama:70b';
+  -- 'deepseek-coder:33b-instruct-q5_K_M';
+  -- 'dolphin-mixtral';
 
 local WHICH_KEY_MAPPINGS = {
   c = {
