@@ -2,3 +2,4 @@
     ~/.config/kitty:
       path: kitty/*.conf
       glob: true
+    ~/.config/kitty/themes: kitty/themes
