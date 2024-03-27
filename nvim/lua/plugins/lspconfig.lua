@@ -146,11 +146,11 @@ return {
 
     -- TODO: add something for raw html
 
-    -- lspconfig['sqlls'].setup{
-    --   capabilities = capabilities,
-    --   root_dir = require('core.helpers').find_project_root,
-    --   on_attach = setup_keybindings
-    -- }
+    lspconfig['sqlls'].setup{
+      capabilities = capabilities,
+      -- root_dir = require('core.helpers').find_project_root,
+      on_attach = setup_keybindings
+    }
 
     lspconfig['clojure_lsp'].setup{
       capabilities = capabilities,
