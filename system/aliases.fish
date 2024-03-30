@@ -5,3 +5,5 @@ alias speedtest-bits="wget -O /dev/null http://speedtest.tele2.net/10GB.zip --re
 
 alias calc=/usr/bin/dc
 alias clip='xclip -sel clipboard'
+
+alias sid=setup_input_devices
