@@ -35,6 +35,11 @@ opt.background = 'dark'     -- use dark background
 opt.number = false          -- do not show line numbering
 opt.laststatus = 2          -- always show status line
 opt.autoread = true         -- automatically read file if it changes
+
+-- ignore "Hit enter" messages
+-- see: https://github.com/folke/noice.nvim/wiki/A-Guide-to-Messages#handling-hit-enter-messages
+opt.shortmess:append('sWAIcCqFS')
+
                             -- (this does not happen if file is deleted)
 opt.showcmd = true          -- show incomplete commands
 opt.showmode = false        -- do not display the mode you're in, because of status line

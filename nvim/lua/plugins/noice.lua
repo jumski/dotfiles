@@ -34,14 +34,20 @@ return {
       lsp_doc_border = true, -- add a border to hover docs and signature help
     },
     routes = {
-      {
+      { -- "Written" messages after saving file
         filter = {
           event = "msg_show",
           kind = "",
           find = "written",
         },
-        view = "mini"
-        -- opts = { skip = true },
+        opts = { skip = true },
+      },
+      { -- messages about found/not found matches
+        filter = {
+          event = "msg_show",
+          kind = "search_count",
+        },
+        opts = { skip = true },
       },
     },
     views = {
