@@ -1,7 +1,7 @@
 local WHICH_KEY_MAPPINGS = {
   d = {
     name = "DB / DBUI",
-    d = { "<cmd>DB<CR>", "Execute SQL", mode = { "n", "v" } },
+    d = { "<cmd>%DB<CR>", "Execute SQL", mode = { "n", "v" } },
     f = { "<cmd>DBUIFindBuffer<CR>", "Find buffer", mode = { "n", "v" } },
     t = { "<cmd>DBUI<CR>", "Toggle DBUI", mode = { "n", "v" } },
     a = { "<cmd>DBUIAddConnection<CR>", "Add connection", mode = { "n", "v" } },

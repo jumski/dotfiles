@@ -1,0 +1,4 @@
+- link:
+    "/etc/NetworkManager/NetworkManager.conf":
+      path: netbird/NetworkManager.conf
+      force: true

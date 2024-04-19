@@ -73,6 +73,6 @@ find . -executable -name install.sh | while read installer; do log_section "${in
 
 # link everything
 log_section .dotbot/install
-with_time .dotbot/install
+with_time sudo .dotbot/install
 echo
 echo
