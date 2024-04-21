@@ -3,9 +3,6 @@
 --tabs=2
 --style="header-filename,grid"
 
---map-syntax=".sgptrc:env"
---map-syntax="bat/config:shell"
-
 # Enable this to use italic text on the terminal. This is not supported on all
 # terminal emulators (like tmux, by default):
 --italic-text=always
