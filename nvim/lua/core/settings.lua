@@ -38,7 +38,9 @@ opt.autoread = true         -- automatically read file if it changes
 
 -- ignore "Hit enter" messages
 -- see: https://github.com/folke/noice.nvim/wiki/A-Guide-to-Messages#handling-hit-enter-messages
-opt.shortmess:append('sWAIcCqFS')
+-- opt.shortmess:append('sWAIcCqFS')
+
+opt.shortmess:append('IWs')
 
                             -- (this does not happen if file is deleted)
 opt.showcmd = true          -- show incomplete commands

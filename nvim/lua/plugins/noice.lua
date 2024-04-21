@@ -33,22 +33,22 @@ return {
       -- inc_rename = false, -- enables an input dialog for inc-rename.nvim
       lsp_doc_border = true, -- add a border to hover docs and signature help
     },
+
     routes = {
-      { -- "Written" messages after saving file
+      {
         filter = {
-          event = "msg_show",
-          kind = "",
-          find = "written",
+          event = 'msg_show',
+          any = {
+            { find = '%d+L, %d+B' },
+            { find = '; after #%d+' },
+            { find = '; before #%d+' },
+            { find = '%d fewer lines' },
+            { find = '%d more lines' },
+            { find = 'Pattern not found' },
+          },
         },
         opts = { skip = true },
-      },
-      { -- messages about found/not found matches
-        filter = {
-          event = "msg_show",
-          kind = "search_count",
-        },
-        opts = { skip = true },
-      },
+      }
     },
     views = {
       cmdline_popup = {
