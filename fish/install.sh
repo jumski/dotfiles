@@ -1,9 +1,5 @@
 #!/bin/bash
 
-if !which fish &>/dev/null; then
-  sudo chsh -s /usr/bin/fish
-fi
-
 if ! [ -f ~/.config/fish/functions/fisher.fish ]; then
   echo Installing fisher
   curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
