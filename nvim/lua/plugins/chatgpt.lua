@@ -1,10 +1,11 @@
 local CHAT_API =
-  -- 'openai';
+  'openai';
   -- 'groq';
-  'ollama';
+  -- 'ollama';
 
 local OPENAI_MODEL =
-  'gpt-4-1106-preview';
+  'gpt-4o';
+  -- 'gpt-4-1106-preview';
   -- 'gpt-4';
   -- 'gpt-3.5-turbo';
 
