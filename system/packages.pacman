@@ -35,3 +35,5 @@ xorg-xwininfo
 figlet
 bitwarden-cli
 bc
+lsof
+mosh
