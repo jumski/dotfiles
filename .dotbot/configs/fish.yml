@@ -3,7 +3,7 @@
       path: fish/functions/*.fish
       glob: true
     ~/.config/fish/completions:
-      path: fish/functions/*.fish
+      path: fish/completions/*.fish
       glob: true
     ~/.config/fish/config.fish: fish/config.fish
     ~/.config/fish/aliases.fish: fish/aliases.fish
