@@ -1,0 +1,3 @@
+- link:
+    ~/.aws/config: aws/config
+    ~/.aws/credentials: /home/jumski/SynologyDrive/Areas/Dev/aws-cli/credentials

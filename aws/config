@@ -1,0 +1,3 @@
+[default]
+region = us-central-2
+output = json
