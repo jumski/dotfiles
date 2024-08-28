@@ -10,6 +10,7 @@ local WHICH_KEY_MAPPINGS = {
 }
 
 return {
+  enabled = false,
   "folke/noice.nvim",
   event = "VeryLazy",
   config = function(_, opts)
