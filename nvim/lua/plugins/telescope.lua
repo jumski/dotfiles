@@ -1,17 +1,14 @@
 local WHICH_KEY_MAPPINGS = {
-  t = {
-    name = "Telescope",
-    t = { "<cmd>Telescope find_files<CR>", "find_files" },
-    f = { "<cmd>Telescope<CR>", "Telescope" },
-    k = { "<cmd>Telescope keymaps<CR>", "keymaps" },
-    b = { "<cmd>Telescope buffers<CR>", "buffers" },
-    g = { "<cmd>Telescope live_grep<CR>", "live_grep" },
-    h = { "<cmd>Telescope help_tags<CR>", "help_tags" },
-    r = { "<cmd>Telescope resume<CR>", "resume" },
-    w = { "<cmd>Telescope grep_string<CR>", "grep_string" },
-    d = { "<cmd>Telescope diagnostics<CR>", "diagnostics" },
-    -- p = { "<cmd>Telescope projects<CR>", "projects" },
-  }
+  { "<leader>t", group = "Telescope" },
+  { "<leader>tb", "<cmd>Telescope buffers<CR>", desc = "buffers" },
+  { "<leader>td", "<cmd>Telescope diagnostics<CR>", desc = "diagnostics" },
+  { "<leader>tf", "<cmd>Telescope<CR>", desc = "Telescope" },
+  { "<leader>tg", "<cmd>Telescope live_grep<CR>", desc = "live_grep" },
+  { "<leader>th", "<cmd>Telescope help_tags<CR>", desc = "help_tags" },
+  { "<leader>tk", "<cmd>Telescope keymaps<CR>", desc = "keymaps" },
+  { "<leader>tr", "<cmd>Telescope resume<CR>", desc = "resume" },
+  { "<leader>tt", "<cmd>Telescope find_files<CR>", desc = "find_files" },
+  { "<leader>tw", "<cmd>Telescope grep_string<CR>", desc = "grep_string" },
 }
 
 return {
@@ -19,6 +16,6 @@ return {
   dependencies = { 'nvim-lua/plenary.nvim' },
   config = function()
     require('telescope').setup({})
-    require('which-key').register(WHICH_KEY_MAPPINGS, { prefix = "<leader>" })
+    require('which-key').add(WHICH_KEY_MAPPINGS)
   end
 }

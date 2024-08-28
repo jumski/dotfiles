@@ -1,16 +1,13 @@
 local WHICH_KEY_MAPPINGS = {
-  l = {
-    name = "Language Server",
-    -- l = { "", "" },
-    r = { vim.lsp.buf.rename, "Rename symbol" },
-    a = { vim.lsp.buf.code_action, "Code action" },
-    d = { vim.lsp.buf.definition, "Go to definition" },
-    t = { vim.lsp.buf.type_definition, "Go to type definition" },
-    i = { vim.lsp.buf.implementation, "Go to implementation" },
-    g = { vim.lsp.buf.declaration, "Go to declaration" },
-    s = { vim.lsp.buf.signature_help, "Signature help" },
-    f = { vim.lsp.buf.format, "Format buffer" },
-  },
+  { "<leader>l", group = "Language Server" },
+  { "<leader>la", vim.lsp.buf.code_action, desc = "Code action" },
+  { "<leader>ld", vim.lsp.buf.definition, desc = "Go to definition" },
+  { "<leader>lf", vim.lsp.buf.format, desc = "Format buffer" },
+  { "<leader>lg", vim.lsp.buf.declaration, desc = "Go to declaration" },
+  { "<leader>li", vim.lsp.buf.implementation, desc = "Go to implementation" },
+  { "<leader>lr", vim.lsp.buf.rename, desc = "Rename symbol" },
+  { "<leader>ls", vim.lsp.buf.signature_help, desc = "Signature help" },
+  { "<leader>lt", vim.lsp.buf.type_definition, desc = "Go to type definition" },
 }
 
 return {
@@ -25,7 +22,7 @@ return {
       -- require('telescope.builtin').lsp_references( {layout_strategy='horizontal',layout_config={width=1.0}})
     end
 
-    require("which-key").register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
+    require("which-key").add(WHICH_KEY_MAPPINGS)
 
     local function setup_keybindings(_, _)
       vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
