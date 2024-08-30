@@ -2,7 +2,8 @@ return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
-    win = {
+    delay = 0,
+    window = {
       border = "none",
       position = "bottom",
       margin = { 0, 0, 0, 0 },
