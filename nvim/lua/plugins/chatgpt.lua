@@ -30,21 +30,22 @@ local OLLAMA_MODEL =
   -- 'dolphin-mixtral';
 
 local WHICH_KEY_MAPPINGS = {
-  c = {
-    name = "ChatGPT",
-    c = { "<cmd>ChatGPT<CR>", "ChatGPT" },
-    e = { "<cmd>ChatGPTEditWithInstruction<CR>", "Edit with instruction", mode = { "n", "v" } },
-    g = { "<cmd>ChatGPTRun grammar_correction<CR>", "Grammar Correction", mode = { "n", "v" } },
-    t = { "<cmd>ChatGPTRun translate<CR>", "Translate", mode = { "n", "v" } },
-    k = { "<cmd>ChatGPTRun keywords<CR>", "Keywords", mode = { "n", "v" } },
-    d = { "<cmd>ChatGPTRun docstring<CR>", "Docstring", mode = { "n", "v" } },
-    a = { "<cmd>ChatGPTRun add_tests<CR>", "Add Tests", mode = { "n", "v" } },
-    o = { "<cmd>ChatGPTRun optimize_code<CR>", "Optimize Code", mode = { "n", "v" } },
-    s = { "<cmd>ChatGPTRun summarize<CR>", "Summarize", mode = { "n", "v" } },
-    f = { "<cmd>ChatGPTRun fix_bugs<CR>", "Fix Bugs", mode = { "n", "v" } },
-    x = { "<cmd>ChatGPTRun explain_code<CR>", "Explain Code", mode = { "n", "v" } },
-    r = { "<cmd>ChatGPTRun roxygen_edit<CR>", "Roxygen Edit", mode = { "n", "v" } },
-    l = { "<cmd>ChatGPTRun code_readability_analysis<CR>", "Code Readability Analysis", mode = { "n", "v" } },
+  { "<leader>c", group = "ChatGPT" },
+  { "<leader>cc", "<cmd>ChatGPT<CR>", desc = "ChatGPT" },
+  {
+    mode = { "n", "v" },
+    { "<leader>ca", "<cmd>ChatGPTRun add_tests<CR>", desc = "Add Tests" },
+    { "<leader>cd", "<cmd>ChatGPTRun docstring<CR>", desc = "Docstring" },
+    { "<leader>ce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "Edit with instruction" },
+    { "<leader>cf", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "Fix Bugs" },
+    { "<leader>cg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "Grammar Correction" },
+    { "<leader>ck", "<cmd>ChatGPTRun keywords<CR>", desc = "Keywords" },
+    { "<leader>cl", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "Code Readability Analysis" },
+    { "<leader>co", "<cmd>ChatGPTRun optimize_code<CR>", desc = "Optimize Code" },
+    { "<leader>cr", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "Roxygen Edit" },
+    { "<leader>cs", "<cmd>ChatGPTRun summarize<CR>", desc = "Summarize" },
+    { "<leader>ct", "<cmd>ChatGPTRun translate<CR>", desc = "Translate" },
+    { "<leader>cx", "<cmd>ChatGPTRun explain_code<CR>", desc = "Explain Code" },
   },
 }
 
@@ -152,7 +153,7 @@ return {
     }
 
     require("chatgpt").setup(config)
-    require("which-key").register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
+    require("which-key").add(WHICH_KEY_MAPPINGS)
   end,
   dependencies = {
     "MunifTanjim/nui.nvim",

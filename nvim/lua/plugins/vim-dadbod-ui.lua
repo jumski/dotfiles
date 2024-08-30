@@ -1,12 +1,13 @@
 local WHICH_KEY_MAPPINGS = {
-  d = {
-    name = "DB / DBUI",
-    d = { "<cmd>%DB<CR>", "Execute SQL", mode = { "n", "v" } },
-    f = { "<cmd>DBUIFindBuffer<CR>", "Find buffer", mode = { "n", "v" } },
-    t = { "<cmd>DBUI<CR>", "Toggle DBUI", mode = { "n", "v" } },
-    a = { "<cmd>DBUIAddConnection<CR>", "Add connection", mode = { "n", "v" } },
-    l = { "<cmd>DBUILastQueryInfo<CR>", "Last query info", mode = { "n", "v" } },
-  }
+  { "<leader>d", group = "DB / DBUI" },
+  {
+    mode = { "n", "v" },
+    { "<leader>df", "<cmd>DBUIFindBuffer<CR>", desc = "Find buffer" },
+    { "<leader>da", "<cmd>DBUIAddConnection<CR>", desc = "Add connection" },
+    { "<leader>dt", "<cmd>DBUI<CR>", desc = "Toggle DBUI" },
+    { "<leader>dl", "<cmd>DBUILastQueryInfo<CR>", desc = "Last query info" },
+    { "<leader>dd", "<cmd>%DB<CR>", desc = "Execute SQL" },
+  },
 }
 
 return {
@@ -27,7 +28,7 @@ return {
     -- be explicit about execution with which-key mappings
     vim.g.db_ui_execute_on_save = 0
 
-    require("which-key").register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
+    require("which-key").add(WHICH_KEY_MAPPINGS)
 
     -- Lua autocmd for FileType dbout to setlocal nofoldenable
     vim.api.nvim_create_autocmd("FileType", {

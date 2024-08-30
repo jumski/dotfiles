@@ -1,9 +1,7 @@
 local WHICH_KEY_MAPPINGS = {
-  a = {
-    name = "Aerial",
-    a = { "<cmd>AerialNavToggle<CR>", "Nav Toggle" },
-    A = { "<cmd>AerialToggle!<CR>", "Sidebar Toggle" },
-  },
+  { "<leader>a", group = "Aerial" },
+  { "<leader>aA", "<cmd>AerialToggle!<CR>", desc = "Sidebar Toggle" },
+  { "<leader>aa", "<cmd>AerialNavToggle<CR>", desc = "Nav Toggle" },
 }
 
 return {
@@ -25,6 +23,6 @@ return {
     -- You probably also want to set a keymap to toggle aerial
     -- vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>')
 
-    require('which-key').register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
+    require('which-key').add(WHICH_KEY_MAPPINGS)
   end
 }
