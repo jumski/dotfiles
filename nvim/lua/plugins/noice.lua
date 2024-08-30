@@ -1,21 +1,19 @@
 local WHICH_KEY_MAPPINGS = {
-  n = {
-    name = "Noice",
-    n = { "<cmd>Noice<CR>", "Noice" },
-    d = { "<cmd>Noice dismiss<CR>", "Dismiss" },
-    h = { "<cmd>Noice history<CR>", "History" },
-    r = { "<cmd>Noice reload<CR>", "Reload" },
-    s = { "<cmd>Noice search<CR>", "Search" },
-  }
+  { "<leader>", group = "Noice" },
+  { "<leader>", "<leader>nn", desc = "<cmd>Noice<CR>" },
+  { "<leader>", "<leader>nr", desc = "<cmd>Noice reload<CR>" },
+  { "<leader>", "<leader>nh", desc = "<cmd>Noice history<CR>" },
+  { "<leader>", "<leader>nd", desc = "<cmd>Noice dismiss<CR>" },
+  { "<leader>", "<leader>ns", desc = "<cmd>Noice search<CR>" },
 }
 
 return {
-  enabled = false,
+  -- enabled = false,
   "folke/noice.nvim",
   event = "VeryLazy",
   config = function(_, opts)
     require("noice").setup(opts)
-    require("which-key").register(WHICH_KEY_MAPPINGS, { prefix = "<leader>", })
+    require("which-key").add(WHICH_KEY_MAPPINGS)
   end,
   opts = {
     lsp = {
