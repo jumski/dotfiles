@@ -3,11 +3,9 @@ return {
   event = "VeryLazy",
   opts = {
     delay = 0,
-    window = {
+    win = {
       border = "none",
-      position = "bottom",
-      margin = { 0, 0, 0, 0 },
-      padding = { 1, 1, 1, 1 },
+      padding = { 1, 2 },
     },
     layout = {
       align="center",
