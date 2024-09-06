@@ -29,4 +29,23 @@ function M.project_python_runtime()
   return "poetry run python -iq"
 end
 
+---@param path string
+---@return table
+function M.parse_env_file(path)
+   local env_vars = {}
+    local file = io.open(path, 'r')
+    if file then
+        for line in file:lines() do
+            local var, value = line:match("^([%w_]+)=(.*)$")
+            if var and value then
+                env_vars[var] = value
+            end
+        end
+        file:close()
+    else
+        vim.notify("Failed to load .env file: " .. path, vim.log.levels.ERROR)
+    end
+    return env_vars
+end
+
 return M
