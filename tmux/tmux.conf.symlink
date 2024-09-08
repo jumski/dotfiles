@@ -16,7 +16,7 @@ setw -g mode-keys vi
 bind -n C-g send-prefix
 bind-key -n C-g send-prefix
 
-# set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tpm'
 #
 # set -g @plugin 'tmux-plugins/tmux-pain-control'
 # set -g @plugin 'tmux-plugins/tmux-sensible'
@@ -179,3 +179,13 @@ set -g history-limit 10000
 # source-file ~/.dotfiles/tmux/themes/tokyonight_moon.tmux
 # source-file ~/.dotfiles/tmux/themes/tokyonight_night.tmux
 source-file ~/.dotfiles/tmux/themes/tokyonight_storm.tmux
+
+######################################
+################ TPM #################
+######################################
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'jaclu/tmux-menus'
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'
