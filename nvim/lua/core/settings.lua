@@ -159,3 +159,9 @@ vim.filetype.add({
     ["gitaliases.symlink"] = "gitconfig",
   },
 })
+
+-- set textwidth to 100 in commit messages, also enable the line visual
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "gitcommit",
+  command = "setlocal textwidth=100 colorcolumn=+1",
+})
