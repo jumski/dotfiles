@@ -3,10 +3,12 @@
 set -e
 
 # Define backup directory
-BACKUP_DIR="$HOME/SynologyDrive/Areas/Dev/kde-plasma-settings/"
-TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 HOSTNAME=$(hostname)
-BACKUP_FILE="$BACKUP_DIR/plasma_backup_${HOSTNAME}_$TIMESTAMP.tar.gz"
+BACKUP_REPO="$HOME/SynologyDrive/Areas/Dev/kde-plasma-settings/"
+git -C "$BACKUP_REPO" init
+
+BACKUP_DIR="$HOME/SynologyDrive/Areas/Dev/kde-plasma-settings/${HOSTNAME}"
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 
 # List of configuration files and directories to back up
 CONFIG_FILES=(
@@ -61,7 +63,23 @@ for CONFIG_FILE in "${CONFIG_FILES[@]}"; do
   fi
 done
 
-# Create a tarball of the existing configuration files
-tar -czf "$BACKUP_FILE" "${EXISTING_CONFIG_FILES[@]}"
+### git stuff
+mkdir -p "$BACKUP_DIR"
+cd "$BACKUP_DIR"
+
+# fail if repo is not clean
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Repository not clean: $(git status --porcelain)"
+  notify-send -u critical -i error "KDE Plasma backup FAILED" "Repository not clean"
+  exit 1
+fi
+
+for CONFIG_FILE in "${EXISTING_CONFIG_FILES[@]}"; do
+  echo "Copying "$CONFIG_FILE""
+  cp -r "$CONFIG_FILE" "$BACKUP_DIR/"
+done
+
+git add --all
+git commit -m "$HOSTNAME: automatic backup of plasma configuration"
 
 echo "Backup completed: $BACKUP_FILE"
