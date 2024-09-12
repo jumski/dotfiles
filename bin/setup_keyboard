@@ -25,9 +25,6 @@ fi
 # echo setxkbmap  $options
 setxkbmap $options
 
-pkill -f xcape
-xcape -t 100
-
 # turn wqa keyboard backlight
 ###echo 0 > /sys/class/leds/asus::kbd_backlight/brightness
 
