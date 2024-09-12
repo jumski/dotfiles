@@ -1,0 +1,11 @@
+[Desktop Entry]
+Categories=Office;
+Comment=Privacy-first, open-source platform for knowledge sharing and management
+Exec=logseq %u
+Icon=logseq
+MimeType=x-scheme-handler/logseq;
+Name=Logseq
+StartupNotify=true
+StartupWMClass=Logseq
+Terminal=false
+Type=Application

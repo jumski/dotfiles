@@ -1,0 +1,10 @@
+[Desktop Entry]
+Categories=Internet;
+Comment=Operating environment for the new internet
+Exec=env DESKTOPINTEGRATION=0 APPIMAGELAUNCHER_DISABLE=1 anytype
+Icon=anytype
+Name=Anytype
+StartupWMClass=Anytype
+Terminal=false
+Type=Application
+X-AppImage-Version=1.1.3
