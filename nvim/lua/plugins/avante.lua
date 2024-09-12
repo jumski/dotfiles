@@ -1,11 +1,14 @@
 return {
-  enabled = false,
+  -- enable Avante only if the ANTHROPIC_API_KEY env variable is set
+  -- this is because Avante nags with api key dialog if it is not set
+  enabled = (vim.fn.getenv("ANTHROPIC_API_KEY") ~= vim.NIL);
+
   "yetone/avante.nvim",
   event = "VeryLazy",
   build = "make", -- This is Optional, only if you want to use tiktoken_core to calculate tokens count
   opts = {
-    provider = "openai"
-    -- provider = "claude"
+    -- provider = "openai"
+    provider = "claude"
     -- add any opts here
   },
   dependencies = {
