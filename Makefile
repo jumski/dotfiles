@@ -18,3 +18,13 @@ refuse-dirty-repo:
 
 pull:
 	git pull --ff-only
+
+aur:
+	@sudo echo -n && script/install_aur_packages
+
+pacman:
+	@sudo echo -n && script/install_pacman_packages
+
+dotbot:
+	@.dotbot/install
+
