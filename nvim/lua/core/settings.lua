@@ -16,6 +16,8 @@ opt.hidden = true           -- 1. The current buffer can be put to the backgroun
                             -- 2. When a background buffer becomes current again, marks and undo-history are remembered
 opt.sessionoptions = 'buffers,winsize,tabpages,winpos,winsize' -- session saving options
 
+opt.clipboard = 'unnamedplus' -- use system clipboard
+
 --- Performance
 opt.ttyfast = true          -- indicates a fast terminal connection
                             -- (more characters will be sent to the screen for redrawing)
