@@ -79,7 +79,7 @@ return {
       capabilities = capabilities,
       on_attach = setup_keybindings
     }
-    lspconfig['tsserver'].setup{
+    lspconfig['ts_ls'].setup{
       capabilities = capabilities,
       -- single_file_support = false,
       on_attach = setup_keybindings,
@@ -119,8 +119,8 @@ return {
       on_attach = function()
         local active_clients = vim.lsp.get_active_clients()
         for _, client in pairs(active_clients) do
-          -- stop tsserver if denols is already active
-          if client.name == "tsserver" then
+          -- stop ts_ls if denols is already active
+          if client.name == "ts_ls" then
             client.stop()
           end
         end

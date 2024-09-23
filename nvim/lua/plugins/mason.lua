@@ -28,7 +28,7 @@ return {
         'sqlls',
         'svelte',
         'tailwindcss',
-        'tsserver',
+        'ts_ls',
       },
       automatic_installation = true
     })
