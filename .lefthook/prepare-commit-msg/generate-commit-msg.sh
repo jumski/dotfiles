@@ -11,7 +11,7 @@ function generate_with() {
 }
 
 if [ -z "$COMMIT_SOURCE" ]; then
-    diff=$(git diff --cached)
+    diff=$(git diff --cached -- . ':(exclude)pnpm-lock.yaml' | head -c 4999)
     diff_length=${#diff}
 
     if [ $diff_length -lt 5000 ]; then
