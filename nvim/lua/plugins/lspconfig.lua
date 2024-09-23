@@ -8,6 +8,7 @@ local WHICH_KEY_MAPPINGS = {
   { "<leader>lr", vim.lsp.buf.rename, desc = "Rename symbol" },
   { "<leader>ls", vim.lsp.buf.signature_help, desc = "Signature help" },
   { "<leader>lt", vim.lsp.buf.type_definition, desc = "Go to type definition" },
+  { "<C-a>", vim.lsp.buf.code_action, desc = "Code action" },
 }
 
 return {
