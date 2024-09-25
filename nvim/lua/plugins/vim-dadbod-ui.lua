@@ -42,7 +42,9 @@ return {
     vim.g.db_ui_auto_execute_table_helpers = 1
     vim.g.db_ui_table_helpers = {
       postgresql = {
-        List = 'select * from {table} limit 100 \\x',
+        Cron_Jobs = 'select * from cron.job; \\x on',
+        Cron_Status = 'select * from cron.job_run_details order by start_time desc limit 5;\\x on',
+        List = 'select * from {table} limit 100; \\x on',
       }
     }
 
