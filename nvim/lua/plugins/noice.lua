@@ -23,6 +23,9 @@ return {
         ["vim.lsp.util.stylize_markdown"] = true,
         ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
       },
+      progress = {
+          enabled = false,
+      }
     },
     -- you can enable a preset for easier configuration
     presets = {
@@ -44,6 +47,9 @@ return {
             { find = '%d fewer lines' },
             { find = '%d more lines' },
             { find = 'Pattern not found' },
+            { find = "E20: Mark not set" },
+            { find = "E348: No string under cursor" },
+            { find = "E349: No identifier under cursor" },
           },
         },
         opts = { skip = true },
@@ -54,7 +60,13 @@ return {
           find = 'No information available',
         },
         opts = { skip = true }
-      }
+      },
+      -- Avoid written messages
+      { filter = { event = "msg_show", kind = "", find = "written" }, opts = { skip = true } },
+      -- Avoid search messages
+      { filter = { event = "msg_show", kind = "search_count" }, opts = { skip = true } },
+      -- Avoid all messages with kind ""
+      { filter = { event = "msg_show", kind = "" }, opts = { skip = true } },
     },
     views = {
       cmdline_popup = {
