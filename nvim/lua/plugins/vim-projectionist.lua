@@ -11,6 +11,16 @@ return {
         ["src/*hook*"] = { command = "hook" },
         ["src/routes/*.ts"] = { command = "loader" },
       },
+      ["functions/deno.json"] = {
+        ["functions/*/index.ts"] = { command = "function" },
+        ["functions/_shared/*.ts"] = { command = "shared" },
+        ["tests/*.sql"] = { command = "test" },
+        ["migrations/*.sql"] = { command = "migration" },
+        ["seed.sql"] = { command = "seed" },
+        ["queries/*.sql"] = { command = "query" },
+        ["config.toml"] = { command = "config" },
+        ["functions/import_map.json"] = { command = "importmap" },
+      }
     }
   end,
   event = "User",
