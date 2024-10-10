@@ -6,5 +6,5 @@ golang 1.20.3
 lua 5.4.3
 poetry 1.5.1
 pnpm 8.14.1
-pdm 2.15.4
+pdm 2.19.1
 bun 1.1.27
