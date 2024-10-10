@@ -15,7 +15,7 @@ if [ -z "$COMMIT_SOURCE" ]; then
     diff_length=${#diff}
 
     if [ $diff_length -lt 5000 ]; then
-        generate_with $openai_model > "$COMMIT_MSG_FILE"
+        generate_with $openai_model | fold -w 100 > "$COMMIT_MSG_FILE"
     else
         echo "<<< DIFF TOO LONG - message generation skipped >>>" > "$COMMIT_MSG_FILE"
     fi
