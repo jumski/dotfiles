@@ -1,4 +1,5 @@
 - link:
-   ~/.envrc:
+    ~/.envrc:
       path: envrc.symlink
       force: true
+    ~/.config/direnv/direnvrc: direnv/direnvrc.sh
