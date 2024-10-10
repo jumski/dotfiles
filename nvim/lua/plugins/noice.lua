@@ -50,6 +50,11 @@ return {
             { find = "E20: Mark not set" },
             { find = "E348: No string under cursor" },
             { find = "E349: No identifier under cursor" },
+
+            -- removes messages like:
+            -- DB: Query '/tmp/nvim.jumski/mH7wFx/156.dbout' finished in 0.023s
+            { find = "DB: Query" },
+            { find = "DB: Running" },
           },
         },
         opts = { skip = true },
