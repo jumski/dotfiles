@@ -82,5 +82,12 @@ return {
         { name = 'cmdline', option = { treat_trailing_slash = false } },
       }),
     })
+
+    cmp.setup.filetype({ "sql" }, {
+      sources = {
+        { name = "vim-dadbod-completion" },
+        { name = "buffer" }
+      }
+    })
   end
 }
