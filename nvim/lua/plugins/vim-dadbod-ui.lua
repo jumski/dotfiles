@@ -11,8 +11,8 @@ local WHICH_KEY_MAPPINGS = {
   { "<leader>dd", ":'<,'>DB<CR>", desc = "Execute SQL", mode = {"v"} },
 
   -- control-d does same than <leader>dd
-  { "<C-d>", "<cmd>%DB<CR>", desc = "Execute SQL", mode = {"n"} },
-  { "<C-d>", ":'<,'>DB<CR>", desc = "Execute SQL", mode = {"v"} },
+  -- { "<C-d>", "<cmd>%DB<CR>", desc = "Execute SQL", mode = {"n"} },
+  -- { "<C-d>", ":'<,'>DB<CR>", desc = "Execute SQL", mode = {"v"} },
 }
 
 return {
