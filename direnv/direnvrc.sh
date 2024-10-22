@@ -1,3 +1,3 @@
 layout_pdm() {
-  export PYTHONPATH=src
+  export PYTHONPATH=$PYTHONPATH:./src
 }
