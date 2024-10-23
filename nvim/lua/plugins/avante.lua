@@ -4,11 +4,16 @@ return {
   enabled = (vim.fn.getenv("ANTHROPIC_API_KEY") ~= vim.NIL);
 
   "yetone/avante.nvim",
+  lazy = false,
+  version = false,
   event = "VeryLazy",
   build = "make", -- This is Optional, only if you want to use tiktoken_core to calculate tokens count
   opts = {
     -- provider = "openai"
-    provider = "claude"
+    provider = "claude",
+    claude = {
+      model = "claude-3-5-sonnet-20241022"
+    }
     -- add any opts here
   },
   dependencies = {
