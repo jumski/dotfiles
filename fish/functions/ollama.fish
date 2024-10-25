@@ -1,6 +1,6 @@
 
 function ollama
-  set given_value 'jumski-manjaro-pc'
+  set given_value 'pc'
 
   if test (hostname) = $given_value
     echo Run Ollama locally
