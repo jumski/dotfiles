@@ -32,12 +32,9 @@ return {
         ['<C-CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
       }),
       sources = cmp.config.sources({
-        { name = 'nvim_lsp' },
-        -- { name = 'luasnip' }, -- For luasnip users.
-        { name = 'nvim_lsp_signature_help' },
-      }, {
-        { name = 'buffer' },
-        { name = 'vim-dadbod-completion' },
+        { name = 'nvim_lsp_signature_help', priority = 1000 },
+        { name = 'nvim_lsp', priority = 900 },
+        { name = 'buffer', priority = 500 },
       }),
       formatting = {
         fields = { 'menu', 'abbr', 'kind' },
