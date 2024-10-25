@@ -4,6 +4,7 @@
   s = status -sb
   c = checkout
   ps = push
+	track = "!f() { git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD); }; f"
 
   pr = !sh -c 'git fetch origin pull/$0/head:pr-$0 && git checkout pr-$0'
 
