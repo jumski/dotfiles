@@ -6,7 +6,7 @@ local WHICH_KEY_MAPPINGS = {
 
 return {
   'folke/aerial.nvim',
-  -- enabled = false,
+  enabled = false,
   config = function()
     require('aerial').setup({
       layout = {
