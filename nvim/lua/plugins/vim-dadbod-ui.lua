@@ -49,7 +49,7 @@ return {
     vim.g.db_ui_auto_execute_table_helpers = 1
     vim.g.db_ui_table_helpers = {
       postgresql = {
-        Describe_Table = '\\dt+ {schema}.{table}',
+        DescribeFull = '\\dS+ {schema}.{table}',
         List = 'select * from {schema}.{table} limit 100; \\x on',
       }
     }
