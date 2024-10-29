@@ -172,8 +172,15 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*",
   callback = function()
-    local save_cursor = vim.fn.getpos(".")
-    vim.cmd([[%s/\s\+$//e]])
-    vim.fn.setpos(".", save_cursor)
+    if vim.bo.modifiable then
+      local save_cursor = vim.fn.getpos(".")
+      -- Remove trailing whitespace
+      vim.cmd([[%s/\s\+$//e]])
+      -- Remove trailing newlines while preserving one
+      vim.cmd([[%s/\n\+\%$//e]])
+      vim.cmd([[normal! Go]])
+      vim.cmd([[normal! dd]])
+      vim.fn.setpos(".", save_cursor)
+    end
   end,
 })
