@@ -2,7 +2,7 @@ local WHICH_KEY_MAPPINGS = {
   { "<leader>d", group = "DB / DBUI", mode = {"n"} },
   {
     mode = { "n", "v" },
-    { "<leader>df", "<cmd>DBUIFindBuffer<CR>", desc = "Find buffer" },
+    { "<leader>df", "<cmd>DBUIFindBuffer<CR><cmd>DBUIClose<CR>", desc = "Find buffer" },
     { "<leader>da", "<cmd>DBUIAddConnection<CR>", desc = "Add connection" },
     { "<leader>dt", "<cmd>DBUIToggle<CR>", desc = "Toggle DBUI" },
     { "<leader>dl", "<cmd>DBUILastQueryInfo<CR>", desc = "Last query info" },
