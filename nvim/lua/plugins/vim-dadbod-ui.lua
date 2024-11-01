@@ -34,9 +34,10 @@ return {
     vim.g.db_ui_use_nerd_fonts = 1
 
     -- use folke/noice for notifications
-    vim.g.db_ui_use_nvim_notify = 1
+    -- vim.g.db_ui_use_nvim_notify = 1
     -- alternative, untested:
-    -- g:db_ui_force_echo_notifications
+    vim.g.db_ui_use_nvim_notify = 0
+    vim.g.db_ui_force_echo_notifications = 1
 
     -- be explicit about execution with which-key mappings
     vim.g.db_ui_execute_on_save = 0
