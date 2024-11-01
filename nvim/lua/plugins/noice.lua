@@ -11,6 +11,7 @@ return {
   -- enabled = false,
   "folke/noice.nvim",
   event = "VeryLazy",
+  enabled = false,
   config = function(_, opts)
     require("noice").setup(opts)
     require("which-key").add(WHICH_KEY_MAPPINGS)
