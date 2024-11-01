@@ -3,8 +3,9 @@ return {
   -- enabled = false,
   lazy = false,
   priority = 1000,
-  opts = {},
+  opts = {
+  },
   config = function()
-    vim.cmd[[colorscheme tokyonight-storm]]
+    vim.cmd[[colorscheme tokyonight-night]]
   end,
 }

@@ -178,8 +178,8 @@ set -g history-limit 10000
 # source-file ~/.dotfiles/tmux/themes/gruvbox.conf
 # source-file ~/.dotfiles/tmux/themes/tokyonight_day.tmux
 # source-file ~/.dotfiles/tmux/themes/tokyonight_moon.tmux
-# source-file ~/.dotfiles/tmux/themes/tokyonight_night.tmux
-source-file ~/.dotfiles/tmux/themes/tokyonight_storm.tmux
+source-file ~/.dotfiles/tmux/themes/tokyonight_night.tmux
+# source-file ~/.dotfiles/tmux/themes/tokyonight_storm.tmux
 
 ######################################
 ################ TPM #################
