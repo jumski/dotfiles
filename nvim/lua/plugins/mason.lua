@@ -23,6 +23,7 @@ return {
         'dockerfile-language-server',
         'lua_ls',
         'pyright',
+        'ruff_lsp',
         'solargraph',
         'sorbet',
         'sqlls',
