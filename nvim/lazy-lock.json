@@ -53,6 +53,7 @@
   "prettier.nvim": { "branch": "main", "commit": "d98e732cb73690b07c00c839c924be1d1d9ac5c2" },
   "render-markdown.nvim": { "branch": "main", "commit": "fc05fb7c56795f191b6800799a2ec6ea325ba715" },
   "repeat.vim": { "branch": "master", "commit": "80d23204c2e189c0c73f7fe77fd8e14a8d4bd428" },
+  "supermaven-nvim": { "branch": "main", "commit": "07d20fce48a5629686aefb0a7cd4b25e33947d50" },
   "tabular": { "branch": "master", "commit": "12437cd1b53488e24936ec4b091c9324cafee311" },
   "telescope.nvim": { "branch": "0.1.x", "commit": "a0bbec21143c7bc5f8bb02e0005fa0b982edc026" },
   "tokyonight.nvim": { "branch": "main", "commit": "c3d0838e357cbcc86580a4e06995f1030363591f" },
