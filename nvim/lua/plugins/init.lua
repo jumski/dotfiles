@@ -1,37 +1,36 @@
 return {
   -- tpope
-  'tpope/vim-abolish',
-  'tpope/vim-bundler',
-  'tpope/vim-capslock',
-  'tpope/vim-classpath',
-  'tpope/vim-dispatch',
-  'tpope/vim-dotenv',
-  'tpope/vim-endwise',
-  'tpope/vim-eunuch',
-  'tpope/vim-fireplace',
-  'tpope/vim-fugitive',
-  'tpope/vim-git',
-  'tpope/vim-haml',
-  'tpope/vim-markdown',
-  'tpope/vim-obsession',
-  'tpope/vim-rails',
-  'tpope/vim-rake',
-  'tpope/vim-rhubarb',
-  'tpope/vim-sensible',
-  'tpope/vim-sexp-mappings-for-regular-people',
-  'tpope/vim-sleuth',
-  'tpope/vim-surround',
-  'tpope/vim-unimpaired',
-  'tpope/vim-vinegar',
+  "tpope/vim-abolish",
+  "tpope/vim-bundler",
+  "tpope/vim-capslock",
+  "tpope/vim-classpath",
+  "tpope/vim-dispatch",
+  "tpope/vim-dotenv",
+  "tpope/vim-endwise",
+  "tpope/vim-eunuch",
+  "tpope/vim-fireplace",
+  "tpope/vim-fugitive",
+  "tpope/vim-git",
+  "tpope/vim-haml",
+  "tpope/vim-markdown",
+  "tpope/vim-obsession",
+  "tpope/vim-rails",
+  "tpope/vim-rake",
+  "tpope/vim-rhubarb",
+  "tpope/vim-sensible",
+  "tpope/vim-sexp-mappings-for-regular-people",
+  "tpope/vim-sleuth",
+  "tpope/vim-surround",
+  "tpope/vim-unimpaired",
+  "tpope/vim-vinegar",
 
   -- language server stuff and autocompletes
 
   -- use 'saadparwaiz1/cmp_luasnip'
 
-
   -- language specific
   -- 'alcesleo/vim-uppercase-sql',
-  'ekalinin/Dockerfile.vim',
+  "ekalinin/Dockerfile.vim",
   -- use {
   --   'salkin-mada/openscad.nvim',
   --   config = function ()
@@ -47,22 +46,21 @@ return {
   ------use({"L3MON4D3/LuaSnip", tag = "v<CurrentMajor>.*"})
 
   -- useful stuff
-  'DataWraith/auto_mkdir',
-  'christoomey/vim-tmux-navigator',
-  'duane9/nvim-rg',
-  'godlygeek/tabular',
-  'haya14busa/incsearch.vim',
-  'michaeljsmith/vim-indent-object',
-  'nathanaelkane/vim-indent-guides',
-  'vim-scripts/repeat.vim',
-  'vim-scripts/closetag.vim',
-  'vim-scripts/file-line',
-  'vim-scripts/matchit.zip',
-  'gpanders/editorconfig.nvim',
+  "DataWraith/auto_mkdir",
+  "christoomey/vim-tmux-navigator",
+  "duane9/nvim-rg",
+  "godlygeek/tabular",
+  "haya14busa/incsearch.vim",
+  "michaeljsmith/vim-indent-object",
+  "vim-scripts/repeat.vim",
+  "vim-scripts/closetag.vim",
+  "vim-scripts/file-line",
+  "vim-scripts/matchit.zip",
+  "gpanders/editorconfig.nvim",
 
   {
-    'ldelossa/gh.nvim',
-    dependencies = { { 'ldelossa/litee.nvim' } }
+    "ldelossa/gh.nvim",
+    dependencies = { { "ldelossa/litee.nvim" } },
   },
 
   -- styles/visuals

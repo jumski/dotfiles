@@ -1,6 +1,7 @@
 return {
-  'Exafunction/codeium.vim',
-  event = 'BufEnter',
+  "Exafunction/codeium.vim",
+  enabled = false,
+  event = "BufEnter",
   config = function()
     -- vim.cmd [[ highlight CodeiumSuggestion guifg=#02a7a9 ctermfg=8 ]]
 
@@ -9,5 +10,5 @@ return {
     -- vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
     -- vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
     -- vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
-  end
+  end,
 }

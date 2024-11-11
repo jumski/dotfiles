@@ -37,42 +37,32 @@ return {
       shfmt = {
         prepend_args = { "-i", "2" },
       },
-      -- sqlfluff = {
-      --   require_cwd = true,
-      --   stdin = true,
-      --   args = { "fix", "-" },
-      --   -- cwd = function()
-      --   --   return require("conform.util").root_file({
-      --   --     ".sqlfluff",
-      --   --     "migrations", -- supabase
-      --   --     "seed.sql", -- supabase
-      --   --   })
-      --   -- end,
-      -- },
-      -- prettier = {
-      --   require_cwd = true,
-      --   cwd = require("conform.util").root_file({
-      --     ".prettierrc",
-      --     ".prettierrc.json",
-      --     ".prettierrc.yml",
-      --     ".prettierrc.yaml",
-      --     ".prettierrc.json5",
-      --     ".prettierrc.js",
-      --     ".prettierrc.cjs",
-      --     "prettier.config.js",
-      --     "prettier.config.cjs"
-      --   })
+      sqlfluff = {
+        args = { "format", "-" }
+      }
+      -- sqlfluff = function(bufrn)
+      --   return {
+      --     require_cwd = true,
+      --     stdin = true,
+      --     args = function()
+      --       return { "format", "-" }
+      --     end,
+      --     cwd = require("conform.util").root_file({
+      --       ".sqlfluff",
+      --       "migrations", -- supabase
+      --       "seed.sql", -- supabase
+      --     }),
+      --   }
+      -- end,
     },
     log_level = vim.log.levels.DEBUG,
   },
   config = function(_, opts)
-    opts["formatters"]["sqlfluff"] = {
-      cwd = require("conform.util").root_file({
-        ".sqlfluff",
-        "migrations", -- supabase
-        "seed.sql", -- supabase
-      }),
-    }
+    -- opts["formatters"]["sqlfluff"]["cwd"] = require("conform.util").root_file({
+    --   ".sqlfluff",
+    --   "migrations", -- supabase
+    --   "seed.sql", -- supabase
+    -- })
     require("conform").setup(opts)
   end,
   init = function()
