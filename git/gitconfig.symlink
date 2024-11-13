@@ -14,34 +14,29 @@
   editor = nvim
   autocrlf = input
   whitespace = trailing-space,cr-at-eol
-  ; pager = delta
-  ; pager = diff-so-fancy | less --tabs=4 -RFX
 
   # FSMonitor speeds up git status by monitoring files
   fsmonitor = true
   untrackedcache = true
-[pager]
-  ;;;;;;;difftool = true
-  ;diff = delta --tabs=2
-  ;log = delta --tabs=2
-  ;reflog = delta --tabs=2
-  ;show = delta --tabs=2
+  pager = delta
 [diff]
-  ;;;;;;;external = difft --display inline
-  ;tool = difftastic
-  colorMove = default
+  external = difft
+  colorMoved = default
+
 [difftool]
   prompt = false
+
 [difftool "difftastic"]
   ;;;;;;;cmd = difft --display inline "$LOCAL" "$REMOTE"
 [delta]
   tabs = 2
   navigate = true # n and N to move between sections
+  dark = true
+  side-by-side = true
+  line-numbers = true
+
 [merge]
-  tool = fugitive
-  conflictstyle = diff3
-[mergetool "fugitive"]
-  cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
+  conflictstyle = zdiff3
 
 [apply]
   whitespace = nowarn
@@ -63,26 +58,13 @@
   status = auto
   ui = true
 
-; [color "diff"]
-;   commit = "yellow"
-;   meta = 11
-;   frag = "magenta"
-;   old = "red"
-;   new = "green"
-;   whitespace = red reverse
-;
-; [color "diff-highlight"]
-;   oldNormal = "red"
-;   oldHighlight = "red 52"
-;   newNormal = "green"
-;   newHighlight = "green 22"
-
 [branch]
   # set up git pull to do a rebase instead of merge
   #autosetuprebase = always
 [interactive]
-  singlekey = true
   diffFilter = delta --color-only
+  singlekey = true
+
 [github]
   user = jumski
 [init]

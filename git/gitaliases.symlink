@@ -22,8 +22,6 @@
   ba = branch -a
   browse = !gh repo view --web
   l = log
-  yesterday = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short --after=yesterday --author=Wojtek
-  today = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short --since='1 Day Ago' --date=relative --author=Wojtek
 
   chr = cherry -v
   rmt = remote -v
@@ -91,4 +89,18 @@
 
   hotfix = !git-hotfix
   circle = !git-circle
+
+  # `git log` with patches shown with difftastic.
+  dl = -c diff.external=difft log -p --ext-diff
+  dlog = -c diff.external=difft log --ext-diff
+
+  # Show the most recent commit with difftastic.
+  ds = -c diff.external=difft show --ext-diff
+  dshow = -c diff.external=difft show --ext-diff
+
+  # `git diff` with difftastic.
+  df = -c diff.external=difft diff
+  ddiff = -c diff.external=difft diff
+
+
 
