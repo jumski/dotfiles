@@ -2,3 +2,4 @@
     ~/.gitaliases: git/gitaliases.symlink
     ~/.gitconfig: git/gitconfig.symlink
     ~/.gitignore_global: git/gitignore_global.symlink
+    ~/.gitattributes: git/gitattributes.symlink

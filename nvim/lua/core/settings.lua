@@ -154,6 +154,13 @@ vim.filetype.add({
   },
 })
 
+vim.filetype.add({
+  extension = {
+    mdx = "markdown.mdx",
+    astro = "astro",
+  },
+})
+
 -- set textwidth to 100 in commit messages, also enable the line visual
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "gitcommit",

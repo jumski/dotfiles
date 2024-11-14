@@ -14,6 +14,8 @@
   editor = nvim
   autocrlf = input
   whitespace = trailing-space,cr-at-eol
+  ; pager = delta
+  ; pager = diff-so-fancy | less --tabs=4 -RFX
 
   # FSMonitor speeds up git status by monitoring files
   fsmonitor = true
@@ -58,6 +60,20 @@
   interactive = auto
   status = auto
   ui = true
+
+; [color "diff"]
+;   commit = "yellow"
+;   meta = 11
+;   frag = "magenta"
+;   old = "red"
+;   new = "green"
+;   whitespace = red reverse
+;
+; [color "diff-highlight"]
+;   oldNormal = "red"
+;   oldHighlight = "red 52"
+;   newNormal = "green"
+;   newHighlight = "green 22"
 
 [branch]
   # set up git pull to do a rebase instead of merge
