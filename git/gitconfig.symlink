@@ -20,6 +20,7 @@
   # FSMonitor speeds up git status by monitoring files
   fsmonitor = true
   untrackedcache = true
+  attributesfile = ~/.gitattributes
 [pager]
   ;;;;;;;difftool = true
   ;diff = delta --tabs=2
@@ -40,6 +41,9 @@
 [merge]
   tool = fugitive
   conflictstyle = diff3
+[merge "mergiraf"]
+  name = mergiraf
+  driver = mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P
 [mergetool "fugitive"]
   cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
 
