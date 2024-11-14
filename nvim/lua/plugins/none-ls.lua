@@ -21,6 +21,9 @@ return {
         null_ls.builtins.diagnostics.sqlfluff.with({
           extra_args = { "--dialect", "postgres" },
         }),
+        null_ls.builtins.formatting.prettier.with({
+          extra_filetypes = { "astro" },
+        }),
         -- null_ls.builtins.diagnostics.eslint,
         -- null_ls.builtins.completion.spell,
       },
