@@ -172,13 +172,27 @@ return {
       filetypes = { "astro" },
     })
 
+    local function get_typescript_server_path(root_dir)
+      local project_root = lspconfig.util.find_node_modules_ancestor(root_dir)
+      return project_root and (lspconfig.util.path.join(project_root, "node_modules", "typescript", "lib")) or ""
+    end
+
     lspconfig["mdx_analyzer"].setup({
       capabilities = capabilities,
       on_attach = setup_keybindings,
       cmd = { "mdx-language-server", "--stdio" },
-      -- cmd = { "mdx-analyzer", "--stdio" },
       filetypes = { "markdown.mdx", "mdx" },
-      root_dir = lspconfig.util.root_pattern(".git", "package.json"),
+      single_file_support = true,
+      settings = {},
+      init_options = {
+        typescript = {},
+      },
+      root_dir = lspconfig.util.root_pattern("package.json"),
+      on_new_config = function(new_config, new_root_dir)
+        if vim.tbl_get(new_config.init_options, "typescript") and not new_config.init_options.typescript.tsdk then
+          new_config.init_options.typescript.tsdk = get_typescript_server_path(new_root_dir)
+        end
+      end,
     })
   end,
 }
