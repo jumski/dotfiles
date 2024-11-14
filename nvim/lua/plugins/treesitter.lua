@@ -30,6 +30,8 @@ return {
     })
     vim.treesitter.language.register("markdown", "chatgpt")
     vim.treesitter.language.register("markdown", "mdx")
+    vim.treesitter.language.register("typescript", "markdown.mdx")
+    vim.treesitter.language.register("javascript", "markdown.mdx")
     vim.treesitter.query.set(
       "markdown",
       "injections",
@@ -40,6 +42,13 @@ return {
       ((inline) @injection.content
         (#lua-match? @injection.content "^%s*export")
         (#set! injection.language "typescript"))
+    ]]
+    )
+    vim.treesitter.query.set(
+      "markdown",
+      "injections",
+      [[
+      (fenced_code_block (info_string) @language (#match? @language "^typescript$|^tsx$"))
     ]]
     )
     vim.treesitter.query.set(
