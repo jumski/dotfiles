@@ -1,6 +1,9 @@
 return {
   "nvimtools/none-ls.nvim",
-  -- enabled = false,
+  dependencies = {
+    "williamboman/mason.nvim",
+    "jose-elias-alvarez/null-ls.nvim",
+  },
   config = function()
     local null_ls = require("null-ls")
 
@@ -11,13 +14,6 @@ return {
 
     null_ls.setup({
       sources = {
-        -- null_ls.builtins.formatting.prettier.with({
-        --   extra_filetypes = { "svelte" },
-        -- }),
-        -- null_ls.builtins.formatting.sqlfluff.with({
-        --   extra_args = { "--dialect", "postgres" },
-        --   filetypes = { "sql" }
-        -- }),
         null_ls.builtins.diagnostics.sqlfluff.with({
           extra_args = { "--dialect", "postgres" },
         }),

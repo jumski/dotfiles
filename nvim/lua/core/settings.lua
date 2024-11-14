@@ -156,7 +156,8 @@ vim.filetype.add({
 
 vim.filetype.add({
   extension = {
-    mdx = "mdx",
+    mdx = "markdown.mdx",
+    astro = "astro",
   },
 })
 

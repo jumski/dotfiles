@@ -171,5 +171,14 @@ return {
       on_attach = setup_keybindings,
       filetypes = { "astro" },
     })
+
+    lspconfig["mdx_analyzer"].setup({
+      capabilities = capabilities,
+      on_attach = setup_keybindings,
+      cmd = { "mdx-language-server", "--stdio" },
+      -- cmd = { "mdx-analyzer", "--stdio" },
+      filetypes = { "markdown.mdx", "mdx" },
+      root_dir = lspconfig.util.root_pattern(".git", "package.json"),
+    })
   end,
 }
