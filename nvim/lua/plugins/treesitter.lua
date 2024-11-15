@@ -30,7 +30,5 @@ return {
     })
     vim.treesitter.language.register("markdown", "chatgpt")
     vim.treesitter.language.register("markdown", "mdx")
-    vim.treesitter.language.register("typescript", "markdown.mdx")
-    vim.treesitter.language.register("javascript", "markdown.mdx")
   end,
 }
