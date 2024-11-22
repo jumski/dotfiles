@@ -19,6 +19,7 @@
   "file-line": { "branch": "master", "commit": "67c3590b25703444663edcd4188991147b1bc846" },
   "gh.nvim": { "branch": "main", "commit": "ebbaac254ef7dd6f85b439825fbce82d0dc84515" },
   "hlsearch.nvim": { "branch": "main", "commit": "fdeb60b890d15d9194e8600042e5232ef8c29b0e" },
+  "image.nvim": { "branch": "master", "commit": "5f8fceca2d1be96a45b81de21c2f98bf6084fb34" },
   "img-clip.nvim": { "branch": "main", "commit": "28a32d811d69042f4fa5c3d5fa35571df2bc1623" },
   "incsearch.vim": { "branch": "master", "commit": "c83de6d1ac31d173d7c3ffee0ad61dc643ee4f08" },
   "indent-blankline.nvim": { "branch": "master", "commit": "7871a88056f7144defca9c931e311a3134c5d509" },
