@@ -1,4 +1,4 @@
-function aichat
+function _deprecated_aichat
   set aichats_dir ~/aichats
 
   if test ! -d $aichats_dir
