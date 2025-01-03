@@ -3,7 +3,23 @@ return {
   version = "*",
   opts = {},
   config = function()
-    require("mini.animate").setup()
+    require("mini.animate").setup({
+      cursor = {
+        timing = function() return 11 end, -- Default is 110
+      },
+      scroll = {
+        timing = function() return 11 end, -- Default is 110
+      },
+      resize = {
+        timing = function() return 11 end, -- Default is 110
+      },
+      open = {
+        timing = function() return 11 end, -- Default is 110
+      },
+      close = {
+        timing = function() return 11 end, -- Default is 110
+      },
+    })
 
     vim.api.nvim_create_autocmd("FileType", {
       pattern = { "Avante", "AvanteInput" },
