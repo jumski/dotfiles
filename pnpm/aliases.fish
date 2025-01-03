@@ -1,0 +1,1 @@
+alias nx="pnpm nx"
