@@ -43,7 +43,7 @@
 
 
   conflicts = !git ls-files -u | cut -f 2 | sort -u
-  resolve = !vim -p $(git conflicts)
+  resolve = !nvim -p $(git conflicts)
   ours = checkout --ours
   theirs = checkout --theirs
 
