@@ -12,6 +12,11 @@ fi
 API_KEY="${ANTHROPIC_API_KEY}"
 MODEL_NAME="claude-3-5-haiku-latest"
 
+if [ -z "$API_KEY" ]; then
+    echo "Error: Please set the ANTHROPIC_API_KEY environment variable."
+    exit 1
+fi
+
 if [ -n "$1" ]; then
     ADDITIONAL_CONTEXT="
 Make sure to analyze the diff using additional description of the project/codebase:
@@ -19,12 +24,6 @@ Make sure to analyze the diff using additional description of the project/codeba
 ${1}
 </additional_context>
 "
-echo '-------------------------------------------------------------------------------'
-echo '-------------------------------------------------------------------------------'
-echo '-------------------------------------------------------------------------------'
-echo '-------------------------------------------------------------------------------'
-echo '-------------------------------------------------------------------------------'
-echo '-------------------------------------------------------------------------------'
 fi
 
 # Create the message content with $1 replacing {{DIFF}}
@@ -96,10 +95,8 @@ JSON_PAYLOAD=$(cat <<EOF
 EOF
 )
 
-echo "$MESSAGE_CONTENT"
-
 # Send request using curl and parse response with jq
-curl -X POST "https://api.anthropic.com/v1/messages" \
+curl -s -X POST "https://api.anthropic.com/v1/messages" \
   -H "x-api-key: $API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "content-type: application/json" \
