@@ -167,6 +167,7 @@ vim.api.nvim_create_autocmd("FileType", {
   command = "setlocal textwidth=100 colorcolumn=+1",
 })
 
+-- TODO: enable when fixed
 -- set highlight group for console.log
-vim.api.nvim_set_hl(0, "ConsoleLog", { fg = "#888888", italic = true })
-vim.cmd [[highlight link ConsoleLog Comment]]
+-- vim.api.nvim_set_hl(0, "ConsoleLog", { fg = "#888888", italic = true })
+-- vim.cmd [[highlight link ConsoleLog Comment]]
