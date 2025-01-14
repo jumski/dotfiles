@@ -1,12 +1,12 @@
 local WHICH_KEY_MAPPINGS = {
-  { "<leader>l",  group = "Language Server" },
-  { "<leader>la", vim.lsp.buf.code_action,     desc = "Code action" },
-  { "<leader>ld", vim.lsp.buf.definition,      desc = "Go to definition" },
-  { "<leader>lf", vim.lsp.buf.format,          desc = "Format buffer" },
-  { "<leader>lg", vim.lsp.buf.declaration,     desc = "Go to declaration" },
-  { "<leader>li", vim.lsp.buf.implementation,  desc = "Go to implementation" },
-  { "<leader>lr", vim.lsp.buf.rename,          desc = "Rename symbol" },
-  { "<leader>ls", vim.lsp.buf.signature_help,  desc = "Signature help" },
+  { "<leader>l", group = "Language Server" },
+  { "<leader>la", vim.lsp.buf.code_action, desc = "Code action" },
+  { "<leader>ld", vim.lsp.buf.definition, desc = "Go to definition" },
+  { "<leader>lf", vim.lsp.buf.format, desc = "Format buffer" },
+  { "<leader>lg", vim.lsp.buf.declaration, desc = "Go to declaration" },
+  { "<leader>li", vim.lsp.buf.implementation, desc = "Go to implementation" },
+  { "<leader>lr", vim.lsp.buf.rename, desc = "Rename symbol" },
+  { "<leader>ls", vim.lsp.buf.signature_help, desc = "Signature help" },
   { "<leader>lt", vim.lsp.buf.type_definition, desc = "Go to type definition" },
 }
 
@@ -17,7 +17,7 @@ return {
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
     local telescopeDropdown =
-        require("telescope.themes").get_dropdown({ layout_strategy = "horizontal", layout_config = { width = 1.0 } })
+      require("telescope.themes").get_dropdown({ layout_strategy = "horizontal", layout_config = { width = 1.0 } })
     local function lsp_references_dropdown()
       require("telescope.builtin").lsp_references(telescopeDropdown)
       -- require('telescope.builtin').lsp_references( {layout_strategy='horizontal',layout_config={width=1.0}})
@@ -65,7 +65,7 @@ return {
               "vim",
               "require", -- nvim config globals
               "awesome",
-              "client",  -- awesomewm config globals
+              "client", -- awesomewm config globals
             },
           },
           workspace = {
