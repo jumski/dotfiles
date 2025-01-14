@@ -62,6 +62,7 @@ nohup.out
 .para-resource
 .para-resources
 .para-archive
+.origin
 
 __pycache__
 .pdm-python
