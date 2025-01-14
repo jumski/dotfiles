@@ -67,6 +67,9 @@ Follow these guidelines to create the commit message:
 
 9. Do not include any formatting, backticks, or other markdown syntax in the commit message.
 
+#### Caveats:
+- subject must not be sentence-case, start-case, pascal-case, upper-case
+
 ${ADDITIONAL_CONTEXT}
 
 Provide your commit message within <commit_message> tags. Remember to think carefully about the most appropriate type and description that summarizes all changes effectively."
