@@ -2,7 +2,7 @@
     ~/.config/aichat/config.yaml: /home/jumski/SynologyDrive/Areas/Dev/aichat/config.yaml
     ~/.config/aichat/agents: /home/jumski/SynologyDrive/Areas/Dev/aichat/agents
     ~/.config/aichat/sessions: /home/jumski/SynologyDrive/Areas/Dev/aichat/sessions
-    ~/.config/aichat/functions: /home/jumski/SynologyDrive/Areas/Dev/aichat/functions
+    ~/.config/aichat/functions: /home/jumski/SynologyDrive/Areas/Dev/aichat/llm-functions
     ~/.config/aichat/rags: /home/jumski/SynologyDrive/Areas/Dev/aichat/rags
     ~/.config/aichat/roles: /home/jumski/SynologyDrive/Areas/Dev/aichat/roles
     ~/.config/aichat/dark.tmTheme: bat/themes/tokyonight_night.tmTheme
