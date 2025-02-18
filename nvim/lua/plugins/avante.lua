@@ -11,18 +11,34 @@ return {
   opts = {
     -- provider = "openai"
     provider = "claude",
+    auto_suggestions_provider = "claude",
+    cursor_applying_provider = "fastapply",
+
+    behaviour = {
+      --- ... existing behaviours
+      enable_cursor_planning_mode = true,
+    },
+
     claude = {
       model = "claude-3-5-sonnet-20241022",
       disable_tools = true,
     },
+
     vendors = {
-      ollama = {
+      -- ollama = {
+      --   __inherited_from = "openai",
+      --   api_key_name = "",
+      --   endpoint = "http://pc.netbird.cloud:11434/v1",
+      --   model = "deepseek-r1:32b",
+      --   -- temperature = 0,
+      --   -- max_tokens = 8192,
+      -- },
+      --- ... existing vendors
+      fastapply = {
         __inherited_from = "openai",
         api_key_name = "",
         endpoint = "http://pc.netbird.cloud:11434/v1",
-        model = "deepseek-r1:32b",
-        -- temperature = 0,
-        -- max_tokens = 8192,
+        model = "hf.co/Kortix/FastApply-7B-v1.0_GGUF:Q4_K_M",
       },
     },
     -- ollama = {
