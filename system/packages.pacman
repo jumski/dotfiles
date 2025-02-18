@@ -44,3 +44,4 @@ signal-desktop
 nvtop
 nmap
 graphviz
+extra-cmake-modules
