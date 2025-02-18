@@ -13,6 +13,7 @@ return {
     provider = "claude",
     claude = {
       model = "claude-3-5-sonnet-20241022",
+      disable_tools = true,
     },
     vendors = {
       ollama = {
