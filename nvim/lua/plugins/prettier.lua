@@ -1,12 +1,12 @@
 return {
-  'MunifTanjim/prettier.nvim',
+  "MunifTanjim/prettier.nvim",
   -- enabled = false,
   dependencies = {
-    'neovim/nvim-lspconfig',
-    'nvimtools/none-ls.nvim'
+    "neovim/nvim-lspconfig",
+    "nvimtools/none-ls.nvim",
   },
   opts = {
-    bin = 'prettier',
+    bin = "prettier",
     filetypes = {
       "css",
       "graphql",
@@ -21,6 +21,6 @@ return {
       "typescript",
       "typescriptreact",
       "yaml",
-    }
-  }
+    },
+  },
 }
