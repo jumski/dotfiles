@@ -1,4 +1,5 @@
 return {
+  -- enabled = false,
   "stevearc/conform.nvim",
   event = { "BufWritePre" },
   cmd = { "ConformInfo" },
@@ -37,8 +38,8 @@ return {
         prepend_args = { "-i", "2" },
       },
       sqlfluff = {
-        args = { "format", "-" }
-      }
+        args = { "format", "-" },
+      },
       -- sqlfluff = function(bufrn)
       --   return {
       --     require_cwd = true,

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Categories=Network;InstantMessaging;
+Comment=All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.
+Exec=/usr/bin/discord
+GenericName=Internet Messenger
+Icon=discord
+Name=Discord
+Path=/usr/bin
+StartupWMClass=discord
+Type=Application

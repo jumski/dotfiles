@@ -1,0 +1,10 @@
+[Desktop Entry]
+Categories=Network;
+Comment=unofficial whatsapp client for linux
+Exec=/opt/whatsdesk/whatsdesk %U
+Icon=whatsdesk
+MimeType=x-scheme-handler/whatsapp;
+Name=whatsdesk
+StartupWMClass=whatsdesk
+Terminal=false
+Type=Application

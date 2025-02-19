@@ -1,19 +1,16 @@
-local CHAT_API =
-  'openai';
-  -- 'groq';
-  -- 'ollama';
+local CHAT_API = "openai"
+-- 'groq';
+-- 'ollama';
 
-local OPENAI_MODEL =
-  'gpt-4o';
-  -- 'gpt-4-1106-preview';
-  -- 'gpt-4';
-  -- 'gpt-3.5-turbo';
+local OPENAI_MODEL = "gpt-4o"
+-- 'gpt-4-1106-preview';
+-- 'gpt-4';
+-- 'gpt-3.5-turbo';
 
-local GROQ_MODEL =
-  "mixtral-8x7b-32768";
-  -- "llama2-70b-4096";
-  -- "gemma-7b-it";
-  -- "gemma-2b-it";
+local GROQ_MODEL = "mixtral-8x7b-32768"
+-- "llama2-70b-4096";
+-- "gemma-7b-it";
+-- "gemma-2b-it";
 
 local OLLAMA_MODEL =
   -- 'dolphincoder:15b-starcoder2-q8_0';
@@ -21,13 +18,13 @@ local OLLAMA_MODEL =
   -- 'codellama:7b',
   -- 'codellama:13b',
   -- 'codellama:34b';
-  'dolphin-mixtral:8x7b-v2.7-q3_K_L';
-  -- 'dolphin-mixtral:8x7b-v2.7-q2_K';
-  --
-  -- DOES NOT FIT IN RAM:
-  -- 'codellama:70b';
-  -- 'deepseek-coder:33b-instruct-q5_K_M';
-  -- 'dolphin-mixtral';
+  "dolphin-mixtral:8x7b-v2.7-q3_K_L"
+-- 'dolphin-mixtral:8x7b-v2.7-q2_K';
+--
+-- DOES NOT FIT IN RAM:
+-- 'codellama:70b';
+-- 'deepseek-coder:33b-instruct-q5_K_M';
+-- 'dolphin-mixtral';
 
 local WHICH_KEY_MAPPINGS = {
   { "<leader>c", group = "ChatGPT" },
@@ -90,8 +87,8 @@ local openai_config = {
 }
 
 local ollama_config = {
-  api_host_cmd = 'echo -n http://pc.netbird.cloud:11434',
-  api_key_cmd = 'echo whatever',
+  api_host_cmd = "echo -n http://pc.netbird.cloud:11434",
+  api_key_cmd = "echo whatever",
   openai_params = {
     model = OLLAMA_MODEL,
     frequency_penalty = 0,
@@ -112,7 +109,7 @@ local ollama_config = {
 }
 
 local groq_config = {
-  api_host_cmd = 'echo -n https://api.groq.com/openai',
+  api_host_cmd = "echo -n https://api.groq.com/openai",
   api_key_cmd = HOME_PATH .. "/.get_groq_token",
   openai_params = {
     model = GROQ_MODEL,
@@ -135,13 +132,13 @@ local groq_config = {
 
 return {
   "jackMort/ChatGPT.nvim",
-  -- enabled = false,
+  enabled = false,
   event = "VeryLazy",
   config = function()
     local config
-    if CHAT_API == 'openai' then
+    if CHAT_API == "openai" then
       config = openai_config
-    elseif CHAT_API == 'groq' then
+    elseif CHAT_API == "groq" then
       config = groq_config
     else
       config = ollama_config
@@ -159,6 +156,6 @@ return {
     "MunifTanjim/nui.nvim",
     "nvim-lua/plenary.nvim",
     "folke/trouble.nvim",
-    "nvim-telescope/telescope.nvim"
-  }
+    "nvim-telescope/telescope.nvim",
+  },
 }

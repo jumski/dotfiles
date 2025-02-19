@@ -3,6 +3,7 @@ ncdu
 fd
 xcape
 htop
+btop
 tmux
 tig
 xclip
@@ -43,3 +44,4 @@ signal-desktop
 nvtop
 nmap
 graphviz
+extra-cmake-modules

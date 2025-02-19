@@ -1,0 +1,21 @@
+[Desktop Action new-private-window]
+Exec=/usr/bin/chromium --incognito
+Name=New Incognito Window
+
+[Desktop Action new-window]
+Exec=/usr/bin/chromium
+Name=New Window
+
+[Desktop Entry]
+Actions=new-window;new-private-window;
+Categories=Network;WebBrowser;
+Comment=Access the Internet
+Exec=/usr/bin/chromium %U
+GenericName=Web Browser
+Icon=chromium
+MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
+Name=Chromium
+StartupNotify=true
+Terminal=false
+Type=Application
+Version=1.0
