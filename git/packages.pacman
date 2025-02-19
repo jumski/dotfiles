@@ -3,3 +3,4 @@ github-cli
 git-delta
 git-lfs
 difftastic
+git-filter-repo
