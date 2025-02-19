@@ -12,7 +12,7 @@ return {
     -- provider = "openai"
     provider = "claude",
     auto_suggestions_provider = "claude",
-    cursor_applying_provider = "fastapply",
+    cursor_applying_provider = "groq",
 
     behaviour = {
       --- ... existing behaviours
@@ -25,6 +25,14 @@ return {
     },
 
     vendors = {
+      --- ... existing vendors
+      groq = { -- define groq provider
+        __inherited_from = "openai",
+        api_key_name = "GROQ_API_KEY",
+        endpoint = "https://api.groq.com/openai/v1/",
+        model = "qwen-2.5-coder-32b",
+        max_tokens = 8192, -- remember to increase this value, otherwise it will stop generating halfway
+      },
       -- ollama = {
       --   __inherited_from = "openai",
       --   api_key_name = "",
