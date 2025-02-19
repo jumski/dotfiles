@@ -132,7 +132,7 @@ local groq_config = {
 
 return {
   "jackMort/ChatGPT.nvim",
-  -- enabled = false,
+  enabled = false,
   event = "VeryLazy",
   config = function()
     local config
