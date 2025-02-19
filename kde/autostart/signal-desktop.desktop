@@ -1,0 +1,12 @@
+[Desktop Entry]
+Categories=Network;InstantMessaging;
+Comment=Signal - Private Messenger
+Exec=signal-desktop -- %u
+Icon=signal-desktop
+Keywords=sgnl;chat;im;messaging;messenger;security;privat;
+MimeType=x-scheme-handler/sgnl;x-scheme-handler/signalcaptcha;
+Name=Signal
+StartupWMClass=signal
+Terminal=false
+Type=Application
+X-GNOME-UsesNotifications=true
