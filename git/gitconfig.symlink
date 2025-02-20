@@ -47,7 +47,7 @@
 [mergetool]
   keepBackup = false
 [help]
-  autocorrect = 1
+	autocorrect = prompt
 [push]
   # See `git help config` (search for push.default)
   # for more information on different options of the below setting.
