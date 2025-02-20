@@ -83,25 +83,35 @@ return {
       on_attach = setup_keybindings,
     })
     lspconfig["ts_ls"].setup({
+      single_file_support = false,
       capabilities = capabilities,
-      -- single_file_support = false,
       on_attach = setup_keybindings,
-      -- root_dir = function()
-      --   -- we assume that deno project can be nested inside ts project,
-      --   -- so we need to check immediate parents not current working dir
-      --   local current_file_dir = vim.fn.expand('%:p:h')
-      --   local is_deno_project =  lspconfig.util.root_pattern("deno.json", "import_map.json")(current_file_dir)
 
-      --   if is_deno_project then
+      -- ### MODIFIED FOR NESTED DENO PROJECTS ###
+      root_dir = function()
+        -- we assume that deno project can be nested inside ts project,
+        -- so we need to check immediate parents not current working dir
+        local current_file_dir = vim.fn.expand("%:p:h")
+        local is_deno_project = lspconfig.util.root_pattern("deno.json", "import_map.json")(current_file_dir)
+
+        if is_deno_project then
+          return nil
+        else
+          return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd())
+        end
+      end,
+      -- ### RECOMMENDED ###
+      -- root_dir = function(fname)
+      --   if lspconfig.util.root_pattern("deno.json", "deno.jsonc", "import_map.json")(fname) then
       --     return nil
-      --   else
-      --     return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd())
       --   end
-      -- end
+      --
+      --   return lspconfig.util.root_pattern("tsconfig.json", "package.json")(fname)
+      -- end,
     })
 
     lspconfig["denols"].setup({
-      root_dir = lspconfig.util.root_pattern("deno.json"),
+      root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
       capabilities = capabilities,
       -- single_file_support = true,
       -- on_attach = setup_keybindings,
@@ -111,6 +121,7 @@ return {
         suggest = {
           imports = {
             hosts = {
+              ["https://jsr.io"] = true,
               ["https://deno.land"] = true,
               ["https://cdn.nest.land"] = true,
               ["https://crux.land"] = true,
