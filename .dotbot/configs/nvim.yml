@@ -3,3 +3,4 @@
     ~/.config/nvim/lua: nvim/lua
     ~/.config/nvim/lazy-lock.json: nvim/lazy-lock.json
     ~/.config/nvim/queries: treesitter/queries
+    ~/.editorconfig: nvim/editorconfig
