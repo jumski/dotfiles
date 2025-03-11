@@ -20,7 +20,14 @@ return {
         ["queries/*.sql"] = { command = "query" },
         ["config.toml"] = { command = "config" },
         ["functions/import_map.json"] = { command = "importmap" },
-      }
+      },
+      ["supabase/config.toml"] = {
+        ["supabase/migrations/*.sql"] = { command = "migration" },
+        ["supabase/seeds/*.sql"] = { command = "seed" },
+        ["supabase/seed.sql"] = { command = "seed" },
+        ["supabase/tests/*.sql"] = { command = "test" },
+        ["supabase/config.toml"] = { command = "config" },
+      },
     }
   end,
   event = "User",
