@@ -38,7 +38,8 @@ return {
         prepend_args = { "-i", "2" },
       },
       sqruff = {
-        args = { "format", "-" },
+        -- Updated args to use the correct command syntax for sqruff
+        args = { "fix", "--force", "-" },
       },
       -- sqlfluff = function(bufrn)
       --   return {
@@ -58,11 +59,9 @@ return {
     log_level = vim.log.levels.DEBUG,
   },
   config = function(_, opts)
-    -- opts["formatters"]["sqlfluff"]["cwd"] = require("conform.util").root_file({
-    --   ".sqlfluff",
-    --   "migrations", -- supabase
-    --   "seed.sql", -- supabase
-    -- })
+    -- Set up the cwd for sqruff here, after the plugin is loaded
+    opts.formatters.sqruff.cwd = require("conform.util").root_file({ "nx.json", ".editorconfig", ".git" })
+
     require("conform").setup(opts)
   end,
   init = function()

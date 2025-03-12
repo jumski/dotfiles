@@ -14,7 +14,7 @@ return {
 
     null_ls.setup({
       sources = {
-        null_ls.builtins.diagnostics.sqlfluff.with({
+        null_ls.builtins.diagnostics.sqruff.with({
           extra_args = { "--dialect", "postgres" },
         }),
         null_ls.builtins.formatting.prettier.with({
