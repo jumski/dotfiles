@@ -17,6 +17,7 @@ return {
     behaviour = {
       --- ... existing behaviours
       enable_cursor_planning_mode = true,
+      use_cwd_as_project_root = true,
     },
 
     claude = {
