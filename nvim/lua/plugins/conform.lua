@@ -21,7 +21,7 @@ return {
     -- Define your formatters
     formatters_by_ft = {
       lua = { "stylua" },
-      sql = { "sqlfluff" },
+      sql = { "sqruff" },
       javascript = { "prettierd", stop_after_first = true },
       typescript = { "prettierd", stop_after_first = true },
       svelte = { "prettierd", stop_after_first = true },
@@ -37,7 +37,7 @@ return {
       shfmt = {
         prepend_args = { "-i", "2" },
       },
-      sqlfluff = {
+      sqruff = {
         args = { "format", "-" },
       },
       -- sqlfluff = function(bufrn)
