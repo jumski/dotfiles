@@ -37,34 +37,23 @@ return {
       shfmt = {
         prepend_args = { "-i", "2" },
       },
-      sqruff = {
-        -- Updated args to use the correct command syntax for sqruff
-        args = { "fix", "--parsing-errors", "--force", "-" },
-      },
-      -- sqlfluff = function(bufrn)
-      --   return {
-      --     require_cwd = true,
-      --     stdin = true,
-      --     args = function()
-      --       return { "format", "-" }
-      --     end,
-      --     cwd = require("conform.util").root_file({
-      --       ".sqlfluff",
-      --       "migrations", -- supabase
-      --       "seed.sql", -- supabase
-      --     }),
-      --   }
-      -- end,
+      sqruff = function(_)
+        return {
+          require_cwd = true,
+          stdin = true,
+          args = { "fix", "--parsing-errors", "--force", "-" },
+          cwd = require("conform.util").root_file({
+            ".sqruff",
+            "nx.json",
+            ".editorconfig",
+            ".git",
+            "pnpm-lock.yaml",
+          }),
+        }
+      end,
     },
     log_level = vim.log.levels.DEBUG,
   },
-  config = function(_, opts)
-    -- Set up the cwd for sqruff here, after the plugin is loaded
-    opts.formatters.sqruff.cwd =
-      require("conform.util").root_file({ ".sqruff", "nx.json", ".editorconfig", ".git", "pnpm-lock.yaml" })
-
-    require("conform").setup(opts)
-  end,
   init = function()
     -- If you want the formatexpr, here is the place to set it
     vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
