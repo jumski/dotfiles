@@ -25,7 +25,7 @@ return {
         ["supabase/migrations/*.sql"] = { command = "migration" },
         ["supabase/seeds/*.sql"] = { command = "seed" },
         ["supabase/seed.sql"] = { command = "seed" },
-        ["supabase/tests/*.sql"] = { command = "test" },
+        ["supabase/tests/*.test.sql"] = { command = "test" },
         ["supabase/config.toml"] = { command = "config" },
       },
     }
