@@ -39,7 +39,7 @@ return {
       },
       sqruff = {
         -- Updated args to use the correct command syntax for sqruff
-        args = { "fix", "--force", "-" },
+        args = { "fix", "--parsing-errors", "--force", "-" },
       },
       -- sqlfluff = function(bufrn)
       --   return {
@@ -60,7 +60,8 @@ return {
   },
   config = function(_, opts)
     -- Set up the cwd for sqruff here, after the plugin is loaded
-    opts.formatters.sqruff.cwd = require("conform.util").root_file({ "nx.json", ".editorconfig", ".git" })
+    opts.formatters.sqruff.cwd =
+      require("conform.util").root_file({ ".sqruff", "nx.json", ".editorconfig", ".git", "pnpm-lock.yaml" })
 
     require("conform").setup(opts)
   end,
