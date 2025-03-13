@@ -170,3 +170,6 @@ vim.api.nvim_create_autocmd("FileType", {
 -- set highlight group for console.log
 -- vim.api.nvim_set_hl(0, "ConsoleLog", { fg = "#888888", italic = true })
 -- vim.cmd [[highlight link ConsoleLog Comment]]
+
+vim.opt.fixendofline = false
+vim.opt.eol = false
