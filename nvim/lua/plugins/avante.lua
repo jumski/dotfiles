@@ -18,12 +18,58 @@ return {
       --- ... existing behaviours
       enable_cursor_planning_mode = true,
       use_cwd_as_project_root = true,
+      enable_claude_text_editor_tool_mode = true,
     },
 
     claude = {
       -- model = "claude-3-5-sonnet-20241022",
       model = "claude-3-7-sonnet-20250219",
-      disable_tools = true,
+      -- disable_tools = true,
+    },
+
+    disabled_tools = { "git_commit", "create_file", "rename_file", "delete_file", "create_dir", "rename_dir", "delete_dir", "bash", "web_search" },
+
+    custom_tools = {
+      {
+        name = "run_sql_tests",  -- Unique name for the tool
+        description = "Run SQL unit tests and return results",  -- Description shown to AI
+        -- command = "pnpm nx test --",  -- Shell command to execute
+        param = {  -- Input parameters (optional)
+          type = "table",
+          fields = {
+            {
+              name = "target",
+              description = "Test from ./supabase/tests/ to run",
+              type = "string",
+              optional = true,
+            },
+          },
+        },
+        func = function(params, on_log, on_complete)  -- Custom function to execute
+          local target = params.target or "./..."
+          return vim.fn.system("pnpm nx test -- " .. target)
+        end,
+      },
+      -- {
+      --   name = "reset_sql_schema",
+      --   description = "Reset SQL schema to include latest changes",
+      --   func = function()
+      --     return vim.fn.system("pnpm nx supabase:reset")
+      --   end,
+      --   -- command = "pnpm nx supabase:reset",
+      --   param = {
+      --     type = "table",
+      --     fields = {
+      --       {
+      --         name = "noop",
+      --         description = "noop param, dont use it",
+      --         type = "string",
+      --         optional = true,
+      --       },
+      --     },
+      --
+      --   }
+      -- },
     },
 
     vendors = {

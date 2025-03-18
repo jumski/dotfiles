@@ -35,7 +35,7 @@ opt.background = "dark" -- use dark background
 
 --- UI
 opt.number = false -- do not show line numbering
-opt.laststatus = 2 -- always show status line
+opt.laststatus = 3 -- always show status line
 opt.autoread = true -- automatically read file if it changes
 
 -- ignore "Hit enter" messages
