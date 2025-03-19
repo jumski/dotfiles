@@ -27,14 +27,13 @@ return {
       -- disable_tools = true,
     },
 
-    disabled_tools = { "git_commit", "create_file", "rename_file", "delete_file", "create_dir", "rename_dir", "delete_dir", "bash", "web_search" },
+    disabled_tools = { "git_commit", "delete_file", "delete_dir", "bash", "web_search" },
 
     custom_tools = {
       {
-        name = "run_sql_tests",  -- Unique name for the tool
-        description = "Run SQL unit tests and return results",  -- Description shown to AI
-        -- command = "pnpm nx test --",  -- Shell command to execute
-        param = {  -- Input parameters (optional)
+        name = "run_sql_tests",
+        description = "Run SQL unit tests and return results",
+        param = {
           type = "table",
           fields = {
             {
@@ -45,7 +44,7 @@ return {
             },
           },
         },
-        func = function(params, on_log, on_complete)  -- Custom function to execute
+        func = function(params, on_log, on_complete)
           local target = params.target or "./..."
           return vim.fn.system("pnpm nx test -- " .. target)
         end,
