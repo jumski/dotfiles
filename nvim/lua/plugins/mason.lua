@@ -24,7 +24,7 @@ return {
         "lua_ls",
         "mdx-analyzer",
         "pyright",
-        "ruff_lsp",
+        "ruff-lsp",
         "solargraph",
         "sorbet",
         "sqlls",
