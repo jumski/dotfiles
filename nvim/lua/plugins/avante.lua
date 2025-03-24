@@ -31,14 +31,14 @@ return {
 
     custom_tools = {
       {
-        name = "run_sql_tests",
-        description = "Run SQL unit tests and return results",
+        name = "run_tests",
+        description = "Run unit and integration tests and return results",
         param = {
           type = "table",
           fields = {
             {
               name = "target",
-              description = "Test from ./supabase/tests/ to run",
+              description = "Path relative to root of the package (not root of monorepo) for test runner to run",
               type = "string",
               optional = true,
             },
