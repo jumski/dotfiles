@@ -181,8 +181,11 @@ set -g history-limit 1000000
 # source-file ~/.dotfiles/tmux/themes/gruvbox.conf
 # source-file ~/.dotfiles/tmux/themes/tokyonight_day.tmux
 # source-file ~/.dotfiles/tmux/themes/tokyonight_moon.tmux
-source-file ~/.dotfiles/tmux/themes/tokyonight_night.tmux
+# source-file ~/.dotfiles/tmux/themes/tokyonight_night.tmux
 # source-file ~/.dotfiles/tmux/themes/tokyonight_storm.tmux
+
+# Use custom enhanced status line
+source-file ~/.dotfiles/tmux/themes/custom/statusline.conf
 
 ######################################
 ################ TPM #################
@@ -190,6 +193,9 @@ source-file ~/.dotfiles/tmux/themes/tokyonight_night.tmux
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'jaclu/tmux-menus'
+set -g @plugin 'tmux-plugins/tmux-battery'
+set -g @plugin 'tmux-plugins/tmux-cpu'
+set -g @plugin 'tmux-plugins/tmux-prefix-highlight'
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run '~/.tmux/plugins/tpm/tpm'
