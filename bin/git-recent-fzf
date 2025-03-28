@@ -10,14 +10,24 @@ UPSTREAM_COLOR="\033[0;33m" # Warning color (yellow) for upstream
 GITLAB_COLOR="\033[0;35m"   # Secondary color (purple) for gitlab
 RESET="\033[0m"
 
+# Check if there are pending changes
+if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo "Error: You have pending changes. Please commit or stash them before switching branches."
+    exit 1
+fi
+
+# Create a temporary file to store the branch names
+TEMP_FILE=$(mktemp)
+trap 'rm -f "$TEMP_FILE".*' EXIT
+
 # Get both absolute and relative dates
-git for-each-ref --sort=-committerdate \
+selected_branch=$(git for-each-ref --sort=-committerdate \
   --format='%(committerdate:short)|%(committerdate:relative)|%(refname:short)' \
   refs/heads refs/remotes --count=20 | \
 awk -F'|' -v date_color="$DATE_COLOR" -v rel_date_color="$REL_DATE_COLOR" \
     -v branch_color="$BRANCH_COLOR" -v local_branch_color="$LOCAL_BRANCH_COLOR" \
     -v origin_color="$ORIGIN_COLOR" -v upstream_color="$UPSTREAM_COLOR" \
-    -v gitlab_color="$GITLAB_COLOR" -v reset="$RESET" '
+    -v gitlab_color="$GITLAB_COLOR" -v reset="$RESET" -v temp_file="$TEMP_FILE" '
 {
     abs_date = $1
     rel_date = $2
@@ -62,7 +72,44 @@ awk -F'|' -v date_color="$DATE_COLOR" -v rel_date_color="$REL_DATE_COLOR" \
     formatted_abs_date = date_color abs_date reset
     formatted_rel_date = rel_date_color rel_date reset
 
+    # Generate a unique line number
+    line_num = NR
+
+    # Store the branch name in the temp file
+    print ref > temp_file "." line_num
+
     # Ensure consistent width for the date column (25 chars should be enough for relative date)
-    printf "%-12s %-25s %s\n", formatted_abs_date, formatted_rel_date, formatted_ref
+    printf "%d\t%-12s %-25s %s\n", line_num, formatted_abs_date, formatted_rel_date, formatted_ref
 }' | \
-fzf-tmux -d 15 --ansi | awk '{print $3}'
+fzf-tmux -d 15 --ansi --with-nth=2.. | awk '{print $1}' | xargs -I{} cat "$TEMP_FILE.{}")
+
+# If a branch was selected, switch to it
+if [ -n "$selected_branch" ]; then
+    # For remote branches, create a local tracking branch if it doesn't exist
+    if [[ "$selected_branch" == *"/"* ]]; then
+        remote=$(echo "$selected_branch" | cut -d'/' -f1)
+        branch=$(echo "$selected_branch" | cut -d'/' -f2-)
+        
+        # Check if local branch already exists
+        if git show-ref --verify --quiet "refs/heads/$branch"; then
+            # Local branch exists, check if it's tracking the remote branch
+            tracking=$(git for-each-ref --format='%(upstream:short)' "refs/heads/$branch")
+            if [ "$tracking" != "$selected_branch" ]; then
+                echo "Local branch '$branch' exists but doesn't track '$selected_branch'."
+                echo "Switching to local branch '$branch'."
+                git switch "$branch"
+            else
+                echo "Switching to local branch '$branch' (tracks $selected_branch)."
+                git switch "$branch"
+            fi
+        else
+            # Create a new local branch tracking the remote branch
+            echo "Creating local branch '$branch' tracking '$selected_branch'."
+            git switch -c "$branch" --track "$selected_branch"
+        fi
+    else
+        # Local branch, just switch to it
+        echo "Switching to branch '$selected_branch'."
+        git switch "$selected_branch"
+    fi
+fi
