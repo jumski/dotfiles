@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# date_prefix_by_oldest_file - Adds a date prefix (YYYY-MM-DD_) to a folder name
+#
+# This script renames a folder by adding a date prefix in YYYY-MM-DD format.
+# The date is determined by finding the oldest file or subfolder within the folder
+# (by modification time). This helps organize folders chronologically based on
+# their actual content creation date.
+#
+# Usage: date_prefix_by_oldest_file <folder_path>
+#
+# Example:
+#   date_prefix_by_oldest_file "Photos"
+#   Result: "2023-05-15_Photos" (if the oldest content was created on May 15, 2023)
+
+# Check if an argument was provided
+if [ $# -eq 0 ]; then
+    echo "Error: Please provide a folder path as an argument."
+    exit 1
+fi
+
+folder_path="$1"
+
+# Check if the provided path exists and is a directory
+if [ ! -d "$folder_path" ]; then
+    echo "Error: '$folder_path' is not a directory or does not exist."
+    exit 1
+fi
+
+# Get the base folder name without path
+folder_name=$(basename "$folder_path")
+
+# Check if the folder name is already prefixed with a date (YYYY-MM-DD format)
+if [[ ! "$folder_name" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}_ ]]; then
+    echo "Finding the oldest content in the folder..."
+
+    # Find the oldest file or directory by modification time
+    # Using -mindepth 1 to exclude the folder itself
+    oldest_item=$(find "$folder_path" -mindepth 1 -printf '%T@ %p\n' 2>/dev/null | sort -n | head -n 1 | cut -d' ' -f2-)
+
+    if [ -n "$oldest_item" ]; then
+        echo "Oldest item found: $oldest_item"
+        # Get modification time of the oldest item
+        mod_timestamp=$(stat -c %Y "$oldest_item")
+
+        date_prefix=$(date -d @"$mod_timestamp" +%Y-%m-%d)
+        echo "Using date from oldest item: $date_prefix"
+    else
+        echo "No content found in the directory, using folder modification time instead."
+        # Fallback to folder modification time
+        mod_timestamp=$(stat -c %Y "$folder_path")
+        date_prefix=$(date -d @"$mod_timestamp" +%Y-%m-%d)
+        echo "Using folder modification date: $date_prefix"
+    fi
+
+    # Construct the new path with date prefix
+    parent_dir=$(dirname "$folder_path")
+    new_name="${date_prefix}_${folder_name}"
+    new_path="${parent_dir}/${new_name}"
+
+    # Rename the folder
+    mv "$folder_path" "$new_path"
+    echo "Folder renamed to: $new_name"
+else
+    echo "Folder '$folder_name' is already prefixed with a date, no changes made."
+fi
