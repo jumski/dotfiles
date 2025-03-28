@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+# Define colors
+DATE_COLOR="\033[2;37m"     # Muted grey for dates
+REL_DATE_COLOR="\033[2;36m" # Muted cyan for relative dates
+BRANCH_COLOR="\033[0m"      # Default color for branch names
+LOCAL_BRANCH_COLOR="\033[1m" # Bold for local branches
+ORIGIN_COLOR="\033[0;34m"   # Primary color (blue) for origin
+UPSTREAM_COLOR="\033[0;33m" # Warning color (yellow) for upstream
+GITLAB_COLOR="\033[0;35m"   # Secondary color (purple) for gitlab
+RESET="\033[0m"
+
+# Get both absolute and relative dates
+git for-each-ref --sort=-committerdate \
+  --format='%(committerdate:short)|%(committerdate:relative)|%(refname:short)' \
+  refs/heads refs/remotes --count=20 | \
+awk -F'|' -v date_color="$DATE_COLOR" -v rel_date_color="$REL_DATE_COLOR" \
+    -v branch_color="$BRANCH_COLOR" -v local_branch_color="$LOCAL_BRANCH_COLOR" \
+    -v origin_color="$ORIGIN_COLOR" -v upstream_color="$UPSTREAM_COLOR" \
+    -v gitlab_color="$GITLAB_COLOR" -v reset="$RESET" '
+{
+    abs_date = $1
+    rel_date = $2
+    ref = $3
+
+    # Skip if ref is just "origin" without a branch name
+    if (ref == "origin") {
+        next
+    }
+
+    # Check if it is a remote branch
+    if (ref ~ /^[^\/]+\//) {
+        # Extract remote and branch parts
+        split(ref, parts, "/", seps)
+        remote = parts[1]
+        branch = substr(ref, length(remote) + 2)
+
+        # Skip if branch is empty (just the remote name)
+        if (branch == "") {
+            next
+        }
+
+        # Apply color based on remote name
+        if (remote == "origin") {
+            remote_color = origin_color
+        } else if (remote == "upstream") {
+            remote_color = upstream_color
+        } else if (remote == "gitlab") {
+            remote_color = gitlab_color
+        } else {
+            remote_color = date_color
+        }
+
+        # Format with appropriate colors
+        formatted_ref = remote_color remote "/" reset branch_color branch reset
+    } else {
+        # Local branch - make it bold
+        formatted_ref = local_branch_color ref reset
+    }
+
+    # Format dates with colors
+    formatted_abs_date = date_color abs_date reset
+    formatted_rel_date = rel_date_color rel_date reset
+
+    # Ensure consistent width for the date column (25 chars should be enough for relative date)
+    printf "%-12s %-25s %s\n", formatted_abs_date, formatted_rel_date, formatted_ref
+}' | \
+fzf-tmux -d 15 --ansi | awk '{print $3}'

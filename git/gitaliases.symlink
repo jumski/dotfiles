@@ -102,5 +102,9 @@
   df = -c diff.external=difft diff
   ddiff = -c diff.external=difft diff
 
+  # recently updated branches on origin
+  recent-list = git for-each-ref --sort=-committerdate refs/remotes/origin --format='%(committerdate:short) %(refname:short)' --count=10
+
+  recent = !bin/git-recent-fzf
 
 
