@@ -22,7 +22,6 @@ return {
   "tpope/vim-sleuth",
   "tpope/vim-surround",
   "tpope/vim-unimpaired",
-  "tpope/vim-vinegar",
 
   -- language server stuff and autocompletes
 
