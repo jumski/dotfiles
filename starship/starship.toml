@@ -1,0 +1,23 @@
+# left_format = ""
+#
+# format = """$character"""
+# right_format = """$all"""
+
+
+[dotnet]
+disabled = true
+
+[direnv]
+disabled = true
+
+[deno]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[package]
+disabled = true
+
+[[battery.display]]
+threshold = 50
