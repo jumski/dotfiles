@@ -16,6 +16,12 @@ disabled = true
 [nodejs]
 disabled = true
 
+[python]
+disabled = true
+
+[ruby]
+disabled = true
+
 [package]
 disabled = true
 
