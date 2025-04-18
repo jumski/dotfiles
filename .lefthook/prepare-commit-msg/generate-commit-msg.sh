@@ -13,7 +13,7 @@ if [ -z "$COMMIT_SOURCE" ]; then
     diff=$(git diff --cached --no-ext-diff --unified -- . ':(exclude)pnpm-lock.yaml' | head -c 5000)
 
     echo $diff |
-      bin/diff-to-commit-msg "$ADDITIONAL_PROMPT" |
+      bin/diff-to-commit-msg "openai" "$ADDITIONAL_PROMPT" |
       sed 's/^\s*```//;s/```\s*$//' | # remove code fences
       awk 'NF {p=1} p; {if (NF) {p=1}}' | # remove empty lines
       sed 's/\. /.\n/g' | # add newlines between sentences
