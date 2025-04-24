@@ -171,5 +171,5 @@ vim.api.nvim_create_autocmd("FileType", {
 -- vim.api.nvim_set_hl(0, "ConsoleLog", { fg = "#888888", italic = true })
 -- vim.cmd [[highlight link ConsoleLog Comment]]
 
-vim.opt.fixendofline = false
-vim.opt.eol = false
+vim.opt.fixendofline = true
+vim.opt.eol = true
