@@ -1,4 +1,5 @@
 return {
+  enabled = false,
   "3rd/diagram.nvim",
   dependencies = {
     "3rd/image.nvim",

@@ -1,5 +1,5 @@
 return {
-  -- enabled=false,
+  enabled=false,
   "3rd/image.nvim",
   config = true,
 }
