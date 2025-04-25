@@ -1,0 +1,31 @@
+#!/bin/bash
+
+function list_activities() {
+  qdbus org.kde.ActivityManager /ActivityManager/Activities ListActivities | \
+    xargs -I{} bash -c 'echo "{}: $(qdbus org.kde.ActivityManager /ActivityManager/Activities ActivityName {})"'
+}
+
+# ACTIVITIES
+# b1b8ca03-993c-4af2-b6fe-e8315477f822: 1 browsing
+# 6d5d5844-6c78-4878-b65d-e8cce82d2b1a: 2 chatting
+# 9e5b01ec-a69e-46fc-a354-ba4271f5aa98: 3 CODING
+# 38ddb873-0628-41b5-b792-2088ffad095c: 4 writing
+# ad8fea51-e974-4b2b-a1df-404faeb344c9: 5 3d Printing
+
+# Map activity names to their IDs
+declare -A activity_ids
+activity_ids[browsing]="b1b8ca03-993c-4af2-b6fe-e8315477f822"
+activity_ids[chatting]="6d5d5844-6c78-4878-b65d-e8cce82d2b1a"
+activity_ids[coding]="9e5b01ec-a69e-46fc-a354-ba4271f5aa98"
+activity_ids[writing]="38ddb873-0628-41b5-b792-2088ffad095c"
+
+activity="$1"
+
+# Check if the provided activity exists in our map
+if [[ -z "${activity_ids[$activity]}" ]]; then
+  echo "Error: Invalid activity '$activity'. Valid options are: browsing, chatting, coding, writing"
+  exit 1
+fi
+
+# Switch to the selected activity
+qdbus org.kde.ActivityManager /ActivityManager/Activities SetCurrentActivity "${activity_ids[$activity]}"
