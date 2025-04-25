@@ -55,8 +55,6 @@ return {
   "vim-scripts/closetag.vim",
   "vim-scripts/file-line",
   "vim-scripts/matchit.zip",
-  "gpanders/editorconfig.nvim",
-
   {
     "ldelossa/gh.nvim",
     dependencies = { { "ldelossa/litee.nvim" } },
