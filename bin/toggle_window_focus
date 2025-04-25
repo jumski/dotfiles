@@ -8,10 +8,23 @@ echo active=$active
 echo browser=$browser
 echo terminal=$terminal
 
+function maybe_switch_activity() {
+  local activity="$1"
+
+  if [ "$(hostname)" == "pc" ]; then
+    echo "Switching to activity: $activity"
+    $(dirname "$0")/switch_to_kde_activity "$activity"
+  else
+    echo "Not on 'pc' host, skipping activity switch"
+  fi
+}
+
 if [ "$active" == "$terminal" ]; then
   echo activating browser
   xdotool windowactivate $browser
+  maybe_switch_activity "browsing"
 else
-  echo activationg terminal
+  echo activating terminal
   xdotool windowactivate $terminal
+  maybe_switch_activity "coding"
 fi
