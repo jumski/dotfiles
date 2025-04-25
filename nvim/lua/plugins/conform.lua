@@ -21,7 +21,7 @@ return {
     -- Define your formatters
     formatters_by_ft = {
       lua = { "stylua" },
-      sql = { "sqruff" },
+      sql = { "sqruff", "trim_newlines" },
       javascript = { "prettierd", stop_after_first = true },
       typescript = { "prettierd", stop_after_first = true },
       svelte = { "prettierd", stop_after_first = true },
@@ -33,7 +33,11 @@ return {
       lsp_format = "fallback",
     },
     -- Set up format-on-save
-    format_after_save = { timeout_ms = 500 },
+    -- format_after_save = { timeout_ms = 500 },
+    format_on_save = {
+      timeout_ms = 500,
+      lsp_format = "fallback",
+    },
     -- Customize formatters
     formatters = {
       shfmt = {
