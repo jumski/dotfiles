@@ -150,6 +150,7 @@ vim.filetype.add({
     ["gitconfig.symlink"] = "gitconfig",
     ["*.gitaliases*"] = "gitconfig",
     ["gitaliases.symlink"] = "gitconfig",
+    ["tmux.conf*"] = "conf"
   },
 })
 
