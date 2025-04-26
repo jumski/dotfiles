@@ -2,7 +2,15 @@
 
 # Get API type from first argument or default to anthropic
 API_TYPE="${1:-openai}"
-shift 2>/dev/null || true  # Shift to remove the first argument if it exists
+
+if [ -n "$2" ]; then
+    ADDITIONAL_CONTEXT="
+Make sure to analyze the diff using additional description of the project/codebase:
+<additional_context>
+${1}
+</additional_context>
+"
+fi
 
 # API configuration
 ANTHROPIC_MODEL="claude-3-5-haiku-latest"
@@ -53,6 +61,7 @@ call_anthropic() {
 EOF
     )
 
+    echo $json_payload > /tmp/commit.json
     # Send request using curl and parse response with jq
     curl -s -X POST "https://api.anthropic.com/v1/messages" \
       -H "x-api-key: $api_key" \
@@ -110,15 +119,6 @@ EOF
 if [ "$API_TYPE" != "anthropic" ] && [ "$API_TYPE" != "openai" ]; then
     echo "Error: API_TYPE must be either 'anthropic' or 'openai'. Got: $API_TYPE"
     exit 1
-fi
-
-if [ -n "$1" ]; then
-    ADDITIONAL_CONTEXT="
-Make sure to analyze the diff using additional description of the project/codebase:
-<additional_context>
-${1}
-</additional_context>
-"
 fi
 
 # Create the message content with $1 replacing {{DIFF}}
