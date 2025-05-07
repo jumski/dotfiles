@@ -16,3 +16,5 @@ node_modules/
 fish/fish_variables
 .cache
 get-platformio.py
+
+**/.claude/settings.local.json
