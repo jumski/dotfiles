@@ -162,6 +162,15 @@ return {
       on_attach = setup_keybindings,
     })
 
+    lspconfig["jsonls"].setup {
+      settings = {
+        json = {
+          schemas = require('schemastore').json.schemas(),
+          validate = { enable = true },
+        },
+      },
+    }
+
     -- TODO: add something for raw html
 
     -- lspconfig["postgres_lsp"].setup({
