@@ -201,7 +201,7 @@ set -g @plugin 'fabioluciano/tmux-tokyo-night'
 set -g @theme_variation 'night'
 set -g @theme_left_separator ''
 set -g @theme_right_separator ''
-set -g @theme_plugins 'datetime,weather,battery'
+set -g @theme_plugins 'datetime,battery'
 set -g @theme_plugin_weather_icon ''
 set -g @theme_plugin_weather_format '%t'
 set -g @theme_plugin_battery_red_threshold 30
