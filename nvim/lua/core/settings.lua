@@ -174,3 +174,8 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Ensure exactly one newline at end of file
 vim.opt.fixendofline = true
+
+-- Create command to replace em dashes with hyphens
+vim.api.nvim_create_user_command('FixEmdash', function()
+  require('core.helpers').FixEmdash()
+end, {})

@@ -29,6 +29,13 @@ function M.project_python_runtime()
   return "poetry run python -iq"
 end
 
+-- Replace all em dashes (—) with hyphens (-)
+function M.FixEmdash()
+  local current_view = vim.fn.winsaveview()
+  vim.cmd([[%s/—/-/ge]])
+  vim.fn.winrestview(current_view)
+end
+
 ---@param path string
 ---@return table
 function M.parse_env_file(path)
