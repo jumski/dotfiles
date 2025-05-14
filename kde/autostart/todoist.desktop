@@ -1,0 +1,16 @@
+[Desktop Action new-window]
+Exec=todoist --new-window
+Name=New Home Window
+
+[Desktop Entry]
+Actions=new-window
+Categories=Office;
+Comment=The Best To-Do List App & Task Manager
+Exec=env DESKTOPINTEGRATION=false /usr/bin/todoist %u --no-sandbox %U
+Icon=todoist
+MimeType=x-scheme-handler/todoist;x-scheme-handler/com.todoist;
+Name=Todoist
+StartupWMClass=Todoist
+Terminal=false
+Type=Application
+X-AppImage-Version=9.13.0
