@@ -1,12 +1,12 @@
 local WHICH_KEY_MAPPINGS = {
-  { "<leader>l",  group = "Language Server" },
-  { "<leader>la", vim.lsp.buf.code_action,     desc = "Code action" },
-  { "<leader>ld", vim.lsp.buf.definition,      desc = "Go to definition" },
-  { "<leader>lf", vim.lsp.buf.format,          desc = "Format buffer" },
-  { "<leader>lg", vim.lsp.buf.declaration,     desc = "Go to declaration" },
-  { "<leader>li", vim.lsp.buf.implementation,  desc = "Go to implementation" },
-  { "<leader>lr", vim.lsp.buf.rename,          desc = "Rename symbol" },
-  { "<leader>ls", vim.lsp.buf.signature_help,  desc = "Signature help" },
+  { "<leader>l", group = "Language Server" },
+  { "<leader>la", vim.lsp.buf.code_action, desc = "Code action" },
+  { "<leader>ld", vim.lsp.buf.definition, desc = "Go to definition" },
+  { "<leader>lf", vim.lsp.buf.format, desc = "Format buffer" },
+  { "<leader>lg", vim.lsp.buf.declaration, desc = "Go to declaration" },
+  { "<leader>li", vim.lsp.buf.implementation, desc = "Go to implementation" },
+  { "<leader>lr", vim.lsp.buf.rename, desc = "Rename symbol" },
+  { "<leader>ls", vim.lsp.buf.signature_help, desc = "Signature help" },
   { "<leader>lt", vim.lsp.buf.type_definition, desc = "Go to type definition" },
 }
 
@@ -21,13 +21,13 @@ return {
       require("telescope.builtin").lsp_references({
         layout_strategy = "horizontal",
         layout_config = {
-          width = 0.99,        -- Almost full screen width
-          height = 0.99,       -- Almost full screen height
+          width = 0.99, -- Almost full screen width
+          height = 0.99, -- Almost full screen height
           preview_width = 0.6, -- 60% of width for preview on right
         },
         sorting_strategy = "ascending",
         results_title = "References",
-        prompt_title = "Search References"
+        prompt_title = "Search References",
       })
     end
 
@@ -73,7 +73,7 @@ return {
               "vim",
               "require", -- nvim config globals
               "awesome",
-              "client",  -- awesomewm config globals
+              "client", -- awesomewm config globals
             },
           },
           workspace = {
@@ -162,14 +162,14 @@ return {
       on_attach = setup_keybindings,
     })
 
-    lspconfig["jsonls"].setup {
+    lspconfig["jsonls"].setup({
       settings = {
         json = {
-          schemas = require('schemastore').json.schemas(),
+          schemas = require("schemastore").json.schemas(),
           validate = { enable = true },
         },
       },
-    }
+    })
 
     -- TODO: add something for raw html
 
