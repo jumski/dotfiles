@@ -22,13 +22,30 @@ return {
       enable_token_counting = false,
     },
 
-    claude = {
-      -- model = "claude-3-5-sonnet-20241022",
-      model = "claude-3-7-sonnet-20250219",
-      -- disable_tools = true,
-    },
-
     disabled_tools = { "git_commit", "delete_file", "delete_dir", "bash", "web_search" },
+
+    providers = {
+      claude = {
+        -- model = "claude-3-5-sonnet-20241022",
+        model = "claude-3-7-sonnet-20250219",
+        -- disable_tools = true,
+      },
+      groq = { -- define groq provider
+        __inherited_from = "openai",
+        api_key_name = "GROQ_API_KEY",
+        endpoint = "https://api.groq.com/openai/v1/",
+        model = "qwen-2.5-coder-32b",
+        extra_request_body = {
+          max_tokens = 8192, -- remember to increase this value, otherwise it will stop generating halfway
+        },
+      },
+      fastapply = {
+        __inherited_from = "openai",
+        api_key_name = "",
+        endpoint = "http://pc.netbird.cloud:11434/v1",
+        model = "hf.co/Kortix/FastApply-7B-v1.0_GGUF:Q4_K_M",
+      },
+    },
 
     custom_tools = {
       {
@@ -72,31 +89,6 @@ return {
       -- },
     },
 
-    vendors = {
-      --- ... existing vendors
-      groq = { -- define groq provider
-        __inherited_from = "openai",
-        api_key_name = "GROQ_API_KEY",
-        endpoint = "https://api.groq.com/openai/v1/",
-        model = "qwen-2.5-coder-32b",
-        max_tokens = 8192, -- remember to increase this value, otherwise it will stop generating halfway
-      },
-      -- ollama = {
-      --   __inherited_from = "openai",
-      --   api_key_name = "",
-      --   endpoint = "http://pc.netbird.cloud:11434/v1",
-      --   model = "deepseek-r1:32b",
-      --   -- temperature = 0,
-      --   -- max_tokens = 8192,
-      -- },
-      --- ... existing vendors
-      fastapply = {
-        __inherited_from = "openai",
-        api_key_name = "",
-        endpoint = "http://pc.netbird.cloud:11434/v1",
-        model = "hf.co/Kortix/FastApply-7B-v1.0_GGUF:Q4_K_M",
-      },
-    },
     -- ollama = {
     --   ["local"] = true,
     --   -- api_key_name = "",
