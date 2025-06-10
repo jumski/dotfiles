@@ -118,18 +118,19 @@ return {
       -- end,
     })
 
+    local deno_bin_path = vim.fn.system("asdf where deno"):gsub("\n", "") .. "/bin/deno"
+
     lspconfig["denols"].setup({
+      cmd = { deno_bin_path, "lsp" },
       root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
       capabilities = capabilities,
       -- single_file_support = true,
-      -- on_attach = setup_keybindings,
       init_options = {
         lint = true,
         unstable = true,
         suggest = {
           imports = {
             hosts = {
-              ["https://jsr.io"] = true,
               ["https://deno.land"] = true,
               ["https://cdn.nest.land"] = true,
               ["https://crux.land"] = true,
