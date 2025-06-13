@@ -29,7 +29,7 @@ function branch-name-ai
         echo "Error: No input provided" >&2
         return 1
     end
-    
+
     # Call aichat with the model and options
-    echo "$full_input" | aichat --model openai:gpt-4.1-nano --prompt "$prompt" --no-stream --code
+    echo "$full_input" | aichat --model openai:gpt-4.1-mini --prompt "$prompt" --no-stream --code
 end

@@ -65,7 +65,6 @@ function pgflow-new-branch
     while true
         # Generate branch name using our AI function
         echo "Generating branch name..."
-        echo "DEBUG: description = '$description'"
         
         # Build description with rejected names if any
         set -l full_description $description
@@ -73,7 +72,6 @@ function pgflow-new-branch
             set full_description "$description (avoid these rejected names: "(string join ", " $rejected_names)")"
         end
         
-        echo "DEBUG: full_description = '$full_description'"
         set -l branch_name (branch-name-ai "$full_description")
         
         if test -z "$branch_name"
@@ -99,26 +97,9 @@ function pgflow-new-branch
             set -a rejected_names $branch_name
             continue
         else if test "$confirm" = "y"
-            # Debug: show branch name
-            echo ""
-            echo "🔍 "(set_color --bold magenta)"DEBUG INFO:"(set_color normal)
-            echo "  🌿 "(set_color green)"branch_name"(set_color normal)" = "(set_color --bold)"'$branch_name'"(set_color normal)
-            
             # Create simplified branch name for worktree directory
             set -l simplified_name (string replace -- "/" "--" $branch_name)
-            echo "  📁 "(set_color blue)"simplified_name"(set_color normal)" = "(set_color --bold)"'$simplified_name'"(set_color normal)
-            
             set -l worktree_path "$worktrees_dir/$simplified_name"
-            echo "  📍 "(set_color cyan)"worktree_path"(set_color normal)" = "(set_color --bold)"'$worktree_path'"(set_color normal)
-            echo "  🎯 "(set_color yellow)"base_branch"(set_color normal)" = "(set_color --bold green)"'$base_branch'"(set_color normal)
-            echo ""
-            
-            # TEMPORARY: Ask for confirmation before proceeding
-            read -l -P "🚧 Debug mode: Continue with actual worktree creation? (y/n): " debug_confirm
-            if test "$debug_confirm" != "y"
-                echo "⏸️  Paused for debugging. Exiting."
-                return 0
-            end
             
             # Check if worktree already exists
             if test -d $worktree_path
@@ -152,9 +133,9 @@ function pgflow-new-branch
                 return 1
             end
             
-            # Change to worktree directory
-            cd $worktree_path
-            echo "📁 Changed to: "(pwd)
+            # Temporarily change to worktree directory for setup
+            pushd $worktree_path
+            echo "📁 Working in: "(pwd)
             
             # Allow direnv
             echo "Allowing direnv..."
@@ -167,6 +148,10 @@ function pgflow-new-branch
             if not pnpm install
                 echo "⚠️  pnpm install failed, but continuing..."
             end
+            
+            # Return to original directory before opening muxit
+            popd
+            echo "📁 Returned to: "(pwd)
             
             # Open in muxit
             echo "Opening in muxit..."
