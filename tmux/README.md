@@ -29,6 +29,7 @@ tmexit/mex         # Kill current session
 | `M-n/p`  | Next/previous window |
 | `M-;`    | Last window |
 | `M-c`    | New window |
+| `M-C`    | New Claude window |
 
 ### Pane Management
 | Shortcut | Description |
@@ -56,6 +57,16 @@ tmexit/mex         # Kill current session
 | `prefix h` | Open htop |
 | `prefix b` | Browse GitHub repo |
 | `prefix D` | Edit dotfiles |
+| `prefix C` | Claude Code popup |
+
+## 🤖 Claude Code Integration
+| Shortcut | Description |
+|----------|-------------|
+| `M-C`    | New window with Claude Code |
+| `prefix C` | Claude Code popup (80% screen) |
+
+**Setup**: Requires Neovim with `:ClaudeCode` started first
+**Usage**: Visual select in Neovim → `<leader>cs` to send to Claude
 
 ## 🎨 Layout Management
 | Shortcut | Description |

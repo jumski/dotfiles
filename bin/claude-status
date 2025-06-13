@@ -1,0 +1,55 @@
+#!/bin/bash
+# Check status of Claude-Neovim integration
+
+CLAUDE_LOCK_DIR="$HOME/.claude/ide"
+
+echo "🔍 Claude Code + Neovim Integration Status"
+echo "=========================================="
+
+# Check if lock directory exists
+if [ ! -d "$CLAUDE_LOCK_DIR" ]; then
+    echo "❌ No lock directory found at $CLAUDE_LOCK_DIR"
+    echo "   → Start Neovim and run :ClaudeCode first"
+    exit 1
+fi
+
+# List active lock files
+LOCK_FILES=$(ls "$CLAUDE_LOCK_DIR"/*.lock 2>/dev/null)
+
+if [ -z "$LOCK_FILES" ]; then
+    echo "❌ No active WebSocket connections"
+    echo "   → Start Neovim and run :ClaudeCode to create WebSocket server"
+else
+    echo "✅ Active WebSocket connections:"
+    for lock_file in $LOCK_FILES; do
+        port=$(basename "$lock_file" .lock)
+        echo "   → Port: $port"
+        
+        # Check if port is actually listening
+        if netstat -tln 2>/dev/null | grep -q ":$port "; then
+            echo "     Status: ✅ Listening"
+        else
+            echo "     Status: ❌ Not listening (stale lock file)"
+        fi
+    done
+fi
+
+echo ""
+echo "Environment variables:"
+if [ -n "$CLAUDE_IDE_PORT" ]; then
+    echo "   CLAUDE_IDE_PORT: $CLAUDE_IDE_PORT"
+else
+    echo "   CLAUDE_IDE_PORT: (not set)"
+fi
+
+if [ -n "$CLAUDE_IDE_HOST" ]; then
+    echo "   CLAUDE_IDE_HOST: $CLAUDE_IDE_HOST"
+else
+    echo "   CLAUDE_IDE_HOST: (not set)"
+fi
+
+echo ""
+echo "💡 Usage:"
+echo "   1. In Neovim: :ClaudeCode"
+echo "   2. In tmux: claude-hybrid --continue"
+echo "   3. Select code in Neovim and use <leader>as"

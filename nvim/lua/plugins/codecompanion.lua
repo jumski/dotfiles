@@ -1,10 +1,11 @@
 local WHICH_KEY_MAPPINGS = {
-  { "<leader>c", group = "CodeCompanion" },
-  { "<leader>cc", "<cmd>CodeCompanionChat<CR>", desc = "Chat" },
-  { "<leader>ca", "<cmd>CodeCompanionActions<CR>", desc = "Actions" },
+  { "<leader>C", group = "CodeCompanion" },
+  { "<leader>CC", "<cmd>CodeCompanionChat<CR>", desc = "Chat" },
+  { "<leader>Ca", "<cmd>CodeCompanionActions<CR>", desc = "Actions" },
 }
 
 return {
+  enabled = false,
   "olimorris/codecompanion.nvim",
   opts = {
     strategies = {
