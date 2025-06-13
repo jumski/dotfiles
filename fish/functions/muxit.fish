@@ -33,7 +33,7 @@ function muxit
 
   if test -z "$start_dir"
     set dir_name (
-    fd -H -t d --glob .git --no-ignore-vcs --exec echo {//} \; /home/jumski/Code |
+    fd -H --glob .git --no-ignore-vcs --exec echo {//} \; /home/jumski/Code |
     sed 's|/home/jumski/Code/||' |
     sed '1i\.dotfiles' |
     process_paths $left_half_width |
