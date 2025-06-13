@@ -65,8 +65,7 @@ tmexit/mex         # Kill current session
 | `M-C`    | New window with Claude Code |
 | `prefix C` | Claude Code popup (80% screen) |
 
-**Setup**: Requires Neovim with `:ClaudeCode` started first
-**Usage**: Visual select in Neovim → `<leader>cs` to send to Claude
+See `claude-neovim/README.md` for full setup and usage guide.
 
 ## 🎨 Layout Management
 | Shortcut | Description |
