@@ -16,7 +16,7 @@ exec fish
 ```bash
 # 1. Start in any project
 nvim                          # Open Neovim in window 1
-:ClaudeCode                   # Or <leader>cc - starts WebSocket
+:ClaudeCodeStart              # Or <leader>cc - starts WebSocket (no terminal!)
 
 # 2. Switch to Claude window & start
 Alt+2                         # Switch to window 2 (or any window)
@@ -30,10 +30,10 @@ claude-hybrid --continue     # Start Claude with integration
 ### 🔥 Key Commands
 | What | Key | Action |
 |------|-----|--------|
-| 🧠 **Start Claude** | `:ClaudeCode` or `<leader>cc` | Start WebSocket server |
+| 🧠 **Start server** | `:ClaudeCodeStart` or `<leader>cc` | Start WebSocket server (no terminal!) |
 | 📤 **Send code** | `<leader>cs` (visual) | Send selection to Claude |
-| 🔄 **Resume** | `<leader>cr` | Resume conversation |
-| ➡️ **Continue** | `<leader>cC` | Continue conversation |
+| 📊 **Status** | `<leader>cr` | Check server status |
+| ❌ **Stop server** | `<leader>cx` | Stop WebSocket server |
 | 🪟 **New window** | `M-C` (tmux) | New Claude window |
 | 🎯 **Popup** | `C-q C` (tmux) | Claude popup (80% screen) |
 | 📍 **Current window** | `claude-hybrid --continue` | Use existing window/pane |
@@ -185,7 +185,7 @@ functions | grep claude
 ```
 
 **Environment variables not set?**
-- Make sure you ran `:ClaudeCode` in Neovim first
+- Make sure you ran `:ClaudeCodeStart` in Neovim first
 - Check `claude-status` output for active connections
 
 ### Manual Cleanup

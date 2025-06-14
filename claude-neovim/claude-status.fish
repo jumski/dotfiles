@@ -7,7 +7,7 @@ function claude-status
     # Check if lock directory exists
     if not test -d "$claude_lock_dir"
         echo "❌ No lock directory found at $claude_lock_dir"
-        echo "   → Start Neovim and run :ClaudeCode first"
+        echo "   → Start Neovim and run :ClaudeCodeStart first"
         return 1
     end
     
@@ -16,7 +16,7 @@ function claude-status
     
     if test (count $lock_files) -eq 0
         echo "❌ No active WebSocket connections"
-        echo "   → Start Neovim and run :ClaudeCode to create WebSocket server"
+        echo "   → Start Neovim and run :ClaudeCodeStart to create WebSocket server"
     else
         echo "✅ Active WebSocket connections:"
         for lock_file in $lock_files
@@ -24,7 +24,7 @@ function claude-status
             echo "   → Port: $port"
             
             # Check if port is actually listening
-            if netstat -tln 2>/dev/null | grep -q ":$port "
+            if ss -tln 2>/dev/null | grep -q ":$port "
                 echo "     Status: ✅ Listening"
             else
                 echo "     Status: ❌ Not listening (stale lock file)"
@@ -48,7 +48,7 @@ function claude-status
     
     echo ""
     echo "💡 Usage:"
-    echo "   1. In Neovim: :ClaudeCode"
+    echo "   1. In Neovim: :ClaudeCodeStart"
     echo "   2. In tmux: claude-hybrid --continue"
     echo "   3. Select code in Neovim and use <leader>cs"
 end

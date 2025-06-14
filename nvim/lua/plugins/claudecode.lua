@@ -1,11 +1,12 @@
 return {
   "coder/claudecode.nvim",
+  lazy = true,
+  cmd = { "ClaudeCodeStart", "ClaudeCodeStop", "ClaudeCodeStatus", "ClaudeCodeSend", "ClaudeCodeAdd", "ClaudeCodeTreeAdd" },
   config = true,
   keys = {
     { "<leader>c", nil, desc = "Claude Code" },
-    { "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Start Claude WebSocket" },
-    { "<leader>cr", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
-    { "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+    { "<leader>cc", "<cmd>ClaudeCodeStart<cr>", desc = "Start Claude WebSocket" },
+    { "<leader>cr", "<cmd>ClaudeCodeStatus<cr>", desc = "Claude status" },
     { "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send selection to Claude" },
     {
       "<leader>cs",
@@ -13,22 +14,13 @@ return {
       desc = "Add file",
       ft = { "NvimTree", "neo-tree" },
     },
-    { "<leader>co", "<cmd>ClaudeCodeOpen<cr>", desc = "Open Claude terminal" },
-    { "<leader>cx", "<cmd>ClaudeCodeClose<cr>", desc = "Close Claude connection" },
+    { "<leader>cx", "<cmd>ClaudeCodeStop<cr>", desc = "Stop WebSocket server" },
   },
   opts = {
     -- Server options
     port_range = { min = 10000, max = 65535 },
-    auto_start = true,
+    auto_start = false,  -- Don't auto-start, we'll start manually with :ClaudeCodeStart
     log_level = "info",
-
-    -- Terminal options (we use external tmux, not plugin's terminal)
-    terminal = {
-      split_side = "right",
-      split_width_percentage = 0.3,
-      provider = "native",
-      auto_close = false,  -- Keep connection open for hybrid workflow
-    },
 
     -- Diff options
     diff_opts = {
