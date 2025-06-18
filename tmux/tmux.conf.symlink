@@ -172,7 +172,15 @@ bind D popup -E -w 60% -h 60% "nvim ~/.dotfiles/nvim/lua/plugins/"
 # bind t popup -E -w 60% -h 60% "todo"
 
 # Dictation popup
-bind e popup -E -w 80% -h 60% "~/.dotfiles/dictation/dictate-to-tmux-debug.sh"
+bind e run-shell -b '
+    pane=$(tmux display -p "#{pane_id}") ;                               \
+    tmux display-popup -E -w 80% -h 60% "                                \
+        sh -c '\''                                                       \
+            ~/.dotfiles/dictation/dictate-buffer.sh | tmux load-buffer - \
+                                  && tmux paste-buffer -t \"$pane\"      \
+        '\''                                                             \
+    "
+'
 
 # Claude Code integration (see claude-neovim/README.md)
 source-file ~/.dotfiles/claude-neovim/tmux-keys.conf

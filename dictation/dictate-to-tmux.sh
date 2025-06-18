@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # This script runs dictation and sends the output to tmux
 
+# Get the target pane ID from environment variable (set by tmux binding)
+TARGET_PANE="${TMUX_PANE:-}"
+
 # Source environment variables
 if [ -f ~/.env.local ]; then
     set -a  # automatically export all variables
@@ -26,5 +29,11 @@ transcript=$(python3 speak_simple.py)
 
 # Send the transcript to tmux if not empty
 if [ -n "$transcript" ]; then
-    tmux send-keys -l "$transcript"
+    # Send to the original pane that opened the popup
+    if [ -n "$TARGET_PANE" ]; then
+        tmux send-keys -t "$TARGET_PANE" -l "$transcript"
+    else
+        # Fallback to current pane
+        tmux send-keys -l "$transcript"
+    fi
 fi
