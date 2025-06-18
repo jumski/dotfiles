@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, signal, subprocess, requests, sys
+import os, subprocess, requests, sys, time
 
 # ANSI color codes for muted/gray text
 GRAY = '\033[90m'
@@ -18,37 +18,29 @@ F = "out.wav"
 cmd = ["/usr/bin/rec","-q","-r","48000","-c","1",F]
 
 err_print("Recording... press Ctrl-C to stop\n")
+
+# Start recording in a subprocess
+p = subprocess.Popen(cmd)
+
 try:
-    p = subprocess.Popen(cmd)
-except Exception as e:
-    err_print(f"Failed to start recording: {e}\n")
-    sys.exit(1)
-
-ctrl_c_count = 0
-recording_stopped = False
-
-def stop(sig, frame):
-    global ctrl_c_count, recording_stopped
-    ctrl_c_count += 1
+    # Wait for the process (will be interrupted by Ctrl-C)
+    p.wait()
+except KeyboardInterrupt:
+    # User pressed Ctrl-C
+    err_print("\nStopping recording...\n")
+    p.terminate()
+    time.sleep(0.5)  # Give it time to terminate
+    if p.poll() is None:
+        p.kill()  # Force kill if needed
     
-    if ctrl_c_count == 1 and not recording_stopped:
-        recording_stopped = True
-        err_print("\nStopping recording...\n")
-        p.terminate()
-        p.wait()
-        upload()
-    else:
-        err_print("\nAborting!\n")
-        os._exit(1)
-
-def upload():
+    # Now upload
     err_print("Uploading (Ctrl-C to abort)...\n")
     try:
         with open(F,"rb") as f:
             r = requests.post(
                 "https://api.groq.com/openai/v1/audio/transcriptions",
                 headers={"Authorization":f"Bearer {API_KEY}"},
-                data={"model":"whisper-large-v3-turbo"},
+                data={"model":"whisper-large-v3"},
                 files={"file":f}, timeout=120
             )
         r.raise_for_status()
@@ -60,15 +52,3 @@ def upload():
     except Exception as e:
         err_print(f"\nUpload error: {e}\n")
         sys.exit(1)
-    sys.exit(0)
-
-signal.signal(signal.SIGINT, stop)
-
-# Wait for the recording process
-try:
-    p.wait()
-    # If we get here, rec exited on its own (error)
-    err_print("\nRecording process exited unexpectedly\n")
-except KeyboardInterrupt:
-    # This should not happen as SIGINT is handled by our handler
-    pass

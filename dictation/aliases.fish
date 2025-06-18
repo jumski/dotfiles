@@ -1,1 +1,1 @@
-alias dictate="python3 $HOME/.dotfiles/dictation/03_app/speak.py"
+alias dictate="python3 $HOME/.dotfiles/dictation/03_app/speak_simple.py"
