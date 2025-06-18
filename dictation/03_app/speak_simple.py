@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 import os, subprocess, requests, sys, time
 
-# ANSI color codes for muted/gray text
+# ANSI color codes
 GRAY = '\033[90m'
+RED = '\033[31m'
+GREEN = '\033[32m'
 RESET = '\033[0m'
 
-def err_print(msg):
-    sys.stderr.write(f"{GRAY}{msg}{RESET}")
+def err_print(msg, color=GRAY):
+    sys.stderr.write(f"{color}{msg}{RESET}")
     sys.stderr.flush()
 
 API_KEY = os.getenv("GROQ_API_KEY")
@@ -17,7 +19,7 @@ if not API_KEY:
 F = "out.wav"
 cmd = ["/usr/bin/rec","-q","-r","48000","-c","1",F]
 
-err_print("Recording... press Ctrl-C to stop\n")
+err_print("Recording... press Ctrl-C to stop\n", RED)
 
 # Start recording in a subprocess
 p = subprocess.Popen(cmd)
@@ -27,7 +29,7 @@ try:
     p.wait()
 except KeyboardInterrupt:
     # User pressed Ctrl-C
-    err_print("\nStopping recording...\n")
+    err_print("\nStopping recording...\n", RED)
     p.terminate()
     time.sleep(0.5)  # Give it time to terminate
     if p.poll() is None:
@@ -46,7 +48,7 @@ except KeyboardInterrupt:
         sys.exit(1)
     
     # Now upload
-    err_print("Uploading (Ctrl-C to abort)...\n")
+    err_print("Uploading (Ctrl-C to abort)...\n", GREEN)
     try:
         with open(F,"rb") as f:
             # Read file content for upload
