@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This script runs dictation and pastes to the target pane
+# This script runs dictation and sets up delayed paste
 
 # Get the target pane from argument
 TARGET_PANE="$1"
@@ -23,8 +23,7 @@ fi
 # Run the dictation utility and capture stdout
 transcript=$(python3 speak_simple.py)
 
-# If we got a transcript, load it into buffer and paste to target pane
+# If we got a transcript, load it into buffer
 if [ -n "$transcript" ]; then
     echo "$transcript" | tmux load-buffer -
-    tmux paste-buffer -p -t "$TARGET_PANE"
 fi
