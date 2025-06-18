@@ -3,11 +3,10 @@
 
 # Source environment variables
 if [ -f ~/.env.local ]; then
+    set -a  # automatically export all variables
     source ~/.env.local
+    set +a  # turn off automatic export
 fi
-
-# Debug: Show we're starting (commented out for production)
-# echo "Starting dictation..." >&2
 
 # Change to the directory where the script is located
 cd ~/.dotfiles/dictation/03_app || exit 1
@@ -20,8 +19,9 @@ if [ -z "$GROQ_API_KEY" ]; then
     exit 1
 fi
 
-# Run the dictation utility and capture stdout (transcript only)
-# stderr will still be shown in the popup for status messages
+# Run the dictation utility
+# Capture only stdout (transcript) to variable
+# Let stderr (status messages) display in the popup
 transcript=$(python3 speak_simple.py)
 
 # Send the transcript to tmux if not empty
