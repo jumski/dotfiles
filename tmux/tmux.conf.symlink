@@ -176,7 +176,7 @@ bind C-q run-shell "sh -c '
     target=$(tmux display -p \"#{pane_id}\")
     
     # 1. run the dictation inside a popup; when the command ends the popup auto-closes (-E)
-    tmux display-popup -E -w 40 -h 8 \"~/.dotfiles/dictation/tmux-dictate-helper.sh | tmux load-buffer -\"
+    tmux display-popup -E -w 21 -h 14 \"~/.dotfiles/dictation/tmux-dictate-helper.sh | tmux load-buffer -\"
     
     # 2. now that the popup is gone and the buffer is filled, paste into the
     #    pane that was active before we opened the popup

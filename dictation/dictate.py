@@ -6,10 +6,53 @@ GRAY = '\033[90m'
 RED = '\033[31m'
 GREEN = '\033[32m'
 RESET = '\033[0m'
+CLEAR_LINE = '\033[2K\r'
 
 def err_print(msg, color=GRAY):
     sys.stderr.write(f"{color}{msg}{RESET}")
     sys.stderr.flush()
+
+def show_microphone(color=RED):
+    """Display ASCII microphone art"""
+    mic_art = f"""{color}
+        ╭─╮
+       ╱   ╲
+      │ ███ │
+      │ ███ │
+      │ ███ │
+       ╲___╱
+         │
+       ──┼──
+         │
+{RESET}
+"""
+    sys.stderr.write(mic_art)
+    sys.stderr.flush()
+
+def animate_recording():
+    """Show animated recording indicator"""
+    while not stop_animation.is_set():
+        for dots in ["   ", ".  ", ".. ", "..."]:
+            if stop_animation.is_set():
+                break
+            sys.stderr.write(f"\r    {RED}REC{dots}{RESET}    ")
+            sys.stderr.flush()
+            time.sleep(0.5)
+
+def animate_uploading():
+    """Show animated uploading indicator"""
+    # First, redraw the microphone in green
+    sys.stderr.write("\033[11A")  # Move cursor up 11 lines to start of mic
+    show_microphone(GREEN)
+    
+    for i in range(20):  # Max 10 seconds of animation
+        for dots in ["   ", ".  ", ".. ", "..."]:
+            sys.stderr.write(f"\r     {GREEN}UP{dots}{RESET}     ")
+            sys.stderr.flush()
+            time.sleep(0.5)
+            if upload_done.is_set():
+                sys.stderr.write("\r              \n")  # Clear the line and newline
+                return
 
 def transcribe_with_groq(file_data):
     """Transcribe audio using Groq's Whisper API"""
@@ -58,12 +101,10 @@ def get_transcription_backend():
 
 # Main script starts here
 transcribe_func, backend_name = get_transcription_backend()
-err_print(f"Using {backend_name} for transcription\n")
 
 F = "out.wav"
 
 # Use arecord as recommended by Perplexity - it properly drains buffers on SIGINT
-# From Perplexity: arecord -q -f S16_LE -r 48000 -c 1 --buffer-time 200000 out.wav
 cmd = [
     "/usr/bin/arecord",
     "-q",                    # Quiet mode
@@ -74,10 +115,18 @@ cmd = [
     F                       # Output file
 ]
 
-err_print("Recording... press any key to stop\n", RED)
+# Show microphone art first
+show_microphone()
 
 # Start recording in a subprocess
 p = subprocess.Popen(cmd)
+
+# Start animation thread
+stop_animation = threading.Event()
+upload_done = threading.Event()
+animation_thread = threading.Thread(target=animate_recording)
+animation_thread.daemon = True
+animation_thread.start()
 
 # Simple function to wait for any input
 def wait_for_input():
@@ -100,7 +149,7 @@ try:
     p.wait()
 except KeyboardInterrupt:
     # Any key or Ctrl-C pressed
-    err_print("\nStopping recording...\n", RED)
+    stop_animation.set()
     p.send_signal(signal.SIGINT)  # Send SIGINT to arecord
     p.wait()  # Wait for it to finish and drain buffers
     
@@ -110,32 +159,40 @@ except KeyboardInterrupt:
         sys.exit(1)
     
     file_size = os.path.getsize(F)
-    err_print(f"Recording file size: {file_size} bytes\n")
     
     if file_size == 0:
         err_print("\nError: Recording file is empty!\n")
         sys.exit(1)
     
-    # Now upload
-    err_print(f"Uploading to {backend_name} (only Ctrl-C can abort)...\n", GREEN)
+    # Now upload with animation
+    upload_thread = threading.Thread(target=animate_uploading)
+    upload_thread.daemon = True
+    upload_thread.start()
+    
     try:
         with open(F, "rb") as f:
             file_data = f.read()
         
         # Use the selected transcription backend
         transcript = transcribe_func(file_data)
+        upload_done.set()  # Stop animation
+        time.sleep(0.1)  # Let animation clear
         print(transcript)
         
     except KeyboardInterrupt:
+        upload_done.set()
         err_print("\nUpload aborted!\n")
         sys.exit(1)
     except ValueError as e:
+        upload_done.set()
         err_print(f"\nConfiguration error: {e}\n")
         sys.exit(1)
     except requests.exceptions.HTTPError as e:
+        upload_done.set()
         err_print(f"\nHTTP Error: {e}\n")
         err_print(f"Response: {e.response.text}\n")
         sys.exit(1)
     except Exception as e:
+        upload_done.set()
         err_print(f"\nUpload error: {e}\n")
         sys.exit(1)
