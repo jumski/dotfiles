@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 # This script runs dictation and sends the output to tmux
 
-# Run the dictation utility and capture the output
-output=$(python3 ~/.dotfiles/dictation/03_app/speak.py 2>&1)
-
-# Extract only the transcript (everything after "TRANSCRIPT:")
-transcript=$(echo "$output" | sed -n '/^TRANSCRIPT:/,$ p' | sed '1d' | tr '\n' ' ' | sed 's/[[:space:]]*$//')
+# Run the dictation utility and capture stdout (transcript only)
+# stderr will still be shown in the popup for status messages
+transcript=$(python3 ~/.dotfiles/dictation/03_app/speak.py)
 
 # Send the transcript to tmux if not empty
 if [ -n "$transcript" ]; then
