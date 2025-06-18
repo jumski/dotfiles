@@ -181,6 +181,9 @@ bind C-q run-shell "sh -c '
     # 2. now that the popup is gone and the buffer is filled, paste into the
     #    pane that was active before we opened the popup
     tmux paste-buffer -p -t \"$target\"
+    
+    # 3. send Enter key to execute/submit the text
+    tmux send-keys -t \"$target\" Enter
 '"
 
 # Claude Code integration (see claude-neovim/README.md)
