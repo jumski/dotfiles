@@ -47,6 +47,7 @@ def animate_recording():
      {GRAY}{BOLD}Enter{RESET}{GRAY}: paste & run
      {BOLD}C{RESET}{GRAY}: clipboard  
      {BOLD}S{RESET}{GRAY}: search Firefox
+     {BOLD}Esc/^C{RESET}{GRAY}: cancel
      {BOLD}Other{RESET}{GRAY}: paste only{RESET}
 
 """
@@ -54,7 +55,7 @@ def animate_recording():
     sys.stderr.flush()
     
     # Move cursor back up to REC line for animation
-    sys.stderr.write("\033[8A")  # Move up 8 lines (one more for extra legend spacing)
+    sys.stderr.write("\033[9A")  # Move up 9 lines (one more for cancel line)
     
     while not stop_animation.is_set():
         for dots in ["   ", ".  ", ".. ", "..."]:
@@ -84,6 +85,7 @@ def animate_uploading():
      {GRAY}{BOLD}Enter{RESET}{GRAY}: paste & run
      {BOLD}C{RESET}{GRAY}: clipboard  
      {BOLD}S{RESET}{GRAY}: search Firefox
+     {BOLD}Esc/^C{RESET}{GRAY}: cancel
      {BOLD}Other{RESET}{GRAY}: paste only{RESET}
 
 """
@@ -91,7 +93,7 @@ def animate_uploading():
     sys.stderr.flush()
     
     # Move cursor back to UP line for animation
-    sys.stderr.write("\033[8A")  # Move up 8 lines (one more for extra legend spacing)
+    sys.stderr.write("\033[9A")  # Move up 9 lines (one more for cancel line)
     
     for i in range(20):  # Max 10 seconds of animation
         for dots in ["   ", ".  ", ".. ", "..."]:
@@ -203,6 +205,16 @@ except KeyboardInterrupt:
     stop_animation.set()
     p.send_signal(signal.SIGINT)  # Send SIGINT to arecord
     p.wait()  # Wait for it to finish and drain buffers
+    
+    # If Ctrl-C was pressed (no key_pressed set), exit immediately
+    if key_pressed is None:
+        err_print("\nCancelled!\n")
+        sys.exit(130)
+    
+    # Check if Escape was pressed - exit immediately without transcribing
+    if key_pressed == '\x1b':
+        err_print("\nCancelled!\n")
+        sys.exit(130)
     
     # Check if file exists and has content
     if not os.path.exists(F):

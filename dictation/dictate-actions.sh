@@ -54,8 +54,13 @@ case $exit_code in
         tmux paste-buffer -p -t "$target_pane"
         ;;
     
-    *)  # Error or Ctrl-C
-        # Do nothing on cancel
+    130) # Ctrl-C or Escape - cancel completely
+        # Clear any stale buffer to prevent pasting old content
+        tmux delete-buffer 2>/dev/null || true
+        exit 0
+        ;;
+    
+    *)  # Other errors
         exit 0
         ;;
 esac
