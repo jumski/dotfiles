@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, subprocess, requests, sys, time, signal
+import os, subprocess, requests, sys, time, signal, io
 
 # ANSI color codes
 GRAY = '\033[90m'
@@ -11,10 +11,54 @@ def err_print(msg, color=GRAY):
     sys.stderr.write(f"{color}{msg}{RESET}")
     sys.stderr.flush()
 
-API_KEY = os.getenv("GROQ_API_KEY")
-if not API_KEY:
-    err_print("GROQ_API_KEY env var missing\n")
-    sys.exit(1)
+def transcribe_with_groq(file_data):
+    """Transcribe audio using Groq's Whisper API"""
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        raise ValueError("GROQ_API_KEY not set")
+    
+    file_obj = io.BytesIO(file_data)
+    
+    r = requests.post(
+        "https://api.groq.com/openai/v1/audio/transcriptions",
+        headers={"Authorization": f"Bearer {api_key}"},
+        data={"model": "whisper-large-v3"},
+        files={"file": ("out.wav", file_obj, "audio/wav")},
+        timeout=120
+    )
+    r.raise_for_status()
+    return r.json()["text"]
+
+def transcribe_with_openai(file_data):
+    """Transcribe audio using OpenAI's Whisper API"""
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY not set")
+    
+    file_obj = io.BytesIO(file_data)
+    
+    r = requests.post(
+        "https://api.openai.com/v1/audio/transcriptions",
+        headers={"Authorization": f"Bearer {api_key}"},
+        data={"model": "whisper-1"},
+        files={"file": ("out.wav", file_obj, "audio/wav")},
+        timeout=120
+    )
+    r.raise_for_status()
+    return r.json()["text"]
+
+def get_transcription_backend():
+    """Determine which backend to use based on environment variable or default"""
+    backend = os.getenv("TRANSCRIPTION_BACKEND", "openai").lower()
+    
+    if backend == "openai":
+        return transcribe_with_openai, "OpenAI"
+    else:
+        return transcribe_with_groq, "Groq"
+
+# Main script starts here
+transcribe_func, backend_name = get_transcription_backend()
+err_print(f"Using {backend_name} for transcription\n")
 
 F = "out.wav"
 # Increase buffer size to prevent audio cutoff
@@ -69,28 +113,20 @@ except KeyboardInterrupt:
         sys.exit(1)
     
     # Now upload
-    err_print("Uploading (Ctrl-C to abort)...\n", GREEN)
+    err_print(f"Uploading to {backend_name} (Ctrl-C to abort)...\n", GREEN)
     try:
-        with open(F,"rb") as f:
-            # Read file content for upload
+        with open(F, "rb") as f:
             file_data = f.read()
-            
-        # Create a new file-like object for the request
-        import io
-        file_obj = io.BytesIO(file_data)
         
-        r = requests.post(
-            "https://api.groq.com/openai/v1/audio/transcriptions",
-            headers={"Authorization":f"Bearer {API_KEY}"},
-            data={"model":"whisper-large-v3"},
-            files={"file": ("out.wav", file_obj, "audio/wav")},
-            timeout=120
-        )
-        r.raise_for_status()
-        # Only output the transcription to stdout
-        print(r.json()["text"])
+        # Use the selected transcription backend
+        transcript = transcribe_func(file_data)
+        print(transcript)
+        
     except KeyboardInterrupt:
         err_print("\nUpload aborted!\n")
+        sys.exit(1)
+    except ValueError as e:
+        err_print(f"\nConfiguration error: {e}\n")
         sys.exit(1)
     except requests.exceptions.HTTPError as e:
         err_print(f"\nHTTP Error: {e}\n")

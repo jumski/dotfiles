@@ -11,10 +11,18 @@ fi
 # Change to the directory where the script is located
 cd ~/.dotfiles/dictation/03_app || exit 1
 
-# Check if GROQ_API_KEY is set
-if [ -z "$GROQ_API_KEY" ]; then
-    echo "ERROR: GROQ_API_KEY environment variable is not set!" >&2
-    exit 1
+# Check if appropriate API key is set based on backend
+BACKEND="${TRANSCRIPTION_BACKEND:-openai}"
+if [ "$BACKEND" = "openai" ]; then
+    if [ -z "$OPENAI_API_KEY" ]; then
+        echo "ERROR: OPENAI_API_KEY environment variable is not set!" >&2
+        exit 1
+    fi
+else
+    if [ -z "$GROQ_API_KEY" ]; then
+        echo "ERROR: GROQ_API_KEY environment variable is not set!" >&2
+        exit 1
+    fi
 fi
 
 # Run the dictation utility
