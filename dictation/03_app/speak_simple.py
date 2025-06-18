@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, subprocess, requests, sys, time
+import os, subprocess, requests, sys, time, signal
 
 # ANSI color codes
 GRAY = '\033[90m'
@@ -30,10 +30,23 @@ try:
 except KeyboardInterrupt:
     # User pressed Ctrl-C
     err_print("\nStopping recording...\n", RED)
-    p.terminate()
-    time.sleep(0.5)  # Give it time to terminate
-    if p.poll() is None:
-        p.kill()  # Force kill if needed
+    
+    # Send SIGINT to rec (same as Ctrl-C) for graceful shutdown
+    p.send_signal(signal.SIGINT)
+    
+    # Wait up to 2 seconds for graceful shutdown
+    try:
+        p.wait(timeout=2.0)
+    except subprocess.TimeoutExpired:
+        # If still running, terminate
+        err_print("Force stopping...\n", RED)
+        p.terminate()
+        time.sleep(0.5)
+        if p.poll() is None:
+            p.kill()
+    
+    # Small delay to ensure file buffers are flushed
+    time.sleep(0.2)
     
     # Check if file exists and has content
     if not os.path.exists(F):
