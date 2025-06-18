@@ -171,20 +171,12 @@ bind D popup -E -w 60% -h 60% "nvim ~/.dotfiles/nvim/lua/plugins/"
 # # todos popup
 # bind t popup -E -w 60% -h 60% "todo"
 
-# Dictation popup
-bind C-q run-shell "sh -c '
-    target=$(tmux display -p \"#{pane_id}\")
-    
-    # 1. run the dictation inside a popup; when the command ends the popup auto-closes (-E)
-    tmux display-popup -E -w 21 -h 14 \"~/.dotfiles/dictation/tmux-dictate-helper.sh | tmux load-buffer -\"
-    
-    # 2. now that the popup is gone and the buffer is filled, paste into the
-    #    pane that was active before we opened the popup
-    tmux paste-buffer -p -t \"$target\"
-    
-    # 3. send Enter key to execute/submit the text
-    tmux send-keys -t \"$target\" Enter
-'"
+# Dictation popup - now with multiple key actions!
+# Enter: paste and execute
+# C: copy to clipboard
+# S: search in Firefox
+# Any other key: just paste
+bind C-q run-shell -b "tmux display-popup -E -w 21 -h 14 -e TARGET_PANE='#{pane_id}' ~/.dotfiles/dictation/dictate-actions.sh"
 
 # Claude Code integration (see claude-neovim/README.md)
 source-file ~/.dotfiles/claude-neovim/tmux-keys.conf

@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Wrapper script that handles different actions based on key pressed during dictation
+
+# Source environment variables
+if [ -f ~/.env.local ]; then
+    set -a  # automatically export all variables
+    source ~/.env.local
+    set +a  # turn off automatic export
+fi
+
+# Change to the directory where the script is located
+cd ~/.dotfiles/dictation || exit 1
+
+# Run dictation and capture output and exit code
+# Use a temp file to capture output while showing stderr
+tmpfile=$(mktemp)
+python3 dictate.py > "$tmpfile"
+exit_code=$?
+output=$(cat "$tmpfile")
+rm -f "$tmpfile"
+
+# In tmux popup, we need to target the pane that opened the popup
+# Use TARGET_PANE if set (from popup), otherwise current pane
+target_pane="${TARGET_PANE:-$(tmux display -p '#{pane_id}')}"
+
+# Handle different actions based on exit code
+case $exit_code in
+    0)  # Enter key - paste and execute
+        echo -n "$output" | tmux load-buffer -
+        tmux paste-buffer -p -t "$target_pane"
+        tmux send-keys -t "$target_pane" Enter
+        ;;
+    
+    1)  # C key - copy to clipboard
+        echo -n "$output" | xclip -selection clipboard
+        # Also show a message in tmux
+        tmux display-message "Copied to clipboard!"
+        ;;
+    
+    2)  # S key - search in Firefox
+        if [ -n "$output" ]; then
+            # URL encode the output
+            encoded=$(echo -n "$output" | python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.stdin.read()))")
+            # Use nohup to detach firefox from the popup
+            nohup firefox "https://www.perplexity.ai/search?q=$encoded" >/dev/null 2>&1 &
+            tmux display-message "Opened in Firefox!"
+        fi
+        ;;
+    
+    99) # Any other key - just paste (no execute)
+        echo -n "$output" | tmux load-buffer -
+        tmux paste-buffer -p -t "$target_pane"
+        ;;
+    
+    *)  # Error or Ctrl-C
+        # Do nothing on cancel
+        exit 0
+        ;;
+esac

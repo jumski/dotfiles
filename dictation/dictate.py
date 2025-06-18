@@ -121,6 +121,9 @@ show_microphone()
 # Start recording in a subprocess
 p = subprocess.Popen(cmd)
 
+# Initialize key tracking
+key_pressed = None
+
 # Start animation thread
 stop_animation = threading.Event()
 upload_done = threading.Event()
@@ -131,10 +134,11 @@ animation_thread.start()
 # Simple function to wait for any input
 def wait_for_input():
     import termios, tty
+    global key_pressed
     old_settings = termios.tcgetattr(sys.stdin)
     try:
         tty.setcbreak(sys.stdin.fileno())  # Set terminal to cbreak mode
-        sys.stdin.read(1)  # Read one character
+        key_pressed = sys.stdin.read(1)  # Read one character
     finally:
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
     os.kill(os.getpid(), signal.SIGINT)  # Send SIGINT to ourselves
@@ -178,6 +182,16 @@ except KeyboardInterrupt:
         upload_done.set()  # Stop animation
         time.sleep(0.1)  # Let animation clear
         print(transcript)
+        
+        # Exit with code based on key pressed
+        if key_pressed in ['\n', '\r']:  # Enter key
+            sys.exit(0)
+        elif key_pressed in ['c', 'C']:  # C key for clipboard
+            sys.exit(1)
+        elif key_pressed in ['s', 'S']:  # S key for search
+            sys.exit(2)
+        else:
+            sys.exit(99)  # Default action (just paste)
         
     except KeyboardInterrupt:
         upload_done.set()
