@@ -6,6 +6,7 @@ GRAY = '\033[90m'
 RED = '\033[31m'
 GREEN = '\033[32m'
 RESET = '\033[0m'
+BOLD = '\033[1m'
 CLEAR_LINE = '\033[2K\r'
 
 def err_print(msg, color=GRAY):
@@ -14,58 +15,90 @@ def err_print(msg, color=GRAY):
 
 def show_recording_indicator(color=RED):
     """Display recording indicator"""
-    # Add top padding and centered circle
+    # Popup width is 31, circle is ~8 chars wide
+    # (31 - 8) / 2 = 11.5, so use 11 spaces for centering
+    padding = " " * 11
     indicator = f"""
 
-  {color}●{RESET}
 
+
+
+{padding}{color}⢀⣀⣀⣀⣀⣀⡀
+{padding}⣿⣿⣿⣿⣿⣿⣿
+{padding}⣿⣿⣿⣿⣿⣿⣿
+{padding}⣿⣿⣿⣿⣿⣿⣿
+{padding}⣿⣿⣿⣿⣿⣿⣿
+{padding}⣿⣿⣿⣿⣿⣿⣿
+{padding}⠘⠿⠿⠿⠿⠿⠃{RESET}
 """
     sys.stderr.write(indicator)
     sys.stderr.flush()
 
 def animate_recording():
     """Show animated recording indicator"""
-    # First show the REC line with padding
-    sys.stderr.write(f"\n  {RED}REC...{RESET}\n")
+    # Just add a blank line for REC position
+    padding = " " * 9  # 2 columns less than circle padding
+    sys.stderr.write(f"\n\n")
     
-    # Then show the legend with padding
-    legend = f"""{GRAY}
-  Enter: paste & run
-  C: clipboard
-  S: search Firefox
-  Other: paste only{RESET}
+    # Show the legend below with extra spacing and right shift
+    legend = f"""
+
+
+     {GRAY}{BOLD}Enter{RESET}{GRAY}: paste & run
+     {BOLD}C{RESET}{GRAY}: clipboard  
+     {BOLD}S{RESET}{GRAY}: search Firefox
+     {BOLD}Other{RESET}{GRAY}: paste only{RESET}
 
 """
     sys.stderr.write(legend)
     sys.stderr.flush()
     
-    # Move cursor back up to the REC line
-    sys.stderr.write("\033[6A")  # Move up 6 lines
+    # Move cursor back up to REC line for animation
+    sys.stderr.write("\033[8A")  # Move up 8 lines (one more for extra legend spacing)
     
     while not stop_animation.is_set():
         for dots in ["   ", ".  ", ".. ", "..."]:
             if stop_animation.is_set():
                 break
-            sys.stderr.write(f"\r  {RED}REC{dots}{RESET}")
+            sys.stderr.write(f"\r{padding}{RED}Listening{dots}{RESET}")
             sys.stderr.flush()
             time.sleep(0.5)
 
 def animate_uploading():
     """Show animated uploading indicator"""
-    # First, redraw the circle in green
-    sys.stderr.write("\033[9A")  # Move cursor up to circle position
-    sys.stderr.write(f"\r  {GREEN}●{RESET}")
+    # Clear the entire screen and redraw
+    sys.stderr.write("\033[2J")  # Clear screen
+    sys.stderr.write("\033[H")   # Move cursor to home position
     
-    # Move to the REC line position
-    sys.stderr.write("\033[2D\033[2B")  # Move to REC position
+    # Show green circle
+    show_recording_indicator(GREEN)
+    
+    # Just add blank lines for UP position (no static text)
+    padding = " " * 9  # 2 columns less than circle padding
+    sys.stderr.write(f"\n\n")
+    
+    # Show the legend again
+    legend = f"""
+
+
+     {GRAY}{BOLD}Enter{RESET}{GRAY}: paste & run
+     {BOLD}C{RESET}{GRAY}: clipboard  
+     {BOLD}S{RESET}{GRAY}: search Firefox
+     {BOLD}Other{RESET}{GRAY}: paste only{RESET}
+
+"""
+    sys.stderr.write(legend)
+    sys.stderr.flush()
+    
+    # Move cursor back to UP line for animation
+    sys.stderr.write("\033[8A")  # Move up 8 lines (one more for extra legend spacing)
     
     for i in range(20):  # Max 10 seconds of animation
         for dots in ["   ", ".  ", ".. ", "..."]:
-            sys.stderr.write(f"\r  {GREEN}UP{dots}{RESET}")
+            sys.stderr.write(f"\r{padding}{GREEN}Transcribing{dots}{RESET}")
             sys.stderr.flush()
             time.sleep(0.5)
             if upload_done.is_set():
-                sys.stderr.write("\r              \n")  # Clear the line and newline
                 return
 
 def transcribe_with_groq(file_data):
