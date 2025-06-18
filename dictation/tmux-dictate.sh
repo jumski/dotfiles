@@ -12,7 +12,7 @@ if [ -f ~/.env.local ]; then
 fi
 
 # Change to the directory where the script is located
-cd ~/.dotfiles/dictation/03_app || exit 1
+cd ~/.dotfiles/dictation || exit 1
 
 # Check if GROQ_API_KEY is set
 if [ -z "$GROQ_API_KEY" ]; then
@@ -25,7 +25,7 @@ fi
 # Run the dictation utility
 # Capture only stdout (transcript) to variable
 # Let stderr (status messages) display in the popup
-transcript=$(python3 speak_simple.py)
+transcript=$(python3 dictate.py)
 
 # Send the transcript to tmux if not empty
 if [ -n "$transcript" ]; then

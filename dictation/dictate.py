@@ -49,7 +49,7 @@ def transcribe_with_openai(file_data):
 
 def get_transcription_backend():
     """Determine which backend to use based on environment variable or default"""
-    backend = os.getenv("TRANSCRIPTION_BACKEND", "openai").lower()
+    backend = os.getenv("TRANSCRIPTION_BACKEND", "groq").lower()
     
     if backend == "openai":
         return transcribe_with_openai, "OpenAI"

@@ -1,69 +1,128 @@
 # Dictation Utility
 
-A voice-to-text dictation utility for tmux that records audio and transcribes it using either Groq or OpenAI's Whisper API.
+A voice-to-text dictation system that records audio and transcribes it using Groq or OpenAI's Whisper API. Features seamless tmux integration for inserting transcribed text directly into any application.
 
 ## Features
 
-- Record audio with visual feedback (red for recording, green for uploading)
-- Configurable transcription backend (Groq or OpenAI)
-- Tmux integration - press `C-q e` to dictate directly into any tmux pane
-- Automatic text insertion after transcription
+- **Reliable Audio Capture**: Uses `arecord` (ALSA) for buffer-safe recording - no audio cutoff
+- **Multiple Transcription Backends**: Groq (default) or OpenAI Whisper APIs
+- **Tmux Integration**: Press `C-q e` to dictate directly into any tmux pane
+- **Visual Feedback**: Color-coded status messages (red for recording, green for uploading)
+- **Clean Architecture**: Simple, focused scripts that do one thing well
+
+## File Structure
+
+```
+dictation/
+├── dictate.py              # Main dictation script - records and transcribes
+├── test-dictate.py         # Test script - records and plays back audio
+├── tmux-dictate.sh         # Tmux integration wrapper (internal use)
+├── tmux-dictate-helper.sh  # Helper script for tmux popup
+├── aliases.fish            # Fish shell aliases
+└── README.md               # This file
+```
+
+### File Descriptions
+
+- **`dictate.py`**: Core script that handles recording (via arecord), transcription (via APIs), and outputs text to stdout
+- **`test-dictate.py`**: Testing utility to verify audio recording works properly - plays back recorded audio
+- **`tmux-dictate.sh`**: Internal script used by tmux keybinding - captures transcript and inserts into original pane
+- **`tmux-dictate-helper.sh`**: Sources environment variables and runs dictate.py in tmux popup context
+- **`aliases.fish`**: Defines shell commands: `dictate`, `dictate-groq`, `dictate-test`
+
+## Requirements
+
+### System Dependencies
+- **Manjaro/Arch Linux** (or any Linux with ALSA)
+- **arecord** (part of `alsa-utils` package)
+- **sox** (for `play` command - audio playback)
+- **Python 3** with `requests` library
+- **tmux** (for popup integration)
+- **fish shell** (for aliases, optional)
+
+### API Requirements
+- **Groq API key** (for default transcription)
+- **OpenAI API key** (optional, for OpenAI backend)
+
+## Installation
+
+1. **Install system dependencies**:
+   ```bash
+   sudo pacman -S alsa-utils sox python-requests tmux
+   ```
+
+2. **Set up API keys in `~/.env.local`**:
+   ```bash
+   GROQ_API_KEY=your_groq_key_here
+   OPENAI_API_KEY=your_openai_key_here  # Optional
+   ```
+
+3. **Source aliases in your fish config** (`~/.config/fish/config.fish`):
+   ```fish
+   source ~/.dotfiles/dictation/aliases.fish
+   ```
+
+4. **Add tmux keybinding** (already in your tmux.conf):
+   ```tmux
+   bind e run-shell "sh -c '
+       target=$(tmux display -p \"#{pane_id}\")
+       tmux display-popup -E -w 40 -h 8 \"~/.dotfiles/dictation/tmux-dictate-helper.sh | tmux load-buffer -\"
+       tmux paste-buffer -p -t \"$target\"
+   '"
+   ```
 
 ## Usage
 
 ### Command Line
 ```bash
-# Use default backend (OpenAI)
+# Default (Groq transcription)
 dictate
 
-# Use Groq backend
-dictate-groq
+# Use OpenAI backend
+dictate-openai
 
-# Or set environment variable
-TRANSCRIPTION_BACKEND=groq dictate
+# Test recording (plays back audio)
+dictate-test
+
+# Set backend via environment
+TRANSCRIPTION_BACKEND=openai dictate
 ```
 
 ### In Tmux
-Press `C-q e` (or your prefix + e) to:
-1. Open a small popup for dictation
-2. Speak into your microphone
-3. Press Ctrl-C to stop recording
-4. Transcribed text is automatically inserted at cursor position
+1. Press `C-q e` (or `prefix + e`) anywhere in tmux
+2. Small popup appears showing "Recording... press Ctrl-C to stop"
+3. Speak into your microphone
+4. Press `Ctrl-C` to stop recording
+5. Wait for "Uploading..." message
+6. Popup closes and transcribed text appears at your cursor
 
-## Configuration
+## How It Works
 
-### Environment Variables
+1. **Recording**: Uses `arecord` with 200ms buffer for reliable capture
+   - ALSA direct recording (no PulseAudio overhead)
+   - Properly drains buffers on SIGINT (no audio loss)
+   - 48kHz mono, 16-bit PCM WAV format
 
-- `OPENAI_API_KEY` - Required for OpenAI backend (default)
-- `GROQ_API_KEY` - Required for Groq backend
-- `TRANSCRIPTION_BACKEND` - Choose backend: "openai" (default) or "groq"
+2. **Transcription**: Sends audio to chosen API
+   - Groq: Uses `whisper-large-v3` model (fast and accurate)
+   - OpenAI: Uses `whisper-1` model (alternative option)
 
-### Backend Differences
+3. **Tmux Integration**: 
+   - Captures pane ID before opening popup
+   - Runs dictation in popup, capturing stdout
+   - Loads transcript into tmux buffer
+   - Pastes buffer content to original pane after popup closes
 
-- **Groq**: Uses `whisper-large-v3` model, may be faster but sometimes less accurate
-- **OpenAI**: Uses `whisper-1` model, generally more accurate but may be slower
+## Troubleshooting
 
-## Setup
+- **No audio devices**: Check `arecord -l` lists your microphone
+- **API errors**: Verify API keys are set in `~/.env.local`
+- **No text inserted**: Ensure tmux version ≥ 3.2 (for popup support)
+- **Recording issues**: Test with `dictate-test` to verify audio capture
 
-1. Source the aliases in your fish config:
-   ```fish
-   source ~/.dotfiles/dictation/aliases.fish
-   ```
+## Technical Notes
 
-2. Reload tmux configuration:
-   ```
-   tmux source-file ~/.tmux.conf
-   ```
-
-3. Ensure API keys are set in `~/.env.local`:
-   ```bash
-   GROQ_API_KEY=your_groq_key_here
-   OPENAI_API_KEY=your_openai_key_here
-   ```
-
-## Technical Details
-
-- Records at 48kHz mono with 64KB buffer to prevent audio cutoff
-- Gracefully handles recording shutdown to capture all audio
-- Waits for file to be fully written before uploading
-- Uses tmux buffers for reliable text insertion across panes
+- Uses `arecord` instead of `sox/rec` to avoid buffer loss issues
+- Small 200ms ALSA buffer ensures quick draining on stop
+- Tmux buffers provide reliable cross-pane text transfer
+- All scripts output transcripts to stdout, errors to stderr
