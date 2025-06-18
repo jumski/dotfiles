@@ -6,7 +6,7 @@ A voice-to-text dictation system that records audio and transcribes it using Gro
 
 - **Reliable Audio Capture**: Uses `arecord` (ALSA) for buffer-safe recording - no audio cutoff
 - **Multiple Transcription Backends**: Groq (default) or OpenAI Whisper APIs
-- **Tmux Integration**: Press `C-q e` to dictate directly into any tmux pane
+- **Tmux Integration**: Press `C-q C-q` to dictate directly into any tmux pane
 - **Visual Feedback**: Color-coded status messages (red for recording, green for uploading)
 - **Clean Architecture**: Simple, focused scripts that do one thing well
 
@@ -64,7 +64,7 @@ dictation/
 
 4. **Add tmux keybinding** (already in your tmux.conf):
    ```tmux
-   bind e run-shell "sh -c '
+   bind C-q run-shell "sh -c '
        target=$(tmux display -p \"#{pane_id}\")
        tmux display-popup -E -w 40 -h 8 \"~/.dotfiles/dictation/tmux-dictate-helper.sh | tmux load-buffer -\"
        tmux paste-buffer -p -t \"$target\"
@@ -89,7 +89,7 @@ TRANSCRIPTION_BACKEND=openai dictate
 ```
 
 ### In Tmux
-1. Press `C-q e` (or `prefix + e`) anywhere in tmux
+1. Press `C-q C-q` (double prefix) anywhere in tmux
 2. Small popup appears showing "Recording... press Ctrl-C to stop"
 3. Speak into your microphone
 4. Press `Ctrl-C` to stop recording
