@@ -17,7 +17,8 @@ if not API_KEY:
     sys.exit(1)
 
 F = "out.wav"
-cmd = ["/usr/bin/rec","-q","-r","48000","-c","1",F]
+# Increase buffer size to prevent audio cutoff
+cmd = ["/usr/bin/rec", "--buffer", "65536", "-q", "-r", "48000", "-c", "1", F]
 
 err_print("Recording... press Ctrl-C to stop\n", RED)
 
@@ -45,8 +46,15 @@ except KeyboardInterrupt:
         if p.poll() is None:
             p.kill()
     
-    # Small delay to ensure file buffers are flushed
-    time.sleep(0.2)
+    # Wait for file to be fully written (check if size is stable)
+    if os.path.exists(F):
+        prev_size = 0
+        for _ in range(10):  # Check up to 10 times
+            time.sleep(0.1)
+            curr_size = os.path.getsize(F)
+            if curr_size == prev_size and curr_size > 0:
+                break  # File size is stable
+            prev_size = curr_size
     
     # Check if file exists and has content
     if not os.path.exists(F):
