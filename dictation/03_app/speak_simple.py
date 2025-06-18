@@ -61,8 +61,18 @@ transcribe_func, backend_name = get_transcription_backend()
 err_print(f"Using {backend_name} for transcription\n")
 
 F = "out.wav"
-# Increase buffer size to prevent audio cutoff
-cmd = ["/usr/bin/rec", "--buffer", "65536", "-q", "-r", "48000", "-c", "1", F]
+
+# Use arecord as recommended by Perplexity - it properly drains buffers on SIGINT
+# From Perplexity: arecord -q -f S16_LE -r 48000 -c 1 --buffer-time 200000 out.wav
+cmd = [
+    "/usr/bin/arecord",
+    "-q",                    # Quiet mode
+    "-f", "S16_LE",         # 16-bit signed little-endian
+    "-r", "48000",          # 48kHz sample rate
+    "-c", "1",              # Mono
+    "--buffer-time", "200000",  # 200ms buffer (small enough to drain quickly)
+    F                       # Output file
+]
 
 err_print("Recording... press Ctrl-C to stop\n", RED)
 
@@ -76,29 +86,9 @@ except KeyboardInterrupt:
     # User pressed Ctrl-C
     err_print("\nStopping recording...\n", RED)
     
-    # Send SIGINT to rec (same as Ctrl-C) for graceful shutdown
-    p.send_signal(signal.SIGINT)
-    
-    # Wait up to 2 seconds for graceful shutdown
-    try:
-        p.wait(timeout=2.0)
-    except subprocess.TimeoutExpired:
-        # If still running, terminate
-        err_print("Force stopping...\n", RED)
-        p.terminate()
-        time.sleep(0.5)
-        if p.poll() is None:
-            p.kill()
-    
-    # Wait for file to be fully written (check if size is stable)
-    if os.path.exists(F):
-        prev_size = 0
-        for _ in range(10):  # Check up to 10 times
-            time.sleep(0.1)
-            curr_size = os.path.getsize(F)
-            if curr_size == prev_size and curr_size > 0:
-                break  # File size is stable
-            prev_size = curr_size
+    # According to Perplexity, arecord drains buffers automatically on SIGINT
+    # So we just wait for it to finish
+    p.wait()
     
     # Check if file exists and has content
     if not os.path.exists(F):

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, subprocess, sys, time, signal
+import os, subprocess, sys, time
 
 # ANSI color codes
 GRAY = '\033[90m'
@@ -13,12 +13,22 @@ def err_print(msg, color=GRAY):
     sys.stderr.flush()
 
 F = "out.wav"
-# Same recording parameters as the main script
-cmd = ["/usr/bin/rec", "--buffer", "65536", "-q", "-r", "48000", "-c", "1", F]
 
-err_print("Recording... press Ctrl-C to stop\n", RED)
+# Use arecord as recommended - it properly drains buffers on SIGINT
+cmd = [
+    "/usr/bin/arecord",
+    "-q",                    # Quiet mode
+    "-f", "S16_LE",         # 16-bit signed little-endian
+    "-r", "48000",          # 48kHz sample rate
+    "-c", "1",              # Mono
+    "--buffer-time", "200000",  # 200ms buffer (small enough to drain quickly)
+    F                       # Output file
+]
 
-# Start recording in a subprocess
+err_print("Recording with arecord... press Ctrl-C to stop\n", RED)
+err_print("arecord properly drains buffers on exit - no audio should be lost!\n", GREEN)
+
+# Start recording
 p = subprocess.Popen(cmd)
 
 try:
@@ -28,29 +38,9 @@ except KeyboardInterrupt:
     # User pressed Ctrl-C
     err_print("\nStopping recording...\n", RED)
     
-    # Send SIGINT to rec (same as Ctrl-C) for graceful shutdown
-    p.send_signal(signal.SIGINT)
-    
-    # Wait up to 2 seconds for graceful shutdown
-    try:
-        p.wait(timeout=2.0)
-    except subprocess.TimeoutExpired:
-        # If still running, terminate
-        err_print("Force stopping...\n", RED)
-        p.terminate()
-        time.sleep(0.5)
-        if p.poll() is None:
-            p.kill()
-    
-    # Wait for file to be fully written (check if size is stable)
-    if os.path.exists(F):
-        prev_size = 0
-        for _ in range(10):  # Check up to 10 times
-            time.sleep(0.1)
-            curr_size = os.path.getsize(F)
-            if curr_size == prev_size and curr_size > 0:
-                break  # File size is stable
-            prev_size = curr_size
+    # arecord handles SIGINT properly and drains buffers
+    # Just wait for it to finish
+    p.wait()
     
     # Check if file exists and has content
     if not os.path.exists(F):
@@ -73,10 +63,10 @@ except KeyboardInterrupt:
     
     # Now play it back
     err_print("\nPlaying back recording...\n", YELLOW)
-    err_print("Listen carefully for any cut-off at the beginning or end\n", YELLOW)
+    err_print("Listen for complete audio - nothing should be cut off!\n", GREEN)
     
     try:
-        # Use play command (part of sox) to play the audio
+        # Use play command
         play_cmd = ["/usr/bin/play", F]
         play_proc = subprocess.run(play_cmd)
         
