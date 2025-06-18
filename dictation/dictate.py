@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, subprocess, requests, sys, time, signal, io
+import os, subprocess, requests, sys, time, signal, io, threading
 
 # ANSI color codes
 GRAY = '\033[90m'
@@ -74,21 +74,35 @@ cmd = [
     F                       # Output file
 ]
 
-err_print("Recording... press Ctrl-C to stop\n", RED)
+err_print("Recording... press any key to stop\n", RED)
 
 # Start recording in a subprocess
 p = subprocess.Popen(cmd)
 
+# Simple function to wait for any input
+def wait_for_input():
+    import termios, tty
+    old_settings = termios.tcgetattr(sys.stdin)
+    try:
+        tty.setcbreak(sys.stdin.fileno())  # Set terminal to cbreak mode
+        sys.stdin.read(1)  # Read one character
+    finally:
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+    os.kill(os.getpid(), signal.SIGINT)  # Send SIGINT to ourselves
+
+# Start thread to watch for keypress
+input_thread = threading.Thread(target=wait_for_input)
+input_thread.daemon = True
+input_thread.start()
+
 try:
-    # Wait for the process (will be interrupted by Ctrl-C)
+    # Wait for the process (will be interrupted by SIGINT from any key or Ctrl-C)
     p.wait()
 except KeyboardInterrupt:
-    # User pressed Ctrl-C
+    # Any key or Ctrl-C pressed
     err_print("\nStopping recording...\n", RED)
-    
-    # According to Perplexity, arecord drains buffers automatically on SIGINT
-    # So we just wait for it to finish
-    p.wait()
+    p.send_signal(signal.SIGINT)  # Send SIGINT to arecord
+    p.wait()  # Wait for it to finish and drain buffers
     
     # Check if file exists and has content
     if not os.path.exists(F):
@@ -103,7 +117,7 @@ except KeyboardInterrupt:
         sys.exit(1)
     
     # Now upload
-    err_print(f"Uploading to {backend_name} (Ctrl-C to abort)...\n", GREEN)
+    err_print(f"Uploading to {backend_name} (only Ctrl-C can abort)...\n", GREEN)
     try:
         with open(F, "rb") as f:
             file_data = f.read()
