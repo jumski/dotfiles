@@ -12,42 +12,56 @@ def err_print(msg, color=GRAY):
     sys.stderr.write(f"{color}{msg}{RESET}")
     sys.stderr.flush()
 
-def show_microphone(color=RED):
-    """Display ASCII microphone art"""
-    mic_art = f"""{color}
-        ╭─╮
-       ╱   ╲
-      │ ███ │
-      │ ███ │
-      │ ███ │
-       ╲___╱
-         │
-       ──┼──
-         │
-{RESET}
+def show_recording_indicator(color=RED):
+    """Display recording indicator"""
+    # Add top padding and centered circle
+    indicator = f"""
+
+  {color}●{RESET}
+
 """
-    sys.stderr.write(mic_art)
+    sys.stderr.write(indicator)
     sys.stderr.flush()
 
 def animate_recording():
     """Show animated recording indicator"""
+    # First show the REC line with padding
+    sys.stderr.write(f"\n  {RED}REC...{RESET}\n")
+    
+    # Then show the legend with padding
+    legend = f"""{GRAY}
+  Enter: paste & run
+  C: clipboard
+  S: search Firefox
+  Other: paste only{RESET}
+
+"""
+    sys.stderr.write(legend)
+    sys.stderr.flush()
+    
+    # Move cursor back up to the REC line
+    sys.stderr.write("\033[6A")  # Move up 6 lines
+    
     while not stop_animation.is_set():
         for dots in ["   ", ".  ", ".. ", "..."]:
             if stop_animation.is_set():
                 break
-            sys.stderr.write(f"\r    {RED}REC{dots}{RESET}    ")
+            sys.stderr.write(f"\r  {RED}REC{dots}{RESET}")
             sys.stderr.flush()
             time.sleep(0.5)
 
 def animate_uploading():
     """Show animated uploading indicator"""
-    # First, redraw the microphone in green
-    sys.stderr.write("\033[11A")  # Move cursor up 11 lines to start of mic
-    show_microphone(GREEN)
+    # First, redraw the circle in green
+    sys.stderr.write("\033[9A")  # Move cursor up to circle position
+    sys.stderr.write(f"\r  {GREEN}●{RESET}")
+    
+    # Move to the REC line position
+    sys.stderr.write("\033[2D\033[2B")  # Move to REC position
     
     for i in range(20):  # Max 10 seconds of animation
         for dots in ["   ", ".  ", ".. ", "..."]:
-            sys.stderr.write(f"\r     {GREEN}UP{dots}{RESET}     ")
+            sys.stderr.write(f"\r  {GREEN}UP{dots}{RESET}")
             sys.stderr.flush()
             time.sleep(0.5)
             if upload_done.is_set():
@@ -115,8 +129,8 @@ cmd = [
     F                       # Output file
 ]
 
-# Show microphone art first
-show_microphone()
+# Show recording indicator first
+show_recording_indicator()
 
 # Start recording in a subprocess
 p = subprocess.Popen(cmd)

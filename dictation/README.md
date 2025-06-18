@@ -1,32 +1,38 @@
 # Dictation Utility
 
-A voice-to-text dictation system that records audio and transcribes it using Groq or OpenAI's Whisper API. Features seamless tmux integration for inserting transcribed text directly into any application.
+A voice-to-text dictation system that records audio and transcribes it using Groq or OpenAI's Whisper API. Features seamless tmux integration with multiple action keys for different workflows.
 
 ## Features
 
 - **Reliable Audio Capture**: Uses `arecord` (ALSA) for buffer-safe recording - no audio cutoff
 - **Multiple Transcription Backends**: Groq (default) or OpenAI Whisper APIs
-- **Tmux Integration**: Press `C-q C-q` to dictate directly into any tmux pane
-- **Visual Feedback**: Color-coded status messages (red for recording, green for uploading)
-- **Clean Architecture**: Simple, focused scripts that do one thing well
+- **Smart Key Actions**:
+  - **Enter**: Paste transcribed text and execute (perfect for chat/commands)
+  - **C**: Copy to system clipboard
+  - **S**: Search in Firefox via Perplexity
+  - **Any other key**: Just paste text (no auto-execute)
+- **Visual Feedback**: Clean UI with color-coded indicator (red ● for recording, green ● for uploading)
+- **Tmux Integration**: Press `C-q C-q` to dictate from anywhere in tmux
 
 ## File Structure
 
 ```
 dictation/
 ├── dictate.py              # Main dictation script - records and transcribes
+├── dictate-actions.sh      # Action handler for different key presses
 ├── test-dictate.py         # Test script - records and plays back audio
-├── tmux-dictate.sh         # Tmux integration wrapper (internal use)
-├── tmux-dictate-helper.sh  # Helper script for tmux popup
+├── test-dictate.sh         # Test wrapper for dictate-actions.sh
+├── tmux-dictate-helper.sh  # Helper script for tmux popup environment
 ├── aliases.fish            # Fish shell aliases
 └── README.md               # This file
 ```
 
 ### File Descriptions
 
-- **`dictate.py`**: Core script that handles recording (via arecord), transcription (via APIs), and outputs text to stdout
+- **`dictate.py`**: Core script that handles recording (via arecord), transcription (via APIs), and key detection
+- **`dictate-actions.sh`**: Wrapper that handles different actions based on which key was pressed
 - **`test-dictate.py`**: Testing utility to verify audio recording works properly - plays back recorded audio
-- **`tmux-dictate.sh`**: Internal script used by tmux keybinding - captures transcript and inserts into original pane
+- **`test-dictate.sh`**: Test script for the dictation system with key actions
 - **`tmux-dictate-helper.sh`**: Sources environment variables and runs dictate.py in tmux popup context
 - **`aliases.fish`**: Defines shell commands: `dictate`, `dictate-groq`, `dictate-test`
 
@@ -38,6 +44,8 @@ dictation/
 - **sox** (for `play` command - audio playback)
 - **Python 3** with `requests` library
 - **tmux** (for popup integration)
+- **xclip** (for clipboard functionality)
+- **firefox** (for web search functionality)
 - **fish shell** (for aliases, optional)
 
 ### API Requirements
@@ -48,7 +56,7 @@ dictation/
 
 1. **Install system dependencies**:
    ```bash
-   sudo pacman -S alsa-utils sox python-requests tmux
+   sudo pacman -S alsa-utils sox python-requests tmux xclip firefox
    ```
 
 2. **Set up API keys in `~/.env.local`**:
@@ -64,11 +72,7 @@ dictation/
 
 4. **Add tmux keybinding** (already in your tmux.conf):
    ```tmux
-   bind C-q run-shell "sh -c '
-       target=$(tmux display -p \"#{pane_id}\")
-       tmux display-popup -E -w 40 -h 8 \"~/.dotfiles/dictation/tmux-dictate-helper.sh | tmux load-buffer -\"
-       tmux paste-buffer -p -t \"$target\"
-   '"
+   bind C-q run-shell -b "tmux display-popup -E -w 25 -h 10 -e TARGET_PANE='#{pane_id}' ~/.dotfiles/dictation/dictate-actions.sh"
    ```
 
 ## Usage
@@ -90,11 +94,15 @@ TRANSCRIPTION_BACKEND=openai dictate
 
 ### In Tmux
 1. Press `C-q C-q` (double prefix) anywhere in tmux
-2. Small popup appears showing "Recording... press Ctrl-C to stop"
+2. Small popup appears with red ● indicator and key legend
 3. Speak into your microphone
-4. Press `Ctrl-C` to stop recording
-5. Wait for "Uploading..." message
-6. Popup closes and transcribed text appears at your cursor
+4. Press a key to stop recording and choose action:
+   - **Enter**: Transcribed text is pasted and executed (great for chat/commands)
+   - **C**: Text is copied to system clipboard
+   - **S**: Opens Firefox with Perplexity search of your text
+   - **Any other key**: Just pastes the text without executing
+5. Red ● turns green during upload
+6. Popup closes and your chosen action is performed
 
 ## How It Works
 
@@ -107,11 +115,11 @@ TRANSCRIPTION_BACKEND=openai dictate
    - Groq: Uses `whisper-large-v3` model (fast and accurate)
    - OpenAI: Uses `whisper-1` model (alternative option)
 
-3. **Tmux Integration**: 
-   - Captures pane ID before opening popup
-   - Runs dictation in popup, capturing stdout
-   - Loads transcript into tmux buffer
-   - Pastes buffer content to original pane after popup closes
+3. **Smart Actions**: 
+   - Python script exits with different codes based on key pressed
+   - Shell wrapper (`dictate-actions.sh`) handles actions based on exit code
+   - Clipboard uses background process with `nohup` to work in popup context
+   - Target pane ID passed via environment variable for accurate pasting
 
 ## Troubleshooting
 

@@ -32,8 +32,10 @@ case $exit_code in
         ;;
     
     1)  # C key - copy to clipboard
-        echo -n "$output" | xclip -selection clipboard
-        # Also show a message in tmux
+        # Save to temp file and copy in background like Firefox
+        tmpfile=$(mktemp)
+        echo -n "$output" > "$tmpfile"
+        nohup sh -c "cat '$tmpfile' | xclip -selection clipboard; rm -f '$tmpfile'" >/dev/null 2>&1 &
         tmux display-message "Copied to clipboard!"
         ;;
     
