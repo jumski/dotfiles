@@ -49,6 +49,29 @@ case $exit_code in
         fi
         ;;
     
+    3)  # F key - format as markdown
+        if [ -n "$output" ]; then
+            # Clear screen and show formatting message
+            printf "\033[2J\033[H" >&2  # Clear screen and home cursor
+            printf "\n\n\n\n" >&2
+            printf "           \033[34m⢀⣀⣀⣀⣀⣀⡀\n" >&2
+            printf "           ⣿⣿⣿⣿⣿⣿⣿\n" >&2
+            printf "           ⣿⣿⣿⣿⣿⣿⣿\n" >&2
+            printf "           ⣿⣿⣿⣿⣿⣿⣿\n" >&2
+            printf "           ⣿⣿⣿⣿⣿⣿⣿\n" >&2
+            printf "           ⣿⣿⣿⣿⣿⣿⣿\n" >&2
+            printf "           ⠘⠿⠿⠿⠿⠿⠃\033[0m\n" >&2
+            printf "\n         \033[34mFormatting...\033[0m\n" >&2
+            
+            # Format with aichat
+            formatted=$(echo "$output" | aichat --prompt "Take these loose thoughts and improve them: organize, expand slightly, fix grammar, and format as clean markdown. Keep the original meaning and voice but make it more polished and structured. Output only the improved markdown text without code fences:" --no-stream)
+            
+            # Load formatted text and paste
+            echo -n "$formatted" | tmux load-buffer -
+            tmux paste-buffer -p -t "$target_pane"
+        fi
+        ;;
+    
     99) # Any other key - just paste (no execute)
         echo -n "$output" | tmux load-buffer -
         tmux paste-buffer -p -t "$target_pane"

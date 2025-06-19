@@ -5,6 +5,7 @@ import os, subprocess, requests, sys, time, signal, io, threading
 GRAY = '\033[90m'
 RED = '\033[31m'
 GREEN = '\033[32m'
+BLUE = '\033[34m'
 RESET = '\033[0m'
 BOLD = '\033[1m'
 CLEAR_LINE = '\033[2K\r'
@@ -47,6 +48,7 @@ def animate_recording():
      {GRAY}{BOLD}Enter{RESET}{GRAY}: paste & run
      {BOLD}C{RESET}{GRAY}: clipboard  
      {BOLD}S{RESET}{GRAY}: search Firefox
+     {BOLD}F{RESET}{GRAY}: format markdown
      {BOLD}Esc/^C{RESET}{GRAY}: cancel
      {BOLD}Other{RESET}{GRAY}: paste only{RESET}
 
@@ -55,7 +57,7 @@ def animate_recording():
     sys.stderr.flush()
     
     # Move cursor back up to REC line for animation
-    sys.stderr.write("\033[9A")  # Move up 9 lines (one more for cancel line)
+    sys.stderr.write("\033[10A")  # Move up 10 lines (one more for markdown line)
     
     while not stop_animation.is_set():
         for dots in ["   ", ".  ", ".. ", "..."]:
@@ -85,6 +87,7 @@ def animate_uploading():
      {GRAY}{BOLD}Enter{RESET}{GRAY}: paste & run
      {BOLD}C{RESET}{GRAY}: clipboard  
      {BOLD}S{RESET}{GRAY}: search Firefox
+     {BOLD}F{RESET}{GRAY}: format markdown
      {BOLD}Esc/^C{RESET}{GRAY}: cancel
      {BOLD}Other{RESET}{GRAY}: paste only{RESET}
 
@@ -93,7 +96,7 @@ def animate_uploading():
     sys.stderr.flush()
     
     # Move cursor back to UP line for animation
-    sys.stderr.write("\033[9A")  # Move up 9 lines (one more for cancel line)
+    sys.stderr.write("\033[10A")  # Move up 10 lines (one more for markdown line)
     
     for i in range(20):  # Max 10 seconds of animation
         for dots in ["   ", ".  ", ".. ", "..."]:
@@ -249,6 +252,8 @@ except KeyboardInterrupt:
             sys.exit(1)
         elif key_pressed in ['s', 'S']:  # S key for search
             sys.exit(2)
+        elif key_pressed in ['f', 'F']:  # F key for markdown formatting
+            sys.exit(3)
         else:
             sys.exit(99)  # Default action (just paste)
         
