@@ -54,13 +54,11 @@ case $exit_code in
             # Clear screen and show formatting message
             printf "\033[2J\033[H" >&2  # Clear screen and home cursor
             printf "\n\n\n\n" >&2
-            printf "           \033[34m⢀⣀⣀⣀⣀⣀⡀\n" >&2
-            printf "           ⣿⣿⣿⣿⣿⣿⣿\n" >&2
-            printf "           ⣿⣿⣿⣿⣿⣿⣿\n" >&2
-            printf "           ⣿⣿⣿⣿⣿⣿⣿\n" >&2
-            printf "           ⣿⣿⣿⣿⣿⣿⣿\n" >&2
-            printf "           ⣿⣿⣿⣿⣿⣿⣿\n" >&2
-            printf "           ⠘⠿⠿⠿⠿⠿⠃\033[0m\n" >&2
+            printf "          \033[34m╭─╮\n" >&2
+            printf "          │●│ ～～～\n" >&2
+            printf "          ╰─╯\n" >&2
+            printf "           │ \n" >&2
+            printf "          ═╧═\033[0m\n" >&2
             printf "\n         \033[34mFormatting...\033[0m\n" >&2
             
             # Format with aichat

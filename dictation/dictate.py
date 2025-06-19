@@ -16,21 +16,19 @@ def err_print(msg, color=GRAY):
 
 def show_recording_indicator(color=RED):
     """Display recording indicator"""
-    # Popup width is 31, circle is ~8 chars wide
-    # (31 - 8) / 2 = 11.5, so use 11 spaces for centering
-    padding = " " * 11
+    # Popup width is 31, mic + waves is ~10 chars wide
+    # Move 1 column left from center
+    padding = " " * 10
     indicator = f"""
 
 
 
 
-{padding}{color}⢀⣀⣀⣀⣀⣀⡀
-{padding}⣿⣿⣿⣿⣿⣿⣿
-{padding}⣿⣿⣿⣿⣿⣿⣿
-{padding}⣿⣿⣿⣿⣿⣿⣿
-{padding}⣿⣿⣿⣿⣿⣿⣿
-{padding}⣿⣿⣿⣿⣿⣿⣿
-{padding}⠘⠿⠿⠿⠿⠿⠃{RESET}
+{padding}{color}╭─╮
+{padding}│●│ ～～～
+{padding}╰─╯
+{padding} │ 
+{padding}═╧═{RESET}
 """
     sys.stderr.write(indicator)
     sys.stderr.flush()
