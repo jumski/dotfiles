@@ -152,7 +152,10 @@ def get_transcription_backend():
 # Main script starts here
 transcribe_func, backend_name = get_transcription_backend()
 
-F = "out.wav"
+# Create a temporary file for recording
+import tempfile
+temp_fd, F = tempfile.mkstemp(suffix=".wav")
+os.close(temp_fd)  # Close the file descriptor, we just need the path
 
 # Use arecord as recommended by Perplexity - it properly drains buffers on SIGINT
 cmd = [
@@ -210,11 +213,13 @@ except KeyboardInterrupt:
     # If Ctrl-C was pressed (no key_pressed set), exit immediately
     if key_pressed is None:
         err_print("\nCancelled!\n")
+        os.unlink(F)  # Clean up temp file
         sys.exit(130)
     
     # Check if Escape was pressed - exit immediately without transcribing
     if key_pressed == '\x1b':
         err_print("\nCancelled!\n")
+        os.unlink(F)  # Clean up temp file
         sys.exit(130)
     
     # Check if file exists and has content
@@ -258,17 +263,25 @@ except KeyboardInterrupt:
     except KeyboardInterrupt:
         upload_done.set()
         err_print("\nUpload aborted!\n")
+        os.unlink(F)  # Clean up temp file
         sys.exit(1)
     except ValueError as e:
         upload_done.set()
         err_print(f"\nConfiguration error: {e}\n")
+        os.unlink(F)  # Clean up temp file
         sys.exit(1)
     except requests.exceptions.HTTPError as e:
         upload_done.set()
         err_print(f"\nHTTP Error: {e}\n")
         err_print(f"Response: {e.response.text}\n")
+        os.unlink(F)  # Clean up temp file
         sys.exit(1)
     except Exception as e:
         upload_done.set()
         err_print(f"\nUpload error: {e}\n")
+        os.unlink(F)  # Clean up temp file
         sys.exit(1)
+finally:
+    # Always clean up the temp file
+    if os.path.exists(F):
+        os.unlink(F)
