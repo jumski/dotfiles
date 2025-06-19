@@ -41,7 +41,11 @@ else
     exit 1
 fi
 
+# Create a temporary file for stderr
+STDERR_FILE=$(mktemp)
+
 # Make the API request and stream to audio player
+# Use --fail-with-body to get error responses
 curl -X POST "https://api.groq.com/openai/v1/audio/speech" \
     -H "Authorization: Bearer $GROQ_API_KEY" \
     -H "Content-Type: application/json" \
@@ -51,9 +55,32 @@ curl -X POST "https://api.groq.com/openai/v1/audio/speech" \
         \"voice\": \"$VOICE\",
         \"response_format\": \"wav\"
     }" \
-    --silent --fail | $PLAYER
+    --silent --fail-with-body 2>"$STDERR_FILE" | $PLAYER
 
-if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+# Capture exit codes
+CURL_EXIT=${PIPESTATUS[0]}
+PLAYER_EXIT=${PIPESTATUS[1]}
+
+# Check if curl failed
+if [[ $CURL_EXIT -ne 0 ]]; then
     echo -e "\033[31mError: Failed to generate speech from Groq API\033[0m" >&2
+    
+    # Show stderr if any
+    if [[ -s "$STDERR_FILE" ]]; then
+        echo -e "\033[31mDetails:\033[0m" >&2
+        cat "$STDERR_FILE" >&2
+    fi
+    
+    rm -f "$STDERR_FILE"
     exit 1
 fi
+
+# Check if player failed
+if [[ $PLAYER_EXIT -ne 0 ]]; then
+    echo -e "\033[31mError: Failed to play audio (player exit code: $PLAYER_EXIT)\033[0m" >&2
+    rm -f "$STDERR_FILE"
+    exit 1
+fi
+
+# Clean up
+rm -f "$STDERR_FILE"
