@@ -12,7 +12,7 @@ end
 
 alias ..="cd .."
 
-alias ...="cd ..."
+alias ...="cd ../.."
 
 alias ll="ls -alF --group-directories-first"
 alias la="ls -A"
