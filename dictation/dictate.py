@@ -164,15 +164,18 @@ cmd = [
     "-f", "S16_LE",         # 16-bit signed little-endian
     "-r", "48000",          # 48kHz sample rate
     "-c", "1",              # Mono
-    "--buffer-time", "200000",  # 200ms buffer (small enough to drain quickly)
+    "--buffer-time", "50000",   # 50ms buffer (reduced for lower latency)
     F                       # Output file
 ]
 
-# Show recording indicator first
-show_recording_indicator()
-
-# Start recording in a subprocess
+# Start recording FIRST (before showing UI)
 p = subprocess.Popen(cmd)
+
+# Small delay to ensure recording has started
+time.sleep(0.05)
+
+# Show recording indicator after recording has started
+show_recording_indicator()
 
 # Initialize key tracking
 key_pressed = None
