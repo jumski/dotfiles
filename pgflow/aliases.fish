@@ -20,9 +20,15 @@ function pgflow_ai
   end
   
   # Show the command to be executed
-  set_color brblack
-  echo "\$ aichat $file_flags $argv" >&2
-  set_color normal
+  if test -t 2
+    # stderr is a terminal, use color
+    set_color brblack
+    echo "\$ aichat $file_flags $argv" >&2
+    set_color normal
+  else
+    # stderr is redirected, no color
+    echo "\$ aichat $file_flags $argv" >&2
+  end
   
   # Check if stdin is available (piped input)
   if test -t 0
