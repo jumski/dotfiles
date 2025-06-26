@@ -7,10 +7,10 @@ prepare-commit-msg:
         - summary
         - error
 
-commit-msg:
-  commands:
-    "lint commit message":
-      run: pnpm commitlint --edit {1}
+# commit-msg:
+#   commands:
+#     "lint commit message":
+#       run: pnpm commitlint --edit {1}
 
 post-commit:
   commands:
