@@ -109,7 +109,7 @@ function _pgflow_worktree_create
         end
     end
 
-    if test "$no_tmux_flag" = "false"; and not command -v muxit >/dev/null
+    if test "$no_tmux_flag" = "false"; and not functions -q muxit
         echo "Error: 'muxit' function not found (required for tmux session)"
         return 1
     end
@@ -179,10 +179,10 @@ function _pgflow_worktree_create
 
     # Copy playground env (no overwrite)
     if test -f "$__PGFLOW_ENVS_DIR/examples-playground.env"
-        if cp -n "$__PGFLOW_ENVS_DIR/examples-playground.env" examples/playground.env 2>/dev/null
+        if cp -n "$__PGFLOW_ENVS_DIR/examples-playground.env" examples/playground/.env 2>/dev/null
             echo "  ✓ Copied examples-playground.env"
         else
-            echo "  ⚠ examples/playground.env already exists, skipping"
+            echo "  ⚠ examples/playground/.env already exists, skipping"
         end
     else
         echo "  ⚠ Warning: $__PGFLOW_ENVS_DIR/examples-playground.env not found"
