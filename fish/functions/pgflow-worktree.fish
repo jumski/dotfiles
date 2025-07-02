@@ -374,12 +374,35 @@ function _pgflow_worktree_switch
     muxit "$worktree_path"
 end
 
+# Helper function to get available worktrees for completion
+function __fish_pgflow_worktree_list
+    # Get worktree names excluding the main repo
+    git -C "$__PGFLOW_ROOT" worktree list 2>/dev/null | while read -l line
+        set -l path (string split " " $line)[1]
+        if test "$path" != "$__PGFLOW_ROOT"
+            basename $path
+        end
+    end
+end
+
 # Add completion
 complete -c pgflow-worktree -f
 complete -c pgflow-worktree -n "not __fish_seen_subcommand_from new create list ls remove rm delete switch sw help" -a "new" -d "Create new worktree"
+complete -c pgflow-worktree -n "not __fish_seen_subcommand_from new create list ls remove rm delete switch sw help" -a "create" -d "Create new worktree"
 complete -c pgflow-worktree -n "not __fish_seen_subcommand_from new create list ls remove rm delete switch sw help" -a "list" -d "List all worktrees"
+complete -c pgflow-worktree -n "not __fish_seen_subcommand_from new create list ls remove rm delete switch sw help" -a "ls" -d "List all worktrees"
 complete -c pgflow-worktree -n "not __fish_seen_subcommand_from new create list ls remove rm delete switch sw help" -a "remove" -d "Remove worktree"
+complete -c pgflow-worktree -n "not __fish_seen_subcommand_from new create list ls remove rm delete switch sw help" -a "rm" -d "Remove worktree"
+complete -c pgflow-worktree -n "not __fish_seen_subcommand_from new create list ls remove rm delete switch sw help" -a "delete" -d "Remove worktree"
 complete -c pgflow-worktree -n "not __fish_seen_subcommand_from new create list ls remove rm delete switch sw help" -a "switch" -d "Switch to worktree"
+complete -c pgflow-worktree -n "not __fish_seen_subcommand_from new create list ls remove rm delete switch sw help" -a "sw" -d "Switch to worktree"
 complete -c pgflow-worktree -n "not __fish_seen_subcommand_from new create list ls remove rm delete switch sw help" -a "help" -d "Show help"
+
+# Complete worktree names for remove and switch commands
+complete -c pgflow-worktree -n "__fish_seen_subcommand_from remove rm delete" -a "(__fish_pgflow_worktree_list)" -d "Worktree to remove"
+complete -c pgflow-worktree -n "__fish_seen_subcommand_from switch sw" -a "(__fish_pgflow_worktree_list)" -d "Worktree to switch to"
+complete -c pgflow-worktree -n "__fish_seen_subcommand_from switch sw" -a "main" -d "Main pgflow repository"
+
+# Complete flags
 complete -c pgflow-worktree -n "__fish_seen_subcommand_from new create remove rm delete" -l force -d "Override safety checks"
 complete -c pgflow-worktree -n "__fish_seen_subcommand_from new create" -l no-tmux -d "Skip tmux session"
