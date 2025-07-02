@@ -255,11 +255,11 @@ except KeyboardInterrupt:
         if key_pressed in ['\n', '\r']:  # Enter key
             sys.exit(0)
         elif key_pressed in ['c', 'C']:  # C key for clipboard
-            sys.exit(1)
+            sys.exit(10)
         elif key_pressed in ['s', 'S']:  # S key for search
-            sys.exit(2)
+            sys.exit(11)
         elif key_pressed in ['f', 'F']:  # F key for markdown formatting
-            sys.exit(3)
+            sys.exit(12)
         else:
             sys.exit(99)  # Default action (just paste)
         

@@ -31,7 +31,7 @@ case $exit_code in
         tmux send-keys -t "$target_pane" Enter
         ;;
     
-    1)  # C key - copy to clipboard
+    10)  # C key - copy to clipboard
         # Save to temp file and copy in background like Firefox
         tmpfile=$(mktemp)
         echo -n "$output" > "$tmpfile"
@@ -39,7 +39,7 @@ case $exit_code in
         tmux display-message "Copied to clipboard!"
         ;;
     
-    2)  # S key - search in Firefox
+    11)  # S key - search in Firefox
         if [ -n "$output" ]; then
             # URL encode the output
             encoded=$(echo -n "$output" | python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.stdin.read()))")
@@ -49,7 +49,7 @@ case $exit_code in
         fi
         ;;
     
-    3)  # F key - format as markdown
+    12)  # F key - format as markdown
         if [ -n "$output" ]; then
             # Clear screen and show formatting message
             printf "\033[2J\033[H" >&2  # Clear screen and home cursor
@@ -73,6 +73,15 @@ case $exit_code in
     99) # Any other key - just paste (no execute)
         echo -n "$output" | tmux load-buffer -
         tmux paste-buffer -p -t "$target_pane"
+        ;;
+    
+    1)  # Real error - show error message
+        if [ -n "$output" ]; then
+            # Show error in a popup
+            echo "$output" | tmux display-popup -E -h 50% -w 80% -t "$target_pane"
+        else
+            tmux display-message "Dictation failed: Check logs or API keys"
+        fi
         ;;
     
     130) # Ctrl-C or Escape - cancel completely
