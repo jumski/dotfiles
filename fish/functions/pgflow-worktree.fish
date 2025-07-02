@@ -174,29 +174,37 @@ function _pgflow_worktree_create
     # Copy environment files
     echo "Copying environment files..."
     
-    # Create directories if they don't exist
-    mkdir -p examples/playground/supabase/functions
-
-    # Copy playground env (no overwrite)
-    if test -f "$__PGFLOW_ENVS_DIR/examples-playground.env"
-        if cp -n "$__PGFLOW_ENVS_DIR/examples-playground.env" examples/playground/.env 2>/dev/null
-            echo "  ✓ Copied examples-playground.env"
-        else
-            echo "  ⚠ examples/playground/.env already exists, skipping"
+    # Copy all env files preserving directory structure
+    if test -d "$__PGFLOW_ENVS_DIR"
+        # Find all files in envs dir and copy them preserving structure
+        set -l copied_count 0
+        set -l skipped_count 0
+        
+        cd "$__PGFLOW_ENVS_DIR"
+        find . -type f | while read -l file
+            set -l target_file "$worktree_path/$file"
+            set -l target_dir (dirname "$target_file")
+            
+            # Create target directory if needed
+            mkdir -p "$target_dir"
+            
+            # Copy file if it doesn't exist
+            if not test -f "$target_file"
+                cp "$__PGFLOW_ENVS_DIR/$file" "$target_file"
+                echo "  ✓ Copied $file"
+                set copied_count (math $copied_count + 1)
+            else
+                set skipped_count (math $skipped_count + 1)
+            end
+        end
+        
+        cd "$current_dir"
+        
+        if test $skipped_count -gt 0
+            echo "  ⚠ Skipped $skipped_count existing files"
         end
     else
-        echo "  ⚠ Warning: $__PGFLOW_ENVS_DIR/examples-playground.env not found"
-    end
-
-    # Copy supabase functions env (no overwrite)
-    if test -f "$__PGFLOW_ENVS_DIR/examples-playground-supabase-functions.env"
-        if cp -n "$__PGFLOW_ENVS_DIR/examples-playground-supabase-functions.env" examples/playground/supabase/functions/.env 2>/dev/null
-            echo "  ✓ Copied examples-playground-supabase-functions.env"
-        else
-            echo "  ⚠ examples/playground/supabase/functions/.env already exists, skipping"
-        end
-    else
-        echo "  ⚠ Warning: $__PGFLOW_ENVS_DIR/examples-playground-supabase-functions.env not found"
+        echo "  ⚠ Warning: $__PGFLOW_ENVS_DIR directory not found"
     end
 
     cd "$current_dir"
