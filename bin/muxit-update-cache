@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Create cache directory if it doesn't exist
+mkdir -p ~/.cache
+
+# Generate the project list and save to cache
+fd -H --glob .git --no-ignore-vcs --exec echo {//} \; /home/jumski/Code |
+sed 's|/home/jumski/Code/||' |
+sed '1i\.dotfiles' > ~/.cache/muxit-projects
