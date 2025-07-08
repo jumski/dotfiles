@@ -117,13 +117,10 @@ function _pgflow_worktree_create
     # Prune stale worktrees
     git -C "$__PGFLOW_ROOT" worktree prune
 
-    # Check if branch already exists
-    if test "$force_flag" = "false"
-        if git -C "$__PGFLOW_ROOT" show-ref --verify --quiet "refs/heads/$branch_name"
-            echo "Error: Branch '$branch_name' already exists"
-            echo "Use --force to override"
-            return 1
-        end
+    # Check if branch exists to determine which git command to use
+    set -l branch_exists false
+    if git -C "$__PGFLOW_ROOT" show-ref --verify --quiet "refs/heads/$branch_name"
+        set branch_exists true
     end
 
     # Check if worktree already exists
@@ -136,22 +133,30 @@ function _pgflow_worktree_create
     end
 
     # Check if worktree directory already exists
-    if test -d "$worktree_path"; and test "$force_flag" = "false"
+    if test -d "$worktree_path"
         echo "Error: Directory '$worktree_path' already exists"
-        echo "Use --force to override"
+        echo "Cannot create worktree in existing directory"
         return 1
     end
 
-    # Create worktree and branch in one step
-    echo "Creating worktree '$branch_name' at '$worktree_path'..."
-    set -l add_flag "-b"
-    if test "$force_flag" = "true"
-        set add_flag "-B"
-    end
-    
-    if not git -C "$__PGFLOW_ROOT" worktree add $add_flag "$branch_name" "$worktree_path"
-        echo "Error: Failed to create worktree"
-        return 1
+    # Create worktree - use existing branch or create new one
+    if test "$branch_exists" = "true"
+        echo "Using existing branch '$branch_name' for worktree at '$worktree_path'..."
+        if not git -C "$__PGFLOW_ROOT" worktree add "$worktree_path" "$branch_name"
+            echo "Error: Failed to create worktree with existing branch"
+            return 1
+        end
+    else
+        echo "Creating new branch '$branch_name' with worktree at '$worktree_path'..."
+        set -l add_flag "-b"
+        if test "$force_flag" = "true"
+            set add_flag "-B"
+        end
+        
+        if not git -C "$__PGFLOW_ROOT" worktree add $add_flag "$branch_name" "$worktree_path"
+            echo "Error: Failed to create worktree and branch"
+            return 1
+        end
     end
 
     # Change to worktree directory and setup environment
