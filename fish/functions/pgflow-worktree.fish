@@ -90,7 +90,6 @@ function _pgflow_worktree_create
     set -l force_flag $argv[2]
     set -l no_tmux_flag $argv[3]
     set -l worktree_path "$__PGFLOW_WORKTREES_DIR/$branch_name"
-    set -l current_dir $PWD
 
     # Verify directories exist
     for dir in $__PGFLOW_ROOT $__PGFLOW_WORKTREES_DIR $__PGFLOW_ENVS_DIR
@@ -117,10 +116,21 @@ function _pgflow_worktree_create
     # Prune stale worktrees
     git -C "$__PGFLOW_ROOT" worktree prune
 
-    # Check if branch exists to determine which git command to use
+    # Check if branch exists locally or remotely
     set -l branch_exists false
+    set -l remote_branch ""
+    
+    # Check for local branch
     if git -C "$__PGFLOW_ROOT" show-ref --verify --quiet "refs/heads/$branch_name"
         set branch_exists true
+    else
+        # Check for remote branch
+        for remote in (git -C "$__PGFLOW_ROOT" remote)
+            if git -C "$__PGFLOW_ROOT" show-ref --verify --quiet "refs/remotes/$remote/$branch_name"
+                set remote_branch "$remote/$branch_name"
+                break
+            end
+        end
     end
 
     # Check if worktree already exists
@@ -139,11 +149,17 @@ function _pgflow_worktree_create
         return 1
     end
 
-    # Create worktree - use existing branch or create new one
+    # Create worktree - use existing branch, track remote, or create new one
     if test "$branch_exists" = "true"
-        echo "Using existing branch '$branch_name' for worktree at '$worktree_path'..."
+        echo "Using existing local branch '$branch_name' for worktree at '$worktree_path'..."
         if not git -C "$__PGFLOW_ROOT" worktree add "$worktree_path" "$branch_name"
             echo "Error: Failed to create worktree with existing branch"
+            return 1
+        end
+    else if test -n "$remote_branch"
+        echo "Creating local branch '$branch_name' tracking '$remote_branch' with worktree at '$worktree_path'..."
+        if not git -C "$__PGFLOW_ROOT" worktree add -b "$branch_name" "$worktree_path" "$remote_branch"
+            echo "Error: Failed to create worktree tracking remote branch"
             return 1
         end
     else
@@ -159,18 +175,14 @@ function _pgflow_worktree_create
         end
     end
 
-    # Change to worktree directory and setup environment
-    cd "$worktree_path"
-
-    # Run direnv allow
+    # Setup environment in worktree (use subshell to avoid changing user's directory)
     echo "Setting up direnv..."
-    direnv allow; or echo "  ⚠ Warning: direnv allow failed"
+    (cd "$worktree_path" && direnv allow); or echo "  ⚠ Warning: direnv allow failed"
 
     # Run pnpm install
     echo "Installing dependencies with pnpm..."
-    if not pnpm install
+    if not (cd "$worktree_path" && pnpm install)
         echo "Error: pnpm install failed - rolling back"
-        cd "$current_dir"
         git -C "$__PGFLOW_ROOT" worktree remove --force "$worktree_path"
         git -C "$__PGFLOW_ROOT" branch -D "$branch_name" 2>/dev/null
         return 1
@@ -185,9 +197,11 @@ function _pgflow_worktree_create
         set -l copied_count 0
         set -l skipped_count 0
         
-        cd "$__PGFLOW_ENVS_DIR"
-        find . -type f | while read -l file
-            set -l target_file "$worktree_path/$file"
+        # Find files without changing directory
+        find "$__PGFLOW_ENVS_DIR" -type f | while read -l source_file
+            # Get relative path by removing the envs directory prefix
+            set -l rel_path (string replace "$__PGFLOW_ENVS_DIR/" "" "$source_file")
+            set -l target_file "$worktree_path/$rel_path"
             set -l target_dir (dirname "$target_file")
             
             # Create target directory if needed
@@ -195,15 +209,13 @@ function _pgflow_worktree_create
             
             # Copy file if it doesn't exist
             if not test -f "$target_file"
-                cp "$__PGFLOW_ENVS_DIR/$file" "$target_file"
-                echo "  ✓ Copied $file"
+                cp "$source_file" "$target_file"
+                echo "  ✓ Copied $rel_path"
                 set copied_count (math $copied_count + 1)
             else
                 set skipped_count (math $skipped_count + 1)
             end
         end
-        
-        cd "$current_dir"
         
         if test $skipped_count -gt 0
             echo "  ⚠ Skipped $skipped_count existing files"
@@ -211,8 +223,6 @@ function _pgflow_worktree_create
     else
         echo "  ⚠ Warning: $__PGFLOW_ENVS_DIR directory not found"
     end
-
-    cd "$current_dir"
 
     echo ""
     echo "✅ Worktree '$branch_name' created successfully!"
