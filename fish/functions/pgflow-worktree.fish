@@ -341,6 +341,17 @@ function _pgflow_worktree_remove
             return 1
         end
     end
+    
+    # If directory still exists after git worktree remove, clean it up
+    if test -d "$worktree_path"
+        if test "$force_flag" = "true"
+            echo "Cleaning up remaining worktree directory..."
+            rm -rf "$worktree_path"
+        else
+            echo "Warning: Worktree directory still exists at '$worktree_path'"
+            echo "Use --force to remove it"
+        end
+    end
 
     # Ask about branch removal
     echo ""
