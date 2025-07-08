@@ -177,11 +177,11 @@ function _pgflow_worktree_create
 
     # Setup environment in worktree (use subshell to avoid changing user's directory)
     echo "Setting up direnv..."
-    (cd "$worktree_path" && direnv allow); or echo "  ⚠ Warning: direnv allow failed"
+    fish -c "cd '$worktree_path' && direnv allow"; or echo "  ⚠ Warning: direnv allow failed"
 
     # Run pnpm install
     echo "Installing dependencies with pnpm..."
-    if not (cd "$worktree_path" && pnpm install)
+    if not fish -c "cd '$worktree_path' && pnpm install"
         echo "Error: pnpm install failed - rolling back"
         git -C "$__PGFLOW_ROOT" worktree remove --force "$worktree_path"
         git -C "$__PGFLOW_ROOT" branch -D "$branch_name" 2>/dev/null
