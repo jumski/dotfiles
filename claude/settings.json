@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '\"\\(.transcript_path | split(\"/\") | .[-3]) | \\(.message)\"' | xargs -d '|' bash -c 'notify-send -u critical -i /home/jumski/.dotfiles/claude/icon.png \"Claude: $0\" \"$1\"'"
+            "command": "/home/jumski/.dotfiles/claude/hooks/notify-hook.sh"
           }
         ]
       }
