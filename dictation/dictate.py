@@ -115,7 +115,7 @@ def transcribe_with_groq(file_data):
     r = requests.post(
         "https://api.groq.com/openai/v1/audio/transcriptions",
         headers={"Authorization": f"Bearer {api_key}"},
-        data={"model": "whisper-large-v3"},
+        data={"model": "whisper-large-v3", "language": "en"},
         files={"file": ("out.wav", file_obj, "audio/wav")},
         timeout=120
     )
@@ -133,7 +133,7 @@ def transcribe_with_openai(file_data):
     r = requests.post(
         "https://api.openai.com/v1/audio/transcriptions",
         headers={"Authorization": f"Bearer {api_key}"},
-        data={"model": "whisper-1"},
+        data={"model": "whisper-1", "language": "en"},
         files={"file": ("out.wav", file_obj, "audio/wav")},
         timeout=120
     )
