@@ -149,8 +149,18 @@ def get_transcription_backend():
     else:
         return transcribe_with_groq, "Groq"
 
-# Recording directory setup
-RECORD_DIR = os.path.expanduser("~/.dictation_recordings")
+# Recording directory setup - using NAS path
+NAS_DEV_DIR = os.path.expanduser("~/SynologyDrive/Areas/Dev")
+RECORD_DIR = os.path.join(NAS_DEV_DIR, "dictation-data")
+
+# Check if Dev directory exists (indicates NAS is mounted)
+if not os.path.exists(NAS_DEV_DIR):
+    err_print(f"\n{RED}ERROR: NAS not mounted or Dev directory missing!{RESET}\n")
+    err_print(f"Expected path: {NAS_DEV_DIR}\n")
+    err_print(f"Please ensure your Synology Drive is properly mounted.\n")
+    sys.exit(1)
+
+# Create dictation-data directory if it doesn't exist
 os.makedirs(RECORD_DIR, exist_ok=True)
 
 # CLI argument parsing

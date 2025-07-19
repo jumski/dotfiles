@@ -1,9 +1,9 @@
 # Dictation recordings cleanup - remove WAV files older than 28 days
 # Run daily at 3:00 AM
-0 3 * * * find ~/.dictation_recordings -type f -name "*.wav" -mtime +28 -delete 2>/dev/null
+0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name "*.wav" -mtime +28 -delete 2>/dev/null
 
 # Optional: Also remove txt files (uncomment if desired)
-# 0 3 * * * find ~/.dictation_recordings -type f -name "*.txt" -mtime +28 -delete 2>/dev/null
+# 0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name "*.txt" -mtime +28 -delete 2>/dev/null
 
 # To install this crontab entry:
 # 1. Run: crontab -e
@@ -11,4 +11,4 @@
 # 3. Save and exit
 #
 # Or append to existing crontab:
-# (crontab -l 2>/dev/null; echo "0 3 * * * find ~/.dictation_recordings -type f -name \"*.wav\" -mtime +28 -delete 2>/dev/null") | crontab -
+# (crontab -l 2>/dev/null; echo "0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name \"*.wav\" -mtime +28 -delete 2>/dev/null") | crontab -

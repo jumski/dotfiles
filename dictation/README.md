@@ -5,7 +5,7 @@ A voice-to-text dictation system that records audio and transcribes it using Gro
 ## Features
 
 - **Reliable Audio Capture**: Uses `arecord` (ALSA) for buffer-safe recording - no audio cutoff
-- **Permanent Recording Storage**: All recordings saved to `~/.dictation_recordings/` with timestamps
+- **Permanent Recording Storage**: All recordings saved to NAS at `~/SynologyDrive/Areas/Dev/dictation-data/` with timestamps
 - **Automatic Backup**: Never lose recordings - failed transcriptions can be retried later
 - **Multiple Transcription Backends**: Groq (default) or OpenAI Whisper APIs
 - **Smart Key Actions**:
@@ -31,9 +31,9 @@ dictation/
 ├── crontab                 # Cron job for cleaning old recordings
 └── README.md               # This file
 
-~/.dictation_recordings/    # Created automatically
-├── 20240115-143045-123.wav # Saved recordings (YYYYMMDD-HHMMSS-mmm format)
-└── 20240115-143045-123.txt # Transcribed text (created on success)
+~/SynologyDrive/Areas/Dev/dictation-data/  # Created automatically on NAS
+├── 20240115-143045-123.wav                # Saved recordings (YYYYMMDD-HHMMSS-mmm format)
+└── 20240115-143045-123.txt                # Transcribed text (created on success)
 ```
 
 ### File Descriptions
@@ -49,6 +49,7 @@ dictation/
 
 ### System Dependencies
 - **Manjaro/Arch Linux** (or any Linux with ALSA)
+- **Synology Drive** mounted at `~/SynologyDrive/` with `Areas/Dev` directory
 - **arecord** (part of `alsa-utils` package)
 - **sox** (for `play` command - audio playback)
 - **Python 3** with `requests` library
@@ -89,10 +90,10 @@ dictation/
    # Add to your crontab
    crontab -e
    # Then add this line (removes WAV files after 28 days):
-   0 3 * * * find ~/.dictation_recordings -type f -name "*.wav" -mtime +28 -delete 2>/dev/null
+   0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name "*.wav" -mtime +28 -delete 2>/dev/null
    
    # Optional: Also remove txt files (uncomment if you want to clean those too):
-   # 0 3 * * * find ~/.dictation_recordings -type f -name "*.txt" -mtime +28 -delete 2>/dev/null
+   # 0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name "*.txt" -mtime +28 -delete 2>/dev/null
    ```
 
 ## Usage
@@ -112,7 +113,7 @@ dictate-test
 TRANSCRIPTION_BACKEND=openai dictate
 
 # Retry failed transcriptions
-dictate --retry ~/.dictation_recordings/20240115-143045-123.wav
+dictate --retry ~/SynologyDrive/Areas/Dev/dictation-data/20240115-143045-123.wav
 dictate --retry-last  # Retries the most recent recording
 ```
 
@@ -151,7 +152,8 @@ dictate --retry-last  # Retries the most recent recording
 - **API errors**: Verify API keys are set in `~/.env.local`
 - **No text inserted**: Ensure tmux version ≥ 3.2 (for popup support)
 - **Recording issues**: Test with `dictate-test` to verify audio capture
-- **Failed transcription**: Check `~/.dictation_recordings/` for your WAV file and use `dictate --retry-last`
+- **Failed transcription**: Check `~/SynologyDrive/Areas/Dev/dictation-data/` for your WAV file and use `dictate --retry-last`
+- **NAS not mounted**: Script will fail with a red error if Synology Drive is not mounted or Dev directory is missing
 - **Disk space**: WAV recordings are kept for 28 days by default. Transcripts (.txt files) are kept indefinitely unless you enable their cleanup in the cron job
 
 ## Technical Notes
@@ -160,7 +162,7 @@ dictate --retry-last  # Retries the most recent recording
 - Small 200ms ALSA buffer ensures quick draining on stop
 - Tmux buffers provide reliable cross-pane text transfer
 - All scripts output transcripts to stdout, errors to stderr
-- Recordings saved as `YYYYMMDD-HHMMSS-mmm.wav` in `~/.dictation_recordings/` (includes milliseconds)
+- Recordings saved as `YYYYMMDD-HHMMSS-mmm.wav` in `~/SynologyDrive/Areas/Dev/dictation-data/` (includes milliseconds)
 - Transcripts saved alongside as `.txt` files on successful transcription
 - Failed recordings are preserved for manual retry
 - Only successful transcriptions delete the original WAV file

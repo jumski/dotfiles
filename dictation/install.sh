@@ -3,11 +3,22 @@
 
 echo "Installing dictation module..."
 
-# Create recordings directory
-mkdir -p ~/.dictation_recordings
+# Check if NAS Dev directory exists
+NAS_DEV_DIR="$HOME/SynologyDrive/Areas/Dev"
+if [ ! -d "$NAS_DEV_DIR" ]; then
+    echo -e "\033[31mERROR: NAS not mounted or Dev directory missing!\033[0m"
+    echo "Expected path: $NAS_DEV_DIR"
+    echo "Please ensure your Synology Drive is properly mounted."
+    exit 1
+fi
+
+# Create recordings directory on NAS
+RECORD_DIR="$NAS_DEV_DIR/dictation-data"
+mkdir -p "$RECORD_DIR"
+echo "✓ Created recordings directory: $RECORD_DIR"
 
 # Install crontab entry (append if not already present)
-CRON_ENTRY="0 3 * * * find ~/.dictation_recordings -type f -name \"*.wav\" -mtime +28 -delete 2>/dev/null"
+CRON_ENTRY="0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name \"*.wav\" -mtime +28 -delete 2>/dev/null"
 CRON_COMMENT="# Cleanup old dictation recordings"
 
 # Check if entry already exists
