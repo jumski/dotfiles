@@ -68,7 +68,8 @@ if args.retry or args.retry_last:
 # os.close(temp_fd)
 
 # NEW:
-stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+now = datetime.datetime.now()
+stamp = now.strftime("%Y%m%d-%H%M%S-") + f"{now.microsecond//1000:03d}"
 F = os.path.join(RECORD_DIR, f"{stamp}.wav")
 ```
 
@@ -103,14 +104,14 @@ dictate
 
 If API fails, you'll see:
 ```
-Recording kept at: ~/.dictation_recordings/20240115-143045.wav
-Retry later with: dictate.py --retry '~/.dictation_recordings/20240115-143045.wav'
+Recording kept at: ~/.dictation_recordings/20240115-143045-123.wav
+Retry later with: dictate.py --retry '~/.dictation_recordings/20240115-143045-123.wav'
 ```
 
 Retry options:
 ```bash
 # Retry specific file
-dictate.py --retry ~/.dictation_recordings/20240115-143045.wav
+dictate.py --retry ~/.dictation_recordings/20240115-143045-123.wav
 
 # Retry most recent recording
 dictate.py --retry-last

@@ -5,14 +5,18 @@ A voice-to-text dictation system that records audio and transcribes it using Gro
 ## Features
 
 - **Reliable Audio Capture**: Uses `arecord` (ALSA) for buffer-safe recording - no audio cutoff
+- **Permanent Recording Storage**: All recordings saved to `~/.dictation_recordings/` with timestamps
+- **Automatic Backup**: Never lose recordings - failed transcriptions can be retried later
 - **Multiple Transcription Backends**: Groq (default) or OpenAI Whisper APIs
 - **Smart Key Actions**:
   - **Enter**: Paste transcribed text and execute (perfect for chat/commands)
   - **C**: Copy to system clipboard
   - **S**: Search in Firefox via Perplexity
+  - **F**: Format text as markdown using aichat
   - **Any other key**: Just paste text (no auto-execute)
 - **Visual Feedback**: Clean UI with color-coded indicator (red ● for recording, green ● for uploading)
 - **Tmux Integration**: Press `C-q C-q` to dictate from anywhere in tmux
+- **Retry Failed Transcriptions**: Use `--retry` or `--retry-last` to resend recordings
 
 ## File Structure
 
@@ -24,7 +28,12 @@ dictation/
 ├── test-dictate.sh         # Test wrapper for dictate-actions.sh
 ├── tmux-dictate-helper.sh  # Helper script for tmux popup environment
 ├── aliases.fish            # Fish shell aliases
+├── crontab                 # Cron job for cleaning old recordings
 └── README.md               # This file
+
+~/.dictation_recordings/    # Created automatically
+├── 20240115-143045-123.wav # Saved recordings (YYYYMMDD-HHMMSS-mmm format)
+└── 20240115-143045-123.txt # Transcribed text (created on success)
 ```
 
 ### File Descriptions
@@ -75,6 +84,17 @@ dictation/
    bind C-q run-shell -b "tmux display-popup -E -w 25 -h 10 -e TARGET_PANE='#{pane_id}' ~/.dotfiles/dictation/dictate-actions.sh"
    ```
 
+5. **Set up automatic cleanup** (optional):
+   ```bash
+   # Add to your crontab
+   crontab -e
+   # Then add this line (removes WAV files after 28 days):
+   0 3 * * * find ~/.dictation_recordings -type f -name "*.wav" -mtime +28 -delete 2>/dev/null
+   
+   # Optional: Also remove txt files (uncomment if you want to clean those too):
+   # 0 3 * * * find ~/.dictation_recordings -type f -name "*.txt" -mtime +28 -delete 2>/dev/null
+   ```
+
 ## Usage
 
 ### Command Line
@@ -90,6 +110,10 @@ dictate-test
 
 # Set backend via environment
 TRANSCRIPTION_BACKEND=openai dictate
+
+# Retry failed transcriptions
+dictate --retry ~/.dictation_recordings/20240115-143045-123.wav
+dictate --retry-last  # Retries the most recent recording
 ```
 
 ### In Tmux
@@ -127,6 +151,8 @@ TRANSCRIPTION_BACKEND=openai dictate
 - **API errors**: Verify API keys are set in `~/.env.local`
 - **No text inserted**: Ensure tmux version ≥ 3.2 (for popup support)
 - **Recording issues**: Test with `dictate-test` to verify audio capture
+- **Failed transcription**: Check `~/.dictation_recordings/` for your WAV file and use `dictate --retry-last`
+- **Disk space**: WAV recordings are kept for 28 days by default. Transcripts (.txt files) are kept indefinitely unless you enable their cleanup in the cron job
 
 ## Technical Notes
 
@@ -134,3 +160,7 @@ TRANSCRIPTION_BACKEND=openai dictate
 - Small 200ms ALSA buffer ensures quick draining on stop
 - Tmux buffers provide reliable cross-pane text transfer
 - All scripts output transcripts to stdout, errors to stderr
+- Recordings saved as `YYYYMMDD-HHMMSS-mmm.wav` in `~/.dictation_recordings/` (includes milliseconds)
+- Transcripts saved alongside as `.txt` files on successful transcription
+- Failed recordings are preserved for manual retry
+- Only successful transcriptions delete the original WAV file
