@@ -116,8 +116,18 @@ function wt_init
     
     # Clone as bare repository
     echo "Cloning repository as bare..."
-    git clone --bare $repo_url .bare
-    or begin
+    
+    # Check if it's a short format (org/repo) and gh is available
+    set -l clone_success false
+    if string match -qr '^[^/]+/[^/]+$' $repo_url; and command -q gh
+        gh repo clone $repo_url .bare -- --bare
+        and set clone_success true
+    else
+        git clone --bare $repo_url .bare
+        and set clone_success true
+    end
+    
+    if test "$clone_success" = "false"
         echo "Error: Failed to clone repository" >&2
         cd -
         rm -rf $repo_path
