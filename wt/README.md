@@ -65,6 +65,7 @@ wt submit                    # Submit current branch + upstack
 # Environment Management
 wt env sync                  # Copy latest envs/ to current worktree
 wt env sync --all            # Update envs in all worktrees
+
 ```
 
 ## Why Worktree Toolkit?
@@ -192,14 +193,15 @@ myproject/
 │   ├── feature-1/      # Feature worktrees
 │   └── .../
 ├── envs/               # Shared environment files
-│   ├── .env
-│   └── config/
+│   └── .env
 └── .wt-config          # Repository configuration
 ```
 
-## Configuration
+## Repository Structure
 
 ### Repository Configuration (`.wt-config`)
+
+Each worktree repository contains a `.wt-config` file at the root:
 
 ```bash
 REPO_NAME=myproject
@@ -207,22 +209,6 @@ BARE_PATH=.bare
 WORKTREES_PATH=worktrees
 ENVS_PATH=envs
 DEFAULT_TRUNK=main
-```
-
-### Global Configuration (`~/.config/wt/config`)
-
-```bash
-# Default paths for new repositories
-DEFAULT_CODE_DIR=~/Code
-DEFAULT_ENVS_TEMPLATE=~/.config/wt/envs-template
-
-# Integration settings
-TMUX_SESSION_PREFIX=wt
-USE_MUXIT=true
-
-# Cleanup settings
-AUTO_PRUNE_DAYS=30
-WARN_STALE_WORKTREES=true
 ```
 
 ## Stack Management
