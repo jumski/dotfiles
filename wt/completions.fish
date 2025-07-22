@@ -40,26 +40,8 @@ complete -c wt -n "__fish_seen_subcommand_from stack" -a "sync" -d "Sync entire 
 complete -c wt -n "__fish_seen_subcommand_from env" -a "sync" -d "Sync environment files"
 complete -c wt -n "__fish_seen_subcommand_from env sync" -l all -d "Sync to all worktrees"
 
-# Dynamic worktree name completion
-function __wt_worktrees
-    # Try to find worktrees if in a wt repository
-    set -l repo_root (pwd)
-    while test "$repo_root" != "/"
-        if test -f "$repo_root/.wt-config"
-            # Found the repository root
-            for dir in $repo_root/worktrees/*
-                if test -d $dir
-                    basename $dir
-                end
-            end
-            return
-        end
-        set repo_root (dirname $repo_root)
-    end
-end
-
 # Complete worktree names for relevant commands
-complete -c wt -n "__fish_seen_subcommand_from switch sw remove rm" -a "(__wt_worktrees)" -d "Worktree"
+complete -c wt -n "__fish_seen_subcommand_from switch sw remove rm" -a "(_wt_get_worktrees)" -d "Worktree"
 
 # Complete branch names for --from option
 complete -c wt -n "__fish_seen_subcommand_from new; and __fish_contains_opt from" -a "(git branch --format='%(refname:short)')" -d "Branch"

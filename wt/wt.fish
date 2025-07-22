@@ -37,6 +37,19 @@ function _wt_assert
     end
 end
 
+# Get list of worktrees
+function _wt_get_worktrees
+    set -l repo_root (_wt_get_repo_root)
+    if test -z "$repo_root"
+        return 1
+    end
+    
+    for dir in $repo_root/worktrees/*
+        if test -d $dir
+            basename $dir
+        end
+    end
+end
 
 # Get repository config
 function _wt_get_repo_config
@@ -452,12 +465,34 @@ function wt_switch
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
     
-    _wt_assert "test -n '$name'" "Worktree name required"
-    or return 1
-    
     set -l repo_root (_wt_get_repo_root)
     cd $repo_root
     _wt_get_repo_config
+    
+    # If no name provided, use fzf to select
+    if test -z "$name"
+        if not command -q fzf
+            echo "Error: fzf required for interactive selection" >&2
+            echo "Install fzf or provide worktree name: wt switch <name>" >&2
+            return 1
+        end
+        
+        # Get list of worktrees
+        set -l worktrees (_wt_get_worktrees)
+        
+        if test (count $worktrees) -eq 0
+            echo "No worktrees found"
+            return 1
+        end
+        
+        # Use fzf to select
+        set name (printf '%s\n' $worktrees | fzf --prompt="Select worktree: " --height=40%)
+        
+        # Exit if user cancelled
+        if test -z "$name"
+            return 0
+        end
+    end
     
     set -l worktree_path "$WORKTREES_PATH/$name"
     
