@@ -4,6 +4,7 @@ function wt_dashboard
     or return 1
     
     set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
     
@@ -104,4 +105,6 @@ function wt_dashboard
     
     set_color normal
     echo ""
+    
+    cd $saved_pwd
 end

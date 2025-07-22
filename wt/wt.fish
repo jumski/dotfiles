@@ -231,6 +231,7 @@ function wt_new
     end
     
     set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
     
@@ -285,6 +286,9 @@ function wt_new
     
     echo "✓ Worktree created at $worktree_path"
     echo "✓ Branch '$name' created from '$base_branch'"
+    
+    # Restore original directory
+    cd $saved_pwd
     
     # Switch to new worktree if requested
     if test "$switch_after" = "true"
@@ -348,6 +352,7 @@ function wt_remove
     or return 1
     
     set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
     
@@ -379,6 +384,8 @@ function wt_remove
     git -C $BARE_PATH branch -d $name 2>/dev/null
     
     echo "✓ Worktree '$name' removed"
+    
+    cd $saved_pwd
 end
 
 # Show status
@@ -396,6 +403,7 @@ function wt_status
     set -l current_worktree (basename (pwd))
     
     if test $show_all = true
+        set -l saved_pwd (pwd)
         cd $repo_root
         _wt_get_repo_config
         
@@ -409,6 +417,7 @@ function wt_status
                 printf "%-20s %s\n" "$name:" "$status"
             end
         end
+        cd $saved_pwd
     else
         # Show current worktree status
         echo "Worktree: $current_worktree"
@@ -438,11 +447,9 @@ end
 function _wt_get_worktree_status
     set -l worktree_path $argv[1]
     
-    cd $worktree_path
-    
     # Check if branch exists on remote
-    set -l branch (git branch --show-current)
-    set -l remote_exists (git ls-remote --heads origin $branch 2>/dev/null | count)
+    set -l branch (git -C $worktree_path branch --show-current)
+    set -l remote_exists (git -C $worktree_path ls-remote --heads origin $branch 2>/dev/null | count)
     
     if test $remote_exists -eq 0
         echo "✓ local only"
@@ -450,11 +457,11 @@ function _wt_get_worktree_status
     end
     
     # Fetch latest
-    git fetch origin $branch --quiet 2>/dev/null
+    git -C $worktree_path fetch origin $branch --quiet 2>/dev/null
     
     # Check if behind/ahead
-    set -l behind (git rev-list --count HEAD..origin/$branch 2>/dev/null)
-    set -l ahead (git rev-list --count origin/$branch..HEAD 2>/dev/null)
+    set -l behind (git -C $worktree_path rev-list --count HEAD..origin/$branch 2>/dev/null)
+    set -l ahead (git -C $worktree_path rev-list --count origin/$branch..HEAD 2>/dev/null)
     
     if test -z "$behind"
         set behind 0
@@ -471,9 +478,9 @@ function _wt_get_worktree_status
         echo "↑ ahead by $ahead commits"
     else
         # Check if needs rebase from parent
-        set -l parent (gt log --parent 2>/dev/null | head -1)
+        set -l parent (gt -C $worktree_path log --parent 2>/dev/null | head -1)
         if test -n "$parent"
-            set -l needs_rebase (git rev-list --count $branch..$parent 2>/dev/null)
+            set -l needs_rebase (git -C $worktree_path rev-list --count $branch..$parent 2>/dev/null)
             if test -n "$needs_rebase" -a $needs_rebase -gt 0
                 echo "⚠ needs rebase from $parent"
             else
@@ -554,6 +561,7 @@ function wt_up
     
     # Find worktree for this branch
     set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
     
@@ -562,6 +570,7 @@ function wt_up
             set -l branch (git -C $worktree_dir branch --show-current 2>/dev/null)
             if test "$branch" = "$upstack"
                 echo "Switching to upstack: $upstack"
+                cd $saved_pwd
                 wt_switch (basename $worktree_dir)
                 return 0
             end
@@ -570,6 +579,7 @@ function wt_up
     
     echo "Warning: No worktree found for upstack branch '$upstack'"
     echo "Create with: wt new $upstack --from (git branch --show-current)"
+    cd $saved_pwd
 end
 
 # Navigate down in stack
@@ -587,6 +597,7 @@ function wt_down
     
     # Find worktree for this branch
     set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
     
@@ -595,6 +606,7 @@ function wt_down
             set -l branch (git -C $worktree_dir branch --show-current 2>/dev/null)
             if test "$branch" = "$parent"
                 echo "Switching to parent: $parent"
+                cd $saved_pwd
                 wt_switch (basename $worktree_dir)
                 return 0
             end
@@ -602,6 +614,7 @@ function wt_down
     end
     
     echo "Warning: No worktree found for parent branch '$parent'"
+    cd $saved_pwd
 end
 
 # Navigate to stack bottom
@@ -619,6 +632,7 @@ function wt_bottom
     
     # Find worktree for this branch
     set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
     
@@ -627,6 +641,7 @@ function wt_bottom
             set -l branch (git -C $worktree_dir branch --show-current 2>/dev/null)
             if test "$branch" = "$bottom"
                 echo "Switching to stack bottom: $bottom"
+                cd $saved_pwd
                 wt_switch (basename $worktree_dir)
                 return 0
             end
@@ -634,6 +649,7 @@ function wt_bottom
     end
     
     echo "Warning: No worktree found for stack bottom '$bottom'"
+    cd $saved_pwd
 end
 
 # Sync current worktree
@@ -659,6 +675,7 @@ function wt_sync
     
     if test $sync_all = true
         set -l repo_root (_wt_get_repo_root)
+        set -l saved_pwd (pwd)
         cd $repo_root
         _wt_get_repo_config
         
@@ -673,6 +690,7 @@ function wt_sync
                 _wt_sync_single $force $reset
             end
         end
+        cd $saved_pwd
     else
         _wt_sync_single $force $reset
     end
@@ -744,6 +762,7 @@ function _wt_stack_list
     or return 1
     
     set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
     
@@ -752,9 +771,8 @@ function _wt_stack_list
     
     for worktree_dir in $WORKTREES_PATH/*
         if test -d $worktree_dir
-            cd $worktree_dir
-            set -l branch (git branch --show-current)
-            set -l stack_info (gt stack 2>/dev/null | string match -r "on stack '(.*)'" | string replace -r ".*'(.*)'" '$1')
+            set -l branch (git -C $worktree_dir branch --show-current)
+            set -l stack_info (gt -C $worktree_dir stack 2>/dev/null | string match -r "on stack '(.*)'" | string replace -r ".*'(.*)'" '$1')
             
             if test -n "$stack_info"
                 # Add to stacks if not already present
@@ -767,6 +785,7 @@ function _wt_stack_list
     
     if test (count $stacks) -eq 0
         echo "No stacks found"
+        cd $saved_pwd
         return
     end
     
@@ -777,9 +796,8 @@ function _wt_stack_list
         # Get all branches in this stack
         for worktree_dir in $WORKTREES_PATH/*
             if test -d $worktree_dir
-                cd $worktree_dir
-                set -l branch (git branch --show-current)
-                set -l this_stack (gt stack 2>/dev/null | string match -r "on stack '(.*)'" | string replace -r ".*'(.*)'" '$1')
+                set -l branch (git -C $worktree_dir branch --show-current)
+                set -l this_stack (gt -C $worktree_dir stack 2>/dev/null | string match -r "on stack '(.*)'" | string replace -r ".*'(.*)'" '$1')
                 
                 if test "$this_stack" = "$stack"
                     set -l status (_wt_get_worktree_status $worktree_dir)
@@ -791,6 +809,8 @@ function _wt_stack_list
         
         echo ""
     end
+    
+    cd $saved_pwd
 end
 
 # Sync entire stack
@@ -813,6 +833,7 @@ function _wt_stack_sync
     echo "Syncing stack: $stack_name"
     
     set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
     
@@ -821,8 +842,7 @@ function _wt_stack_sync
     
     for worktree_dir in $WORKTREES_PATH/*
         if test -d $worktree_dir
-            cd $worktree_dir
-            set -l this_stack (gt stack 2>/dev/null | string match -r "on stack '(.*)'" | string replace -r ".*'(.*)'" '$1')
+            set -l this_stack (gt -C $worktree_dir stack 2>/dev/null | string match -r "on stack '(.*)'" | string replace -r ".*'(.*)'" '$1')
             
             if test "$this_stack" = "$stack_name"
                 set -a stack_worktrees $worktree_dir
@@ -841,6 +861,7 @@ function _wt_stack_sync
     echo ""
     echo "📤 Submitting stack..."
     gt submit --stack
+    cd $saved_pwd
 end
 
 # Submit current branch and upstack
@@ -878,11 +899,13 @@ function _wt_env_sync
     or return 1
     
     set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
     
     if not test -d $ENVS_PATH
         echo "No environment files found in $ENVS_PATH"
+        cd $saved_pwd
         return 0
     end
     
@@ -902,6 +925,7 @@ function _wt_env_sync
     end
     
     echo "✓ Environment files synced"
+    cd $saved_pwd
 end
 
 # Git wrapper for bare repository operations
@@ -910,11 +934,13 @@ function wt_git
     or return 1
     
     set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
+    cd $saved_pwd
     
     # Pass all arguments to git in the bare repo
-    git -C $BARE_PATH $argv
+    git -C "$repo_root/$BARE_PATH" $argv
 end
 
 # Helper to print colored text
