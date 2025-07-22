@@ -40,8 +40,10 @@ wt clone <repo-url> [name]   # Alias for init
 # Worktree Operations
 wt new <name>                # Create new worktree from main
 wt new <name> --from <base>  # Create from specific branch
+wt new <name> --switch       # Create and open in muxit
 wt list                      # List all worktrees
-wt switch <name>             # Open worktree in tmux (via muxit)
+wt switch <name>             # Open worktree in muxit (doesn't cd)
+wt switch                    # Interactive selection with fzf
 wt remove <name>             # Remove worktree (prompts for confirmation)
 
 # Stack Operations
@@ -118,9 +120,13 @@ cd myapp/worktrees/main
 ### 2. Create a feature stack
 
 ```bash
-# Start base feature
+# Start base feature (creates worktree but stays in current directory)
 wt new auth-system
+cd ~/myapp/worktrees/auth-system
 gt create -am "feat: add authentication base"
+
+# Or create and switch in one command
+wt new auth-system --switch
 
 # Build on top in same worktree
 gt create -am "feat: add login endpoint"

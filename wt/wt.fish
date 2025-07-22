@@ -192,6 +192,7 @@ function wt_new
     set -l base_branch ""
     set -l trunk_branch ""
     set -l force_new false
+    set -l switch_after false
     
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
@@ -211,6 +212,8 @@ function wt_new
                 set trunk_branch $argv[$i]
             case --force-new
                 set force_new true
+            case --switch
+                set switch_after true
         end
         set i (math $i + 1)
     end
@@ -271,10 +274,9 @@ function wt_new
     echo "✓ Worktree created at $worktree_path"
     echo "✓ Branch '$name' created from '$base_branch'"
     
-    # Open in tmux/muxit if available
-    if test "$USE_MUXIT" = "true"; and command -q muxit
-        echo "Opening in muxit..."
-        muxit
+    # Switch to new worktree if requested
+    if test "$switch_after" = "true"
+        wt_switch $name
     end
 end
 
@@ -466,6 +468,7 @@ function wt_switch
     or return 1
     
     set -l repo_root (_wt_get_repo_root)
+    set -l current_dir (pwd)
     cd $repo_root
     _wt_get_repo_config
     
@@ -494,19 +497,20 @@ function wt_switch
         end
     end
     
-    set -l worktree_path "$WORKTREES_PATH/$name"
+    set -l worktree_path "$repo_root/$WORKTREES_PATH/$name"
     
     if not test -d $worktree_path
         echo "Error: Worktree '$name' not found" >&2
         return 1
     end
     
-    cd $worktree_path
+    # Don't change directory, just open muxit
+    cd $current_dir  # Go back to original directory
     
     if command -q muxit
-        muxit
+        muxit $worktree_path
     else
-        echo "Switched to: $worktree_path"
+        echo "Would open: $worktree_path"
     end
 end
 
@@ -1134,8 +1138,9 @@ function _wt_help
     echo "  new <name> [options]        Create new worktree (or checkout remote)"
     echo "    --from <base>             Base branch (default: trunk)"
     echo "    --force-new               Skip remote check, always create new"
+    echo "    --switch                  Open in muxit after creation"
     echo "  list                        List all worktrees"
-    echo "  switch <name>               Open worktree in tmux/muxit"
+    echo "  switch <name>               Open worktree in muxit (no cd)"
     echo "  remove <name>               Remove worktree"
     echo ""
     echo "Stack Operations:"

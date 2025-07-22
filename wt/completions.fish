@@ -26,6 +26,8 @@ complete -c wt -n "__fish_use_subcommand" -a "version" -d "Show version"
 # Options for specific commands
 complete -c wt -n "__fish_seen_subcommand_from new" -l from -d "Base branch for new worktree"
 complete -c wt -n "__fish_seen_subcommand_from new" -l trunk -d "Trunk branch for Graphite"
+complete -c wt -n "__fish_seen_subcommand_from new" -l force-new -d "Skip remote check, always create new"
+complete -c wt -n "__fish_seen_subcommand_from new" -l switch -d "Open in muxit after creation"
 
 complete -c wt -n "__fish_seen_subcommand_from status st" -l all -d "Show status of all worktrees"
 
