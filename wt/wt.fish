@@ -875,6 +875,200 @@ function _wt_env_sync
     echo "✓ Environment files synced"
 end
 
+# Git wrapper for bare repository operations
+function wt_git
+    _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
+    or return 1
+    
+    set -l repo_root (_wt_get_repo_root)
+    cd $repo_root
+    _wt_get_repo_config
+    
+    # Pass all arguments to git in the bare repo
+    git -C $BARE_PATH $argv
+end
+
+# Helper to print colored text
+function _wt_color
+    set -l color $argv[1]
+    set -l text $argv[2..-1]
+    set_color $color
+    echo -n $text
+    set_color normal
+end
+
+# Helper to print colored text with newline
+function _wt_color_line
+    set -l color $argv[1]
+    set -l text $argv[2..-1]
+    set_color $color
+    echo $text
+    set_color normal
+end
+
+# Helper to print a horizontal line
+function _wt_line
+    set -l width $argv[1]
+    set -l char "─"
+    echo (string repeat -n $width $char)
+end
+
+# Load the minimal dashboard
+source (dirname (status -f))/wt_dashboard_minimal.fish
+
+# OLD Display worktree status dashboard
+function wt_dashboard_old
+    _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
+    or return 1
+    
+    set -l repo_root (_wt_get_repo_root)
+    cd $repo_root
+    _wt_get_repo_config
+    
+    # Get current worktree
+    set -l current_worktree (basename (pwd))
+    
+    # Terminal width
+    set -l term_width (tput cols)
+    if test -z "$term_width"
+        set term_width 80
+    end
+    
+    # Print header
+    echo ""
+    _wt_color blue "┌"
+    _wt_color blue (_wt_line (math $term_width - 2))
+    _wt_color_line blue "┐"
+    
+    # Repository info
+    _wt_color blue "│ "
+    _wt_color yellow "📁 Repository: "
+    _wt_color white $REPO_NAME
+    echo -n (string repeat -n (math $term_width - 18 - (string length $REPO_NAME)) " ")
+    _wt_color_line blue "│"
+    
+    _wt_color blue "├"
+    _wt_color blue (_wt_line (math $term_width - 2))
+    _wt_color blue "┤"
+    
+    # Worktrees section
+    _wt_color blue "│ "
+    _wt_color green "🌳 Worktrees"
+    echo -n (string repeat -n (math $term_width - 15) " ")
+    _wt_color blue "│"
+    
+    _wt_color blue "│"
+    echo -n (string repeat -n (math $term_width - 2) " ")
+    _wt_color blue "│"
+    
+    # List worktrees with status
+    set -l worktrees (_wt_get_worktrees)
+    for wt in $worktrees
+        _wt_color blue "│   "
+        
+        # Current worktree indicator
+        if test "$wt" = "$current_worktree"
+            _wt_color cyan "▶ "
+        else
+            echo -n "  "
+        end
+        
+        # Worktree name
+        set -l name_color white
+        if test "$wt" = "$current_worktree"
+            set name_color cyan
+        end
+        _wt_color $name_color (printf "%-20s" $wt)
+        
+        # Get branch and stack info
+        set -l branch_info ""
+        set -l stack_info ""
+        
+        if test -d "$repo_root/$WORKTREES_PATH/$wt"
+            set -l branch (git -C "$repo_root/$WORKTREES_PATH/$wt" branch --show-current 2>/dev/null)
+            if test -n "$branch"
+                set branch_info $branch
+            end
+            
+            # Try to get stack info
+            set -l stack (cd "$repo_root/$WORKTREES_PATH/$wt" 2>/dev/null; and gt stack 2>/dev/null | string match -r "on stack '(.*)'" | string replace -r ".*'(.*)'" '$1')
+            if test -n "$stack"
+                set stack_info "[$stack]"
+            end
+        end
+        
+        # Status
+        _wt_color brblack (printf "%-25s" $branch_info)
+        _wt_color magenta (printf "%-15s" $stack_info)
+        
+        echo -n (string repeat -n (math $term_width - 70) " ")
+        _wt_color blue "│"
+    end
+    
+    # Divider before shortcuts
+    _wt_color blue "│"
+    echo -n (string repeat -n (math $term_width - 2) " ")
+    _wt_color blue "│"
+    
+    _wt_color blue "├"
+    _wt_color blue (_wt_line (math $term_width - 2))
+    _wt_color blue "┤"
+    
+    # Shortcuts section
+    _wt_color blue "│ "
+    _wt_color yellow "⌨  Quick Commands"
+    echo -n (string repeat -n (math $term_width - 20) " ")
+    _wt_color blue "│"
+    
+    _wt_color blue "│"
+    echo -n (string repeat -n (math $term_width - 2) " ")
+    _wt_color blue "│"
+    
+    # Commands in two columns
+    set -l commands
+    set -a commands "new <name>:Create worktree"
+    set -a commands "switch:Interactive switch"
+    set -a commands "list:List all worktrees"
+    set -a commands "status:Show detailed status"
+    set -a commands "up/down:Navigate stack"
+    set -a commands "sync:Sync with remote"
+    
+    set -l col_width (math floor\($term_width / 2\) - 4)
+    set -l i 1
+    while test $i -le (count $commands)
+        _wt_color blue "│   "
+        
+        # First column
+        set -l parts (string split ":" $commands[$i])
+        _wt_color green (printf "%-15s" "wt $parts[1]")
+        _wt_color brblack (printf "%-"(math $col_width - 18)"s" $parts[2])
+        
+        # Second column (if exists)
+        set i (math $i + 1)
+        if test $i -le (count $commands)
+            set -l parts2 (string split ":" $commands[$i])
+            _wt_color green (printf "%-15s" "wt $parts2[1]")
+            _wt_color brblack (printf "%-"(math $col_width - 18)"s" $parts2[2])
+        else
+            echo -n (string repeat -n (math $col_width - 3) " ")
+        end
+        
+        echo -n "   "
+        _wt_color blue "│"
+        
+        set i (math $i + 1)
+    end
+    
+    # Footer
+    _wt_color blue "│"
+    echo -n (string repeat -n (math $term_width - 2) " ")
+    _wt_color blue "│"
+    
+    _wt_color blue "└"
+    _wt_color blue (_wt_line (math $term_width - 2))
+    _wt_color blue "┘"
+    echo ""
+end
 
 # Main command dispatcher
 function wt
@@ -911,10 +1105,14 @@ function wt
             wt_submit $remaining_args
         case env
             wt_env $remaining_args
+        case git
+            wt_git $remaining_args
         case version --version -v
             echo "wt version $WT_VERSION"
-        case help --help -h ''
+        case help --help -h
             _wt_help
+        case ''
+            wt_dashboard
         case '*'
             echo "Unknown command: $command"
             _wt_help
@@ -958,10 +1156,11 @@ function _wt_help
     echo "Environment:"
     echo "  env sync [--all]            Copy environment files"
     echo ""
+    echo "Git Operations:"
+    echo "  git <args>                  Run git commands in bare repository"
+    echo ""
     echo "Other:"
     echo "  help                        Show this help"
     echo "  version                     Show version"
 end
 
-# Export main function
-wt $argv

@@ -19,6 +19,7 @@ complete -c wt -n "__fish_use_subcommand" -a "restack" -d "Rebase current stack"
 complete -c wt -n "__fish_use_subcommand" -a "stack" -d "Stack operations"
 complete -c wt -n "__fish_use_subcommand" -a "submit" -d "Submit stack to GitHub"
 complete -c wt -n "__fish_use_subcommand" -a "env" -d "Environment file operations"
+complete -c wt -n "__fish_use_subcommand" -a "git" -d "Run git in bare repository"
 complete -c wt -n "__fish_use_subcommand" -a "help" -d "Show help"
 complete -c wt -n "__fish_use_subcommand" -a "version" -d "Show version"
 
