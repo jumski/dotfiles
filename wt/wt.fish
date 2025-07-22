@@ -175,8 +175,7 @@ function wt_init
     mkdir -p envs
     
     # Create config file with defaults commented
-    cat > .wt-config << EOF
-# Worktree repository configuration
+    echo "# Worktree repository configuration
 REPO_NAME=$repo_name
 
 # Default paths (uncomment to override)
@@ -185,8 +184,7 @@ REPO_NAME=$repo_name
 # ENVS_PATH=envs
 
 # Default branch detected from repository
-DEFAULT_TRUNK=$default_branch
-EOF
+DEFAULT_TRUNK=$default_branch" > .wt-config
     
     # Initialize Graphite in main worktree
     cd worktrees/$default_branch
@@ -300,28 +298,41 @@ function wt_list
     or return 1
     
     set -l repo_root (_wt_get_repo_root)
+    set -l current_dir (pwd)
+    
+    # Load config without changing directory
+    set -l saved_pwd (pwd)
     cd $repo_root
     _wt_get_repo_config
+    cd $saved_pwd
     
     echo "Worktrees in $REPO_NAME:"
     echo ""
     
-    # Get worktree list from git
-    set -l worktrees (git -C $BARE_PATH worktree list --porcelain | string match -r '^worktree (.*)' | string replace 'worktree ' '')
+    # Use the helper function to get worktrees
+    set -l worktrees (_wt_get_worktrees)
     
-    for worktree in $worktrees
-        set -l branch_name (basename $worktree)
-        set -l branch_info (git -C $worktree branch --show-current 2>/dev/null)
+    for wt_name in $worktrees
+        set -l wt_path "$repo_root/$WORKTREES_PATH/$wt_name"
         
-        if test -z "$branch_info"
-            set branch_info "detached"
+        # Get branch info
+        set -l branch_info ""
+        if test -d $wt_path
+            set branch_info (git -C $wt_path branch --show-current 2>/dev/null)
         end
         
         # Check if current directory
-        if test (realpath $worktree) = (realpath (pwd))
-            echo "● $branch_name (current)"
+        if test (realpath $wt_path 2>/dev/null) = (realpath $current_dir 2>/dev/null)
+            echo -n "● $wt_name"
         else
-            echo "  $branch_name"
+            echo -n "  $wt_name"
+        end
+        
+        # Show branch if different from worktree name
+        if test -n "$branch_info" -a "$branch_info" != "$wt_name"
+            echo " ($branch_info)"
+        else
+            echo ""
         end
     end
 end

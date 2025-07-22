@@ -62,7 +62,7 @@ function wt_dashboard
         
         # Stack info if exists
         if test -d "$repo_root/$WORKTREES_PATH/$wt"
-            set -l stack (cd "$repo_root/$WORKTREES_PATH/$wt" 2>/dev/null; and gt stack 2>/dev/null | string match -r "on stack '(.*)'" | string replace -r ".*'(.*)'" '$1')
+            set -l stack (gt -C "$repo_root/$WORKTREES_PATH/$wt" stack 2>/dev/null | string match -r "on stack '(.*)'" | string replace -r ".*'(.*)'" '$1')
             if test -n "$stack"
                 set_color brblack
                 echo -n "  ↳ $stack"
