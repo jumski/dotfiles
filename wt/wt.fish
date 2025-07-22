@@ -59,8 +59,15 @@ function _wt_get_repo_config
         return 1
     end
     
-    # Parse config file
+    # Set defaults first
+    set -g BARE_PATH ".bare"
+    set -g WORKTREES_PATH "worktrees"
+    set -g ENVS_PATH "envs"
+    set -g DEFAULT_TRUNK "main"
+    
+    # Parse config file (overrides defaults)
     while read -l line
+        # Skip comments and empty lines
         if string match -qr '^[A-Z_]+=.*' $line
             set -l key (string split -m1 '=' $line)[1]
             set -l value (string split -m1 '=' $line)[2]
@@ -167,12 +174,19 @@ function wt_init
     # Create envs directory
     mkdir -p envs
     
-    # Create config file
-    echo "REPO_NAME=$repo_name" > .wt-config
-    echo "BARE_PATH=.bare" >> .wt-config
-    echo "WORKTREES_PATH=worktrees" >> .wt-config
-    echo "ENVS_PATH=envs" >> .wt-config
-    echo "DEFAULT_TRUNK=$default_branch" >> .wt-config
+    # Create config file with defaults commented
+    cat > .wt-config << EOF
+# Worktree repository configuration
+REPO_NAME=$repo_name
+
+# Default paths (uncomment to override)
+# BARE_PATH=.bare
+# WORKTREES_PATH=worktrees
+# ENVS_PATH=envs
+
+# Default branch detected from repository
+DEFAULT_TRUNK=$default_branch
+EOF
     
     # Initialize Graphite in main worktree
     cd worktrees/$default_branch

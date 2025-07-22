@@ -210,12 +210,19 @@ myproject/
 Each worktree repository contains a `.wt-config` file at the root:
 
 ```bash
+# Worktree repository configuration
 REPO_NAME=myproject
-BARE_PATH=.bare
-WORKTREES_PATH=worktrees
-ENVS_PATH=envs
+
+# Default paths (uncomment to override)
+# BARE_PATH=.bare
+# WORKTREES_PATH=worktrees
+# ENVS_PATH=envs
+
+# Default branch detected from repository
 DEFAULT_TRUNK=main
 ```
+
+Most settings have sensible defaults and only need to be uncommented if you want to override them.
 
 ## Stack Management
 
