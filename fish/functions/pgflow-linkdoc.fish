@@ -7,8 +7,8 @@ function pgflow-linkdoc --description "Select file/dir from pgflow using fzf and
         return 1
     end
     
-    # Use fzf to select file or directory from pgflow
-    set -l selected (find $pgflow_dir -maxdepth 5 2>/dev/null | \
+    # Use rg to list files respecting gitignore and other sensible defaults
+    set -l selected (rg --files --hidden --follow --no-messages --glob '!.git' --glob '!node_modules' $pgflow_dir 2>/dev/null | \
                      sed "s|^$pgflow_dir/||" | \
                      sort | \
                      awk -F'/' '{
