@@ -1,4 +1,6 @@
-# Minimal, beautiful dashboard
+#!/usr/bin/env fish
+# Dashboard display
+
 function wt_dashboard
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
