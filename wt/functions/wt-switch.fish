@@ -47,9 +47,13 @@ function wt_switch
     # Don't change directory, just open muxit
     cd $current_dir  # Go back to original directory
     
-    if command -q muxit
+    # Check if muxit function exists
+    if functions -q muxit
+        muxit $worktree_path
+    else if command -q muxit
         muxit $worktree_path
     else
+        echo "Error: muxit not found" >&2
         echo "Would open: $worktree_path"
     end
 end

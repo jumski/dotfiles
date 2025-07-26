@@ -50,6 +50,7 @@ function wt_new
     end
     
     # Check for remote branch
+    set -l tracking_remote false
     if test "$force_new" = "false"
         git -C $BARE_PATH fetch origin --quiet
         if git -C $BARE_PATH show-ref --verify --quiet refs/remotes/origin/$name
@@ -57,6 +58,7 @@ function wt_new
             read -P "Create worktree tracking it? [Y/n] " -n 1 confirm
             if test -z "$confirm" -o "$confirm" = "y" -o "$confirm" = "Y"
                 set base_branch origin/$name
+                set tracking_remote true
             else
                 echo "Creating new local branch instead..."
             end
@@ -66,7 +68,18 @@ function wt_new
     echo "Creating worktree: $name"
     
     # Create the worktree
-    git -C $BARE_PATH worktree add ../$worktree_path -b $name $base_branch
+    if test "$tracking_remote" = "true"
+        # Check if local branch already exists
+        if git -C $BARE_PATH show-ref --verify --quiet refs/heads/$name
+            # Local branch exists, just use it
+            git -C $BARE_PATH worktree add ../$worktree_path $name
+        else
+            # Create new local branch tracking the remote
+            git -C $BARE_PATH worktree add ../$worktree_path -b $name --track $base_branch
+        end
+    else
+        git -C $BARE_PATH worktree add ../$worktree_path -b $name $base_branch
+    end
     or begin
         echo "Error: Failed to create worktree" >&2
         return 1
