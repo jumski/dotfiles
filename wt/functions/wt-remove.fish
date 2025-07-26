@@ -7,8 +7,15 @@ function wt_remove
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
     
-    _wt_assert "test -n '$name'" "Worktree name required"
-    or return 1
+    # If no name provided, try to get current worktree
+    if test -z "$name"
+        set name (_wt_get_current_worktree)
+        if test -z "$name"
+            echo "Error: Not in a worktree directory, please specify worktree name" >&2
+            return 1
+        end
+        echo "Detected current worktree: $name"
+    end
     
     set -l repo_root (_wt_get_repo_root)
     set -l saved_pwd (pwd)
@@ -30,6 +37,13 @@ function wt_remove
     if test "$confirm" != "y"
         echo "Cancelled"
         return 0
+    end
+    
+    # If we're removing the current worktree, move to repo root first
+    set -l current_worktree (_wt_get_current_worktree)
+    if test "$current_worktree" = "$name"
+        echo "Moving out of current worktree before removal..."
+        cd $repo_root
     end
     
     # Remove worktree

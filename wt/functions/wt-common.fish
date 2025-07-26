@@ -41,6 +41,26 @@ function _wt_assert
     end
 end
 
+# Get current worktree name
+function _wt_get_current_worktree
+    set -l current_path (pwd)
+    set -l repo_root (_wt_get_repo_root)
+    
+    if test -z "$repo_root"
+        return 1
+    end
+    
+    # Check if we're in a worktree subdirectory
+    if string match -q "$repo_root/worktrees/*" $current_path
+        # Extract worktree name from path
+        set -l worktree_path (string replace "$repo_root/worktrees/" "" $current_path)
+        echo (string split "/" $worktree_path)[1]
+        return 0
+    end
+    
+    return 1
+end
+
 # Get list of worktrees
 function _wt_get_worktrees
     set -l repo_root (_wt_get_repo_root)
