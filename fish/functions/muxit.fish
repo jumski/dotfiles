@@ -86,7 +86,7 @@ function muxit
     return 1
   end
 
-  set session_name (basename "$start_dir" | tr -cd '[:alnum:]')
+  set session_name (basename "$start_dir" | tr -cd '[:alnum:]-_')
 
 
   # switch to existing session if possible to speed up the process
