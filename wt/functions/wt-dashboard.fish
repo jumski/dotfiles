@@ -2,111 +2,194 @@
 # Dashboard display
 
 function wt_dashboard
-    _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
-    or return 1
-    
-    set -l repo_root (_wt_get_repo_root)
-    set -l saved_pwd (pwd)
-    cd $repo_root
-    _wt_get_repo_config
-    
-    # Get current worktree
-    set -l current_dir (realpath (pwd))
-    set -l current_worktree ""
-    set -l worktrees_dir (realpath "$repo_root/$WORKTREES_PATH")
-    
-    if string match -q "$worktrees_dir/*" $current_dir
-        set current_worktree (string replace "$worktrees_dir/" "" $current_dir | string split "/" | head -1)
+    # Check if we're in a wt repository, but don't fail if not
+    set -l in_wt_repo false
+    if _wt_in_worktree_repo 2>/dev/null
+        set in_wt_repo true
     end
     
     echo ""
     
-    # Repository name - subtle and elegant
+    # Title
     set_color brblack
     echo -n "  "
     set_color bryellow
-    echo -n "$REPO_NAME"
-    set_color brblack
-    echo " repository"
+    echo -n "wt"
+    set_color white
+    echo " - worktree toolkit for graphite"
     set_color normal
     
     echo ""
     
-    # Worktrees - clean list
-    set -l worktrees (_wt_get_worktrees)
-    for wt in $worktrees
-        echo -n "  "
+    # Configuration context
+    set_color brblack
+    echo -n "  "
+    if test "$in_wt_repo" = "true"
+        set -l repo_root (_wt_get_repo_root)
+        set -l saved_pwd (pwd)
+        cd $repo_root
         
-        # Current indicator - subtle
-        if test "$wt" = "$current_worktree"
+        # Check for config file
+        if test -f .wt-config
             set_color brwhite
-            echo -n "• "
-        else
+            echo "$repo_root/.wt-config"
+            
+            # Load config to show key info
+            _wt_get_repo_config
+            
+            # Show repository structure
             set_color brblack
-            echo -n "  "
-        end
-        
-        # Worktree name
-        if test "$wt" = "$current_worktree"
-            set_color white
+            echo "  ├─ "
+            set_color bryellow
+            echo -n "$REPO_NAME"
+            set_color brblack
+            echo " repository"
+            
+            echo -n "  ├─ .bare/"
+            set_color brblack
+            echo " (git bare repository)"
+            
+            echo -n "  ├─ worktrees/"
+            set_color brblack
+            echo " (feature branches)"
+            
+            # Show current worktree if in one
+            set -l current_worktree (_wt_get_current_worktree)
+            if test -n "$current_worktree"
+                echo -n "  │  └─ "
+                set_color brwhite
+                echo -n "$current_worktree/"
+                set_color brgreen
+                echo " ← current"
+            end
+            
+            echo -n "  └─ envs/"
+            set_color brblack
+            echo " (environment files)"
         else
-            set_color brwhite
+            set_color brred
+            echo "no .wt-config found"
+            set_color brblack
+            echo "  └─ commands will use current directory"
         end
-        echo -n "$wt"
         
-        # Branch - very subtle
+        cd $saved_pwd
+    else
+        set_color bryellow
+        echo "detached mode"
         set_color brblack
-        if test -d "$repo_root/$WORKTREES_PATH/$wt"
-            set -l branch (git -C "$repo_root/$WORKTREES_PATH/$wt" branch --show-current 2>/dev/null)
-            if test -n "$branch" -a "$branch" != "$wt"
-                echo -n "  $branch"
-            end
-        end
-        
-        # Stack info if exists
-        if test -d "$repo_root/$WORKTREES_PATH/$wt"
-            set -l stack (gt -C "$repo_root/$WORKTREES_PATH/$wt" stack 2>/dev/null | string match -r "on stack '(.*)'" | string replace -r ".*'(.*)'" '$1')
-            if test -n "$stack"
-                set_color brblack
-                echo -n "  ↳ $stack"
-            end
-        end
-        
-        echo
+        echo "  └─ not in a wt repository"
     end
-    
-    echo ""
-    
-    # Quick commands - minimal, two columns
-    set_color brwhite
-    echo -n "  new"
-    set_color brblack
-    echo -n " <name>     "
-    set_color brwhite
-    echo -n "switch"
-    set_color brblack
-    echo " (fzf)    "
-    
-    set_color brwhite
-    echo -n "  list"
-    set_color brblack
-    echo -n "           "
-    set_color brwhite
-    echo -n "status"
-    set_color brblack
-    echo " --all"
-    
-    set_color brwhite
-    echo -n "  up"
-    set_color brblack
-    echo -n "/down       "
-    set_color brwhite
-    echo -n "sync"
-    set_color brblack
-    echo " --all"
-    
     set_color normal
+    
     echo ""
     
-    cd $saved_pwd
+    # Core Commands section
+    set_color white
+    echo "  core commands"
+    set_color normal
+    
+    # init/clone
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "init"
+    set_color normal
+    echo "initialize new repository with worktree structure"
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "new"
+    set_color normal
+    echo "create new worktree for a feature branch"
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "switch"
+    set_color normal
+    echo "switch to another worktree using muxit/tmux"
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "remove"
+    set_color normal
+    echo "remove worktree (auto-detects current if no name)"
+    
+    echo ""
+    
+    # Stack Commands section
+    set_color white
+    echo "  stack navigation"
+    set_color normal
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "up"
+    set_color normal
+    echo "move up the stack to parent branch"
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "down"
+    set_color normal
+    echo "move down the stack to child branch"
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "bottom"
+    set_color normal
+    echo "move to bottom of current stack"
+    
+    echo ""
+    
+    # Sync Commands section
+    set_color white
+    echo "  synchronization"
+    set_color normal
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "sync"
+    set_color normal
+    echo "sync current worktree with upstream"
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "restack"
+    set_color normal
+    echo "rebase current branch and upstack"
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "submit"
+    set_color normal
+    echo "create/update PRs for current stack"
+    
+    echo ""
+    
+    # Info Commands section
+    set_color white
+    echo "  information"
+    set_color normal
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "list"
+    set_color normal
+    echo "list all worktrees"
+    
+    echo -n "    "
+    set_color cyan
+    printf "%-12s" "status"
+    set_color normal
+    echo "show status of current or all worktrees"
+    
+    echo ""
+    
+    # Quick usage hint
+    set_color white
+    echo -n "  "
+    echo "tip: use 'wt help' for detailed command options"
+    set_color normal
+    
+    echo ""
 end
