@@ -199,6 +199,21 @@ function _wt_color_line
     set_color normal
 end
 
+# Get git remote origin URL
+function _wt_get_remote_origin
+    set -l repo_root (_wt_get_repo_root)
+    if test -z "$repo_root"
+        return 1
+    end
+    
+    set -l bare_path "$repo_root/.bare"
+    if test -d "$bare_path"
+        git -C $bare_path remote get-url origin 2>/dev/null
+    else
+        git -C $repo_root remote get-url origin 2>/dev/null
+    end
+end
+
 # Helper to print a horizontal line
 function _wt_line
     set -l width $argv[1]

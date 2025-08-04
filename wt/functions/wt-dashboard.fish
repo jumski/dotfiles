@@ -22,8 +22,6 @@ function wt_dashboard
     echo ""
     
     # Configuration context
-    set_color brblack
-    echo -n "  "
     if test "$in_wt_repo" = "true"
         set -l repo_root (_wt_get_repo_root)
         set -l saved_pwd (pwd)
@@ -31,31 +29,53 @@ function wt_dashboard
         
         # Check for config file
         if test -f .wt-config
-            set_color brwhite
-            echo "$repo_root/.wt-config"
-            
             # Load config to show key info
             _wt_get_repo_config
             
-            # Show repository structure
-            set_color brblack
-            echo "  ├─ "
+            # Show repository name and origin
+            set_color brwhite
+            echo -n "  repository: "
             set_color bryellow
-            echo -n "$REPO_NAME"
-            set_color brblack
-            echo " repository"
+            echo "$REPO_NAME"
             
-            echo -n "  ├─ .bare/"
+            # Get and show remote origin
+            set -l origin (_wt_get_remote_origin)
+            if test -n "$origin"
+                set_color brwhite
+                echo -n "  origin: "
+                set_color brblue
+                echo "$origin"
+            end
+            
+            echo ""
+            
+            # Show repository path and structure
+            set_color brwhite
+            echo "$repo_root/"
+            
+            set_color brblack
+            echo -n "  ├─ "
+            set_color brwhite
+            echo ".wt-config"
+            
+            set_color brblack
+            echo -n "  ├─ "
+            set_color normal
+            echo -n ".bare/"
             set_color brblack
             echo " (git bare repository)"
             
-            echo -n "  ├─ worktrees/"
+            set_color brblack
+            echo -n "  ├─ "
+            set_color normal
+            echo -n "worktrees/"
             set_color brblack
             echo " (feature branches)"
             
             # Show current worktree if in one
             set -l current_worktree (_wt_get_current_worktree)
             if test -n "$current_worktree"
+                set_color brblack
                 echo -n "  │  └─ "
                 set_color brwhite
                 echo -n "$current_worktree/"
@@ -63,12 +83,15 @@ function wt_dashboard
                 echo " ← current"
             end
             
-            echo -n "  └─ envs/"
+            set_color brblack
+            echo -n "  └─ "
+            set_color normal
+            echo -n "envs/"
             set_color brblack
             echo " (environment files)"
         else
             set_color brred
-            echo "no .wt-config found"
+            echo "  no .wt-config found"
             set_color brblack
             echo "  └─ commands will use current directory"
         end
