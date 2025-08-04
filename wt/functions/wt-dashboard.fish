@@ -72,15 +72,35 @@ function wt_dashboard
             set_color brblack
             echo " (feature branches)"
             
-            # Show current worktree if in one
+            # List all worktrees
+            set -l worktrees (_wt_get_worktrees)
             set -l current_worktree (_wt_get_current_worktree)
-            if test -n "$current_worktree"
-                set_color brblack
-                echo -n "  │  └─ "
-                set_color brwhite
-                echo -n "$current_worktree/"
-                set_color brgreen
-                echo " ← current"
+            set -l worktree_count (count $worktrees)
+            
+            if test $worktree_count -gt 0
+                set -l index 0
+                for worktree in $worktrees
+                    set index (math $index + 1)
+                    set_color brblack
+                    
+                    # Use └─ for last item, ├─ for others
+                    if test $index -eq $worktree_count
+                        echo -n "  │  └─ "
+                    else
+                        echo -n "  │  ├─ "
+                    end
+                    
+                    # Highlight current worktree
+                    if test "$worktree" = "$current_worktree"
+                        set_color brwhite
+                        echo -n "$worktree/"
+                        set_color brgreen
+                        echo " ← current"
+                    else
+                        set_color normal
+                        echo "$worktree/"
+                    end
+                end
             end
             
             set_color brblack
