@@ -1,0 +1,3 @@
+- link:
+    ~/.opencode/commands: claude/commands
+    ~/.opencode/settings.json: opencode/opencode.json
