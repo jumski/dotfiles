@@ -19,6 +19,7 @@ source $wt_dir/functions/wt-env.fish
 source $wt_dir/functions/wt-git.fish
 source $wt_dir/functions/wt-dashboard.fish
 source $wt_dir/functions/wt-help.fish
+source $wt_dir/functions/wt-tutor.fish
 
 # Main command dispatcher
 function wt
@@ -60,6 +61,8 @@ function wt
             wt_env $remaining_args
         case git
             wt_git $remaining_args
+        case tutor
+            wt_tutor $remaining_args
         case version --version -v
             echo "wt version $WT_VERSION"
         case help --help -h

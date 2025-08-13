@@ -171,6 +171,11 @@ function _wt_help
     set_color normal
     echo -n "    "
     set_color cyan
+    printf "%-28s" "tutor [topic]"
+    set_color normal
+    echo "interactive workflow tutorials"
+    echo -n "    "
+    set_color cyan
     printf "%-28s" "help"
     set_color normal
     echo "show this help"

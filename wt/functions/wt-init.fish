@@ -114,8 +114,10 @@ REPO_NAME=$repo_name
 DEFAULT_TRUNK=$default_branch" > $repo_path/.wt-config
     
     # Initialize Graphite in main worktree
-    gt -C $repo_path/worktrees/$default_branch init --trunk $default_branch
+    pushd $repo_path/worktrees/$default_branch
+    gt init --trunk $default_branch
     or echo "Warning: Failed to initialize Graphite in main worktree" >&2
+    popd
     
     echo "✓ Repository initialized at $repo_path"
     echo "✓ Main worktree at worktrees/$default_branch"
