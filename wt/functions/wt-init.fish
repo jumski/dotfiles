@@ -2,8 +2,23 @@
 # Initialize new repository with worktree structure
 
 function wt_init
-    set -l repo_url $argv[1]
-    set -l repo_name $argv[2]
+    # Parse arguments
+    set -l switch_after false
+    set -l repo_url
+    set -l repo_name
+    
+    for arg in $argv
+        switch $arg
+            case --switch
+                set switch_after true
+            case '*'
+                if test -z "$repo_url"
+                    set repo_url $arg
+                else if test -z "$repo_name"
+                    set repo_name $arg
+                end
+        end
+    end
     
     _wt_assert "test -n '$repo_url'" "Repository URL required"
     or return 1
@@ -98,12 +113,29 @@ DEFAULT_TRUNK=$default_branch" > .wt-config
     cd worktrees/$default_branch
     gt init --trunk $default_branch
     
+    # Return to original directory
+    cd -
+    
     echo "✓ Repository initialized at $repo_path"
     echo "✓ Main worktree at worktrees/$default_branch"
     echo ""
     echo "Next steps:"
     echo "  cd $repo_path/worktrees/$default_branch"
     echo "  wt new <feature-name>"
+    
+    # Switch to the main worktree if requested
+    if test "$switch_after" = "true"
+        echo ""
+        echo "Opening main worktree in muxit..."
+        if functions -q muxit
+            muxit $repo_path/worktrees/$default_branch
+        else if command -q muxit
+            muxit $repo_path/worktrees/$default_branch
+        else
+            echo "Error: muxit not found" >&2
+            echo "Would open: $repo_path/worktrees/$default_branch"
+        end
+    end
 end
 
 # Alias for init
