@@ -8,14 +8,26 @@ function wt_init
     _wt_assert "test -n '$repo_url'" "Repository URL required"
     or return 1
     
-    # Extract repo name if not provided
+    # Determine repo path
     set -l repo_path
     if test -z "$repo_name"
-        set repo_name (basename $repo_url .git)
-        # Use DEFAULT_CODE_DIR when no explicit name given
+        # No name provided - extract from URL and use DEFAULT_CODE_DIR
+        # For org/repo format, keep the full path
+        if string match -qr '^[^/]+/[^/]+$' $repo_url
+            set repo_name $repo_url
+        else if string match -qr 'github\.com[:/]([^/]+/[^/]+)(\.git)?$' $repo_url
+            # Extract org/repo from GitHub URLs
+            set repo_name (string match -r 'github\.com[:/]([^/]+/[^/]+)(\.git)?$' $repo_url)[2]
+        else if string match -qr 'gitlab\.com[:/]([^/]+/[^/]+)(\.git)?$' $repo_url
+            # Extract org/repo from GitLab URLs
+            set repo_name (string match -r 'gitlab\.com[:/]([^/]+/[^/]+)(\.git)?$' $repo_url)[2]
+        else
+            # Fallback to just the repo name
+            set repo_name (basename $repo_url .git)
+        end
         set repo_path "$DEFAULT_CODE_DIR/$repo_name"
     else
-        # Use current directory when name is provided
+        # Name provided - treat as relative path from current directory
         set repo_path (pwd)/$repo_name
     end
     
