@@ -9,11 +9,15 @@ function wt_init
     or return 1
     
     # Extract repo name if not provided
+    set -l repo_path
     if test -z "$repo_name"
         set repo_name (basename $repo_url .git)
+        # Use DEFAULT_CODE_DIR when no explicit name given
+        set repo_path "$DEFAULT_CODE_DIR/$repo_name"
+    else
+        # Use current directory when name is provided
+        set repo_path (pwd)/$repo_name
     end
-    
-    set -l repo_path "$DEFAULT_CODE_DIR/$repo_name"
     
     if test -d $repo_path
         echo "Error: Directory $repo_path already exists" >&2
