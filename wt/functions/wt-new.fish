@@ -86,11 +86,12 @@ function wt_new
     end
     
     # Initialize Graphite
-    cd $worktree_path
     if test -n "$trunk_branch"
-        gt init --trunk $trunk_branch
+        gt -C "$repo_root/$worktree_path" init --trunk $trunk_branch
+        or echo "Warning: Failed to initialize Graphite in worktree" >&2
     else
-        gt init --trunk $DEFAULT_TRUNK
+        gt -C "$repo_root/$worktree_path" init --trunk $DEFAULT_TRUNK
+        or echo "Warning: Failed to initialize Graphite in worktree" >&2
     end
     
     # Copy environment files if they exist
@@ -107,6 +108,6 @@ function wt_new
     
     # Switch to new worktree if requested
     if test "$switch_after" = "true"
-        wt_switch $name
+        wt_switch $name $repo_root
     end
 end

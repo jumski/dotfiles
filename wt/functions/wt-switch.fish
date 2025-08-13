@@ -3,11 +3,18 @@
 
 function wt_switch
     set -l name $argv[1]
+    set -l repo_path $argv[2]  # Optional repo path
     
-    _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
-    or return 1
+    # If repo_path provided, use it. Otherwise find repo root from current dir
+    set -l repo_root
+    if test -n "$repo_path"
+        set repo_root $repo_path
+    else
+        _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
+        or return 1
+        set repo_root (_wt_get_repo_root)
+    end
     
-    set -l repo_root (_wt_get_repo_root)
     set -l current_dir (pwd)
     cd $repo_root
     _wt_get_repo_config
@@ -47,14 +54,46 @@ function wt_switch
     # Don't change directory, just open muxit
     cd $current_dir  # Go back to original directory
     
-    # Check if muxit function exists
-    if functions -q muxit
-        muxit $worktree_path
-    else if command -q muxit
-        muxit $worktree_path
+    # Get repo name from config
+    set -l repo_name $REPO_NAME
+    if test -z "$repo_name"
+        # Fallback to directory name if not in config
+        set repo_name (basename $repo_root)
+    end
+    
+    # Create custom session name: worktree@repo
+    set -l session_name "$name@$repo_name"
+    set session_name (echo $session_name | tr -cd '[:alnum:]-_@')
+    
+    # Check if session already exists
+    if tmux has-session -t $session_name 2>/dev/null
+        # Session exists - switch or attach
+        if test -n "$TMUX"
+            tmux switch-client -t $session_name
+        else
+            tmux attach-session -t $session_name
+        end
     else
-        echo "Error: muxit not found" >&2
-        echo "Would open: $worktree_path"
+        # Create new session with windows
+        if test -n "$TMUX"
+            # Inside tmux - create detached and switch
+            tmux \
+                new-session -d -c "$worktree_path" -s $session_name \;\
+                rename-window -t $session_name:1 server \;\
+                new-window -n bash -c "$worktree_path" -t $session_name \;\
+                new-window -n vim -c "$worktree_path" -t $session_name \;\
+                new-window -n repl -c "$worktree_path" -t $session_name
+            tmux switch-client -t $session_name
+        else
+            # Outside tmux - create and attach
+            tmux \
+                new-session -d -c "$worktree_path" -s $session_name \;\
+                rename-window -t $session_name:1 server \;\
+                new-window -n bash -c "$worktree_path" -t $session_name \;\
+                new-window -n vim -c "$worktree_path" -t $session_name \;\
+                new-window -n repl -c "$worktree_path" -t $session_name \;\
+                attach-session -t $session_name
+        end
     end
 end
 
