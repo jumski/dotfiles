@@ -6,6 +6,7 @@ return {
     vim.opt.runtimepath:append(parser_install_dir)
 
     require("nvim-treesitter.configs").setup({
+      ensure_installed = {},
       parser_install_dir = parser_install_dir,
       auto_install = true,
       sync_install = false,

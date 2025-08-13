@@ -1,2 +1,2 @@
 
-alias claude="/home/jumski/.claude/local/claude"
+alias claude="env SHELL=/bin/bash /home/jumski/.claude/local/claude"

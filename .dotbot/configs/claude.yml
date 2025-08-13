@@ -1,2 +1,4 @@
 - link:
     ~/.claude/commands: claude/commands
+    ~/.claude/settings.json: claude/settings.json
+    ~/.opencode/commands: claude/commands

@@ -32,10 +32,30 @@ function muxit
   set fzf_prompt (printf %{$fzf_prompt_padding}s "")
 
   if test -z "$start_dir"
+    set cache_file ~/.cache/muxit-projects
+    
+    # Update cache if it's missing or older than 1 hour
+    if not test -f $cache_file; or test (find $cache_file -mmin +60 2>/dev/null | wc -l) -gt 0
+      set_color green
+      echo -n "Refreshing project cache "
+      set spinner_chars "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏"
+      set spinner_index 1
+      
+      muxit-update-cache &
+      set update_pid $last_pid
+      
+      while kill -0 $update_pid 2>/dev/null
+        echo -en "\r\033[KRefreshing project cache $spinner_chars[$spinner_index]"
+        set spinner_index (math "$spinner_index % 10 + 1")
+        sleep 0.1
+      end
+      
+      echo -e "\r\033[KRefreshing project cache ✓"
+      set_color normal
+    end
+    
     set dir_name (
-    fd -H --glob .git --no-ignore-vcs --exec echo {//} \; /home/jumski/Code |
-    sed 's|/home/jumski/Code/||' |
-    sed '1i\.dotfiles' |
+    cat $cache_file |
     process_paths $left_half_width |
     fzf --ansi --keep-right --margin=0,0 --prompt="$fzf_prompt"
     )
@@ -66,7 +86,7 @@ function muxit
     return 1
   end
 
-  set session_name (basename "$start_dir" | tr -cd '[:alnum:]')
+  set session_name (basename "$start_dir" | tr -cd '[:alnum:]-_')
 
 
   # switch to existing session if possible to speed up the process

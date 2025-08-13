@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, subprocess, requests, sys, time, signal, io, threading
+import os, subprocess, requests, sys, time, signal, io, threading, datetime, argparse
 
 # ANSI color codes
 GRAY = '\033[90m'
@@ -115,7 +115,7 @@ def transcribe_with_groq(file_data):
     r = requests.post(
         "https://api.groq.com/openai/v1/audio/transcriptions",
         headers={"Authorization": f"Bearer {api_key}"},
-        data={"model": "whisper-large-v3"},
+        data={"model": "whisper-large-v3", "language": "en"},
         files={"file": ("out.wav", file_obj, "audio/wav")},
         timeout=120
     )
@@ -133,7 +133,7 @@ def transcribe_with_openai(file_data):
     r = requests.post(
         "https://api.openai.com/v1/audio/transcriptions",
         headers={"Authorization": f"Bearer {api_key}"},
-        data={"model": "whisper-1"},
+        data={"model": "whisper-1", "language": "en"},
         files={"file": ("out.wav", file_obj, "audio/wav")},
         timeout=120
     )
@@ -149,13 +149,59 @@ def get_transcription_backend():
     else:
         return transcribe_with_groq, "Groq"
 
+# Recording directory setup - using NAS path
+NAS_DEV_DIR = os.path.expanduser("~/SynologyDrive/Areas/Dev")
+RECORD_DIR = os.path.join(NAS_DEV_DIR, "dictation-data")
+
+# Check if Dev directory exists (indicates NAS is mounted)
+if not os.path.exists(NAS_DEV_DIR):
+    err_print(f"\n{RED}ERROR: NAS not mounted or Dev directory missing!{RESET}\n")
+    err_print(f"Expected path: {NAS_DEV_DIR}\n")
+    err_print(f"Please ensure your Synology Drive is properly mounted.\n")
+    sys.exit(1)
+
+# Create dictation-data directory if it doesn't exist
+os.makedirs(RECORD_DIR, exist_ok=True)
+
+# CLI argument parsing
+ap = argparse.ArgumentParser(add_help=False)
+ap.add_argument("--retry", metavar="FILE", help="re-upload a saved .wav file")
+ap.add_argument("--retry-last", action="store_true", help="re-upload the newest saved .wav file")
+args, _ = ap.parse_known_args()
+
 # Main script starts here
 transcribe_func, backend_name = get_transcription_backend()
 
-# Create a temporary file for recording
-import tempfile
-temp_fd, F = tempfile.mkstemp(suffix=".wav")
-os.close(temp_fd)  # Close the file descriptor, we just need the path
+# Helper for retry
+def do_retry(path):
+    try:
+        with open(path, "rb") as f:
+            transcript = transcribe_func(f.read())
+            print(transcript)
+            # Save transcript file
+            txt_file = path.replace('.wav', '.txt')
+            with open(txt_file, 'w') as tf:
+                tf.write(transcript)
+        sys.exit(0)
+    except Exception as e:
+        err_print(f"\nRetry failed: {e}\n")
+        sys.exit(1)
+
+if args.retry or args.retry_last:
+    if args.retry:
+        wav_path = args.retry
+    else:
+        wav_files = [f for f in os.listdir(RECORD_DIR) if f.endswith(".wav")]
+        if not wav_files:
+            err_print("\nNo recordings found to retry\n")
+            sys.exit(1)
+        wav_path = os.path.join(RECORD_DIR, sorted(wav_files)[-1])
+    do_retry(wav_path)
+
+# Create a permanent file for recording
+now = datetime.datetime.now()
+stamp = now.strftime("%Y%m%d-%H%M%S-") + f"{now.microsecond//1000:03d}"
+F = os.path.join(RECORD_DIR, f"{stamp}.wav")
 
 # Use arecord as recommended by Perplexity - it properly drains buffers on SIGINT
 cmd = [
@@ -216,13 +262,15 @@ except KeyboardInterrupt:
     # If Ctrl-C was pressed (no key_pressed set), exit immediately
     if key_pressed is None:
         err_print("\nCancelled!\n")
-        os.unlink(F)  # Clean up temp file
+        err_print(f"Recording kept at: {F}\n")
+        err_print(f"Retry later with: dictate --retry '{F}'\n")
         sys.exit(130)
     
     # Check if Escape was pressed - exit immediately without transcribing
     if key_pressed == '\x1b':
         err_print("\nCancelled!\n")
-        os.unlink(F)  # Clean up temp file
+        err_print(f"Recording kept at: {F}\n")
+        err_print(f"Retry later with: dictate --retry '{F}'\n")
         sys.exit(130)
     
     # Check if file exists and has content
@@ -251,40 +299,52 @@ except KeyboardInterrupt:
         time.sleep(0.1)  # Let animation clear
         print(transcript)
         
+        # Save transcript to file
+        txt_file = F.replace('.wav', '.txt')
+        with open(txt_file, 'w') as f:
+            f.write(transcript)
+        
         # Exit with code based on key pressed
         if key_pressed in ['\n', '\r']:  # Enter key
             sys.exit(0)
         elif key_pressed in ['c', 'C']:  # C key for clipboard
-            sys.exit(1)
+            sys.exit(10)
         elif key_pressed in ['s', 'S']:  # S key for search
-            sys.exit(2)
+            sys.exit(11)
         elif key_pressed in ['f', 'F']:  # F key for markdown formatting
-            sys.exit(3)
+            sys.exit(12)
         else:
             sys.exit(99)  # Default action (just paste)
         
     except KeyboardInterrupt:
         upload_done.set()
         err_print("\nUpload aborted!\n")
-        os.unlink(F)  # Clean up temp file
+        err_print(f"Recording kept at: {F}\n")
+        err_print(f"Retry later with: dictate --retry '{F}'\n")
         sys.exit(1)
     except ValueError as e:
         upload_done.set()
         err_print(f"\nConfiguration error: {e}\n")
-        os.unlink(F)  # Clean up temp file
+        err_print(f"Recording kept at: {F}\n")
+        err_print(f"Retry later with: dictate --retry '{F}'\n")
         sys.exit(1)
     except requests.exceptions.HTTPError as e:
         upload_done.set()
         err_print(f"\nHTTP Error: {e}\n")
         err_print(f"Response: {e.response.text}\n")
-        os.unlink(F)  # Clean up temp file
+        err_print(f"Recording kept at: {F}\n")
+        err_print(f"Retry later with: dictate --retry '{F}'\n")
         sys.exit(1)
     except Exception as e:
         upload_done.set()
         err_print(f"\nUpload error: {e}\n")
-        os.unlink(F)  # Clean up temp file
+        err_print(f"Recording kept at: {F}\n")
+        err_print(f"Retry later with: dictate --retry '{F}'\n")
         sys.exit(1)
 finally:
-    # Always clean up the temp file
-    if os.path.exists(F):
-        os.unlink(F)
+    # Only delete if we succeeded (transcript was saved)
+    if 'transcript' in locals() and os.path.exists(F):
+        try:
+            os.remove(F)
+        except OSError:
+            pass

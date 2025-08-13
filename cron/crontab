@@ -1,1 +1,2 @@
 59 13 * * * /home/jumski/.dotfiles/bin/backup-plasma-configs
+*/1 * * * * /home/jumski/.dotfiles/bin/muxit-update-cache
