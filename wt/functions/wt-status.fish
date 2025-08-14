@@ -25,8 +25,8 @@ function wt_status
         for worktree_dir in $WORKTREES_PATH/*
             if test -d $worktree_dir
                 set -l name (basename $worktree_dir)
-                set -l status (_wt_get_worktree_status $worktree_dir)
-                printf "%-20s %s\n" "$name:" "$status"
+                set -l wt_status (_wt_get_worktree_status $worktree_dir)
+                printf "%-20s %s\n" "$name:" "$wt_status"
             end
         end
         cd $saved_pwd
@@ -44,8 +44,8 @@ function wt_status
         end
         
         # Check sync status
-        set -l status (_wt_get_worktree_status (pwd))
-        echo "Status: $status"
+        set -l wt_status (_wt_get_worktree_status (pwd))
+        echo "Status: $wt_status"
         
         # Show modified files
         set -l modified_count (git status --porcelain | count)
