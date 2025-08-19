@@ -78,7 +78,19 @@ function wt_new
             git -C $BARE_PATH worktree add ../$worktree_path -b $name --track $base_branch
         end
     else
-        git -C $BARE_PATH worktree add ../$worktree_path -b $name $base_branch
+        # Check if local branch already exists
+        if git -C $BARE_PATH show-ref --verify --quiet refs/heads/$name
+            echo "Warning: Branch '$name' already exists locally"
+            read -P "Use existing branch? [Y/n] " -n 1 use_existing
+            if test -z "$use_existing" -o "$use_existing" = "y" -o "$use_existing" = "Y"
+                git -C $BARE_PATH worktree add ../$worktree_path $name
+            else
+                echo "Aborting worktree creation"
+                return 1
+            end
+        else
+            git -C $BARE_PATH worktree add ../$worktree_path -b $name $base_branch
+        end
     end
     or begin
         echo "Error: Failed to create worktree" >&2
@@ -86,12 +98,15 @@ function wt_new
     end
     
     # Initialize Graphite
-    cd $worktree_path
+    pushd "$repo_root/$worktree_path"
     if test -n "$trunk_branch"
         gt init --trunk $trunk_branch
+        or echo "Warning: Failed to initialize Graphite in worktree" >&2
     else
         gt init --trunk $DEFAULT_TRUNK
+        or echo "Warning: Failed to initialize Graphite in worktree" >&2
     end
+    popd
     
     # Copy environment files if they exist
     if test -d "$repo_root/$ENVS_PATH"
@@ -107,6 +122,6 @@ function wt_new
     
     # Switch to new worktree if requested
     if test "$switch_after" = "true"
-        wt_switch $name
+        wt_switch $name $repo_root
     end
 end

@@ -1,18 +1,18 @@
-local util = require('lspconfig/util')
+local util = require("lspconfig/util")
 
 local M = {}
 
 -- Just looks for common project top-level files or directories to find a "project root"
 function M.find_project_root()
   local patterns = {
-    '.git',
-    '.editorconfig',
-    '.env',
-    '.envrc',
-    'Makefile',
-    'Rakefile',
-    'README.md',
-    '.vscode',
+    ".git",
+    ".editorconfig",
+    ".env",
+    ".envrc",
+    "Makefile",
+    "Rakefile",
+    "README.md",
+    ".vscode",
     -- 'package.json',
     -- 'Gemfile',
     -- 'pyproject.toml',
@@ -29,30 +29,45 @@ function M.project_python_runtime()
   return "poetry run python -iq"
 end
 
--- Replace all em dashes (—) with hyphens (-)
+-- Replace non-standard characters with standard equivalents
 function M.FixEmdash()
   local current_view = vim.fn.winsaveview()
+  -- Em dash to hyphen
   vim.cmd([[%s/—/-/ge]])
+  -- En dash to hyphen
+  vim.cmd([[%s/–/-/ge]])
+  -- Smart quotes to regular quotes
+  vim.cmd([[%s/'/'/ge]])
+  vim.cmd([[%s/’/'/ge]])
+
+  vim.cmd([[%s/“/"/ge]])
+  vim.cmd([[%s/”/"/ge]])
+  vim.cmd([[%s/”/"/ge]])
+  vim.cmd([[%s/"/"/ge]])
+  -- Ellipsis to three dots
+  vim.cmd([[%s/…/.../ge]])
+  -- Non-breaking space to regular space
+  vim.cmd([[%s/ / /ge]])
   vim.fn.winrestview(current_view)
 end
 
 ---@param path string
 ---@return table
 function M.parse_env_file(path)
-   local env_vars = {}
-    local file = io.open(path, 'r')
-    if file then
-        for line in file:lines() do
-            local var, value = line:match("^([%w_]+)=(.*)$")
-            if var and value then
-                env_vars[var] = value
-            end
-        end
-        file:close()
-    else
-        vim.notify("Failed to load .env file: " .. path, vim.log.levels.ERROR)
+  local env_vars = {}
+  local file = io.open(path, "r")
+  if file then
+    for line in file:lines() do
+      local var, value = line:match("^([%w_]+)=(.*)$")
+      if var and value then
+        env_vars[var] = value
+      end
     end
-    return env_vars
+    file:close()
+  else
+    vim.notify("Failed to load .env file: " .. path, vim.log.levels.ERROR)
+  end
+  return env_vars
 end
 
 return M

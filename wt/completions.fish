@@ -20,6 +20,7 @@ complete -c wt -n "__fish_use_subcommand" -a "stack" -d "Stack operations"
 complete -c wt -n "__fish_use_subcommand" -a "submit" -d "Submit stack to GitHub"
 complete -c wt -n "__fish_use_subcommand" -a "env" -d "Environment file operations"
 complete -c wt -n "__fish_use_subcommand" -a "git" -d "Run git in bare repository"
+complete -c wt -n "__fish_use_subcommand" -a "tutor" -d "Interactive workflow tutorials"
 complete -c wt -n "__fish_use_subcommand" -a "help" -d "Show help"
 complete -c wt -n "__fish_use_subcommand" -a "version" -d "Show version"
 
@@ -45,6 +46,14 @@ complete -c wt -n "__fish_seen_subcommand_from env sync" -l all -d "Sync to all 
 
 # Complete worktree names for relevant commands
 complete -c wt -n "__fish_seen_subcommand_from switch sw remove rm" -a "(_wt_get_worktrees)" -d "Worktree"
+
+# Tutor topics
+complete -c wt -n "__fish_seen_subcommand_from tutor" -a "hotfix" -d "Creating urgent fixes on main branch"
+complete -c wt -n "__fish_seen_subcommand_from tutor" -a "update" -d "Syncing all stacks after merging changes"
+complete -c wt -n "__fish_seen_subcommand_from tutor" -a "branch" -d "Creating a new feature branch"
+complete -c wt -n "__fish_seen_subcommand_from tutor" -a "stack" -d "Creating next branch in a stack"
+complete -c wt -n "__fish_seen_subcommand_from tutor" -a "commit" -d "Committing with amend workflows"
+complete -c wt -n "__fish_seen_subcommand_from tutor" -a "workflow" -d "Complete development workflow walkthrough"
 
 # Complete branch names for --from option
 complete -c wt -n "__fish_seen_subcommand_from new; and __fish_contains_opt from" -a "(git branch --format='%(refname:short)')" -d "Branch"
