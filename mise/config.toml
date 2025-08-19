@@ -1,0 +1,30 @@
+# Global mise configuration
+# This file can be placed at ~/.config/mise/config.toml
+
+# Global tool versions
+[tools]
+# These will be overridden by project-specific mise.toml files
+# ruby = "3.1.2"
+# python = "3.11.3"
+# nodejs = "20.18.1"
+# etc.
+
+# Global environment variables
+[env]
+# Load local environment variables if they exist
+_.file = "~/.env.local"
+
+# Status settings
+[status]
+# Show summary of tools in prompt
+show_env = true
+show_tools = true
+
+# Settings
+[settings]
+# Activate automatically when entering directories with mise.toml
+activate_aggressive = true
+# Use shims instead of modifying PATH
+shims = false
+# Verbose output
+verbose = false
