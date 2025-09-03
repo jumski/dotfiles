@@ -91,12 +91,12 @@ function muxit
 
   # switch to existing session if possible to speed up the process
   if test -n "$TMUX"
-    if tmux list-sessions | grep -q $session_name
+    if tmux has-session -t $session_name 2>/dev/null
       tmux switch-client -t $session_name
       return
     end
   else
-    if tmux has-session -t $session_name
+    if tmux has-session -t $session_name 2>/dev/null
       tmux attach-session -t $session_name
       return
     end
