@@ -1,0 +1,2 @@
+# Packages needed for mise (if any system packages are required)
+# Currently mise is installed via curl script, so this file is mostly empty

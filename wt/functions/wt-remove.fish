@@ -24,8 +24,12 @@ function wt_remove
     
     set -l worktree_path "$WORKTREES_PATH/$name"
     
-    if not test -d $worktree_path
-        echo "Error: Worktree '$name' not found" >&2
+    # Check if worktree exists in git or as directory
+    set -l git_has_worktree (git -C $BARE_PATH worktree list --porcelain | grep -q "worktree $worktree_path"; echo $status)
+    set -l dir_exists (test -d $worktree_path; echo $status)
+    
+    if test $git_has_worktree -ne 0 -a $dir_exists -ne 0
+        echo "Error: Worktree '$name' not found (neither in git nor as directory)" >&2
         return 1
     end
     
@@ -46,11 +50,21 @@ function wt_remove
         cd $repo_root
     end
     
-    # Remove worktree
-    git -C $BARE_PATH worktree remove $worktree_path --force
-    or begin
-        echo "Error: Failed to remove worktree" >&2
-        return 1
+    # Remove worktree from git if it exists there
+    if test $git_has_worktree -eq 0
+        git -C $BARE_PATH worktree remove $worktree_path --force
+        or echo "Warning: Failed to remove worktree from git, but continuing cleanup..." >&2
+    else
+        echo "Worktree not tracked by git, skipping git worktree remove"
+    end
+    
+    # Remove directory if it exists
+    if test $dir_exists -eq 0
+        echo "Removing worktree directory: $worktree_path"
+        rm -rf $worktree_path
+        or echo "Warning: Failed to remove directory, but continuing..." >&2
+    else
+        echo "Worktree directory doesn't exist, skipping directory removal"
     end
     
     # Remove branch if not checked out elsewhere
