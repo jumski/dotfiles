@@ -68,6 +68,9 @@ function wt_new
     
     echo -e "\033[34m→\033[0m Creating worktree: $name"
     
+    # Clean up any stale worktree references
+    git -C $BARE_PATH worktree prune
+    
     # Create the worktree
     if test "$tracking_remote" = "true"
         # Check if local branch already exists
