@@ -94,6 +94,20 @@ function wt_remove
     
     echo "✓ Worktree '$name' removed"
     
+    # Kill tmux session for the removed worktree if it exists
+    set -l repo_name (basename $repo_root)
+    set -l session_name "$name@$repo_name"
+    if tmux has-session -t "$session_name" 2>/dev/null
+        echo "Killing tmux session: $session_name"
+        tmux kill-session -t "$session_name"
+    end
+    
+    # Switch to main worktree if we removed the current one
+    if test "$current_worktree" = "$name"
+        echo "Switching to main@$repo_name"
+        wt_switch "main"
+    end
+    
     cd $saved_pwd
 end
 
