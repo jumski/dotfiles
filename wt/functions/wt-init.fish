@@ -113,6 +113,18 @@ REPO_NAME=$repo_name
 # Default branch detected from repository
 DEFAULT_TRUNK=$default_branch" > $repo_path/.wt-config
     
+    # Create empty post-creation hook script
+    echo "#!/bin/bash
+# Post-creation hook for new worktrees
+# This script runs in the new worktree directory after creation
+# Add commands like: pnpm install, npm install, etc.
+
+echo \"Post-creation hook executed in: \$(pwd)\"
+# Add your setup commands here" > $repo_path/.wt-post-create
+    
+    # Make hook script executable
+    chmod +x $repo_path/.wt-post-create
+    
     # Initialize Graphite in main worktree
     pushd $repo_path/worktrees/$default_branch
     gt init --trunk $default_branch

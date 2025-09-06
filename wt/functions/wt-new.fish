@@ -117,6 +117,16 @@ function wt_new
     echo "✓ Worktree created at $worktree_path"
     echo "✓ Branch '$name' created from '$base_branch'"
     
+    # Run post-creation hook if it exists
+    set -l hook_script "$repo_root/.wt-post-create"
+    if test -f "$hook_script" -a -x "$hook_script"
+        echo "Running post-creation hook..."
+        pushd "$repo_root/$worktree_path"
+        $hook_script
+        or echo "Warning: Post-creation hook failed" >&2
+        popd
+    end
+    
     # Restore original directory
     cd $saved_pwd
     
