@@ -2,7 +2,22 @@
 # Remove worktree
 
 function wt_remove
-    set -l name $argv[1]
+    set -l force_flag 0
+    set -l name ""
+    
+    # Parse arguments
+    for arg in $argv
+        switch $arg
+            case --force -f
+                set force_flag 1
+            case '-*'
+                # Ignore other flags
+            case '*'
+                if test -z "$name"
+                    set name $arg
+                end
+        end
+    end
     
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
@@ -36,11 +51,16 @@ function wt_remove
     # Confirm deletion
     echo "This will remove worktree: $name"
     echo "Path: $worktree_path"
-    read -P "Continue? [y/N] " -n 1 confirm
     
-    if test "$confirm" != "y"
-        echo "Cancelled"
-        return 0
+    if test $force_flag -eq 0
+        read -P "Continue? [y/N] " -n 1 confirm
+        
+        if test "$confirm" != "y"
+            echo "Cancelled"
+            return 0
+        end
+    else
+        echo "Force flag specified, proceeding without confirmation..."
     end
     
     # If we're removing the current worktree, move to repo root first
@@ -61,8 +81,10 @@ function wt_remove
     # Remove directory if it exists
     if test $dir_exists -eq 0
         echo "Removing worktree directory: $worktree_path"
-        rm -rf $worktree_path
-        or echo "Warning: Failed to remove directory, but continuing..." >&2
+        if not rm -rf $worktree_path
+            echo "Error: Failed to remove directory $worktree_path" >&2
+            return 1
+        end
     else
         echo "Worktree directory doesn't exist, skipping directory removal"
     end

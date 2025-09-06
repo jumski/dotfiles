@@ -42,13 +42,13 @@ function _wt_env_sync
         for worktree_dir in $WORKTREES_PATH/*
             if test -d $worktree_dir
                 echo "  → $(basename $worktree_dir)"
-                cp -r "$ENVS_PATH/." "$worktree_dir/"
+                rsync -r --exclude='.git' "$ENVS_PATH/" "$worktree_dir/"
             end
         end
     else
         set -l current_worktree (pwd)
         echo "Syncing environment files to current worktree..."
-        cp -r "$repo_root/$ENVS_PATH/." "$current_worktree/"
+        rsync -r --exclude='.git' "$repo_root/$ENVS_PATH/" "$current_worktree/"
     end
     
     echo "✓ Environment files synced"
