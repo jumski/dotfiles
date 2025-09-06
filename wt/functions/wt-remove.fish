@@ -65,9 +65,14 @@ function wt_remove
     
     # If we're removing the current worktree, move to repo root first
     set -l current_worktree (_wt_get_current_worktree)
+    set -l original_session ""
     if test "$current_worktree" = "$name"
         echo "Moving out of current worktree before removal..."
         cd $repo_root
+        # Remember the current tmux session for later check
+        if set -q TMUX
+            set original_session (tmux display-message -p '#S')
+        end
     end
     
     # Remove worktree from git if it exists there
@@ -102,10 +107,19 @@ function wt_remove
         tmux kill-session -t "$session_name"
     end
     
-    # Switch to main worktree if we removed the current one
-    if test "$current_worktree" = "$name"
-        echo "Switching to main@$repo_name"
-        wt_switch "main"
+    # Switch to main worktree if we removed the current one and user is still in original session
+    if test "$current_worktree" = "$name" -a -n "$original_session"
+        set -l current_session ""
+        if set -q TMUX
+            set current_session (tmux display-message -p '#S')
+        end
+        
+        if test "$current_session" = "$original_session"
+            echo "Switching to main@$repo_name"
+            wt_switch "main"
+        else
+            echo "User switched to different session, skipping auto-switch"
+        end
     end
     
     cd $saved_pwd
