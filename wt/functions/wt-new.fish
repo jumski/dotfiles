@@ -52,6 +52,7 @@ function wt_new
     # Check for remote branch
     set -l tracking_remote false
     if test "$force_new" = "false"
+        echo -e "\033[34m→\033[0m Checking for remote branch..."
         git -C $BARE_PATH fetch origin --quiet
         if git -C $BARE_PATH show-ref --verify --quiet refs/remotes/origin/$name
             echo "Remote branch 'origin/$name' found."
@@ -65,7 +66,7 @@ function wt_new
         end
     end
     
-    echo "Creating worktree: $name"
+    echo -e "\033[34m→\033[0m Creating worktree: $name"
     
     # Create the worktree
     if test "$tracking_remote" = "true"
@@ -98,6 +99,7 @@ function wt_new
     end
     
     # Initialize Graphite
+    echo -e "\033[34m→\033[0m Initializing Graphite..."
     pushd "$repo_root/$worktree_path"
     if test -n "$trunk_branch"
         gt init --trunk $trunk_branch
@@ -110,17 +112,19 @@ function wt_new
     
     # Copy environment files if they exist
     if test -d "$repo_root/$ENVS_PATH"
-        echo "Copying environment files..."
-        cp -r "$repo_root/$ENVS_PATH/." .
+        echo -e "\033[34m→\033[0m Copying environment files..."
+        pushd "$repo_root/$worktree_path"
+        _wt_env_sync
+        popd
     end
     
-    echo "✓ Worktree created at $worktree_path"
-    echo "✓ Branch '$name' created from '$base_branch'"
+    echo -e "\033[32m✓\033[0m Worktree created at $worktree_path"
+    echo -e "\033[32m✓\033[0m Branch '$name' created from '$base_branch'"
     
     # Run post-creation hook if it exists
     set -l hook_script "$repo_root/.wt-post-create"
     if test -f "$hook_script" -a -x "$hook_script"
-        echo "Running post-creation hook..."
+        echo -e "\033[34m→\033[0m Running post-creation hook..."
         pushd "$repo_root/$worktree_path"
         $hook_script
         or echo "Warning: Post-creation hook failed" >&2
