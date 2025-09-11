@@ -49,7 +49,7 @@ function wt_remove
     end
     
     # Confirm deletion
-    echo "This will remove worktree: $name"
+    echo -e "\033[34m→\033[0m This will remove worktree: $name"
     echo "Path: $worktree_path"
     
     if test $force_flag -eq 0
@@ -77,6 +77,7 @@ function wt_remove
     
     # Remove worktree from git if it exists there
     if test $git_has_worktree -eq 0
+        echo -e "\033[34m→\033[0m Removing worktree from git..."
         git -C $BARE_PATH worktree remove $worktree_path --force
         or echo "Warning: Failed to remove worktree from git, but continuing cleanup..." >&2
     else
@@ -85,7 +86,7 @@ function wt_remove
     
     # Remove directory if it exists
     if test $dir_exists -eq 0
-        echo "Removing worktree directory: $worktree_path"
+        echo -e "\033[34m→\033[0m Removing worktree directory: $worktree_path"
         if not rm -rf $worktree_path
             echo "Error: Failed to remove directory $worktree_path" >&2
             return 1
@@ -95,15 +96,16 @@ function wt_remove
     end
     
     # Remove branch if not checked out elsewhere
+    echo -e "\033[34m→\033[0m Cleaning up branch..."
     git -C $BARE_PATH branch -d $name 2>/dev/null
     
-    echo "✓ Worktree '$name' removed"
+    echo -e "\033[32m✓\033[0m Worktree '$name' removed"
     
     # Kill tmux session for the removed worktree if it exists
     set -l repo_name (basename $repo_root)
     set -l session_name "$name@$repo_name"
     if tmux has-session -t "$session_name" 2>/dev/null
-        echo "Killing tmux session: $session_name"
+        echo -e "\033[34m→\033[0m Killing tmux session: $session_name"
         tmux kill-session -t "$session_name"
     end
     
@@ -115,7 +117,7 @@ function wt_remove
         end
         
         if test "$current_session" = "$original_session"
-            echo "Switching to main@$repo_name"
+            echo -e "\033[34m→\033[0m Switching to main@$repo_name"
             wt_switch "main"
         else
             echo "User switched to different session, skipping auto-switch"

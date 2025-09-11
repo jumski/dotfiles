@@ -68,6 +68,7 @@ function wt_switch
     # Check if session already exists
     if tmux has-session -t $session_name 2>/dev/null
         # Session exists - switch or attach
+        echo -e "\033[34m→\033[0m Switching to existing session: $session_name"
         if test -n "$TMUX"
             tmux switch-client -t $session_name
         else
@@ -75,6 +76,7 @@ function wt_switch
         end
     else
         # Create new session with windows
+        echo -e "\033[34m→\033[0m Creating new tmux session: $session_name"
         if test -n "$TMUX"
             # Inside tmux - create detached and switch
             tmux \

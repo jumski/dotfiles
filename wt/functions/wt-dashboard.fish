@@ -147,6 +147,12 @@ function wt_dashboard
     
     echo -n "    "
     set_color cyan
+    printf "%-12s" "create"
+    set_color normal
+    echo "create stacked branch with worktree (via gt)"
+    
+    echo -n "    "
+    set_color cyan
     printf "%-12s" "switch"
     set_color normal
     echo "switch to another worktree using muxit/tmux"

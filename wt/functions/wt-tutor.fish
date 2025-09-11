@@ -241,23 +241,24 @@ function _wt_tutor_stack_branch
     echo ""
     
     set_color brgreen
-    echo "1. From your current branch, create next stack branch:"
+    echo "1. Create stacked branch with worktree (recommended):"
+    set_color normal
+    echo "   # From feature-part-1 worktree:"
+    echo "   wt create feature-part-2 -m 'feat: add part 2' --switch"
+    echo "   # Creates new branch stacked on current, with worktree"
+    echo ""
+    
+    set_color brgreen
+    echo "2. Alternative: manual worktree creation:"
     set_color normal
     echo "   wt new feature-part-2 --from feature-part-1"
     echo ""
     
     set_color brgreen
-    echo "2. Alternative: use gt to branch in current worktree:"
+    echo "3. Alternative: use gt in current worktree:"
     set_color normal
     echo "   gt branch create feature-part-2"
     echo "   # This creates new branch in same worktree"
-    echo ""
-    
-    set_color brgreen
-    echo "3. For separate worktree (recommended):"
-    set_color normal
-    echo "   # From feature-part-1 worktree:"
-    echo "   wt new feature-part-2 --from (git branch --show-current) --switch"
     echo ""
     
     set_color brgreen
@@ -368,7 +369,7 @@ function _wt_tutor_full_workflow
     set_color brgreen
     echo "Phase 3: Stack Building (if needed)"
     set_color normal
-    echo "7. wt new feature-auth-ui --from feature-auth"
+    echo "7. wt create feature-auth-ui -m 'feat: add auth UI' --switch"
     echo "8. # Develop UI part..."
     echo "9. git commit -m 'feat: add auth UI components'"
     echo ""

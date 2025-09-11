@@ -60,15 +60,16 @@ function wt_init
         return 1
     end
     
-    echo "Initializing worktree repository: "(basename $repo_path)
+    echo -e "\033[34m→\033[0m Initializing worktree repository: "(basename $repo_path)
     
     # Create directory structure
+    echo -e "\033[34m→\033[0m Creating directory structure..."
     mkdir -p $repo_path
     mkdir -p $repo_path/worktrees
     mkdir -p $repo_path/envs
     
     # Clone as bare repository
-    echo "Cloning repository as bare..."
+    echo -e "\033[34m→\033[0m Cloning repository as bare..."
     
     # Check if it's a short format (org/repo) and gh is available
     set -l clone_success false
@@ -93,7 +94,7 @@ function wt_init
     end
     
     # Create main worktree
-    echo "Creating main worktree..."
+    echo -e "\033[34m→\033[0m Creating main worktree..."
     git -C $repo_path/.bare worktree add $repo_path/worktrees/$default_branch $default_branch
     or begin
         echo "Error: Failed to create main worktree" >&2
@@ -126,13 +127,14 @@ echo \"Post-creation hook executed in: \$(pwd)\"
     chmod +x $repo_path/.wt-post-create
     
     # Initialize Graphite in main worktree
+    echo -e "\033[34m→\033[0m Initializing Graphite in main worktree..."
     pushd $repo_path/worktrees/$default_branch
     gt init --trunk $default_branch
     or echo "Warning: Failed to initialize Graphite in main worktree" >&2
     popd
     
-    echo "✓ Repository initialized at $repo_path"
-    echo "✓ Main worktree at worktrees/$default_branch"
+    echo -e "\033[32m✓\033[0m Repository initialized at $repo_path"
+    echo -e "\033[32m✓\033[0m Main worktree at worktrees/$default_branch"
     echo ""
     echo "Next steps:"
     echo "  cd $repo_path/worktrees/$default_branch"

@@ -7,6 +7,7 @@ complete -c wt -f
 # Main commands
 complete -c wt -n "__fish_use_subcommand" -a "init clone" -d "Initialize new worktree repository"
 complete -c wt -n "__fish_use_subcommand" -a "new" -d "Create new worktree"
+complete -c wt -n "__fish_use_subcommand" -a "create" -d "Create stacked branch with worktree (via gt)"
 complete -c wt -n "__fish_use_subcommand" -a "list ls" -d "List all worktrees"
 complete -c wt -n "__fish_use_subcommand" -a "remove rm" -d "Remove worktree"
 complete -c wt -n "__fish_use_subcommand" -a "status st" -d "Show worktree status"
@@ -29,6 +30,12 @@ complete -c wt -n "__fish_seen_subcommand_from new" -l from -d "Base branch for 
 complete -c wt -n "__fish_seen_subcommand_from new" -l trunk -d "Trunk branch for Graphite"
 complete -c wt -n "__fish_seen_subcommand_from new" -l force-new -d "Skip remote check, always create new"
 complete -c wt -n "__fish_seen_subcommand_from new" -l switch -d "Open in muxit after creation"
+
+complete -c wt -n "__fish_seen_subcommand_from create" -s m -l message -d "Commit message"
+complete -c wt -n "__fish_seen_subcommand_from create" -l switch -d "Open in muxit after creation"
+complete -c wt -n "__fish_seen_subcommand_from create" -s a -l all -d "Stage all unstaged changes"
+complete -c wt -n "__fish_seen_subcommand_from create" -s u -l update -d "Stage all updates to tracked files"
+complete -c wt -n "__fish_seen_subcommand_from create" -s p -l patch -d "Pick hunks to stage"
 
 complete -c wt -n "__fish_seen_subcommand_from status st" -l all -d "Show status of all worktrees"
 

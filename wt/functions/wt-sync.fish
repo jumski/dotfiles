@@ -28,13 +28,13 @@ function wt_sync
         cd $repo_root
         _wt_get_repo_config
         
-        echo "Syncing all worktrees..."
+        echo -e "\033[34m→\033[0m Syncing all worktrees..."
         
         for worktree_dir in $WORKTREES_PATH/*
             if test -d $worktree_dir
                 set -l name (basename $worktree_dir)
                 echo ""
-                echo "Syncing $name..."
+                echo -e "\033[34m→\033[0m Syncing $name..."
                 cd $worktree_dir
                 _wt_sync_single $force $reset
             end
@@ -53,7 +53,7 @@ function _wt_sync_single
     set -l branch (git branch --show-current)
     
     if test $reset = true
-        echo "Resetting to origin/$branch..."
+        echo -e "\033[34m→\033[0m Resetting to origin/$branch..."
         git fetch origin $branch
         git reset --hard origin/$branch
         return
@@ -62,7 +62,7 @@ function _wt_sync_single
     # Check for uncommitted changes
     if test (git status --porcelain | count) -gt 0
         if test $force = true
-            echo "Stashing changes..."
+            echo -e "\033[34m→\033[0m Stashing changes..."
             git stash push -m "wt sync auto-stash"
         else
             echo "Error: Uncommitted changes. Use --force to stash" >&2
@@ -71,11 +71,12 @@ function _wt_sync_single
     end
     
     # Sync with remote
+    echo -e "\033[34m→\033[0m Syncing with remote..."
     gt sync
     
     # Restore stash if needed
     if test $force = true -a (git stash list | head -1 | string match -q "*wt sync auto-stash*")
-        echo "Restoring stashed changes..."
+        echo -e "\033[34m→\033[0m Restoring stashed changes..."
         git stash pop
     end
 end
@@ -85,7 +86,7 @@ function wt_restack
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
     
-    echo "Restacking current branch and upstack..."
+    echo -e "\033[34m→\033[0m Restacking current branch and upstack..."
     gt restack
 end
 
@@ -94,6 +95,6 @@ function wt_submit
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
     
-    echo "Submitting current branch and upstack..."
+    echo -e "\033[34m→\033[0m Submitting current branch and upstack..."
     gt submit --stack
 end
