@@ -84,13 +84,18 @@ function wt_new
     else
         # Check if local branch already exists
         if git -C $BARE_PATH show-ref --verify --quiet refs/heads/$name
-            echo "Warning: Branch '$name' already exists locally"
-            read -P "Use existing branch? [Y/n] " -n 1 use_existing
-            if test -z "$use_existing" -o "$use_existing" = "y" -o "$use_existing" = "Y"
+            if test "$force_new" = "true"
+                # With --force-new, always use existing branch without prompting
                 git -C $BARE_PATH worktree add ../$worktree_path $name
             else
-                echo "Aborting worktree creation"
-                return 1
+                echo "Warning: Branch '$name' already exists locally"
+                read -P "Use existing branch? [Y/n] " -n 1 use_existing
+                if test -z "$use_existing" -o "$use_existing" = "y" -o "$use_existing" = "Y"
+                    git -C $BARE_PATH worktree add ../$worktree_path $name
+                else
+                    echo "Aborting worktree creation"
+                    return 1
+                end
             end
         else
             git -C $BARE_PATH worktree add ../$worktree_path -b $name $base_branch
