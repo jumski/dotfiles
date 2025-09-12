@@ -17,8 +17,11 @@ A Git worktree management system with Graphite integration for parallel stacked 
 ## Quick Start
 
 ```bash
-# Initialize a new repository with worktree structure
-wt init git@github.com:org/repo.git myproject
+# Initialize a new local repository
+wt init myproject
+
+# Or clone an existing repository
+wt clone git@github.com:org/repo.git myproject
 
 # Create a new feature worktree
 wt new feature-auth
@@ -34,8 +37,8 @@ wt stack sync
 
 ```bash
 # Repository Management
-wt init <repo-url> [name]    # Clone and set up worktree structure
-wt clone <repo-url> [name]   # Alias for init
+wt init <name>               # Initialize new local repository
+wt clone <repo-url> [name]   # Clone and set up worktree structure
 
 # Worktree Operations
 wt new <name>                # Create new worktree from main

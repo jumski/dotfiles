@@ -24,9 +24,9 @@ function _wt_help
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-28s" "init <repo-url> [name]"
+    printf "%-28s" "init <name>"
     set_color normal
-    echo "clone and set up worktree structure"
+    echo "initialize new local repository"
     echo -n "      "
     set_color brblack
     printf "%-26s" "--switch"
@@ -36,7 +36,12 @@ function _wt_help
     set_color cyan
     printf "%-28s" "clone <repo-url> [name]"
     set_color normal
-    echo "alias for init"
+    echo "clone and set up worktree structure"
+    echo -n "      "
+    set_color brblack
+    printf "%-26s" "--switch"
+    set_color normal
+    echo "open main worktree in muxit after clone"
     echo ""
     
     # Worktree Operations
