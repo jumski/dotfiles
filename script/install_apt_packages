@@ -10,6 +10,6 @@ find . -name repositories.apt -exec bash {} \;
 sudo apt update
 
 # find all packages.apt so we can install dependencies before everything else
-apt_packages=$(find . -name packages.apt -exec cat {} \; | tr '\n' ' ')
+apt_packages=$(find . -name packages.apt -exec cat {} \; | grep -v '^#' | grep -v '^$' | tr '\n' ' ')
 echo "Installing apt packages..."
 sudo apt install -y $apt_packages

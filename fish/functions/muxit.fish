@@ -1,3 +1,20 @@
+function calculate_max_dirname_length
+  set max_length 0
+  while read -l path
+    set dirname (dirname $path)
+    if test "$dirname" = "."
+      set dirname ""
+    else
+      set dirname "$dirname/"
+    end
+    set dirname_length (string length $dirname)
+    if test $dirname_length -gt $max_length
+      set max_length $dirname_length
+    end
+  end
+  echo $max_length
+end
+
 function process_paths
   while read -l path
     set dirname (dirname $path)
@@ -26,34 +43,36 @@ function muxit
   set term_width (/usr/bin/tput cols)
   # set popup_width (math -s0 "round((0.8 * $term_width) / 2) * 2")
   set popup_width 80
-  set left_half_width 30
-  # set left_half_width (math -s0 "round(($popup_width / 2) / 2) * 2")
-  set fzf_prompt_padding (math $left_half_width + 2)
-  set fzf_prompt (printf %{$fzf_prompt_padding}s "")
 
   if test -z "$start_dir"
     set cache_file ~/.cache/muxit-projects
-    
+
     # Update cache if it's missing or older than 1 hour
     if not test -f $cache_file; or test (find $cache_file -mmin +60 2>/dev/null | wc -l) -gt 0
       set_color green
       echo -n "Refreshing project cache "
       set spinner_chars "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏"
       set spinner_index 1
-      
+
       muxit-update-cache &
       set update_pid $last_pid
-      
+
       while kill -0 $update_pid 2>/dev/null
         echo -en "\r\033[KRefreshing project cache $spinner_chars[$spinner_index]"
         set spinner_index (math "$spinner_index % 10 + 1")
         sleep 0.1
       end
-      
+
       echo -e "\r\033[KRefreshing project cache ✓"
       set_color normal
     end
-    
+
+    # Calculate dynamic left_half_width based on longest dirname + 5
+    set max_dirname_length (cat $cache_file | calculate_max_dirname_length)
+    set left_half_width (math $max_dirname_length + 5)
+    set fzf_prompt_padding (math $left_half_width + 2)
+    set fzf_prompt (printf %{$fzf_prompt_padding}s "")
+
     set dir_name (
     cat $cache_file |
     process_paths $left_half_width |

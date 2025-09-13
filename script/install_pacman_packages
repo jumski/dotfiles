@@ -3,7 +3,7 @@
 set -e
 
 # find all packages.pacman so we can install dependencies before everything else
-pacman_packages=$(find . -name packages.pacman -exec cat {} \; | tr '\n' ' ')
+pacman_packages=$(find . -name packages.pacman -exec cat {} \; | grep -v '^#' | grep -v '^$' | tr '\n' ' ')
 pacman_missing_packages=""
 
 # build list of missing packages
