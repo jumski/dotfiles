@@ -26,8 +26,13 @@ function wt_init
     # Determine repo path
     set -l repo_path
     
-    # If repo_name contains a path separator, treat it as a relative path
-    if string match -q '*/*' $repo_name
+    # Handle absolute paths, relative paths, and simple names
+    if string match -q '/*' $repo_name
+        # Absolute path - use as-is
+        set repo_path $repo_name
+        set repo_name (basename $repo_name)  # Extract just the name for config
+    else if string match -q '*/*' $repo_name
+        # Contains slash but not absolute - treat as relative path
         set repo_path (pwd)/$repo_name
         set repo_name (basename $repo_name)  # Extract just the name for config
     else
@@ -40,6 +45,44 @@ function wt_init
         return 1
     end
     
+    # Show confirmation screen
+    echo ""
+    echo -e "\033[1;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+    echo -e "\033[1;37m  Initialize New Worktree Repository\033[0m"
+    echo -e "\033[1;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+    echo ""
+    echo -e "  \033[1;33mRepository Name:\033[0m  $repo_name"
+    echo -e "  \033[1;33mLocation:\033[0m        $repo_path"
+    echo ""
+    echo -e "  \033[1;37mThis will create:\033[0m"
+    echo -e "    \033[36m$repo_path/\033[0m"
+    echo -e "    \033[90m├──\033[0m \033[32m.bare/\033[0m              \033[90m(bare git repository)\033[0m"
+    echo -e "    \033[90m├──\033[0m \033[32mworktrees/\033[0m"
+    echo -e "    \033[90m│   └──\033[0m \033[32mmain/\033[0m          \033[90m(initial worktree)\033[0m"
+    echo -e "    \033[90m├──\033[0m \033[32menvs/\033[0m              \033[90m(environment files)\033[0m"
+    echo -e "    \033[90m├──\033[0m \033[33m.wt-config\033[0m        \033[90m(configuration)\033[0m"
+    echo -e "    \033[90m└──\033[0m \033[33m.wt-post-create\033[0m   \033[90m(hook script)\033[0m"
+    echo ""
+    echo -e "  \033[1;37mActions to perform:\033[0m"
+    echo -e "    \033[32m✓\033[0m Initialize bare Git repository"
+    echo -e "    \033[32m✓\033[0m Create main branch with initial commit"
+    echo -e "    \033[32m✓\033[0m Set up Graphite for stacked PRs"
+    if test "$switch_after" = "true"
+        echo -e "    \033[32m✓\033[0m Open in tmux/muxit after creation"
+    end
+    echo ""
+    echo -e "\033[1;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+    echo ""
+    
+    # Prompt for confirmation
+    echo -n -e "\033[1;33mProceed with initialization? [y/N]\033[0m "
+    read -l confirm
+    if not string match -qi 'y' $confirm
+        echo -e "\033[31m✗\033[0m Initialization cancelled"
+        return 1
+    end
+    
+    echo ""
     echo -e "\033[34m→\033[0m Initializing new worktree repository: "(basename $repo_path)
     
     # Create directory structure
