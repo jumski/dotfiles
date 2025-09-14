@@ -1,0 +1,5 @@
+[custom.urgent_tasks]
+command = '/home/jumski/.dotfiles/todoist-helper/bin/urgent-status.sh'
+when = 'test $? -eq 1'
+style = 'bold red'
+format = '[$output](style) '
