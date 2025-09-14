@@ -5,7 +5,8 @@
 complete -c wt -f
 
 # Main commands
-complete -c wt -n "__fish_use_subcommand" -a "init clone" -d "Initialize new worktree repository"
+complete -c wt -n "__fish_use_subcommand" -a "init" -d "Initialize new local repository"
+complete -c wt -n "__fish_use_subcommand" -a "clone" -d "Clone and set up worktree structure"
 complete -c wt -n "__fish_use_subcommand" -a "new" -d "Create new worktree"
 complete -c wt -n "__fish_use_subcommand" -a "create" -d "Create stacked branch with worktree (via gt)"
 complete -c wt -n "__fish_use_subcommand" -a "list ls" -d "List all worktrees"
@@ -26,6 +27,9 @@ complete -c wt -n "__fish_use_subcommand" -a "help" -d "Show help"
 complete -c wt -n "__fish_use_subcommand" -a "version" -d "Show version"
 
 # Options for specific commands
+complete -c wt -n "__fish_seen_subcommand_from init" -l switch -d "Open in muxit after creation"
+complete -c wt -n "__fish_seen_subcommand_from clone" -l switch -d "Open in muxit after clone"
+
 complete -c wt -n "__fish_seen_subcommand_from new" -l from -d "Base branch for new worktree"
 complete -c wt -n "__fish_seen_subcommand_from new" -l trunk -d "Trunk branch for Graphite"
 complete -c wt -n "__fish_seen_subcommand_from new" -l force-new -d "Skip remote check, always create new"

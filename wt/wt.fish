@@ -7,6 +7,7 @@ set -l wt_dir (dirname (status -f))
 # Source all function modules
 source $wt_dir/functions/wt-common.fish
 source $wt_dir/functions/wt-init.fish
+source $wt_dir/functions/wt-clone.fish
 source $wt_dir/functions/wt-new.fish
 source $wt_dir/functions/wt-create.fish
 source $wt_dir/functions/wt-list.fish
@@ -32,8 +33,10 @@ function wt
     set -l remaining_args $argv[2..-1]
     
     switch $command
-        case init clone
+        case init
             wt_init $remaining_args
+        case clone
+            wt_clone $remaining_args
         case new
             wt_new $remaining_args
         case create

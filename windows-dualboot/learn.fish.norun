@@ -1,0 +1,196 @@
+#!/usr/bin/env fish
+
+# System Information Gathering Script for Windows Dual-Boot Planning
+# Run with: sudo fish windows-dualboot/learn.fish
+
+echo "========================================="
+echo "System Information for Dual-Boot Planning"
+echo "========================================="
+echo ""
+
+# Check if running with sudo
+if test (id -u) -ne 0
+    echo "⚠️  This script should be run with sudo for complete information"
+    echo "Run: sudo fish windows-dualboot/learn.fish"
+    echo ""
+end
+
+# System Overview
+echo "=== System Overview ==="
+echo "Hostname: "(hostname)
+echo "Kernel: "(uname -r)
+echo "Architecture: "(uname -m)
+echo "Distribution: "(lsb_release -ds 2>/dev/null; or cat /etc/os-release | grep PRETTY_NAME | cut -d= -f2 | tr -d '"')
+echo ""
+
+# UEFI/BIOS Mode
+echo "=== Boot Mode ==="
+if test -d /sys/firmware/efi
+    echo "Boot Mode: UEFI"
+    echo "EFI Variables Path: /sys/firmware/efi"
+    # Check Secure Boot status
+    if command -v mokutil &>/dev/null
+        echo "Secure Boot: "(mokutil --sb-state 2>/dev/null | head -1; or echo "Unable to determine")
+    end
+else
+    echo "Boot Mode: Legacy BIOS"
+end
+echo ""
+
+# Current Bootloader
+echo "=== Bootloader Information ==="
+if test -f /boot/grub/grub.cfg
+    echo "Bootloader: GRUB"
+    echo "GRUB Config: /boot/grub/grub.cfg"
+else if test -f /boot/loader/loader.conf
+    echo "Bootloader: systemd-boot"
+else
+    echo "Bootloader: Unknown/Other"
+end
+
+# Check for bootctl if systemd-boot
+if command -v bootctl &>/dev/null
+    echo "Bootctl Status:"
+    bootctl status 2>/dev/null | head -20
+end
+echo ""
+
+# Disk Information
+echo "=== Disk Information ==="
+echo "Block Devices:"
+lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT,MODEL
+echo ""
+
+echo "Disk Partitions (fdisk):"
+fdisk -l 2>/dev/null | grep -E "^Disk /dev/|^/dev/"
+echo ""
+
+# Detailed disk info with parted
+echo "=== Detailed Partition Tables ==="
+for disk in (lsblk -d -n -o NAME | grep -E "^sd|^nvme")
+    set -l device /dev/$disk
+    if test -b $device
+        echo "Partition table for $device:"
+        parted $device print 2>/dev/null; or echo "  Unable to read partition table"
+        echo ""
+    end
+end
+
+# Current mount points
+echo "=== Current Mount Points ==="
+mount | grep -E "^/dev/" | column -t
+echo ""
+
+# Disk usage
+echo "=== Disk Usage ==="
+df -h | grep -E "^/dev/|^Filesystem"
+echo ""
+
+# Available disk space for new drive
+echo "=== SATA/NVMe Ports Status ==="
+echo "SATA Controllers:"
+lspci | grep -i sata
+echo ""
+echo "NVMe Controllers:"
+lspci | grep -i nvme
+echo ""
+
+# Check for existing Windows partitions
+echo "=== Checking for Existing Windows Partitions ==="
+for part in (lsblk -n -o NAME,FSTYPE | grep -E "ntfs|vfat" | awk '{print $1}')
+    echo "Potential Windows partition: /dev/$part"
+    blkid /dev/$part 2>/dev/null
+end
+echo ""
+
+# Memory Information
+echo "=== Memory Information ==="
+free -h
+echo ""
+
+# CPU Information
+echo "=== CPU Information ==="
+lscpu | grep -E "Model name:|Architecture:|CPU\(s\):|Thread\(s\) per core:|Core\(s\) per socket:"
+echo ""
+
+# Check virtualization
+echo "=== Virtualization Support ==="
+if grep -E "vmx|svm" /proc/cpuinfo &>/dev/null
+    echo "Virtualization: Supported"
+    if grep vmx /proc/cpuinfo &>/dev/null
+        echo "Type: Intel VT-x"
+    else
+        echo "Type: AMD-V"
+    end
+else
+    echo "Virtualization: Not detected"
+end
+echo ""
+
+# Network interfaces (for Windows driver planning)
+echo "=== Network Interfaces ==="
+ip link show | grep -E "^[0-9]+:" | cut -d: -f2 | tr -d ' '
+echo ""
+lspci | grep -i -E "ethernet|network|wireless"
+echo ""
+
+# Graphics cards
+echo "=== Graphics Information ==="
+lspci | grep -i vga
+if command -v nvidia-smi &>/dev/null
+    echo "NVIDIA Driver Version:"
+    nvidia-smi --query-gpu=driver_version --format=csv,noheader 2>/dev/null
+end
+echo ""
+
+# Sound devices
+echo "=== Audio Devices ==="
+lspci | grep -i audio
+echo ""
+
+# USB devices
+echo "=== USB Controllers ==="
+lspci | grep -i usb
+echo ""
+
+# Check for BitLocker (if any NTFS partitions exist)
+echo "=== BitLocker Check ==="
+for part in (lsblk -n -o NAME,FSTYPE | grep ntfs | awk '{print $1}')
+    set -l device /dev/$part
+    if test -b $device
+        echo -n "Checking $device: "
+        if dd if=$device bs=1 skip=3 count=8 2>/dev/null | grep -q "NTFS"
+            if dd if=$device bs=1 skip=424 count=2 2>/dev/null | xxd -p | grep -q "fffe"
+                echo "Possibly BitLocker encrypted"
+            else
+                echo "Standard NTFS"
+            end
+        else
+            echo "Not NTFS"
+        end
+    end
+end
+echo ""
+
+# Backup current boot configuration
+echo "=== Current Boot Configuration Backup ==="
+echo "Creating backup directory: /tmp/boot-backup-"(date +%Y%m%d-%H%M%S)
+set -l backup_dir /tmp/boot-backup-(date +%Y%m%d-%H%M%S)
+mkdir -p $backup_dir
+
+if test -f /boot/grub/grub.cfg
+    cp /boot/grub/grub.cfg $backup_dir/ 2>/dev/null
+    echo "GRUB config backed up to $backup_dir/grub.cfg"
+end
+
+if test -d /boot/efi
+    echo "EFI partition contents:"
+    ls -la /boot/efi/ 2>/dev/null
+end
+echo ""
+
+echo "========================================="
+echo "System scan complete!"
+echo "Review this information before proceeding with dual-boot setup."
+echo "Save this output for reference: sudo fish windows-dualboot/learn.fish > system-info.txt"
+echo "========================================="
