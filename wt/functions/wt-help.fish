@@ -55,6 +55,11 @@ function _wt_help
     echo "base branch (default: trunk)"
     echo -n "      "
     set_color brblack
+    printf "%-26s" "--trunk <branch>"
+    set_color normal
+    echo "trunk branch for graphite init"
+    echo -n "      "
+    set_color brblack
     printf "%-26s" "--force-new"
     set_color normal
     echo "skip remote check, always create new"
@@ -85,17 +90,17 @@ function _wt_help
     echo "all gt create options supported"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "list"
+    printf "%-28s" "list (ls)"
     set_color normal
     echo "list all worktrees"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "switch <name>"
+    printf "%-28s" "switch <name> (sw)"
     set_color normal
     echo "open worktree in muxit (no cd)"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "remove <name>"
+    printf "%-28s" "remove <name> (rm)"
     set_color normal
     echo "remove worktree (auto-detects current)"
     echo ""
@@ -148,14 +153,19 @@ function _wt_help
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-28s" "status [--all]"
+    printf "%-28s" "status [--all] (st)"
     set_color normal
     echo "show worktree status"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "sync [--all] [--force]"
+    printf "%-28s" "sync [--all] [--force] [--reset]"
     set_color normal
     echo "sync with remote"
+    echo -n "      "
+    set_color brblack
+    printf "%-26s" "--reset"
+    set_color normal
+    echo "reset to origin branch (hard reset)"
     echo -n "    "
     set_color cyan
     printf "%-28s" "submit"
@@ -201,7 +211,7 @@ function _wt_help
     echo "show this help"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "version"
+    printf "%-28s" "version (--version, -v)"
     set_color normal
     echo "show version"
     echo ""
