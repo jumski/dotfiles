@@ -1,2 +1,2 @@
-# Update todoist urgent tasks cache every 10 seconds
-*/10 * * * * /home/jumski/.dotfiles/todoist-helper/bin/update-urgent-cache.sh >/dev/null 2>&1
+# Update todoist urgent tasks cache every minute
+* * * * * /home/jumski/.dotfiles/todoist-helper/bin/update-urgent-cache.sh >/dev/null 2>&1

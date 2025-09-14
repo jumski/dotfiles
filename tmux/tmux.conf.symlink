@@ -218,6 +218,8 @@ set -g @theme_plugin_battery_red_threshold 30
 set -g @theme_plugin_battery_yellow_threshold 70
 set -g @theme_plugin_datetime_format "%Y-%m-%d %H:%M"
 
-
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run '~/.tmux/plugins/tpm/tpm'
+
+# Custom urgent tasks indicator - must come after TPM to override theme
+run-shell 'tmux set-option -g status-left "#(/home/jumski/.dotfiles/todoist-helper/bin/tmux-urgent-indicator.sh)$(tmux show-option -gv status-left)" >/dev/null 2>&1 || true'

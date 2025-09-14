@@ -12,8 +12,8 @@ fi
 # Read and parse JSON
 if HAS_TASKS=$(jq -r '.has_tasks // false' "$CACHE_FILE" 2>/dev/null); then
     if [[ "$HAS_TASKS" == "true" ]]; then
-        # Print first task title and exit 1
-        jq -r '.first_task // "Urgent task"' "$CACHE_FILE" 2>/dev/null || echo "Urgent task"
+        # Print simple indicator and exit 1
+        echo "TODO"
         exit 1
     fi
 fi
