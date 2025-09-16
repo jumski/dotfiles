@@ -33,9 +33,50 @@ function wt_create
         echo "Error: Not on a branch" >&2
         return 1
     end
-    
+
+    # Get the trunk branch from Graphite
+    set -l trunk_branch (gt trunk 2>/dev/null)
+    if test -z "$trunk_branch"
+        set trunk_branch "main"  # Fallback to main if gt trunk fails
+    end
+
+    # Always show what will happen
+    echo ""
+    echo -e "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+    echo -e "\033[1;36m  Graphite Branch Creation\033[0m"
+    echo -e "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+    echo ""
+    echo -e "\033[33m  Current branch:\033[0m \033[1m$original_branch\033[0m"
+
+    if test "$original_branch" = "$trunk_branch"
+        echo -e "\033[32m  Base branch:   \033[0m \033[1;32m$trunk_branch\033[0m \033[90m(trunk)\033[0m"
+        echo ""
+        echo -e "\033[32m  ✓\033[0m Will create a new stack based on \033[1;32m$trunk_branch\033[0m"
+    else
+        echo -e "\033[31m  Base branch:   \033[0m \033[1;31m$original_branch\033[0m \033[90m(NOT trunk)\033[0m"
+        echo ""
+        echo -e "\033[31m  ⚠\033[0m Will stack on top of \033[1;31m$original_branch\033[0m, not \033[1m$trunk_branch\033[0m"
+        echo -e "\033[90m    To start a new stack, switch to $trunk_branch first\033[0m"
+    end
+
+    echo ""
+    echo -e "\033[90m  Command: gt create $gt_args\033[0m"
+    echo -e "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+    echo ""
+
+    # Ask for confirmation to proceed
+    read -l -P "$(echo -e '\033[1mProceed with branch creation?\033[0m (Y/n) ')" response
+    set -l read_status $status
+
+    # Check if read was interrupted (ctrl+c) or user said no
+    if test $read_status -ne 0 -o "$response" = "n" -o "$response" = "N"
+        echo -e "\033[90mCancelled\033[0m"
+        return 1
+    end
+
+    echo ""
     echo -e "\033[34m→\033[0m Creating stacked branch with Graphite..."
-    
+
     # Run gt create with all passed arguments (except --switch)
     gt create $gt_args
     or begin
