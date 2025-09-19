@@ -38,9 +38,11 @@ function wt_remove
     _wt_get_repo_config
     
     set -l worktree_path "$WORKTREES_PATH/$name"
-    
+    set -l abs_worktree_path (realpath "$worktree_path" 2>/dev/null; or echo "$repo_root/$worktree_path")
+
     # Check if worktree exists in git or as directory
-    set -l git_has_worktree (git -C $BARE_PATH worktree list --porcelain | grep -q "worktree $worktree_path"; echo $status)
+    # Use absolute path for git check since git worktree list returns absolute paths
+    set -l git_has_worktree (git -C $BARE_PATH worktree list --porcelain | grep -q "^worktree $abs_worktree_path\$"; echo $status)
     set -l dir_exists (test -d $worktree_path; echo $status)
     
     if test $git_has_worktree -ne 0 -a $dir_exists -ne 0
