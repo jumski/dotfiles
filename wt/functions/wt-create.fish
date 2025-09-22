@@ -34,33 +34,63 @@ function wt_create
         return 1
     end
 
-    # Get the trunk branch from Graphite
-    set -l trunk_branch (gt trunk 2>/dev/null)
-    if test -z "$trunk_branch"
-        set trunk_branch "main"  # Fallback to main if gt trunk fails
+    # Check if Graphite is available and configured for this repo
+    set -l has_graphite false
+    set -l trunk_branch "main"
+
+    # Try to get repo info from Graphite - this will fail if not initialized
+    if command -q gt
+        # Check if this repo is initialized with Graphite by trying to get repo info
+        gt repo 2>/dev/null >/dev/null
+        if test $status -eq 0
+            # Repo is initialized with Graphite, get the trunk
+            set trunk_branch (gt trunk 2>/dev/null)
+            if test -n "$trunk_branch"
+                set has_graphite true
+            else
+                set trunk_branch "main"
+            end
+        end
     end
 
     # Always show what will happen
     echo ""
     echo -e "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-    echo -e "\033[1;36m  Graphite Branch Creation\033[0m"
+    if test $has_graphite = true
+        echo -e "\033[1;36m  Graphite Branch Creation\033[0m"
+    else
+        echo -e "\033[1;36m  Git Branch Creation\033[0m"
+    end
     echo -e "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     echo ""
     echo -e "\033[33m  Current branch:\033[0m \033[1m$original_branch\033[0m"
 
-    if test "$original_branch" = "$trunk_branch"
-        echo -e "\033[32m  Base branch:   \033[0m \033[1;32m$trunk_branch\033[0m \033[90m(trunk)\033[0m"
+    if test $has_graphite = true
+        if test "$original_branch" = "$trunk_branch"
+            echo -e "\033[32m  Base branch:   \033[0m \033[1;32m$trunk_branch\033[0m \033[90m(trunk)\033[0m"
+            echo ""
+            echo -e "\033[32m  ✓\033[0m Will create a new stack based on \033[1;32m$trunk_branch\033[0m"
+        else
+            echo -e "\033[31m  Base branch:   \033[0m \033[1;31m$original_branch\033[0m \033[90m(NOT trunk)\033[0m"
+            echo ""
+            echo -e "\033[31m  ⚠\033[0m Will stack on top of \033[1;31m$original_branch\033[0m, not \033[1m$trunk_branch\033[0m"
+            echo -e "\033[90m    To start a new stack, switch to $trunk_branch first\033[0m"
+        end
         echo ""
-        echo -e "\033[32m  ✓\033[0m Will create a new stack based on \033[1;32m$trunk_branch\033[0m"
+        echo -e "\033[90m  Command: gt create $gt_args\033[0m"
     else
-        echo -e "\033[31m  Base branch:   \033[0m \033[1;31m$original_branch\033[0m \033[90m(NOT trunk)\033[0m"
+        echo -e "\033[32m  Base branch:   \033[0m \033[1;32m$original_branch\033[0m"
         echo ""
-        echo -e "\033[31m  ⚠\033[0m Will stack on top of \033[1;31m$original_branch\033[0m, not \033[1m$trunk_branch\033[0m"
-        echo -e "\033[90m    To start a new stack, switch to $trunk_branch first\033[0m"
+        if test -z "$branch_name"
+            echo -e "\033[31m  ⚠\033[0m No branch name provided"
+            echo -e "\033[90m    Usage: wt create <branch-name>\033[0m"
+            echo -e "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+            return 1
+        end
+        echo -e "\033[32m  ✓\033[0m Will create branch '\033[1m$branch_name\033[0m' from \033[1;32m$original_branch\033[0m"
+        echo ""
+        echo -e "\033[90m  Note: Graphite not available, using standard git\033[0m"
     end
-
-    echo ""
-    echo -e "\033[90m  Command: gt create $gt_args\033[0m"
     echo -e "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     echo ""
 
@@ -75,15 +105,32 @@ function wt_create
     end
 
     echo ""
-    echo -e "\033[34m→\033[0m Creating stacked branch with Graphite..."
 
-    # Run gt create with all passed arguments (except --switch)
-    gt create $gt_args
-    or begin
-        echo "Error: Failed to create branch with Graphite" >&2
-        return 1
+    if test $has_graphite = true
+        echo -e "\033[34m→\033[0m Creating stacked branch with Graphite..."
+
+        # Run gt create with all passed arguments (except --switch)
+        gt create $gt_args
+        or begin
+            echo "Error: Failed to create branch with Graphite" >&2
+            return 1
+        end
+    else
+        echo -e "\033[34m→\033[0m Creating branch with git..."
+
+        if test -z "$branch_name"
+            echo "Error: Branch name is required when not using Graphite" >&2
+            return 1
+        end
+
+        # Create and checkout the new branch
+        git checkout -b $branch_name
+        or begin
+            echo "Error: Failed to create branch '$branch_name'" >&2
+            return 1
+        end
     end
-    
+
     # Get the newly created branch name (we're now on it)
     set -l new_branch (git branch --show-current)
     
@@ -92,7 +139,11 @@ function wt_create
         return 1
     end
     
-    echo -e "\033[32m✓\033[0m Created branch '$new_branch' stacked on '$original_branch'"
+    if test $has_graphite = true
+        echo -e "\033[32m✓\033[0m Created branch '$new_branch' stacked on '$original_branch'"
+    else
+        echo -e "\033[32m✓\033[0m Created branch '$new_branch' from '$original_branch'"
+    end
     
     # Switch back to original branch in current worktree
     echo -e "\033[34m→\033[0m Switching back to '$original_branch' in current worktree..."
