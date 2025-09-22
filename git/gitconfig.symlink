@@ -22,7 +22,7 @@
   untrackedcache = true
   pager = delta
 [diff]
-  external = difft
+  ; external = difft
   colorMoved = default
 
 [difftool]
@@ -36,7 +36,7 @@
   dark = true
   side-by-side = true
   line-numbers = true
-  features = tokyonight_night
+
 
 [merge]
   conflictstyle = zdiff3
