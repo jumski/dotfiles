@@ -35,10 +35,20 @@ function wt_clone
         if string match -qr '^[^/]+/[^/]+$' $repo_url
             set repo_dir_name $repo_url
             set repo_name (basename $repo_url)  # Just the repo name for config
-        else if string match -qr 'github\.com[:/]([^/]+/[^/]+)(\.git)?$' $repo_url
-            # Extract org/repo from GitHub URLs
-            set repo_dir_name (string match -r 'github\.com[:/]([^/]+/[^/]+)(\.git)?$' $repo_url)[2]
-            set repo_name (basename $repo_dir_name)  # Just the repo name for config
+        else if string match -qr 'git@github\.com:([^/]+)/([^/]+)(\.git)?$' $repo_url
+            # Extract org from GitHub SSH URLs (git@github.com:org/repo.git)
+            set -l matches (string match -r 'git@github\.com:([^/]+)/([^/]+)(\.git)?$' $repo_url)
+            set -l org_name $matches[2]
+            set -l project_name (string replace -r '\.git$' '' $matches[3])
+            set repo_dir_name "$org_name/$project_name"
+            set repo_name $project_name
+        else if string match -qr 'https?://github\.com/([^/]+)/([^/]+)(\.git)?$' $repo_url
+            # Extract org from GitHub HTTPS URLs
+            set -l matches (string match -r 'https?://github\.com/([^/]+)/([^/]+)(\.git)?$' $repo_url)
+            set -l org_name $matches[2]
+            set -l project_name (string replace -r '\.git$' '' $matches[3])
+            set repo_dir_name "$org_name/$project_name"
+            set repo_name $project_name
         else if string match -qr 'gitlab\.com[:/]([^/]+/[^/]+)(\.git)?$' $repo_url
             # Extract org/repo from GitLab URLs
             set repo_dir_name (string match -r 'gitlab\.com[:/]([^/]+/[^/]+)(\.git)?$' $repo_url)[2]
