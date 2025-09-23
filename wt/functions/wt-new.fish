@@ -118,13 +118,23 @@ function wt_new
     end
     popd
     
-    # Copy environment files if they exist
-    if test -d "$repo_root/$ENVS_PATH"
-        echo -e "\033[34m→\033[0m Copying environment files..."
-        pushd "$repo_root/$worktree_path"
-        _wt_env_sync
-        popd
+    # Copy environment files to the new worktree
+    echo -e "\033[34m→\033[0m Copying environment files..."
+
+    # Call env sync with auto-confirm to copy env files to the new worktree
+    set -l current_dir (pwd)
+    cd "$repo_root/$worktree_path"
+
+    # Source the env sync function if not already available
+    if not functions -q _wt_env_sync
+        set -l wt_dir (dirname (status filename))
+        source "$wt_dir/wt-env.fish"
     end
+
+    # Call env sync with --yes to skip confirmation and --env-only for just env files
+    _wt_env_sync --yes --env-only
+
+    cd $current_dir
     
     echo -e "\033[32m✓\033[0m Worktree created at $worktree_path"
     echo -e "\033[32m✓\033[0m Branch '$name' created from '$base_branch'"
