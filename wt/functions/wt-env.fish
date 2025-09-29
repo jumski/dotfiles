@@ -61,7 +61,22 @@ function _wt_env_sync
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
 
+    # Get current worktree name BEFORE changing directories
+    set -l current_worktree_name (_wt_get_current_worktree)
+
+    # Get and validate repo root
     set -l repo_root (_wt_get_repo_root)
+    if test -z "$repo_root"
+        echo "Error: Could not find worktree repository root" >&2
+        return 1
+    end
+
+    # Additional safety: verify it looks like a worktree repo
+    if not test -f "$repo_root/.wt-config"
+        echo "Error: Invalid repository root: $repo_root" >&2
+        return 1
+    end
+
     set -l saved_pwd (pwd)
     cd $repo_root
 
@@ -73,46 +88,25 @@ function _wt_env_sync
 
     _wt_get_repo_config
 
-    # Source path is always repo_root/envs
+    # Build source path and validate it exists within repo_root
     set -l source_path "$repo_root/envs"
 
     if not test -d "$source_path"
-        echo "Error: No envs directory found at $source_path" >&2
-        cd $saved_pwd
-        return 1
-    end
-
-    # Use rsync dry-run to get list of files that would be copied
-    # Pick a sample worktree to test against (first one we find)
-    set -l sample_worktree ""
-    for wt in $WORKTREES_PATH/*
-        if test -d "$wt"
-            set sample_worktree "$wt"
-            break
+        if test $skip_confirm = true
+            # Auto mode (called from wt-new) - show warning and continue
+            echo -e "\033[33m⚠\033[0m No envs directory found at $source_path - skipping environment sync"
+            cd $saved_pwd
+            return 0
+        else
+            # Manual mode - show error and stop
+            echo "Error: No envs directory found at $source_path" >&2
+            cd $saved_pwd
+            return 1
         end
     end
 
-    if test -z "$sample_worktree"
-        echo "Error: No worktrees found to sync to" >&2
-        cd $saved_pwd
-        return 1
-    end
-
-    # Get list of files using rsync dry-run
-    set -l files_to_copy (rsync -an \
-        --exclude='.git' \
-        --exclude='.git/**' \
-        --exclude='.bare' \
-        --exclude='.bare/**' \
-        --exclude='worktrees' \
-        --exclude='worktrees/**' \
-        --exclude='.graphite_cache_persist' \
-        --exclude='.graphite_pr_info' \
-        --include='.*' \
-        --itemize-changes \
-        "$source_path/" "$sample_worktree/" 2>/dev/null | \
-        grep '^>' | \
-        awk '{print $2}')
+    # Get list of files to copy using rsync dry-run
+    set -l files_to_copy (rsync -an --exclude='.git' --itemize-changes "$source_path/" "$sample_worktree/" 2>/dev/null | grep '^>' | awk '{print $2}')
 
     if test (count $files_to_copy) -eq 0
         echo "No environment files found in $source_path"
@@ -122,9 +116,6 @@ function _wt_env_sync
 
     # Determine target worktrees
     set -l target_worktrees
-
-    # Get current worktree name
-    set -l current_worktree_name (_wt_get_current_worktree)
 
     # If not in a worktree, default to --all behavior
     if test -z "$current_worktree_name"
@@ -165,7 +156,16 @@ function _wt_env_sync
 
         for i in (seq 1 $preview_count)
             set -l file $files_to_copy[$i]
-            echo -e "  \033[90m•\033[0m $file"
+            set -l dir_path (dirname "$file")
+            set -l file_name (basename "$file")
+
+            if test "$dir_path" = "."
+                # File is in root, just show filename
+                echo -e "  \033[90m•\033[0m $file_name"
+            else
+                # Show muted directory path + normal filename
+                echo -e "  \033[90m•\033[0m \033[90m$dir_path/\033[0m$file_name"
+            end
         end
 
         if test (count $files_to_copy) -gt $preview_count
@@ -175,7 +175,12 @@ function _wt_env_sync
         echo
         echo -e "\033[36mTarget worktree(s):\033[0m"
         for target in $target_worktrees
-            echo -e "  \033[90m•\033[0m $target"
+            if test "$target" = "$current_worktree_name"
+                # Highlight current worktree in green with muted green label
+                echo -e "  \033[90m•\033[0m \033[32m$target\033[0m \033[92m(current)\033[0m"
+            else
+                echo -e "  \033[90m•\033[0m $target"
+            end
         end
         echo -e "\033[33m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     end
@@ -226,18 +231,8 @@ function _wt_env_sync
             echo -e "  \033[34m→\033[0m Syncing to: $target"
         end
 
-        # Use rsync to copy files from envs/ to target worktree root
-        rsync -a \
-            --exclude='.git' \
-            --exclude='.git/**' \
-            --exclude='.bare' \
-            --exclude='.bare/**' \
-            --exclude='worktrees' \
-            --exclude='worktrees/**' \
-            --exclude='.graphite_cache_persist' \
-            --exclude='.graphite_pr_info' \
-            --include='.*' \
-            "$source_path/" "$target_path/"
+        # Copy files from envs/ to target worktree root using rsync
+        rsync -a --exclude='.git' "$source_path/" "$target_path/"
 
         if test $status -eq 0
             if test $skip_confirm = false
