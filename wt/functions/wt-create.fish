@@ -34,7 +34,7 @@ function wt_create
         return 1
     end
 
-    # Check if Graphite is available and configured for this repo
+    # Check if Graphite is available and current branch is tracked
     set -l has_graphite false
     set -l trunk_branch "main"
 
@@ -46,7 +46,12 @@ function wt_create
             # Repo is initialized with Graphite, get the trunk
             set trunk_branch (gt trunk 2>/dev/null)
             if test -n "$trunk_branch"
-                set has_graphite true
+                # Check if current branch is tracked by Graphite
+                # gt branch info will succeed only if the branch is tracked
+                gt branch info $original_branch 2>/dev/null >/dev/null
+                if test $status -eq 0
+                    set has_graphite true
+                end
             else
                 set trunk_branch "main"
             end
@@ -89,7 +94,7 @@ function wt_create
         end
         echo -e "\033[32m  ✓\033[0m Will create branch '\033[1m$branch_name\033[0m' from \033[1;32m$original_branch\033[0m"
         echo ""
-        echo -e "\033[90m  Note: Graphite not available, using standard git\033[0m"
+        echo -e "\033[90m  Note: Current branch not tracked by Graphite, using standard git\033[0m"
     end
     echo -e "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     echo ""

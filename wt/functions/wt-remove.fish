@@ -105,7 +105,7 @@ function wt_remove
     
     # Kill tmux session for the removed worktree if it exists
     set -l repo_name (basename $repo_root)
-    set -l session_name "$name@$repo_name"
+    set -l session_name (_wt_get_session_name $name $repo_name)
     if tmux has-session -t "$session_name" 2>/dev/null
         echo -e "\033[34m→\033[0m Killing tmux session: $session_name"
         tmux kill-session -t "$session_name"

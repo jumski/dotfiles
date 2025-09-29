@@ -31,33 +31,13 @@ function wt_clone
     set -l repo_dir_name  # Full path for directory structure
     if test -z "$repo_name"
         # No name provided - extract from URL and use DEFAULT_CODE_DIR
-        # For org/repo format, keep the full path for directory
-        if string match -qr '^[^/]+/[^/]+$' $repo_url
-            set repo_dir_name $repo_url
-            set repo_name (basename $repo_url)  # Just the repo name for config
-        else if string match -qr 'git@github\.com:([^/]+)/([^/]+)(\.git)?$' $repo_url
-            # Extract org from GitHub SSH URLs (git@github.com:org/repo.git)
-            set -l matches (string match -r 'git@github\.com:([^/]+)/([^/]+)(\.git)?$' $repo_url)
-            set -l org_name $matches[2]
-            set -l project_name (string replace -r '\.git$' '' $matches[3])
-            set repo_dir_name "$org_name/$project_name"
-            set repo_name $project_name
-        else if string match -qr 'https?://github\.com/([^/]+)/([^/]+)(\.git)?$' $repo_url
-            # Extract org from GitHub HTTPS URLs
-            set -l matches (string match -r 'https?://github\.com/([^/]+)/([^/]+)(\.git)?$' $repo_url)
-            set -l org_name $matches[2]
-            set -l project_name (string replace -r '\.git$' '' $matches[3])
-            set repo_dir_name "$org_name/$project_name"
-            set repo_name $project_name
-        else if string match -qr 'gitlab\.com[:/]([^/]+/[^/]+)(\.git)?$' $repo_url
-            # Extract org/repo from GitLab URLs
-            set repo_dir_name (string match -r 'gitlab\.com[:/]([^/]+/[^/]+)(\.git)?$' $repo_url)[2]
-            set repo_name (basename $repo_dir_name)  # Just the repo name for config
-        else
-            # Fallback to just the repo name
-            set repo_name (basename $repo_url .git)
-            set repo_dir_name $repo_name
+        set -l parsed (_wt_parse_repo_url $repo_url)
+        if test $status -ne 0
+            echo "Error: Failed to parse repository URL" >&2
+            return 1
         end
+        set repo_dir_name $parsed[1]
+        set repo_name $parsed[2]
         set repo_path "$DEFAULT_CODE_DIR/$repo_dir_name"
     else
         # Name provided - treat as relative path from current directory

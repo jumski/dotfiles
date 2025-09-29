@@ -220,3 +220,89 @@ function _wt_line
     set -l char "─"
     echo (string repeat -n $width $char)
 end
+
+# Generate tmux session name for a worktree
+# Usage: _wt_get_session_name <worktree_name> <repo_name>
+# Returns sanitized session name in format: worktree@repo
+function _wt_get_session_name
+    set -l worktree_name $argv[1]
+    set -l repo_name $argv[2]
+
+    if test -z "$worktree_name"
+        echo "Error: worktree name required" >&2
+        return 1
+    end
+
+    if test -z "$repo_name"
+        echo "Error: repo name required" >&2
+        return 1
+    end
+
+    # Create session name in format: worktree@repo
+    set -l session_name "$worktree_name@$repo_name"
+
+    # Sanitize: keep only alphanumeric, hyphens, underscores, and @ symbol
+    echo $session_name | tr -cd '[:alnum:]-_@'
+end
+
+# Parse repository URL to extract organization/user and repository name
+# Usage: _wt_parse_repo_url <url>
+# Returns two lines:
+#   1. repo_dir_name (e.g., "supabase/smart-office-demo")
+#   2. repo_name (e.g., "smart-office-demo")
+function _wt_parse_repo_url
+    set -l repo_url $argv[1]
+    set -l repo_dir_name
+    set -l repo_name
+
+    if test -z "$repo_url"
+        echo "Error: Repository URL required" >&2
+        return 1
+    end
+
+    # Handle org/repo short format (e.g., supabase/smart-office-demo)
+    # Must not contain : or @ to avoid matching full URLs
+    if string match -qr '^[^/:@]+/[^/:@]+$' $repo_url
+        set repo_dir_name $repo_url
+        set repo_name (basename $repo_url)
+
+    # Handle GitHub SSH URLs (git@github.com:org/repo.git)
+    else if string match -qr 'git@github\.com:([^/]+)/(.+)' $repo_url
+        set -l matches (string match -r 'git@github\.com:([^/]+)/(.+)' $repo_url)
+        set -l org_name $matches[2]
+        set -l project_name (string replace -r '\.git$' '' $matches[3])
+        set repo_dir_name "$org_name/$project_name"
+        set repo_name $project_name
+
+    # Handle GitHub HTTPS URLs (https://github.com/org/repo.git)
+    else if string match -qr 'https?://github\.com/([^/]+)/(.+)' $repo_url
+        set -l matches (string match -r 'https?://github\.com/([^/]+)/(.+)' $repo_url)
+        set -l org_name $matches[2]
+        set -l project_name (string replace -r '\.git$' '' $matches[3])
+        set repo_dir_name "$org_name/$project_name"
+        set repo_name $project_name
+
+    # Handle GitLab SSH URLs (git@gitlab.com:org/repo.git)
+    else if string match -qr 'git@gitlab\.com:(.+)' $repo_url
+        set -l matches (string match -r 'git@gitlab\.com:(.+)' $repo_url)
+        set -l full_path (string replace -r '\.git$' '' $matches[2])
+        set repo_dir_name $full_path
+        set repo_name (basename $full_path)
+
+    # Handle GitLab HTTPS URLs
+    else if string match -qr 'https?://gitlab\.com/(.+)' $repo_url
+        set -l matches (string match -r 'https?://gitlab\.com/(.+)' $repo_url)
+        set -l full_path (string replace -r '\.git$' '' $matches[2])
+        set repo_dir_name $full_path
+        set repo_name (basename $full_path)
+
+    # Fallback: just use the basename
+    else
+        set repo_name (basename $repo_url .git)
+        set repo_dir_name $repo_name
+    end
+
+    # Return both values
+    echo $repo_dir_name
+    echo $repo_name
+end

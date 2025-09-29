@@ -60,10 +60,9 @@ function wt_switch
         # Fallback to directory name if not in config
         set repo_name (basename $repo_root)
     end
-    
-    # Create custom session name: worktree@repo
-    set -l session_name "$name@$repo_name"
-    set session_name (echo $session_name | tr -cd '[:alnum:]-_@')
+
+    # Create custom session name using shared utility
+    set -l session_name (_wt_get_session_name $name $repo_name)
     
     # Check if session already exists
     if tmux has-session -t $session_name 2>/dev/null
