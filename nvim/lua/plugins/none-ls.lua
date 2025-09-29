@@ -2,7 +2,6 @@ return {
   "nvimtools/none-ls.nvim",
   dependencies = {
     "williamboman/mason.nvim",
-    "jose-elias-alvarez/null-ls.nvim",
   },
   config = function()
     local null_ls = require("null-ls")

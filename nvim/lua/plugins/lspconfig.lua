@@ -13,6 +13,8 @@ local WHICH_KEY_MAPPINGS = {
 return {
   "neovim/nvim-lspconfig",
   config = function()
+    -- Suppress deprecation warning until vim.lsp.config is actually available
+    ---@diagnostic disable-next-line: deprecated
     local lspconfig = require("lspconfig")
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
