@@ -75,14 +75,14 @@ function _wt_help
     echo "open in muxit after creation"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "create [name] [options]"
+    printf "%-28s" "branch <name> [options] (br)"
     set_color normal
-    echo "create stacked branch & worktree (via gt)"
+    echo "create new branch & worktree"
     echo -n "      "
     set_color brblack
     printf "%-26s" "-m <message>"
     set_color normal
-    echo "commit message"
+    echo "commit message (with graphite)"
     echo -n "      "
     set_color brblack
     printf "%-26s" "--switch"
@@ -92,7 +92,7 @@ function _wt_help
     set_color brblack
     printf "%-26s" "[gt options]"
     set_color normal
-    echo "all gt create options supported"
+    echo "all gt create options (if graphite)"
     echo -n "    "
     set_color cyan
     printf "%-28s" "list (ls)"

@@ -108,6 +108,7 @@ function _wt_env_sync
         --exclude='worktrees/**' \
         --exclude='.graphite_cache_persist' \
         --exclude='.graphite_pr_info' \
+        --include='.*' \
         --itemize-changes \
         "$source_path/" "$sample_worktree/" 2>/dev/null | \
         grep '^>' | \
@@ -235,6 +236,7 @@ function _wt_env_sync
             --exclude='worktrees/**' \
             --exclude='.graphite_cache_persist' \
             --exclude='.graphite_pr_info' \
+            --include='.*' \
             "$source_path/" "$target_path/"
 
         if test $status -eq 0

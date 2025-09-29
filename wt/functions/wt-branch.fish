@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
-# Create stacked branch using Graphite and create worktree for it
+# Create new branch (via Graphite if available) and worktree for it
 
-function wt_create
+function wt_branch
     set -l branch_name ""
     set -l switch_after false
     set -l gt_args
@@ -88,7 +88,7 @@ function wt_create
         echo ""
         if test -z "$branch_name"
             echo -e "\033[31m  ⚠\033[0m No branch name provided"
-            echo -e "\033[90m    Usage: wt create <branch-name>\033[0m"
+            echo -e "\033[90m    Usage: wt branch <branch-name>\033[0m"
             echo -e "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
             return 1
         end

@@ -131,8 +131,8 @@ function wt_new
         source "$wt_dir/wt-env.fish"
     end
 
-    # Call env sync with --yes to skip confirmation and --env-only for just env files
-    _wt_env_sync --yes --env-only
+    # Call env sync with --yes to skip confirmation
+    _wt_env_sync --yes
 
     cd $current_dir
     

@@ -147,9 +147,9 @@ function wt_dashboard
     
     echo -n "    "
     set_color cyan
-    printf "%-12s" "create"
+    printf "%-12s" "branch"
     set_color normal
-    echo "create stacked branch with worktree (via gt)"
+    echo "create new branch with worktree"
     
     echo -n "    "
     set_color cyan

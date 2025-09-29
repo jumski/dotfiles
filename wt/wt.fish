@@ -9,7 +9,7 @@ source $wt_dir/functions/wt-common.fish
 source $wt_dir/functions/wt-init.fish
 source $wt_dir/functions/wt-clone.fish
 source $wt_dir/functions/wt-new.fish
-source $wt_dir/functions/wt-create.fish
+source $wt_dir/functions/wt-branch.fish
 source $wt_dir/functions/wt-list.fish
 source $wt_dir/functions/wt-remove.fish
 source $wt_dir/functions/wt-switch.fish
@@ -39,8 +39,8 @@ function wt
             wt_clone $remaining_args
         case new
             wt_new $remaining_args
-        case create
-            wt_create $remaining_args
+        case branch br
+            wt_branch $remaining_args
         case list ls
             wt_list $remaining_args
         case remove rm
