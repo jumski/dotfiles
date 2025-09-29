@@ -1,0 +1,61 @@
+#!/usr/bin/env fish
+
+# Run all fishtape tests or tests for a specific module
+
+set -l module $argv[1]
+
+# Color output
+set -l green "\033[0;32m"
+set -l red "\033[0;31m"
+set -l grey "\033[0;37m"
+set -l blue "\033[0;34m"
+set -l reset "\033[0m"
+
+function print_header
+    echo -e "$grey"
+    echo
+    echo -e "=== $blue$argv[1]$grey"
+    echo -e "============================================================$reset"
+end
+
+# Change to dotfiles directory
+cd (dirname (status -f))/..
+
+# Find test files
+if test -n "$module"
+    # Run tests for specific module
+    set -l test_files (find "$module" -path "*/tests/*.test.fish" 2>/dev/null)
+
+    if test (count $test_files) -eq 0
+        echo -e "{$red}No tests found for module: $module{$reset}"
+        exit 1
+    end
+
+    print_header "Running tests for $module"
+
+    for file in $test_files
+        echo -e "{$blue}Testing: $file{$reset}"
+        fishtape $file
+    end
+else
+    # Run all tests
+    set -l test_files (find . -path "*/tests/*.test.fish" 2>/dev/null)
+
+    if test (count $test_files) -eq 0
+        echo -e "{$red}No test files found!{$reset}"
+        echo "Test files should be in */tests/*.test.fish"
+        exit 1
+    end
+
+    print_header "Running all tests"
+
+    set -l total_files (count $test_files)
+    set -l current 1
+
+    for file in $test_files
+        echo -e "{$blue}[$current/$total_files] Testing: $file{$reset}"
+        fishtape $file
+        set current (math $current + 1)
+        echo
+    end
+end

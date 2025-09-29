@@ -8,7 +8,7 @@ end
 
 if status is-interactive
   # load other files later
-  set files_to_load (find $DOTFILES_PATH -name '*.fish' | grep -v fish/config.fish | grep -v _path.fish)
+  set files_to_load (find $DOTFILES_PATH -name '*.fish' | grep -v fish/config.fish | grep -v _path.fish | grep -v '.test.fish')
   for file in $files_to_load
     source $file
   end
