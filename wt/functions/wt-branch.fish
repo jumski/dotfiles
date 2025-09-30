@@ -40,21 +40,18 @@ function wt_branch
 
     # Try to get repo info from Graphite - this will fail if not initialized
     if command -q gt
-        # Check if this repo is initialized with Graphite by trying to get repo info
-        gt repo 2>/dev/null >/dev/null
-        if test $status -eq 0
-            # Repo is initialized with Graphite, get the trunk
-            set trunk_branch (gt trunk 2>/dev/null)
-            if test -n "$trunk_branch"
-                # Check if current branch is tracked by Graphite
-                # gt branch info will succeed only if the branch is tracked
-                gt branch info $original_branch 2>/dev/null >/dev/null
-                if test $status -eq 0
-                    set has_graphite true
-                end
-            else
-                set trunk_branch "main"
+        # Check if this repo is initialized with Graphite by trying to get the trunk
+        set trunk_branch (gt trunk 2>/dev/null)
+        if test -n "$trunk_branch"
+            # Repo is initialized with Graphite
+            # Check if current branch is tracked by Graphite
+            # gt branch info will succeed only if the branch is tracked
+            gt branch info $original_branch 2>/dev/null >/dev/null
+            if test $status -eq 0
+                set has_graphite true
             end
+        else
+            set trunk_branch "main"
         end
     end
 

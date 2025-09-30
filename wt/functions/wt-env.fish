@@ -187,22 +187,7 @@ function _wt_env_sync
 
     # Prompt for confirmation if not skipped
     if test $skip_confirm = false
-        echo -n "Proceed with sync? [y/N]: "
-
-        # Read user input with proper interrupt handling
-        read -l -P "" confirm
-        set -l read_status $status
-
-        # Check if read was interrupted (Ctrl-C)
-        if test $read_status -ne 0
-            echo
-            echo -e "\033[31m✗\033[0m Sync cancelled"
-            cd $saved_pwd
-            return 1
-        end
-
-        # Check user response
-        if not string match -q -i "y" "$confirm"
+        if not _wt_confirm --prompt "Proceed with sync? [y/N]"
             echo -e "\033[31m✗\033[0m Sync cancelled"
             cd $saved_pwd
             return 1

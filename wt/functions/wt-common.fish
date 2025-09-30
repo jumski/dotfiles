@@ -306,3 +306,49 @@ function _wt_parse_repo_url
     echo $repo_dir_name
     echo $repo_name
 end
+
+# Reusable confirmation function with proper input handling
+function _wt_confirm
+    set -l prompt_text "Proceed? [y/N]"
+    set -l default_response "N"
+
+    # Parse arguments
+    set -l i 1
+    while test $i -le (count $argv)
+        switch $argv[$i]
+            case --prompt
+                set i (math $i + 1)
+                if test $i -le (count $argv)
+                    set prompt_text $argv[$i]
+                end
+            case --default-yes
+                set default_response "Y"
+            case --default-no
+                set default_response "N"
+        end
+        set i (math $i + 1)
+    end
+
+    # Show prompt and read response using fish's built-in prompt
+    read -l -P "$prompt_text: " response
+    set -l read_status $status
+
+    # Handle Ctrl-C interruption
+    if test $read_status -ne 0
+        echo
+        return 1
+    end
+
+    # Handle empty response (use default)
+    if test -z "$response"
+        set response $default_response
+    end
+
+    # Check response
+    switch (string lower $response)
+        case y yes 1 true
+            return 0
+        case '*'
+            return 1
+    end
+end
