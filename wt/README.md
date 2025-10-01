@@ -10,8 +10,7 @@ A Git worktree management system with Graphite integration for parallel stacked 
 - **Upstack/Downstack** - Branches above (upstack) or below (downstack) in the dependency chain
 - **Trunk** - The main development branch (usually `main` or `master`)
 - **Bare Repository** - A Git repository without a working directory, used as the source for all worktrees
-- **Restack** - Rebasing a chain of dependent branches to maintain their relationships
-- **Sync** - Updating local branches with remote changes and restacking dependent branches as needed
+- **Sync** - Updating local branches with remote changes and rebasing dependent branches as needed
 - **PR** - Pull Request (GitHub) / Merge Request (GitLab)
 
 ## Quick Start
@@ -29,8 +28,8 @@ wt new feature-auth
 # View all worktrees and their stacks
 wt status
 
-# Sync and restack after changes
-wt stack sync
+# Sync all worktrees
+wt sync-all
 ```
 
 ## Common Commands Cheatsheet
@@ -50,10 +49,7 @@ wt switch                    # Interactive selection with fzf
 wt remove <name>             # Remove worktree (prompts for confirmation)
 
 # Stack Operations
-wt stack list                # Show all stacks across worktrees
-wt stack sync                # Sync current stack (rebase + submit)
-wt stack sync <name>         # Sync specific stack
-wt restack                   # Propagate changes through current stack
+wt stack-list                # Show all stacks across worktrees
 
 # Stack Navigation (with automatic worktree switching)
 wt up                        # Switch to upstack worktree via muxit
@@ -63,9 +59,9 @@ wt bottom                    # Switch to stack base worktree via muxit
 # Development Flow
 wt status                    # Show comprehensive status
 wt status --all              # Check sync status of all worktrees
-wt sync                      # Sync current worktree with remote
-wt sync --all                # Sync all worktrees
-wt submit                    # Submit current branch + upstack
+wt sync-all                  # Sync all worktrees with remote
+wt sync-all --force          # Sync all, stashing uncommitted changes
+wt sync-all --reset          # Hard reset all worktrees to origin
 
 # Environment Management
 wt env sync                  # Copy latest envs/ to current worktree
@@ -162,16 +158,12 @@ gt create -am "fix: prevent memory leak in cache"
 ### 4. Keep everything in sync
 
 ```bash
-# Check if restack is needed
+# Check if sync is needed
 wt status
 # Shows: ⚠ user-profiles needs rebase (auth-system has new commits)
 
-# After modifying auth-system
-cd ~/myapp/worktrees/auth-system
-wt restack  # Automatically updates user-profiles
-
-# Or sync entire stack
-wt stack sync auth-feature
+# Sync entire stack (run in any worktree belonging to the stack)
+gt stack rebase && gt submit --stack
 
 # Check all worktrees at once
 wt status --all
@@ -233,7 +225,7 @@ wt understands Graphite stacks and provides tools to manage them across worktree
 
 ```bash
 # View all stacks
-$ wt stack list
+$ wt stack-list
 Stack: auth-feature (3 PRs)
   ├─ auth-system    [worktree: auth-system/]     ✓ up-to-date
   ├─ login-api      [worktree: auth-system/]     ✓ up-to-date
@@ -243,12 +235,10 @@ Stack: dashboard-v2 (2 PRs)
   ├─ new-dashboard  [worktree: dashboard/]       ✓ up-to-date
   └─ dashboard-api  [worktree: dashboard-api/]   ✓ up-to-date
 
-# Sync specific stack
-$ wt stack sync auth-feature
-🔄 Syncing auth-system...
-✓ Already up-to-date with main
-🔄 Syncing user-profiles...
-✓ Rebased onto auth-system
+# Sync specific stack (run in any worktree belonging to the stack)
+$ gt stack rebase && gt submit --stack
+✓ Rebased auth-system onto main
+✓ Rebased user-profiles onto auth-system
 📤 Submitting stack...
 ✓ All PRs updated
 ```
@@ -273,7 +263,7 @@ dashboard:      ⚠ main has new commits (needs sync)
 fix-bug-123:    ✓ up-to-date
 
 # Visual indicators in logs
-$ wt stack list
+$ wt stack-list
 Stack: auth-feature (3 PRs)
   ├─ auth-system    [modified 1 hour ago]      ✓ up-to-date
   ├─ login-api      [modified 2 hours ago]     ⚠ parent changed
@@ -423,7 +413,7 @@ gt create --no-verify -m "WIP: debugging"
 1. **One stack per major feature** - Keep related changes together
 2. **Descriptive worktree names** - Use `feature-`, `fix-`, `experiment-` prefixes
 3. **Regular cleanup** - Remove merged worktrees with `wt cleanup`
-4. **Sync before context switch** - Always `wt sync` before switching tasks
+4. **Sync before context switch** - Always `gt sync` before switching tasks
 5. **Use tmux/muxit integration** - Let `wt switch` manage your sessions
 6. **Default to single commits** - Use `gt modify -a` unless multiple commits add value
 
@@ -435,15 +425,15 @@ gt create --no-verify -m "WIP: debugging"
 # Repair worktree
 wt repair <name>
 
-# Force sync with remote
-wt sync --force --reset
+# Force sync all worktrees with remote
+wt sync-all --force --reset
 ```
 
 ### Stack relationships incorrect
 
 ```bash
-# Rebuild stack metadata from Graphite
-wt stack rebuild
+# Rebuild stack metadata using Graphite
+gt stack fix
 ```
 
 ### Disk space issues

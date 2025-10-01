@@ -16,10 +16,8 @@ complete -c wt -n "__fish_use_subcommand" -a "switch sw" -d "Switch to worktree"
 complete -c wt -n "__fish_use_subcommand" -a "up" -d "Navigate to upstack worktree"
 complete -c wt -n "__fish_use_subcommand" -a "down" -d "Navigate to downstack worktree"
 complete -c wt -n "__fish_use_subcommand" -a "bottom" -d "Navigate to stack bottom"
-complete -c wt -n "__fish_use_subcommand" -a "sync" -d "Sync with remote"
-complete -c wt -n "__fish_use_subcommand" -a "restack" -d "Rebase current stack"
-complete -c wt -n "__fish_use_subcommand" -a "stack" -d "Stack operations"
-complete -c wt -n "__fish_use_subcommand" -a "submit" -d "Submit stack to GitHub"
+complete -c wt -n "__fish_use_subcommand" -a "sync-all" -d "Sync all worktrees with remote"
+complete -c wt -n "__fish_use_subcommand" -a "stack-list" -d "List all stacks"
 complete -c wt -n "__fish_use_subcommand" -a "env" -d "Environment file operations"
 complete -c wt -n "__fish_use_subcommand" -a "git" -d "Run git in bare repository"
 complete -c wt -n "__fish_use_subcommand" -a "tutor" -d "Interactive workflow tutorials"
@@ -43,13 +41,8 @@ complete -c wt -n "__fish_seen_subcommand_from branch br" -s p -l patch -d "Pick
 
 complete -c wt -n "__fish_seen_subcommand_from status st" -l all -d "Show status of all worktrees"
 
-complete -c wt -n "__fish_seen_subcommand_from sync" -l all -d "Sync all worktrees"
-complete -c wt -n "__fish_seen_subcommand_from sync" -l force -d "Force sync (stash changes)"
-complete -c wt -n "__fish_seen_subcommand_from sync" -l reset -d "Hard reset to remote"
-
-# Stack subcommands
-complete -c wt -n "__fish_seen_subcommand_from stack" -a "list" -d "List all stacks"
-complete -c wt -n "__fish_seen_subcommand_from stack" -a "sync" -d "Sync entire stack"
+complete -c wt -n "__fish_seen_subcommand_from sync-all" -l force -d "Force sync (stash changes)"
+complete -c wt -n "__fish_seen_subcommand_from sync-all" -l reset -d "Hard reset to remote"
 
 # Env subcommands
 complete -c wt -n "__fish_seen_subcommand_from env" -a "sync" -d "Sync environment files"

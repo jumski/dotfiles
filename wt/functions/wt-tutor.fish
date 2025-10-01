@@ -145,32 +145,26 @@ function _wt_tutor_update_all_stacks
     set_color brgreen
     echo "1. Sync main branch across all worktrees:"
     set_color normal
-    echo "   wt sync --all"
+    echo "   wt sync-all"
     echo ""
-    
+
     set_color brgreen
     echo "2. Update all stack bases using gt:"
     set_color normal
     echo "   # In each worktree with a stack:"
     echo "   gt stack rebase"
     echo ""
-    
+
     set_color brgreen
-    echo "3. Alternative: Use wt's restack command:"
+    echo "3. Check all stacks are up to date:"
     set_color normal
-    echo "   wt restack  # in current worktree"
+    echo "   wt stack-list"
     echo ""
-    
-    set_color brgreen
-    echo "4. Check all stacks are up to date:"
-    set_color normal
-    echo "   wt stack list"
-    echo ""
-    
+
     set_color bryellow
-    echo "💡 Pro tip: Create an alias for the full sync:"
+    echo "💡 Pro tip: Use gt to rebase and submit stacks:"
     set_color normal
-    echo "   alias sync-all='wt sync --all && wt stack sync'"
+    echo "   gt stack rebase && gt submit --stack"
     echo ""
     
     set_color brred
@@ -192,7 +186,7 @@ function _wt_tutor_new_branch
     set_color brgreen
     echo "1. Ensure main is up to date:"
     set_color normal
-    echo "   wt sync"
+    echo "   gt sync"
     echo ""
     
     set_color brgreen
@@ -218,7 +212,7 @@ function _wt_tutor_new_branch
     set_color brgreen
     echo "5. Submit when ready:"
     set_color normal
-    echo "   wt submit  # or gt stack submit"
+    echo "   gt submit --stack"
     echo ""
     
     set_color bryellow
@@ -353,7 +347,7 @@ function _wt_tutor_full_workflow
     set_color brgreen
     echo "Phase 1: Setup"
     set_color normal
-    echo "1. wt sync --all                    # sync everything"
+    echo "1. wt sync-all                      # sync everything"
     echo "2. wt new feature-auth --switch     # create & switch to new worktree"
     echo ""
     
@@ -386,7 +380,7 @@ function _wt_tutor_full_workflow
     set_color brgreen
     echo "Phase 5: After Merge"
     set_color normal
-    echo "14. wt sync --all                   # sync main across worktrees"
+    echo "14. wt sync-all                     # sync main across worktrees"
     echo "15. wt remove feature-auth          # cleanup merged worktrees"
     echo "16. wt remove feature-auth-ui"
     echo ""

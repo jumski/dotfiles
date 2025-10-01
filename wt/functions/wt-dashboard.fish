@@ -194,25 +194,13 @@ function wt_dashboard
     set_color white
     echo "  synchronization"
     set_color normal
-    
+
     echo -n "    "
     set_color cyan
-    printf "%-12s" "sync"
+    printf "%-12s" "sync-all"
     set_color normal
-    echo "sync current worktree with upstream"
-    
-    echo -n "    "
-    set_color cyan
-    printf "%-12s" "restack"
-    set_color normal
-    echo "rebase current branch and upstack"
-    
-    echo -n "    "
-    set_color cyan
-    printf "%-12s" "submit"
-    set_color normal
-    echo "create/update PRs for current stack"
-    
+    echo "sync all worktrees with upstream"
+
     echo ""
     
     # Info Commands section

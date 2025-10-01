@@ -116,19 +116,9 @@ function _wt_help
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-28s" "stack list"
+    printf "%-28s" "stack-list"
     set_color normal
     echo "show all stacks"
-    echo -n "    "
-    set_color cyan
-    printf "%-28s" "stack sync [name]"
-    set_color normal
-    echo "sync entire stack"
-    echo -n "    "
-    set_color cyan
-    printf "%-28s" "restack"
-    set_color normal
-    echo "rebase current stack"
     echo ""
     
     # Navigation
@@ -163,19 +153,19 @@ function _wt_help
     echo "show worktree status"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "sync [--all] [--force] [--reset]"
+    printf "%-28s" "sync-all [--force] [--reset]"
     set_color normal
-    echo "sync with remote"
+    echo "sync all worktrees with remote"
+    echo -n "      "
+    set_color brblack
+    printf "%-26s" "--force"
+    set_color normal
+    echo "stash uncommitted changes"
     echo -n "      "
     set_color brblack
     printf "%-26s" "--reset"
     set_color normal
-    echo "reset to origin branch (hard reset)"
-    echo -n "    "
-    set_color cyan
-    printf "%-28s" "submit"
-    set_color normal
-    echo "submit stack to GitHub"
+    echo "hard reset to origin branch"
     echo ""
     
     # Environment

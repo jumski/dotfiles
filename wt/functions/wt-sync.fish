@@ -1,48 +1,41 @@
 #!/usr/bin/env fish
 # Sync operations
 
-# Sync current worktree
-function wt_sync
-    set -l sync_all false
+# Sync all worktrees
+function wt_sync_all
     set -l force false
     set -l reset false
-    
+
     # Parse options
     for arg in $argv
         switch $arg
-            case --all
-                set sync_all true
             case --force
                 set force true
             case --reset
                 set reset true
         end
     end
-    
+
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
-    
-    if test $sync_all = true
-        set -l repo_root (_wt_get_repo_root)
-        set -l saved_pwd (pwd)
-        cd $repo_root
-        _wt_get_repo_config
-        
-        echo -e "\033[34m→\033[0m Syncing all worktrees..."
-        
-        for worktree_dir in $WORKTREES_PATH/*
-            if test -d $worktree_dir
-                set -l name (basename $worktree_dir)
-                echo ""
-                echo -e "\033[34m→\033[0m Syncing $name..."
-                cd $worktree_dir
-                _wt_sync_single $force $reset
-            end
+
+    set -l repo_root (_wt_get_repo_root)
+    set -l saved_pwd (pwd)
+    cd $repo_root
+    _wt_get_repo_config
+
+    echo -e "\033[34m→\033[0m Syncing all worktrees..."
+
+    for worktree_dir in $WORKTREES_PATH/*
+        if test -d $worktree_dir
+            set -l name (basename $worktree_dir)
+            echo ""
+            echo -e "\033[34m→\033[0m Syncing $name..."
+            cd $worktree_dir
+            _wt_sync_single $force $reset
         end
-        cd $saved_pwd
-    else
-        _wt_sync_single $force $reset
     end
+    cd $saved_pwd
 end
 
 # Sync single worktree
@@ -81,20 +74,3 @@ function _wt_sync_single
     end
 end
 
-# Restack current stack
-function wt_restack
-    _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
-    or return 1
-    
-    echo -e "\033[34m→\033[0m Restacking current branch and upstack..."
-    gt restack
-end
-
-# Submit current branch and upstack
-function wt_submit
-    _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
-    or return 1
-    
-    echo -e "\033[34m→\033[0m Submitting current branch and upstack..."
-    gt submit --stack
-end

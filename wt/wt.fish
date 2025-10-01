@@ -16,7 +16,7 @@ source $wt_dir/functions/wt-switch.fish
 source $wt_dir/functions/wt-status.fish
 source $wt_dir/functions/wt-nav.fish
 source $wt_dir/functions/wt-sync.fish
-source $wt_dir/functions/wt-stack.fish
+source $wt_dir/functions/wt-stack-list.fish
 source $wt_dir/functions/wt-env.fish
 source $wt_dir/functions/wt-git.fish
 source $wt_dir/functions/wt-dashboard.fish
@@ -55,14 +55,10 @@ function wt
             wt_down $remaining_args
         case bottom
             wt_bottom $remaining_args
-        case sync
-            wt_sync $remaining_args
-        case restack
-            wt_restack $remaining_args
-        case stack
-            wt_stack $remaining_args
-        case submit
-            wt_submit $remaining_args
+        case sync-all
+            wt_sync_all $remaining_args
+        case stack-list
+            wt_stack_list $remaining_args
         case env
             wt_env $remaining_args
         case git
