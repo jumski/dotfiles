@@ -58,6 +58,9 @@ complete -c wt -n "__fish_seen_subcommand_from env sync" -l all -d "Sync to all 
 # Complete worktree names for relevant commands
 complete -c wt -n "__fish_seen_subcommand_from switch sw remove rm" -a "(_wt_get_worktrees)" -d "Worktree"
 
+# Complete branch names for branch command (supports existing branches)
+complete -c wt -n "__fish_seen_subcommand_from branch br" -a "(git branch --format='%(refname:short)' 2>/dev/null)" -d "Branch"
+
 # Tutor topics
 complete -c wt -n "__fish_seen_subcommand_from tutor" -a "hotfix" -d "Creating urgent fixes on main branch"
 complete -c wt -n "__fish_seen_subcommand_from tutor" -a "update" -d "Syncing all stacks after merging changes"
