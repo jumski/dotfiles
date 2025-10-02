@@ -25,9 +25,6 @@ wt clone git@github.com:org/repo.git myproject
 # Create a new feature worktree
 wt new feature-auth
 
-# View all worktrees and their stacks
-wt status
-
 # Sync all worktrees
 wt sync-all
 ```
@@ -43,13 +40,9 @@ wt clone <repo-url> [name]   # Clone and set up worktree structure
 wt new <name>                # Create new worktree from main
 wt new <name> --from <base>  # Create from specific branch
 wt new <name> --switch       # Create and open in muxit
-wt list                      # List all worktrees
 wt switch <name>             # Open worktree in muxit (doesn't cd)
 wt switch                    # Interactive selection with fzf
 wt remove <name>             # Remove worktree (prompts for confirmation)
-
-# Stack Operations
-wt stack-list                # Show all stacks across worktrees
 
 # Stack Navigation (with automatic worktree switching)
 wt up                        # Switch to upstack worktree via muxit
@@ -57,8 +50,6 @@ wt down                      # Switch to downstack worktree via muxit
 wt bottom                    # Switch to stack base worktree via muxit
 
 # Development Flow
-wt status                    # Show comprehensive status
-wt status --all              # Check sync status of all worktrees
 wt sync-all                  # Sync all worktrees with remote
 wt sync-all --force          # Sync all, stashing uncommitted changes
 wt sync-all --reset          # Hard reset all worktrees to origin
@@ -158,18 +149,15 @@ gt create -am "fix: prevent memory leak in cache"
 ### 4. Keep everything in sync
 
 ```bash
-# Check if sync is needed
-wt status
-# Shows: ⚠ user-profiles needs rebase (auth-system has new commits)
+# Check if sync is needed (from within a worktree)
+gt stack
+# Shows stack status and parent relationships
 
 # Sync entire stack (run in any worktree belonging to the stack)
 gt stack rebase && gt submit --stack
 
-# Check all worktrees at once
-wt status --all
-# auth-system:    ✓ up-to-date
-# user-profiles:  ✓ up-to-date
-# fix-memory:     ✓ up-to-date
+# Sync all worktrees
+wt sync-all
 ```
 
 ### 5. Navigate stacks efficiently
@@ -221,19 +209,17 @@ Most settings have sensible defaults and only need to be uncommented if you want
 
 ## Stack Management
 
-wt understands Graphite stacks and provides tools to manage them across worktrees:
+wt integrates with Graphite stacks for managing dependent branches across worktrees:
 
 ```bash
-# View all stacks
-$ wt stack-list
-Stack: auth-feature (3 PRs)
-  ├─ auth-system    [worktree: auth-system/]     ✓ up-to-date
-  ├─ login-api      [worktree: auth-system/]     ✓ up-to-date
-  └─ user-profiles  [worktree: user-profiles/]   ⚠ needs rebase
+# View stack info (from within a worktree)
+$ gt stack
+● feat/user-profiles (current)
+  ├─ feat/auth-system
+  └─ main
 
-Stack: dashboard-v2 (2 PRs)
-  ├─ new-dashboard  [worktree: dashboard/]       ✓ up-to-date
-  └─ dashboard-api  [worktree: dashboard-api/]   ✓ up-to-date
+$ gt log --stack
+# Shows all branches in stack
 
 # Sync specific stack (run in any worktree belonging to the stack)
 $ gt stack rebase && gt submit --stack
@@ -245,29 +231,21 @@ $ gt stack rebase && gt submit --stack
 
 ### Detecting When Sync is Needed
 
-wt provides multiple ways to check if your worktrees need syncing:
+Use Graphite's built-in commands to check sync status:
 
 ```bash
-# Check current worktree
-$ wt status
-Worktree: user-profiles
-Branch: feat/user-profiles
-Stack: auth-feature
-Status: ⚠ Needs rebase (parent 'auth-system' has new commits)
+# Check current worktree stack status
+$ gt stack
+● feat/user-profiles (current)
+  ├─ feat/auth-system ⚠ needs rebase
+  └─ main
 
-# Check all worktrees
-$ wt status --all
-auth-system:    ✓ up-to-date with main
-user-profiles:  ⚠ needs rebase from auth-system
-dashboard:      ⚠ main has new commits (needs sync)
-fix-bug-123:    ✓ up-to-date
+# Check what's changed
+$ gt log --stack --behind
+Shows commits that need rebasing
 
-# Visual indicators in logs
-$ wt stack-list
-Stack: auth-feature (3 PRs)
-  ├─ auth-system    [modified 1 hour ago]      ✓ up-to-date
-  ├─ login-api      [modified 2 hours ago]     ⚠ parent changed
-  └─ user-profiles  [modified 3 hours ago]     ⚠ needs rebase
+# Sync all worktrees with remote
+$ wt sync-all
 ```
 
 ### Smart Stack Navigation

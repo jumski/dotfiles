@@ -158,7 +158,8 @@ function _wt_tutor_update_all_stacks
     set_color brgreen
     echo "3. Check all stacks are up to date:"
     set_color normal
-    echo "   wt stack-list"
+    echo "   # In each worktree:"
+    echo "   gt stack"
     echo ""
 
     set_color bryellow

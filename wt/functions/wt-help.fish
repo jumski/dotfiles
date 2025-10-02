@@ -24,189 +24,168 @@ function _wt_help
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-28s" "init <name>"
+    printf "%-32s" "init <name>"
     set_color normal
     echo "initialize new local repository"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "--switch"
+    printf "%-30s" "--switch"
     set_color normal
     echo "open main worktree in muxit after init"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "clone <repo-url> [name]"
+    printf "%-32s" "clone <repo-url> [name]"
     set_color normal
     echo "clone and set up worktree structure"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "--switch"
+    printf "%-30s" "--switch"
     set_color normal
     echo "open main worktree in muxit after clone"
     echo ""
-    
+
     # Worktree Operations
     set_color white
     echo "  worktree operations"
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-28s" "new <name> [options]"
+    printf "%-32s" "new <name> [options]"
     set_color normal
     echo "create new worktree (or checkout remote)"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "--from <base>"
+    printf "%-30s" "--from <base>"
     set_color normal
     echo "base branch (default: trunk)"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "--trunk <branch>"
+    printf "%-30s" "--trunk <branch>"
     set_color normal
     echo "trunk branch for graphite init"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "--force-new"
+    printf "%-30s" "--force-new"
     set_color normal
     echo "skip remote check, always create new"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "--switch"
+    printf "%-30s" "--switch"
     set_color normal
     echo "open in muxit after creation"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "branch <name> [options] (br)"
+    printf "%-32s" "branch <name> [options] (br)"
     set_color normal
     echo "create new branch & worktree"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "-m <message>"
+    printf "%-30s" "-m <message>"
     set_color normal
     echo "commit message (with graphite)"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "--switch"
+    printf "%-30s" "--switch"
     set_color normal
     echo "open in muxit after creation"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "[gt options]"
+    printf "%-30s" "[gt options]"
     set_color normal
     echo "all gt create options (if graphite)"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "list (ls)"
-    set_color normal
-    echo "list all worktrees"
-    echo -n "    "
-    set_color cyan
-    printf "%-28s" "switch <name> (sw)"
-    set_color normal
-    echo "open worktree in muxit (no cd)"
-    echo -n "    "
-    set_color cyan
-    printf "%-28s" "remove <name> (rm)"
+    printf "%-32s" "remove <name> (rm)"
     set_color normal
     echo "remove worktree (auto-detects current)"
     echo ""
-    
-    # Stack Operations
-    set_color white
-    echo "  stack operations"
-    set_color normal
-    echo -n "    "
-    set_color cyan
-    printf "%-28s" "stack-list"
-    set_color normal
-    echo "show all stacks"
-    echo ""
-    
+
     # Navigation
     set_color white
     echo "  navigation"
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-28s" "up"
+    printf "%-32s" "switch <name> (sw)"
+    set_color normal
+    echo "open worktree in muxit (no cd)"
+    echo -n "    "
+    set_color cyan
+    printf "%-32s" "up"
     set_color normal
     echo "switch to upstack worktree"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "down"
+    printf "%-32s" "down"
     set_color normal
     echo "switch to downstack worktree"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "bottom"
+    printf "%-32s" "bottom"
     set_color normal
     echo "switch to stack base"
     echo ""
-    
+
     # Development
     set_color white
     echo "  development"
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-28s" "status [--all] (st)"
-    set_color normal
-    echo "show worktree status"
-    echo -n "    "
-    set_color cyan
-    printf "%-28s" "sync-all [--force] [--reset]"
+    printf "%-32s" "sync-all [--force] [--reset]"
     set_color normal
     echo "sync all worktrees with remote"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "--force"
+    printf "%-30s" "--force"
     set_color normal
     echo "stash uncommitted changes"
     echo -n "      "
     set_color brblack
-    printf "%-26s" "--reset"
+    printf "%-30s" "--reset"
     set_color normal
     echo "hard reset to origin branch"
     echo ""
-    
+
     # Environment
     set_color white
     echo "  environment"
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-28s" "env sync [--all]"
+    printf "%-32s" "env sync [--all]"
     set_color normal
     echo "copy environment files"
     echo ""
-    
+
     # Git Operations
     set_color white
     echo "  git operations"
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-28s" "git <args>"
+    printf "%-32s" "git <args>"
     set_color normal
     echo "run git commands in bare repository"
     echo ""
-    
+
     # Other
     set_color white
     echo "  other"
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-28s" "tutor [topic]"
+    printf "%-32s" "tutor [topic]"
     set_color normal
     echo "interactive workflow tutorials"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "help"
+    printf "%-32s" "help"
     set_color normal
     echo "show this help"
     echo -n "    "
     set_color cyan
-    printf "%-28s" "version (--version, -v)"
+    printf "%-32s" "version (--version, -v)"
     set_color normal
     echo "show version"
     echo ""

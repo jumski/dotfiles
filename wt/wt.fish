@@ -10,13 +10,10 @@ source $wt_dir/functions/wt-init.fish
 source $wt_dir/functions/wt-clone.fish
 source $wt_dir/functions/wt-new.fish
 source $wt_dir/functions/wt-branch.fish
-source $wt_dir/functions/wt-list.fish
 source $wt_dir/functions/wt-remove.fish
 source $wt_dir/functions/wt-switch.fish
-source $wt_dir/functions/wt-status.fish
 source $wt_dir/functions/wt-nav.fish
 source $wt_dir/functions/wt-sync.fish
-source $wt_dir/functions/wt-stack-list.fish
 source $wt_dir/functions/wt-env.fish
 source $wt_dir/functions/wt-git.fish
 source $wt_dir/functions/wt-dashboard.fish
@@ -41,12 +38,8 @@ function wt
             wt_new $remaining_args
         case branch br
             wt_branch $remaining_args
-        case list ls
-            wt_list $remaining_args
         case remove rm
             wt_remove $remaining_args
-        case status st
-            wt_status $remaining_args
         case switch sw
             wt_switch $remaining_args
         case up
@@ -57,8 +50,6 @@ function wt
             wt_bottom $remaining_args
         case sync-all
             wt_sync_all $remaining_args
-        case stack-list
-            wt_stack_list $remaining_args
         case env
             wt_env $remaining_args
         case git
