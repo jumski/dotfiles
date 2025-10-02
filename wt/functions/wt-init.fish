@@ -73,15 +73,13 @@ function wt_init
     echo ""
     echo -e "\033[1;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     echo ""
-    
+
     # Prompt for confirmation
-    echo -n -e "\033[1;33mProceed with initialization? [y/N]\033[0m "
-    read -l confirm
-    if not string match -qi 'y' $confirm
+    if not _wt_confirm --prompt "Proceed with initialization"
         echo -e "\033[31m✗\033[0m Initialization cancelled"
         return 1
     end
-    
+
     echo ""
     echo -e "\033[34m→\033[0m Initializing new worktree repository: "(basename $repo_path)
     

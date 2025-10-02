@@ -2,14 +2,14 @@
 # Remove worktree
 
 function wt_remove
-    set -l force_flag 0
+    set -l confirm_flag ""
     set -l name ""
-    
+
     # Parse arguments
     for arg in $argv
         switch $arg
-            case --force -f
-                set force_flag 1
+            case --force
+                set confirm_flag --force
             case '-*'
                 # Ignore other flags
             case '*'
@@ -53,16 +53,11 @@ function wt_remove
     # Confirm deletion
     echo -e "\033[34m→\033[0m This will remove worktree: $name"
     echo "Path: $worktree_path"
-    
-    if test $force_flag -eq 0
-        read -P "Continue? [y/N] " -n 1 confirm
-        
-        if test "$confirm" != "y"
-            echo "Cancelled"
-            return 0
-        end
-    else
-        echo "Force flag specified, proceeding without confirmation..."
+    echo
+
+    if not _wt_confirm --prompt "Continue" $confirm_flag
+        echo "Cancelled"
+        return 0
     end
     
     # If we're removing the current worktree, move to repo root first

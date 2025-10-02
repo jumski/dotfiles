@@ -23,7 +23,7 @@ function wt_env
             echo "Options:"
             echo "  --all          Sync to all worktrees"
             echo "  --to <name>    Target worktree (default: current, or --all if outside worktree)"
-            echo "  -y, --yes      Skip confirmation prompt"
+            echo "  --yes          Skip confirmation prompt"
             echo ""
             echo "Examples:"
             echo "  wt env sync                  # Copy envs/ to current worktree"
@@ -40,6 +40,7 @@ function _wt_env_sync
     set -l sync_all false
     set -l target_worktree ""
     set -l skip_confirm false
+    set -l confirm_flag ""
 
     # Parse arguments
     set -l i 1
@@ -52,8 +53,9 @@ function _wt_env_sync
                 if test $i -le (count $argv)
                     set target_worktree $argv[$i]
                 end
-            case -y --yes
+            case --yes
                 set skip_confirm true
+                set confirm_flag --yes
         end
         set i (math $i + 1)
     end
@@ -185,13 +187,11 @@ function _wt_env_sync
         echo -e "\033[33m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     end
 
-    # Prompt for confirmation if not skipped
-    if test $skip_confirm = false
-        if not _wt_confirm --prompt "Proceed with sync? [y/N]"
-            echo -e "\033[31m✗\033[0m Sync cancelled"
-            cd $saved_pwd
-            return 1
-        end
+    # Prompt for confirmation
+    if not _wt_confirm --prompt "Proceed with sync" $confirm_flag
+        echo -e "\033[31m✗\033[0m Sync cancelled"
+        cd $saved_pwd
+        return 1
     end
 
     # Perform the sync

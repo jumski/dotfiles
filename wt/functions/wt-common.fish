@@ -308,9 +308,14 @@ function _wt_parse_repo_url
 end
 
 # Reusable confirmation function with proper input handling
+# Flags:
+#   --prompt "text"     Question text (auto-adds ? and [y/N])
+#   --default-yes       Shows [Y/n] and defaults to yes
+#   --yes, --force      Auto-confirm without prompting (shows grayed ✓)
 function _wt_confirm
-    set -l prompt_text "Proceed? [y/N]"
+    set -l prompt_text "Confirm"
     set -l default_response "N"
+    set -l auto_confirm false
 
     # Parse arguments
     set -l i 1
@@ -325,8 +330,29 @@ function _wt_confirm
                 set default_response "Y"
             case --default-no
                 set default_response "N"
+            case --yes --force
+                set auto_confirm true
         end
         set i (math $i + 1)
+    end
+
+    # Handle auto-confirm
+    if test $auto_confirm = true
+        echo -e "\033[90m✓ $prompt_text\033[0m"
+        return 0
+    end
+
+    # Format prompt: add ? if needed
+    set -l last_char (string sub -s -1 "$prompt_text")
+    if not string match -qr '[?!.]' "$last_char"
+        set prompt_text "$prompt_text?"
+    end
+
+    # Add [y/N] or [Y/n] indicator
+    if test $default_response = "Y"
+        set prompt_text "$prompt_text [Y/n]"
+    else
+        set prompt_text "$prompt_text [y/N]"
     end
 
     # Show prompt and read response using fish's built-in prompt

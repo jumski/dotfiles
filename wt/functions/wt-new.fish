@@ -56,8 +56,7 @@ function wt_new
         git -C $BARE_PATH fetch origin --quiet
         if git -C $BARE_PATH show-ref --verify --quiet refs/remotes/origin/$name
             echo "Remote branch 'origin/$name' found."
-            read -P "Create worktree tracking it? [Y/n] " -n 1 confirm
-            if test -z "$confirm" -o "$confirm" = "y" -o "$confirm" = "Y"
+            if _wt_confirm --prompt "Create worktree tracking it" --default-yes
                 set base_branch origin/$name
                 set tracking_remote true
             else
