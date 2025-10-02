@@ -13,10 +13,8 @@ local WHICH_KEY_MAPPINGS = {
 return {
   "neovim/nvim-lspconfig",
   config = function()
-    -- Suppress deprecation warning until vim.lsp.config is actually available
-    ---@diagnostic disable-next-line: deprecated
-    local lspconfig = require("lspconfig")
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
+    local util = require("lspconfig.util")
 
     -- Custom full screen layout with matches on left and preview on right
     local function lsp_references_dropdown()
@@ -47,7 +45,7 @@ return {
     -- Language Servers -----------------
     -------------------------------------
 
-    lspconfig["solargraph"].setup({
+    vim.lsp.config("solargraph", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
       settings = {
@@ -56,15 +54,15 @@ return {
         },
       },
     })
-    lspconfig["sorbet"].setup({
+    vim.lsp.config("sorbet", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
-    lspconfig["standardrb"].setup({
+    vim.lsp.config("standardrb", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
-    lspconfig["lua_ls"].setup({
+    vim.lsp.config("lua_ls", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
       settings = {
@@ -86,13 +84,13 @@ return {
         },
       },
     })
-    lspconfig["pyright"].setup({
+    vim.lsp.config("pyright", {
       cmd = { "pdm", "run", "pyright-langserver", "--stdio" },
       -- cmd = { 'poetry', 'run', 'pyright-langserver', '--stdio' },
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
-    lspconfig["ts_ls"].setup({
+    vim.lsp.config("ts_ls", {
       single_file_support = false,
       capabilities = capabilities,
       on_attach = setup_keybindings,
@@ -102,29 +100,29 @@ return {
         -- we assume that deno project can be nested inside ts project,
         -- so we need to check immediate parents not current working dir
         local current_file_dir = vim.fn.expand("%:p:h")
-        local is_deno_project = lspconfig.util.root_pattern("deno.json", "import_map.json")(current_file_dir)
+        local is_deno_project = util.root_pattern("deno.json", "import_map.json")(current_file_dir)
 
         if is_deno_project then
           return nil
         else
-          return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd())
+          return util.root_pattern("package.json")(vim.fn.getcwd())
         end
       end,
       -- ### RECOMMENDED ###
       -- root_dir = function(fname)
-      --   if lspconfig.util.root_pattern("deno.json", "deno.jsonc", "import_map.json")(fname) then
+      --   if util.root_pattern("deno.json", "deno.jsonc", "import_map.json")(fname) then
       --     return nil
       --   end
       --
-      --   return lspconfig.util.root_pattern("tsconfig.json", "package.json")(fname)
+      --   return util.root_pattern("tsconfig.json", "package.json")(fname)
       -- end,
     })
 
     local deno_bin_path = vim.fn.system("asdf where deno"):gsub("\n", "") .. "/bin/deno"
 
-    lspconfig["denols"].setup({
+    vim.lsp.config("denols", {
       cmd = { deno_bin_path, "lsp" },
-      root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+      root_dir = util.root_pattern("deno.json", "deno.jsonc"),
       capabilities = capabilities,
       -- single_file_support = true,
       init_options = {
@@ -150,22 +148,22 @@ return {
         end
       end,
     })
-    -- lspconfig['denols'].setup{
+    -- vim.lsp.config('denols', {
     --   capabilities = capabilities,
     --   single_file_support = true,
     --   on_attach = setup_keybindings,
-    -- }
-    lspconfig["cssmodules_ls"].setup({
+    -- })
+    vim.lsp.config("cssmodules_ls", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
 
-    lspconfig["cssls"].setup({
+    vim.lsp.config("cssls", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
 
-    lspconfig["jsonls"].setup({
+    vim.lsp.config("jsonls", {
       settings = {
         json = {
           schemas = require("schemastore").json.schemas(),
@@ -176,47 +174,47 @@ return {
 
     -- TODO: add something for raw html
 
-    -- lspconfig["postgres_lsp"].setup({
+    -- vim.lsp.config("postgres_lsp", {
     --   capabilities = capabilities,
     --   on_attach = setup_keybindings,
-    --   root_dir = lspconfig.util.root_pattern("postgrestools.jsonc"),
+    --   root_dir = util.root_pattern("postgrestools.jsonc"),
     --   cmd = { "postgrestools", "lsp-proxy" },
     --   filetypes = { "sql" },
     --   single_file_support = true
     -- })
-    -- lspconfig["sqlls"].setup({
+    -- vim.lsp.config("sqlls", {
     --   capabilities = capabilities,
     --   -- root_dir = require('core.helpers').find_project_root,
     --   on_attach = setup_keybindings,
     -- })
 
-    lspconfig["clojure_lsp"].setup({
+    vim.lsp.config("clojure_lsp", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
 
-    lspconfig["svelte"].setup({
+    vim.lsp.config("svelte", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
 
-    lspconfig["tailwindcss"].setup({
+    vim.lsp.config("tailwindcss", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
 
-    lspconfig["astro"].setup({
+    vim.lsp.config("astro", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
       filetypes = { "astro" },
     })
 
     local function get_typescript_server_path(root_dir)
-      local project_root = lspconfig.util.find_node_modules_ancestor(root_dir)
-      return project_root and (lspconfig.util.path.join(project_root, "node_modules", "typescript", "lib")) or ""
+      local project_root = util.find_node_modules_ancestor(root_dir)
+      return project_root and (util.path.join(project_root, "node_modules", "typescript", "lib")) or ""
     end
 
-    lspconfig["mdx_analyzer"].setup({
+    vim.lsp.config("mdx_analyzer", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
       cmd = { "mdx-language-server", "--stdio" },
@@ -226,7 +224,7 @@ return {
       init_options = {
         typescript = {},
       },
-      root_dir = lspconfig.util.root_pattern("package.json"),
+      root_dir = util.root_pattern("package.json"),
       on_new_config = function(new_config, new_root_dir)
         if vim.tbl_get(new_config.init_options, "typescript") and not new_config.init_options.typescript.tsdk then
           new_config.init_options.typescript.tsdk = get_typescript_server_path(new_root_dir)
