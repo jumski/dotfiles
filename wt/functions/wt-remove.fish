@@ -2,6 +2,18 @@
 # Remove worktree
 
 function wt_remove
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt remove [name] [--force]
+
+Remove worktree
+
+Arguments:
+  [name]         Worktree name (default: current worktree)
+
+Options:
+  --force        Skip confirmation prompt"
+    and return 0
+
     set -l confirm_flag ""
     set -l name ""
 

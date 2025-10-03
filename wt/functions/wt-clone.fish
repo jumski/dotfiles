@@ -2,6 +2,19 @@
 # Clone existing repository with worktree structure
 
 function wt_clone
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt clone <repo-url> [repo-name] [--switch]
+
+Clone existing repository with worktree structure
+
+Arguments:
+  <repo-url>     Git repository URL or short format (org/repo)
+  [repo-name]    Optional: custom repository name or path
+
+Options:
+  --switch       Automatically switch to the main worktree after cloning"
+    and return 0
+
     # Parse arguments
     set -l switch_after false
     set -l repo_url

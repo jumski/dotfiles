@@ -2,12 +2,27 @@
 # Create new worktree
 
 function wt_new
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt new <name> [--from <branch>] [--trunk <branch>] [--force-new] [--switch]
+
+Create new worktree
+
+Arguments:
+  <name>         Name for the new worktree
+
+Options:
+  --from <branch>    Base branch (default: DEFAULT_TRUNK from config)
+  --trunk <branch>   Trunk branch for Graphite
+  --force-new        Force creation even if branch exists
+  --switch           Automatically switch to the new worktree after creation"
+    and return 0
+
     set -l name $argv[1]
     set -l base_branch ""
     set -l trunk_branch ""
     set -l force_new false
     set -l switch_after false
-    
+
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
     

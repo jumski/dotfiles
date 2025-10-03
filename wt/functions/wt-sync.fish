@@ -3,6 +3,16 @@
 
 # Sync all worktrees
 function wt_sync_all
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt sync-all [--force] [--reset]
+
+Sync all worktrees with their remote branches
+
+Options:
+  --force        Stash uncommitted changes before syncing
+  --reset        Hard reset to origin instead of syncing"
+    and return 0
+
     set -l force false
     set -l reset false
 

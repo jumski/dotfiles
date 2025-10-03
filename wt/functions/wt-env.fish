@@ -2,6 +2,24 @@
 # Environment file operations
 
 function wt_env
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt env sync [options]
+
+Sync environment files from repo_root/envs/ to worktrees
+
+Options:
+  --all          Sync to all worktrees
+  --to <name>    Target worktree (default: current, or --all if outside worktree)
+  --yes          Skip confirmation prompt
+
+Examples:
+  wt env sync                  # Copy envs/ to current worktree
+  wt env sync --all            # Copy envs/ to all worktrees
+  wt env sync --to prod        # Copy envs/ to prod worktree
+
+Note: This will overwrite existing files in the target worktree(s)!"
+    and return 0
+
     set -l subcommand ""
     if test (count $argv) -ge 1
         set subcommand $argv[1]

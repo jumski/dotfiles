@@ -3,6 +3,12 @@
 
 # Navigate up in stack
 function wt_up
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt up
+
+Navigate up in the Graphite stack to the upstack branch"
+    and return 0
+
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
     
@@ -39,6 +45,12 @@ end
 
 # Navigate down in stack
 function wt_down
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt down
+
+Navigate down in the Graphite stack to the parent branch"
+    and return 0
+
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
     
@@ -74,6 +86,12 @@ end
 
 # Navigate to stack bottom
 function wt_bottom
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt bottom
+
+Navigate to the bottom of the Graphite stack"
+    and return 0
+
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
     

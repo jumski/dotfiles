@@ -2,6 +2,19 @@
 # Create new branch (via Graphite if available) and worktree for it
 
 function wt_branch
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt branch <branch-name> [gt-create-options] [--switch]
+
+Create new branch (via Graphite if available) and worktree for it
+
+Arguments:
+  <branch-name>  Name for the new branch
+
+Options:
+  --switch       Automatically switch to the new worktree after creation
+  [other]        Additional options are passed to 'gt create'"
+    and return 0
+
     set -l branch_name ""
     set -l switch_after false
     set -l gt_args

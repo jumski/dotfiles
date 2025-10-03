@@ -378,3 +378,17 @@ function _wt_confirm
             return 1
     end
 end
+
+# Helper to show subcommand help and exit if --help flag is present
+# Usage: _wt_show_help_if_requested $argv "help text here"
+# Returns 0 (exits) if --help found, otherwise returns 1 (continue)
+function _wt_show_help_if_requested
+    # Check if --help is in the arguments
+    for arg in $argv[1..-2]
+        if test "$arg" = "--help" -o "$arg" = "-h"
+            echo $argv[-1]
+            return 0
+        end
+    end
+    return 1
+end
