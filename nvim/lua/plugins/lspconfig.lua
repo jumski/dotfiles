@@ -54,14 +54,20 @@ return {
         },
       },
     })
+    vim.lsp.enable("solargraph")
+
     vim.lsp.config("sorbet", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
+    vim.lsp.enable("sorbet")
+
     vim.lsp.config("standardrb", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
+    vim.lsp.enable("standardrb")
+
     vim.lsp.config("lua_ls", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
@@ -84,47 +90,31 @@ return {
         },
       },
     })
+    vim.lsp.enable("lua_ls")
+
     vim.lsp.config("pyright", {
       cmd = { "pdm", "run", "pyright-langserver", "--stdio" },
       -- cmd = { 'poetry', 'run', 'pyright-langserver', '--stdio' },
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
+    vim.lsp.enable("pyright")
+
     vim.lsp.config("ts_ls", {
       single_file_support = false,
       capabilities = capabilities,
       on_attach = setup_keybindings,
-
-      -- ### MODIFIED FOR NESTED DENO PROJECTS ###
-      root_dir = function()
-        -- we assume that deno project can be nested inside ts project,
-        -- so we need to check immediate parents not current working dir
-        local current_file_dir = vim.fn.expand("%:p:h")
-        local is_deno_project = util.root_pattern("deno.json", "import_map.json")(current_file_dir)
-
-        if is_deno_project then
-          return nil
-        else
-          return util.root_pattern("package.json")(vim.fn.getcwd())
-        end
-      end,
-      -- ### RECOMMENDED ###
-      -- root_dir = function(fname)
-      --   if util.root_pattern("deno.json", "deno.jsonc", "import_map.json")(fname) then
-      --     return nil
-      --   end
-      --
-      --   return util.root_pattern("tsconfig.json", "package.json")(fname)
-      -- end,
+      root_markers = { "package.json", "tsconfig.json" },
     })
+    vim.lsp.enable("ts_ls")
 
     local deno_bin_path = vim.fn.system("asdf where deno"):gsub("\n", "") .. "/bin/deno"
 
     vim.lsp.config("denols", {
       cmd = { deno_bin_path, "lsp" },
-      root_dir = util.root_pattern("deno.json", "deno.jsonc"),
+      root_markers = { "deno.json", "deno.jsonc" },
       capabilities = capabilities,
-      -- single_file_support = true,
+      single_file_support = false,
       init_options = {
         lint = true,
         unstable = true,
@@ -148,6 +138,27 @@ return {
         end
       end,
     })
+
+    -- NOTE: denols is NOT enabled globally to prevent conflicts with ts_ls
+    -- Instead, we manually start it only in deno projects
+    -- vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+    --   pattern = { "*.ts", "*.tsx", "*.js", "*.jsx" },
+    --   callback = function(args)
+    --     local root = util.root_pattern("deno.json", "deno.jsonc")(vim.fn.expand("%:p:h"))
+    --     if root then
+    --       -- Stop ts_ls if it started
+    --       local clients = vim.lsp.get_clients({ bufnr = args.buf })
+    --       for _, client in ipairs(clients) do
+    --         if client.name == "ts_ls" then
+    --           vim.lsp.stop_client(client.id)
+    --         end
+    --       end
+    --       -- Start denols for this buffer
+    --       vim.lsp.enable("denols")
+    --     end
+    --   end,
+    -- })
+
     -- vim.lsp.config('denols', {
     --   capabilities = capabilities,
     --   single_file_support = true,
@@ -157,11 +168,13 @@ return {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
+    vim.lsp.enable("cssmodules_ls")
 
     vim.lsp.config("cssls", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
+    vim.lsp.enable("cssls")
 
     vim.lsp.config("jsonls", {
       settings = {
@@ -171,6 +184,7 @@ return {
         },
       },
     })
+    vim.lsp.enable("jsonls")
 
     -- TODO: add something for raw html
 
@@ -192,22 +206,26 @@ return {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
+    vim.lsp.enable("clojure_lsp")
 
     vim.lsp.config("svelte", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
+    vim.lsp.enable("svelte")
 
     vim.lsp.config("tailwindcss", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
     })
+    vim.lsp.enable("tailwindcss")
 
     vim.lsp.config("astro", {
       capabilities = capabilities,
       on_attach = setup_keybindings,
       filetypes = { "astro" },
     })
+    vim.lsp.enable("astro")
 
     local function get_typescript_server_path(root_dir)
       local project_root = util.find_node_modules_ancestor(root_dir)
@@ -231,5 +249,6 @@ return {
         end
       end,
     })
+    vim.lsp.enable("mdx_analyzer")
   end,
 }
