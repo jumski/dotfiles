@@ -100,21 +100,34 @@ return {
     })
     vim.lsp.enable("pyright")
 
+    -- TypeScript LS: refuse to attach where a Deno root exists
     vim.lsp.config("ts_ls", {
+      cmd = { "typescript-language-server", "--stdio" },
+      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
       single_file_support = false,
       capabilities = capabilities,
       on_attach = setup_keybindings,
-      root_markers = { "package.json", "tsconfig.json" },
+      root_dir = function(bufnr, on_dir)
+        -- Don't attach if deno.json exists
+        if vim.fs.root(bufnr, { "deno.json", "deno.jsonc" }) then return end
+        local root = vim.fs.root(bufnr, { "package.json", "tsconfig.json" })
+        if root then on_dir(root) end
+      end,
     })
-    vim.lsp.enable("ts_ls")
 
     local deno_bin_path = vim.fn.system("asdf where deno"):gsub("\n", "") .. "/bin/deno"
 
+    -- Deno LSP: attach only inside Deno projects
     vim.lsp.config("denols", {
       cmd = { deno_bin_path, "lsp" },
-      root_markers = { "deno.json", "deno.jsonc" },
+      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
       capabilities = capabilities,
       single_file_support = false,
+      on_attach = setup_keybindings,
+      root_dir = function(bufnr, on_dir)
+        local root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc" })
+        if root then on_dir(root) end
+      end,
       init_options = {
         lint = true,
         unstable = true,
@@ -128,36 +141,28 @@ return {
           },
         },
       },
-      on_attach = function()
-        local active_clients = vim.lsp.get_active_clients()
-        for _, client in pairs(active_clients) do
-          -- stop ts_ls if denols is already active
-          if client.name == "ts_ls" then
-            client.stop()
+    })
+
+    -- Enable both servers; root_dir functions gate per-buffer attachment
+    vim.lsp.enable({ "denols", "ts_ls" })
+
+    -- Safety net: if both ever attach to the same buffer, keep denols and stop ts_ls
+    vim.api.nvim_create_autocmd("LspAttach", {
+      callback = function(args)
+        local has_deno, ts_id
+        for _, c in ipairs(vim.lsp.get_clients({ bufnr = args.buf })) do
+          if c.name == "denols" then
+            has_deno = true
           end
+          if c.name == "ts_ls" then
+            ts_id = c.id
+          end
+        end
+        if has_deno and ts_id then
+          vim.lsp.stop_client(ts_id)
         end
       end,
     })
-
-    -- NOTE: denols is NOT enabled globally to prevent conflicts with ts_ls
-    -- Instead, we manually start it only in deno projects
-    -- vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
-    --   pattern = { "*.ts", "*.tsx", "*.js", "*.jsx" },
-    --   callback = function(args)
-    --     local root = util.root_pattern("deno.json", "deno.jsonc")(vim.fn.expand("%:p:h"))
-    --     if root then
-    --       -- Stop ts_ls if it started
-    --       local clients = vim.lsp.get_clients({ bufnr = args.buf })
-    --       for _, client in ipairs(clients) do
-    --         if client.name == "ts_ls" then
-    --           vim.lsp.stop_client(client.id)
-    --         end
-    --       end
-    --       -- Start denols for this buffer
-    --       vim.lsp.enable("denols")
-    --     end
-    --   end,
-    -- })
 
     -- vim.lsp.config('denols', {
     --   capabilities = capabilities,
