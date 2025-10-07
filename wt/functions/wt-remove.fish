@@ -97,27 +97,27 @@ function wt_remove
     git -C $BARE_PATH branch -d $name 2>/dev/null
     
     echo -e "\033[32m✓\033[0m Worktree '$name' removed"
-    
-    # Kill tmux session for the removed worktree if it exists
+
+    # Kill tmux session for the removed worktree only if we were in that session
     set -l repo_name (basename $repo_root)
     set -l session_name (_wt_get_session_name $name $repo_name)
-    if tmux has-session -t "$session_name" 2>/dev/null
-        echo -e "\033[34m→\033[0m Killing tmux session: $session_name"
-        tmux kill-session -t "$session_name"
-    end
-    
-    # Switch to main worktree if we removed the current one and user is still in original session
+
     if test "$current_worktree" = "$name" -a -n "$original_session"
         set -l current_session ""
         if set -q TMUX
             set current_session (tmux display-message -p '#S')
         end
-        
+
+        # Only kill session and switch if user is still in the original session
         if test "$current_session" = "$original_session"
+            if tmux has-session -t "$session_name" 2>/dev/null
+                echo -e "\033[34m→\033[0m Killing tmux session: $session_name"
+                tmux kill-session -t "$session_name"
+            end
             echo -e "\033[34m→\033[0m Switching to main@$repo_name"
             wt_switch "main"
         else
-            echo "User switched to different session, skipping auto-switch"
+            echo "User switched to different session, skipping session cleanup"
         end
     end
     
