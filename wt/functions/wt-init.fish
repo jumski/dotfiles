@@ -2,6 +2,18 @@
 # Initialize new local repository with worktree structure
 
 function wt_init
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt init <repo-name> [--switch]
+
+Initialize new local repository with worktree structure
+
+Arguments:
+  <repo-name>    Repository name or path
+
+Options:
+  --switch       Automatically switch to the main worktree after creation"
+    and return 0
+
     # Parse arguments
     set -l switch_after false
     set -l repo_name

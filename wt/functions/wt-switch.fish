@@ -2,9 +2,18 @@
 # Switch to worktree using muxit
 
 function wt_switch
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt switch [name]
+
+Switch to worktree using tmux
+
+Arguments:
+  [name]         Worktree name (if not provided, uses fzf for selection)"
+    and return 0
+
     set -l name $argv[1]
     set -l repo_path $argv[2]  # Optional repo path
-    
+
     # If repo_path provided, use it. Otherwise find repo root from current dir
     set -l repo_root
     if test -n "$repo_path"

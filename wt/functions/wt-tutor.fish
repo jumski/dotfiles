@@ -2,8 +2,24 @@
 # Interactive tutorials for wt/gt workflow
 
 function wt_tutor
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt tutor [topic]
+
+Interactive tutorials for wt/gt workflow
+
+Topics:
+  hotfix         Creating urgent fixes on main branch
+  update         Syncing all stacks after merging changes
+  branch         Creating a new feature branch
+  stack          Creating next branch in a stack
+  commit         Committing with amend workflows
+  workflow       Complete development workflow walkthrough
+
+Run 'wt tutor' with no arguments to see the interactive menu."
+    and return 0
+
     set -l topic $argv[1]
-    
+
     if test -z "$topic"
         _wt_tutor_menu
         return
