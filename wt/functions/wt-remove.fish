@@ -75,9 +75,13 @@ Options:
     # If we're removing the current worktree, move to repo root first
     set -l current_worktree (_wt_get_current_worktree)
     set -l original_session ""
+    set -l was_in_worktree 0
     if test "$current_worktree" = "$name"
+        set was_in_worktree 1
         echo "Moving out of current worktree before removal..."
         cd $repo_root
+        # Update saved_pwd since we can't return to the deleted worktree
+        set saved_pwd $repo_root
         # Remember the current tmux session for later check
         if set -q TMUX
             set original_session (tmux display-message -p '#S')
@@ -110,26 +114,31 @@ Options:
     
     echo -e "\033[32m✓\033[0m Worktree '$name' removed"
 
-    # Kill tmux session for the removed worktree only if we were in that session
-    set -l repo_name (basename $repo_root)
-    set -l session_name (_wt_get_session_name $name $repo_name)
+    # Kill tmux session for the removed worktree if we were in it
+    if test $was_in_worktree -eq 1 -a -n "$original_session"
+        set -l repo_name (basename $repo_root)
+        set -l session_name (_wt_get_session_name $name $repo_name)
 
-    if test "$current_worktree" = "$name" -a -n "$original_session"
-        set -l current_session ""
-        if set -q TMUX
-            set current_session (tmux display-message -p '#S')
-        end
+        # Check if the session exists and kill it
+        if tmux has-session -t "$session_name" 2>/dev/null
+            echo -e "\033[34m→\033[0m Killing tmux session: $session_name"
 
-        # Only kill session and switch if user is still in the original session
-        if test "$current_session" = "$original_session"
-            if tmux has-session -t "$session_name" 2>/dev/null
-                echo -e "\033[34m→\033[0m Killing tmux session: $session_name"
+            # If we're in a tmux session, switch to main first, then kill the old session
+            if set -q TMUX
+                set -l current_session (tmux display-message -p '#S')
+                if test "$current_session" = "$original_session"
+                    echo -e "\033[34m→\033[0m Switching to main@$repo_name"
+                    wt_switch "main"
+                    # Kill the old session after switching
+                    tmux kill-session -t "$session_name" 2>/dev/null
+                else
+                    # We're in a different session already, just kill it
+                    tmux kill-session -t "$session_name"
+                end
+            else
+                # Not in tmux, just kill the session
                 tmux kill-session -t "$session_name"
             end
-            echo -e "\033[34m→\033[0m Switching to main@$repo_name"
-            wt_switch "main"
-        else
-            echo "User switched to different session, skipping session cleanup"
         end
     end
     

@@ -180,13 +180,20 @@ Options:
     if not tmux has-session -t $session_name 2>/dev/null
         echo -e "\033[34m→\033[0m Creating tmux session: $session_name"
 
-        # Create detached session with standard windows
+        # Create detached session with standard windows (use absolute path!)
+        set -l absolute_worktree_path "$repo_root/$worktree_path"
         tmux \
-            new-session -d -c "$worktree_path" -s $session_name \;\
+            new-session -d -c "$absolute_worktree_path" -s $session_name \;\
             rename-window -t $session_name:1 server \;\
-            new-window -n bash -c "$worktree_path" -t $session_name \;\
-            new-window -n vim -c "$worktree_path" -t $session_name \;\
-            new-window -n repl -c "$worktree_path" -t $session_name
+            new-window -n bash -c "$absolute_worktree_path" -t $session_name \;\
+            new-window -n vim -c "$absolute_worktree_path" -t $session_name \;\
+            new-window -n repl -c "$absolute_worktree_path" -t $session_name
+
+        or begin
+            echo "Warning: Failed to create tmux session" >&2
+            # Worktree is created successfully, just skip tmux session
+            return 0
+        end
 
         echo -e "\033[32m✓\033[0m Tmux session created"
     end
@@ -196,8 +203,10 @@ Options:
         echo -e "\033[34m→\033[0m Switching to session..."
         if test -n "$TMUX"
             tmux switch-client -t $session_name
+            or echo "Warning: Failed to switch to session" >&2
         else
             tmux attach-session -t $session_name
+            or echo "Warning: Failed to attach to session" >&2
         end
     else
         # Notify user that session is ready
