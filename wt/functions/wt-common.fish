@@ -307,6 +307,32 @@ function _wt_parse_repo_url
     echo $repo_name
 end
 
+# Configure remote fetch refspec for bare repository
+# This is needed because git clone --bare doesn't set up remote tracking
+# Usage: _wt_configure_remote_fetch <bare_repo_path> [remote_name]
+function _wt_configure_remote_fetch
+    set -l bare_path $argv[1]
+    set -l remote_name $argv[2]
+
+    if test -z "$bare_path"
+        echo "Error: bare repository path required" >&2
+        return 1
+    end
+
+    if test -z "$remote_name"
+        set remote_name "origin"
+    end
+
+    if not test -d "$bare_path"
+        echo "Error: $bare_path is not a directory" >&2
+        return 1
+    end
+
+    # Configure fetch refspec for the remote
+    git -C $bare_path config remote.$remote_name.fetch "+refs/heads/*:refs/remotes/$remote_name/*"
+    return $status
+end
+
 # Reusable confirmation function with proper input handling
 # Flags:
 #   --prompt "text"     Question text (auto-adds ? and [y/N])

@@ -76,7 +76,14 @@ function wt_clone
         rm -rf $repo_path
         return 1
     end
-    
+
+    # Configure remote fetch refspec for bare repository
+    echo -e "\033[34m→\033[0m Configuring remote fetch refspec..."
+    _wt_configure_remote_fetch $repo_path/.bare origin
+    or begin
+        echo "Warning: Failed to configure remote fetch refspec" >&2
+    end
+
     # Get default branch
     set -l default_branch (git -C $repo_path/.bare symbolic-ref --short HEAD 2>/dev/null)
     if test -z "$default_branch"

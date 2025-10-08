@@ -17,6 +17,7 @@ source $wt_dir/functions/wt-sync.fish
 source $wt_dir/functions/wt-env.fish
 source $wt_dir/functions/wt-git.fish
 source $wt_dir/functions/wt-dashboard.fish
+source $wt_dir/functions/wt-doctor.fish
 source $wt_dir/functions/wt-help.fish
 source $wt_dir/functions/wt-tutor.fish
 
@@ -54,6 +55,8 @@ function wt
             wt_env $remaining_args
         case git
             wt_git $remaining_args
+        case doctor
+            wt_doctor $remaining_args
         case tutor
             wt_tutor $remaining_args
         case version --version -v

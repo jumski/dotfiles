@@ -20,6 +20,8 @@ function wt_tutor
             _wt_tutor_stack_branch
         case commit amend commit-amend
             _wt_tutor_commit_amend
+        case doctor fix troubleshoot
+            _wt_tutor_doctor
         case workflow full-workflow
             _wt_tutor_full_workflow
         case list menu
@@ -65,12 +67,17 @@ function _wt_tutor_menu
     printf "    %-20s" "commit"
     set_color normal
     echo "Committing with amend workflows"
-    
+
+    set_color cyan
+    printf "    %-20s" "doctor"
+    set_color normal
+    echo "Diagnosing and fixing repository issues"
+
     set_color cyan
     printf "    %-20s" "workflow"
     set_color normal
     echo "Complete development workflow walkthrough"
-    
+
     echo ""
     set_color brblack
     echo "  Usage: wt tutor <topic>"
@@ -332,6 +339,56 @@ function _wt_tutor_commit_amend
     set_color brred
     echo "⚠️  Never amend commits already pushed to shared branches"
     set_color normal
+    echo ""
+end
+
+function _wt_tutor_doctor
+    echo ""
+    set_color bryellow
+    echo "🔧 Tutorial: Diagnosing Repository Issues"
+    set_color normal
+    echo ""
+
+    echo "Use wt doctor to detect and fix common repository issues:"
+    echo ""
+
+    set_color brgreen
+    echo "1. Run diagnostic check:"
+    set_color normal
+    echo "   wt doctor"
+    echo "   # Scans for issues like missing fetch refspecs, broken worktrees"
+    echo ""
+
+    set_color brgreen
+    echo "2. Auto-fix detected issues:"
+    set_color normal
+    echo "   wt doctor --fix"
+    echo "   # Automatically repairs common configuration problems"
+    echo ""
+
+    set_color brgreen
+    echo "3. Check a specific repository:"
+    set_color normal
+    echo "   wt doctor ~/Code/my-project"
+    echo "   wt doctor --fix ~/Code/my-project"
+    echo ""
+
+    set_color bryellow
+    echo "💡 Common issues detected:"
+    set_color normal
+    echo "   • Missing remote.origin.fetch refspec (breaks git fetch)"
+    echo "   • Missing worktrees or envs directories"
+    echo "   • Orphaned worktree references"
+    echo "   • Invalid bare repository configuration"
+    echo ""
+
+    set_color brgreen
+    echo "When to use:"
+    set_color normal
+    echo "   • After cloning older wt repositories"
+    echo "   • Git fetch or sync commands failing"
+    echo "   • Setting up repositories on a new machine"
+    echo "   • Strange git remote tracking issues"
     echo ""
 end
 

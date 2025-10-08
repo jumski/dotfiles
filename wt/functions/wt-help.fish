@@ -175,6 +175,16 @@ function _wt_help
     set_color normal
     echo -n "    "
     set_color cyan
+    printf "%-32s" "doctor [--fix] [path]"
+    set_color normal
+    echo "diagnose and fix repository issues"
+    echo -n "      "
+    set_color brblack
+    printf "%-30s" "--fix"
+    set_color normal
+    echo "automatically fix detected issues"
+    echo -n "    "
+    set_color cyan
     printf "%-32s" "tutor [topic]"
     set_color normal
     echo "interactive workflow tutorials"
