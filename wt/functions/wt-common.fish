@@ -418,3 +418,20 @@ function _wt_show_help_if_requested
     end
     return 1
 end
+
+# Display notification in tmux status bar
+# Usage: _wt_notify "message text"
+# Only works inside tmux, silently ignored otherwise
+function _wt_notify
+    set -l message $argv[1]
+
+    if test -z "$message"
+        echo "Error: notification message required" >&2
+        return 1
+    end
+
+    # Only notify if inside tmux
+    if test -n "$TMUX"
+        tmux display-message -d 4000 "$message"
+    end
+end

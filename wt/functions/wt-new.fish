@@ -165,9 +165,44 @@ Options:
     
     # Restore original directory
     cd $saved_pwd
-    
-    # Switch to new worktree if requested
+
+    # Always create tmux session, then switch or notify
+    # Get repo name for session naming
+    set -l repo_name $REPO_NAME
+    if test -z "$repo_name"
+        set repo_name (basename $repo_root)
+    end
+
+    # Create tmux session name
+    set -l session_name (_wt_get_session_name $name $repo_name)
+
+    # Check if session already exists (shouldn't happen for new worktrees, but be safe)
+    if not tmux has-session -t $session_name 2>/dev/null
+        echo -e "\033[34m→\033[0m Creating tmux session: $session_name"
+
+        # Create detached session with standard windows
+        tmux \
+            new-session -d -c "$worktree_path" -s $session_name \;\
+            rename-window -t $session_name:1 server \;\
+            new-window -n bash -c "$worktree_path" -t $session_name \;\
+            new-window -n vim -c "$worktree_path" -t $session_name \;\
+            new-window -n repl -c "$worktree_path" -t $session_name
+
+        echo -e "\033[32m✓\033[0m Tmux session created"
+    end
+
+    # Now decide: switch or notify
     if test "$switch_after" = "true"
-        wt_switch $name $repo_root
+        echo -e "\033[34m→\033[0m Switching to session..."
+        if test -n "$TMUX"
+            tmux switch-client -t $session_name
+        else
+            tmux attach-session -t $session_name
+        end
+    else
+        # Notify user that session is ready
+        _wt_notify "✓ Worktree '$name' ready in session '$session_name'"
+        echo -e "\033[32m✓\033[0m Session ready: $session_name"
+        echo -e "\033[90m  Use 'wt switch $name' to switch\033[0m"
     end
 end
