@@ -20,6 +20,7 @@ source $wt_dir/functions/wt-dashboard.fish
 source $wt_dir/functions/wt-doctor.fish
 source $wt_dir/functions/wt-help.fish
 source $wt_dir/functions/wt-tutor.fish
+source $wt_dir/functions/wt-reload.fish
 
 # Main command dispatcher
 function wt
@@ -59,6 +60,8 @@ function wt
             wt_doctor $remaining_args
         case tutor
             wt_tutor $remaining_args
+        case reload
+            wt_reload $remaining_args
         case version --version -v
             echo "wt version $WT_VERSION"
         case help --help -h

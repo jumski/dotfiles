@@ -190,6 +190,11 @@ function _wt_help
     echo "interactive workflow tutorials"
     echo -n "    "
     set_color cyan
+    printf "%-32s" "reload"
+    set_color normal
+    echo "reload wt functions and completions"
+    echo -n "    "
+    set_color cyan
     printf "%-32s" "help"
     set_color normal
     echo "show this help"

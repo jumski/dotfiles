@@ -18,6 +18,7 @@ complete -c wt -n "__fish_use_subcommand" -a "sync-all" -d "Sync all worktrees w
 complete -c wt -n "__fish_use_subcommand" -a "env" -d "Environment file operations"
 complete -c wt -n "__fish_use_subcommand" -a "git" -d "Run git in bare repository"
 complete -c wt -n "__fish_use_subcommand" -a "tutor" -d "Interactive workflow tutorials"
+complete -c wt -n "__fish_use_subcommand" -a "reload" -d "Reload wt functions and completions"
 complete -c wt -n "__fish_use_subcommand" -a "help" -d "Show help"
 complete -c wt -n "__fish_use_subcommand" -a "version" -d "Show version"
 
