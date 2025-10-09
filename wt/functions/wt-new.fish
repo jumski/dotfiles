@@ -159,7 +159,13 @@ Options:
         echo -e "\033[34m→\033[0m Running post-creation hook..."
         pushd "$repo_root/$worktree_path"
         $hook_script
-        or echo "Warning: Post-creation hook failed" >&2
+        or begin
+            echo "Warning: Post-creation hook failed" >&2
+            # Notify user if they're not switching (they might have switched away during long hook)
+            if test "$switch_after" != "true"
+                _wt_notify "✗ Worktree '$name': post-create hook failed"
+            end
+        end
         popd
     end
     
@@ -191,6 +197,10 @@ Options:
 
         or begin
             echo "Warning: Failed to create tmux session" >&2
+            # Notify user if they're not switching
+            if test "$switch_after" != "true"
+                _wt_notify "✗ Worktree '$name': tmux session creation failed"
+            end
             # Worktree is created successfully, just skip tmux session
             return 0
         end
