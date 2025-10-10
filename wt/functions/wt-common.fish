@@ -435,3 +435,18 @@ function _wt_notify
         tmux display-message -d 4000 "$message"
     end
 end
+
+# Notify a specific tmux session
+function _wt_notify_session
+    set -l session_name $argv[1]
+    set -l message $argv[2]
+
+    if test -z "$session_name" -o -z "$message"
+        echo "Error: session name and message required" >&2
+        return 1
+    end
+
+    if tmux has-session -t "$session_name" 2>/dev/null
+        tmux display-message -t "$session_name" -d 4000 "$message" 2>/dev/null
+    end
+end
