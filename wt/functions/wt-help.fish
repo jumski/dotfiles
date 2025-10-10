@@ -90,6 +90,11 @@ function _wt_help
     echo "open in muxit after creation"
     echo -n "      "
     set_color brblack
+    printf "%-30s" "--yes, --force"
+    set_color normal
+    echo "skip confirmation prompts"
+    echo -n "      "
+    set_color brblack
     printf "%-30s" "[gt options]"
     set_color normal
     echo "all gt create options (if graphite)"

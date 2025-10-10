@@ -3,7 +3,7 @@
 
 function wt_branch
     # Show help if requested
-    _wt_show_help_if_requested $argv "Usage: wt branch <branch-name> [gt-create-options] [--switch]
+    _wt_show_help_if_requested $argv "Usage: wt branch <branch-name> [options]
 
 Create new branch (via Graphite if available) and worktree for it
 
@@ -11,8 +11,9 @@ Arguments:
   <branch-name>  Name for the new branch
 
 Options:
-  --switch       Automatically switch to the new worktree after creation
-  [other]        Additional options are passed to 'gt create'"
+  --switch           Automatically switch to the new worktree after creation
+  --yes, --force     Skip confirmation prompts
+  [gt-create-opts]   Additional options are passed to 'gt create'"
     and return 0
 
     set -l branch_name ""
@@ -26,8 +27,11 @@ Options:
     set -l i 1
     while test $i -le (count $argv)
         switch $argv[$i]
-            case --switch
-                set switch_after true
+            case --switch --yes --force
+                # wt-specific flags, don't pass to gt create
+                if test $argv[$i] = --switch
+                    set switch_after true
+                end
             case '*'
                 # Everything else goes to gt create
                 set -a gt_args $argv[$i]
@@ -181,14 +185,14 @@ Options:
 
     # Ask about Graphite tracking if applicable
     if test $can_track_with_graphite = true
-        _wt_confirm --prompt "Track '$branch_name' with Graphite on '$original_branch'" --default-yes
+        _wt_confirm --prompt "Track '$branch_name' with Graphite on '$original_branch'" --default-yes $argv
         and set should_track_with_graphite true
 
         echo ""
     end
 
     # Final confirmation
-    _wt_confirm --prompt "Proceed" --default-yes
+    _wt_confirm --prompt "Proceed" --default-yes $argv
     or begin
         echo -e "\033[90mCancelled\033[0m"
         return 1
