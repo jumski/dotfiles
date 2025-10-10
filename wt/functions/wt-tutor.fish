@@ -13,6 +13,7 @@ Topics:
   branch         Creating a new feature branch
   stack          Creating next branch in a stack
   commit         Committing with amend workflows
+  fork-pr        Converting fork PR to origin branch for wt/gt
   workflow       Complete development workflow walkthrough
 
 Run 'wt tutor' with no arguments to see the interactive menu."
@@ -36,6 +37,8 @@ Run 'wt tutor' with no arguments to see the interactive menu."
             _wt_tutor_stack_branch
         case commit amend commit-amend
             _wt_tutor_commit_amend
+        case fork-pr fork pr-fork
+            _wt_tutor_fork_pr
         case doctor fix troubleshoot
             _wt_tutor_doctor
         case workflow full-workflow
@@ -83,6 +86,11 @@ function _wt_tutor_menu
     printf "    %-20s" "commit"
     set_color normal
     echo "Committing with amend workflows"
+
+    set_color cyan
+    printf "    %-20s" "fork-pr"
+    set_color normal
+    echo "Converting fork PR to origin branch for wt/gt"
 
     set_color cyan
     printf "    %-20s" "doctor"
@@ -355,6 +363,72 @@ function _wt_tutor_commit_amend
     set_color brred
     echo "⚠️  Never amend commits already pushed to shared branches"
     set_color normal
+    echo ""
+end
+
+function _wt_tutor_fork_pr
+    echo ""
+    set_color bryellow
+    echo "🔀 Tutorial: Converting Fork PR to Origin Branch"
+    set_color normal
+    echo ""
+
+    echo "Work with fork PRs locally using wt/gt by creating origin branches:"
+    echo ""
+
+    set_color brgreen
+    echo "1. Find the PR number you want to work with:"
+    set_color normal
+    echo "   # Check GitHub for the PR number (e.g., #229)"
+    echo ""
+
+    set_color brgreen
+    echo "2. Fetch the PR ref directly into a new branch:"
+    set_color normal
+    echo "   git fetch origin pull/229/head:restore-toml-patch-comments"
+    echo "   # This creates a local branch from the fork's PR"
+    echo ""
+
+    set_color brgreen
+    echo "3. Push the branch to origin:"
+    set_color normal
+    echo "   git push -u origin restore-toml-patch-comments"
+    echo "   # Now it's a regular origin branch"
+    echo ""
+
+    set_color brgreen
+    echo "4. Create a worktree for the branch:"
+    set_color normal
+    echo "   wt new restore-toml-patch-comments --from restore-toml-patch-comments --switch"
+    echo "   # Or if the branch already exists:"
+    echo "   wt checkout restore-toml-patch-comments --switch"
+    echo ""
+
+    set_color brgreen
+    echo "5. Work with it normally using wt/gt:"
+    set_color normal
+    echo "   # Make changes..."
+    echo "   git add ."
+    echo "   git commit -m 'feat: improve PR'"
+    echo "   git push"
+    echo ""
+
+    set_color bryellow
+    echo "💡 Why this works:"
+    set_color normal
+    echo "   • Fork PRs don't exist as origin branches by default"
+    echo "   • Fetching pull/N/head gives you the PR's HEAD commit"
+    echo "   • Creating and pushing a branch makes it trackable"
+    echo "   • Now you can use wt, gt, and normal git workflows"
+    echo ""
+
+    set_color brred
+    echo "⚠️  Considerations:"
+    set_color normal
+    echo "   • This creates a new branch in your repo"
+    echo "   • Original PR author won't see your commits"
+    echo "   • You'll need to coordinate or create your own PR"
+    echo "   • Useful for testing, reviewing, or building on fork PRs"
     echo ""
 end
 

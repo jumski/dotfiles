@@ -56,6 +56,8 @@ complete -c wt -n "__fish_seen_subcommand_from tutor" -a "update" -d "Syncing al
 complete -c wt -n "__fish_seen_subcommand_from tutor" -a "branch" -d "Creating a new feature branch"
 complete -c wt -n "__fish_seen_subcommand_from tutor" -a "stack" -d "Creating next branch in a stack"
 complete -c wt -n "__fish_seen_subcommand_from tutor" -a "commit" -d "Committing with amend workflows"
+complete -c wt -n "__fish_seen_subcommand_from tutor" -a "fork-pr" -d "Converting fork PR to origin branch"
+complete -c wt -n "__fish_seen_subcommand_from tutor" -a "doctor" -d "Diagnosing repository issues"
 complete -c wt -n "__fish_seen_subcommand_from tutor" -a "workflow" -d "Complete development workflow walkthrough"
 
 # Complete branch names for --from option
