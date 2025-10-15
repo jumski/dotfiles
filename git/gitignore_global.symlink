@@ -71,6 +71,6 @@ __pycache__
 .taskell
 
 .cache
-.claude
+**/.claude/settings.local.json
 
 branch-docs
