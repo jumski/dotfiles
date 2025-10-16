@@ -7,11 +7,17 @@ function dictation-browse -d "Browse recent dictations with fzf and paste select
         return 1
     end
 
+    # Get terminal width and calculate max content display width
+    # Format: 10 (time) + 3 (sep) + 4 (words) + 3 (sep) = 20 chars for metadata
+    # Reserve 5 chars for fzf UI, so content_width = term_width - 25
+    set -l term_width (tput cols)
+    set -l content_width (math "max(50, $term_width - 25)")
+
     # Sort by filename (already chronological), then format for display
-    # Include first 200 chars of content inline for searching
+    # Include full content for searching but truncate display version
     set -l now (date +%s)
     set -l selected (find $dictation_dir -type f -name "*.txt" 2>/dev/null | sort -r | \
-        awk -v now=$now '{
+        awk -v now=$now -v cwidth=$content_width '{
             filepath = $0
 
             # Get filename and extract timestamp: YYYYMMDD-HHMMSS-mmm.txt
@@ -33,41 +39,45 @@ function dictation-browse -d "Browse recent dictations with fzf and paste select
                 age = 0
             }
 
-            # Get word count and first 200 chars of content
+            # Get word count
             cmd = "wc -w < \"" filepath "\" 2>/dev/null"
             cmd | getline word_count
             close(cmd)
 
-            # Read first 200 chars, replace newlines with spaces
-            cmd = "head -c 200 \"" filepath "\" 2>/dev/null | tr \"\\n\" \" \""
-            cmd | getline content_preview
+            # Read full content for searching, replace newlines with spaces
+            cmd = "cat \"" filepath "\" 2>/dev/null | tr \"\\n\" \" \""
+            cmd | getline full_content
             close(cmd)
 
-            # Format relative time
+            # Format relative time with fixed width
             if (age < 60)
-                rel_time = age "s ago"
+                rel_time = sprintf("%4ds ago", age)
             else if (age < 3600)
-                rel_time = int(age / 60) "m ago"
+                rel_time = sprintf("%4dm ago", int(age / 60))
             else if (age < 86400)
-                rel_time = int(age / 3600) "h ago"
+                rel_time = sprintf("%4dh ago", int(age / 3600))
             else if (age < 604800)
-                rel_time = int(age / 86400) "d ago"
+                rel_time = sprintf("%4dd ago", int(age / 86400))
             else
-                rel_time = int(age / 604800) "w ago"
+                rel_time = sprintf("%4dw ago", int(age / 604800))
 
-            # Output: time | words | filename | content_preview \t filepath
-            printf "%s | %d words | %s | %s\t%s\n", rel_time, word_count, filename, content_preview, filepath
+            # Truncate content for display based on terminal width
+            content_display = substr(full_content, 1, cwidth)
+
+            # Output: time | words | truncated_content | full_content \t filepath
+            # Field 1-3 for display, field 4 for searching (invisible)
+            printf "%-10s | %3dw | %s\t%s\t%s\n", rel_time, word_count, content_display, full_content, filepath
             fflush()
         }' | \
         fzf --height=50% \
             --delimiter='\t' \
-            --with-nth=1 \
+            --with-nth=1,2 \
             --prompt='Dictation > ' \
             --header='Select dictation to paste')
 
-    # Extract the full path (after the tab) and paste content
+    # Extract the full path (field 3 after tabs) and paste content
     if test -n "$selected"
-        set -l filepath (string split -f2 \t -- $selected)
+        set -l filepath (string split -f3 \t -- $selected)
         cat $filepath
     end
 end
