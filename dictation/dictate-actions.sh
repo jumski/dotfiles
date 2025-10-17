@@ -26,11 +26,14 @@ target_pane="${TARGET_PANE:-$(tmux display -p '#{pane_id}')}"
 # Handle different actions based on exit code
 case $exit_code in
     0)  # Enter key - paste and execute
+        # Escape to normal mode, then A to append at end of line
+        tmux send-keys -t "$target_pane" Escape
+        tmux send-keys -t "$target_pane" A
         echo -n "$output" | tmux load-buffer -
         tmux paste-buffer -p -t "$target_pane"
         tmux send-keys -t "$target_pane" Enter
         ;;
-    
+
     10)  # C key - copy to clipboard
         # Save to temp file and copy in background like Firefox
         tmpfile=$(mktemp)
@@ -38,7 +41,7 @@ case $exit_code in
         nohup sh -c "cat '$tmpfile' | xclip -selection clipboard; rm -f '$tmpfile'" >/dev/null 2>&1 &
         tmux display-message "Copied to clipboard!"
         ;;
-    
+
     11)  # S key - search in Firefox
         if [ -n "$output" ]; then
             # URL encode the output
@@ -48,7 +51,7 @@ case $exit_code in
             tmux display-message "Opened in Firefox!"
         fi
         ;;
-    
+
     12)  # F key - format as markdown
         if [ -n "$output" ]; then
             # Clear screen and show formatting message
@@ -64,6 +67,9 @@ case $exit_code in
             # Format with aichat
             formatted=$(echo "$output" | aichat --prompt "Take these loose thoughts and improve them: organize, expand slightly, fix grammar, and format as clean markdown. Keep the original meaning and voice but make it more polished and structured. Output only the improved markdown text without code fences:" --no-stream)
 
+            # Escape to normal mode, then A to append at end of line
+            tmux send-keys -t "$target_pane" Escape
+            tmux send-keys -t "$target_pane" A
             # Load formatted text and paste
             echo -n "$formatted" | tmux load-buffer -
             tmux paste-buffer -p -t "$target_pane"
@@ -83,6 +89,9 @@ case $exit_code in
 
             # Read from temp file and paste if non-empty
             if [ -s '$tmpfile' ]; then
+                # Escape to normal mode, then A to append at end of line
+                tmux send-keys -t '$target_pane' Escape
+                tmux send-keys -t '$target_pane' A
                 cat '$tmpfile' | tmux load-buffer -
                 tmux paste-buffer -p -t '$target_pane'
             fi
@@ -91,6 +100,9 @@ case $exit_code in
         ;;
 
     99) # Any other key - just paste (no execute)
+        # Escape to normal mode, then A to append at end of line
+        tmux send-keys -t "$target_pane" Escape
+        tmux send-keys -t "$target_pane" A
         echo -n "$output" | tmux load-buffer -
         tmux paste-buffer -p -t "$target_pane"
         ;;
