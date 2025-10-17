@@ -13,9 +13,6 @@ bind r source-file ~/.tmux.conf \; display-message "Configuration reloaded!"
 set-option -g default-shell /usr/bin/fish
 setw -g mode-keys vi
 
-bind -n C-g send-prefix
-bind-key -n C-g send-prefix
-
 # required by image.nvim plugin for kitty image support
 set-option -g allow-passthrough on
 
