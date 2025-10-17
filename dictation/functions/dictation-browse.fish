@@ -72,8 +72,7 @@ function dictation-browse -d "Browse recent dictations with fzf and paste select
         fzf --height=100% \
             --delimiter='\t' \
             --with-nth=1,2 \
-            --prompt='Dictation > ' \
-            --header='Select dictation to paste')
+            --prompt='> ')
 
     # Extract the full path (field 3 after tabs) and paste content
     if test -n "$selected"
