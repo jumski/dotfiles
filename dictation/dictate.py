@@ -44,7 +44,8 @@ def animate_recording():
 
 
      {GRAY}{BOLD}Enter{RESET}{GRAY}: paste & run
-     {BOLD}C{RESET}{GRAY}: clipboard  
+     {BOLD}Tab{RESET}{GRAY}: browse history
+     {BOLD}C{RESET}{GRAY}: clipboard
      {BOLD}S{RESET}{GRAY}: search Firefox
      {BOLD}F{RESET}{GRAY}: format markdown
      {BOLD}Esc/^C{RESET}{GRAY}: cancel
@@ -83,7 +84,8 @@ def animate_uploading():
 
 
      {GRAY}{BOLD}Enter{RESET}{GRAY}: paste & run
-     {BOLD}C{RESET}{GRAY}: clipboard  
+     {BOLD}Tab{RESET}{GRAY}: browse history
+     {BOLD}C{RESET}{GRAY}: clipboard
      {BOLD}S{RESET}{GRAY}: search Firefox
      {BOLD}F{RESET}{GRAY}: format markdown
      {BOLD}Esc/^C{RESET}{GRAY}: cancel
@@ -265,13 +267,18 @@ except KeyboardInterrupt:
         err_print(f"Recording kept at: {F}\n")
         err_print(f"Retry later with: dictate --retry '{F}'\n")
         sys.exit(130)
-    
+
     # Check if Escape was pressed - exit immediately without transcribing
     if key_pressed == '\x1b':
         err_print("\nCancelled!\n")
         err_print(f"Recording kept at: {F}\n")
         err_print(f"Retry later with: dictate --retry '{F}'\n")
         sys.exit(130)
+
+    # Check if Tab was pressed - exit immediately to open browse
+    if key_pressed == '\t':
+        err_print("\nOpening history...\n")
+        sys.exit(13)
     
     # Check if file exists and has content
     if not os.path.exists(F):

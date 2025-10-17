@@ -69,7 +69,7 @@ function dictation-browse -d "Browse recent dictations with fzf and paste select
             printf "%-10s | %3dw | %s\t%s\t%s\n", rel_time, word_count, content_display, full_content, filepath
             fflush()
         }' | \
-        fzf --height=50% \
+        fzf --height=100% \
             --delimiter='\t' \
             --with-nth=1,2 \
             --prompt='Dictation > ' \
@@ -77,7 +77,16 @@ function dictation-browse -d "Browse recent dictations with fzf and paste select
 
     # Extract the full path (field 3 after tabs) and paste content
     if test -n "$selected"
+        # Debug: write selection to stderr to see what we got
+        echo "Selected: $selected" >&2
         set -l filepath (string split -f3 \t -- $selected)
-        cat $filepath
+        echo "Filepath: $filepath" >&2
+        if test -f "$filepath"
+            cat $filepath
+        else
+            echo "Error: File not found: $filepath" >&2
+        end
+    else
+        echo "No selection" >&2
     end
 end

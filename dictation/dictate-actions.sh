@@ -60,16 +60,36 @@ case $exit_code in
             printf "           │ \n" >&2
             printf "          ═╧═\033[0m\n" >&2
             printf "\n         \033[34mFormatting...\033[0m\n" >&2
-            
+
             # Format with aichat
             formatted=$(echo "$output" | aichat --prompt "Take these loose thoughts and improve them: organize, expand slightly, fix grammar, and format as clean markdown. Keep the original meaning and voice but make it more polished and structured. Output only the improved markdown text without code fences:" --no-stream)
-            
+
             # Load formatted text and paste
             echo -n "$formatted" | tmux load-buffer -
             tmux paste-buffer -p -t "$target_pane"
         fi
         ;;
-    
+
+    13)  # Tab key - browse dictation history
+        # Use a temp file to communicate between the popup and paste action
+        tmpfile=$(mktemp)
+
+        # Run browse in a new popup using run-shell so it works after this popup closes
+        # The wrapper script will write to the temp file
+        tmux run-shell -b "
+            tmpfile='$tmpfile'
+            tmux display-popup -E -w 80% -h 80% \
+                \"bash -c 'fish -c \\\"source ~/.dotfiles/dictation/functions/dictation-browse.fish; dictation-browse\\\" > $tmpfile'\"
+
+            # Read from temp file and paste if non-empty
+            if [ -s '$tmpfile' ]; then
+                cat '$tmpfile' | tmux load-buffer -
+                tmux paste-buffer -p -t '$target_pane'
+            fi
+            rm -f '$tmpfile'
+        "
+        ;;
+
     99) # Any other key - just paste (no execute)
         echo -n "$output" | tmux load-buffer -
         tmux paste-buffer -p -t "$target_pane"
