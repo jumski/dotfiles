@@ -22,7 +22,7 @@ function maybe_switch_activity() {
 
 if [ "$active" == "$terminal" ]; then
   echo activating browser
-  maybe_switch_activity "chatting"
+  maybe_switch_activity "browsing"
   xdotool windowactivate $browser
 else
   echo activating terminal
