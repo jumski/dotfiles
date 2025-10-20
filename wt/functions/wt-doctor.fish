@@ -2,6 +2,18 @@
 # Diagnose and fix common issues in worktree repositories
 
 function wt_doctor
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt doctor [--fix] [path/to/repo]
+
+Diagnose and fix common issues in worktree repositories
+
+Arguments:
+  [path/to/repo]  Optional: path to repository (defaults to current)
+
+Options:
+  --fix           Automatically fix detected issues"
+    and return 0
+
     set -l auto_fix false
     set -l repo_path
 
@@ -20,7 +32,6 @@ function wt_doctor
         set repo_path (_wt_get_repo_root)
         if test -z "$repo_path"
             echo "Error: Not in a worktree repository" >&2
-            echo "Usage: wt doctor [--fix] [path/to/repo]" >&2
             return 1
         end
     end
