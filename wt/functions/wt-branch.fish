@@ -13,11 +13,13 @@ Arguments:
 Options:
   --switch           Automatically switch to the new worktree after creation
   --yes, --force     Skip confirmation prompts
+  --require-clean    Exit with error if repository has uncommitted changes
   [gt-create-opts]   Additional options are passed to 'gt create'"
     and return 0
 
     set -l branch_name ""
     set -l switch_after false
+    set -l require_clean false
     set -l gt_args
 
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
@@ -27,10 +29,12 @@ Options:
     set -l i 1
     while test $i -le (count $argv)
         switch $argv[$i]
-            case --switch --yes --force
+            case --switch --yes --force --require-clean
                 # wt-specific flags, don't pass to gt create
                 if test $argv[$i] = --switch
                     set switch_after true
+                else if test $argv[$i] = --require-clean
+                    set require_clean true
                 end
             case '*'
                 # Everything else goes to gt create
@@ -47,6 +51,14 @@ Options:
     # ============================================================
     # PHASE 1: GATHER - Collect all information (read-only)
     # ============================================================
+
+    # Check if repository is clean if required
+    if test $require_clean = true
+        if not git diff-index --quiet HEAD --
+            echo "Error: Repository has uncommitted changes (--require-clean)" >&2
+            return 1
+        end
+    end
 
     # Get current branch to restore later
     set -l original_branch (git branch --show-current)

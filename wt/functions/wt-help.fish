@@ -95,6 +95,11 @@ function _wt_help
     echo "skip confirmation prompts"
     echo -n "      "
     set_color brblack
+    printf "%-30s" "--require-clean"
+    set_color normal
+    echo "fail if repo has uncommitted changes"
+    echo -n "      "
+    set_color brblack
     printf "%-30s" "[gt options]"
     set_color normal
     echo "all gt create options (if graphite)"
