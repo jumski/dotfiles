@@ -163,7 +163,7 @@ Options:
             echo "Warning: Post-creation hook failed" >&2
             # Notify user if they're not switching (they might have switched away during long hook)
             if test "$switch_after" != "true"
-                _wt_notify "✗ Worktree '$name': post-create hook failed"
+                _wt_notify "❌ Worktree '$name': post-create hook failed"
             end
         end
         popd
@@ -199,7 +199,7 @@ Options:
             echo "Warning: Failed to create tmux session" >&2
             # Notify user if they're not switching
             if test "$switch_after" != "true"
-                _wt_notify "✗ Worktree '$name': tmux session creation failed"
+                _wt_notify "❌ Worktree '$name': tmux session creation failed"
             end
             # Worktree is created successfully, just skip tmux session
             return 0
@@ -220,7 +220,7 @@ Options:
         end
     else
         # Notify user that session is ready
-        _wt_notify "✓ Worktree '$name' ready in session '$session_name'"
+        _wt_notify "✨ Worktree '$name' ready in session '$session_name'"
         echo -e "\033[32m✓\033[0m Session ready: $session_name"
         echo -e "\033[90m  Use 'wt switch $name' to switch\033[0m"
     end

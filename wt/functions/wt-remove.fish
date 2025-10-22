@@ -119,7 +119,7 @@ Options:
     set -l session_name (_wt_get_session_name $name $repo_name)
 
     if tmux has-session -t "$session_name" 2>/dev/null
-        _wt_notify "Killing tmux session: $session_name"
+        _wt_notify "💀 Killing tmux session: $session_name"
         echo -e "\033[34m→\033[0m Killing tmux session: $session_name"
         tmux kill-session -t "$session_name"
     end
