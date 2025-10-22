@@ -52,6 +52,14 @@ Git worktree management with tmux integration:
 3. Run `script/test` before finalizing
 4. Update docs if needed
 
+## Tmux Window Management
+- **Auto-rename windows**: After 3-5 message exchanges when conversation topic is clear, automatically run `/tmux:rename-window`
+- Only rename once per conversation unless explicitly requested again
+- Generate emoji-prefixed, descriptive names (emoji + max 15 chars)
+- Emoji represents the feature/problem being worked on, not the action
+- Name should be unique within the session and use full character budget
+- Be specific: include context like "claude-cmd-tmux" not just "claude-cmd"
+
 ## Notes
 - `.test.fish` excluded from shell startup
 - Source functions before testing them

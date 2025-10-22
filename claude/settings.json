@@ -12,5 +12,27 @@
       }
     ]
   },
-  "model": "opusplan"
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git branch:*)",
+      "Bash(tmux list-sessions:*)",
+      "Bash(tmux list-windows:*)",
+      "Bash(tmux show-options:*)",
+      "Bash(tmux rename-window:*)",
+      "Bash(tmux source-file:*)",
+      "Bash(realpath:*)",
+      "Bash(mkdir -p:*)",
+      "Bash(tree:*)",
+      "SlashCommand(/tmux:rename-window)"
+    ],
+    "deny": []
+  }
 }
