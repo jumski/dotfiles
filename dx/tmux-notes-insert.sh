@@ -11,9 +11,21 @@ if [ -z "$target_pane" ]; then
     exit 1
 fi
 
+# Get the current working directory of the target pane
+pane_cwd=$(tmux display-message -p -t "$target_pane" -F "#{pane_current_path}")
+
 # Run the fish function to select a note
-# We need to run it in fish shell context
-selected_note=$(fish -c "source ~/.dotfiles/dx/functions/dx-notes-find.fish; dx-notes-find")
+# We need to run it from the pane's directory to pick up .envrc
+selected_note=$(cd "$pane_cwd" && fish -c "
+    # Load direnv if .envrc exists
+    if test -f .envrc
+        eval (direnv export fish 2>/dev/null)
+    end
+
+    source ~/.dotfiles/dx/functions/dx-file-select.fish;
+    source ~/.dotfiles/dx/functions/dx-notes-find.fish;
+    dx-notes-find
+")
 exit_code=$?
 
 # If selection was made, insert it into the pane
