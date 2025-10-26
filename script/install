@@ -76,3 +76,7 @@ log_section .dotbot/install
 with_time sudo .dotbot/install
 echo
 echo
+
+# Check for outdated packages
+log_section "Checking for outdated packages"
+script/check_outdated_packages || true  # Don't fail install if updates are available

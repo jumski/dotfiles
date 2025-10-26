@@ -28,3 +28,7 @@ pacman:
 dotbot:
 	@.dotbot/install
 
+upgrade:
+	@echo "Upgrading dotfile packages..."
+	@script/upgrade_packages
+
