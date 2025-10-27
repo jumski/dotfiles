@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -e
+
+# Colors
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+RESET='\033[0m'
+
+# Find all packages defined in dotfiles
+pacman_packages=$(find . -name packages.pacman -exec cat {} \; | grep -v '^#' | grep -v '^$' | sort -u | tr '\n' ' ')
+aur_packages=$(find . -name packages.aur -exec cat {} \; | grep -v '^#' | grep -v '^$' | sort -u | tr '\n' ' ')
+
+# Get list of outdated packages
+outdated_list=$(pamac checkupdates 2>/dev/null || true)
+
+# Arrays to store outdated packages
+outdated_pacman=()
+outdated_aur=()
+
+# Check pacman packages
+for pkg in $pacman_packages; do
+    if echo "$outdated_list" | grep -q "^$pkg "; then
+        outdated_pacman+=("$pkg")
+    fi
+done
+
+# Check AUR packages
+for pkg in $aur_packages; do
+    if echo "$outdated_list" | grep -q "^$pkg "; then
+        outdated_aur+=("$pkg")
+    fi
+done
+
+# Upgrade packages
+if [ ${#outdated_pacman[@]} -gt 0 ]; then
+    echo -e "${BLUE}Upgrading pacman packages...${RESET}"
+    # Use -Syu to properly handle replacements and conflicts
+    sudo pacman -S --noconfirm --needed "${outdated_pacman[@]}"
+fi
+
+if [ ${#outdated_aur[@]} -gt 0 ]; then
+    echo -e "${BLUE}Upgrading AUR packages...${RESET}"
+    pamac build --no-confirm "${outdated_aur[@]}"
+fi
+
+if [ ${#outdated_pacman[@]} -eq 0 ] && [ ${#outdated_aur[@]} -eq 0 ]; then
+    echo -e "${GREEN}All dotfile packages are already up to date!${RESET}"
+else
+    echo -e "${GREEN}Upgrade complete!${RESET}"
+fi

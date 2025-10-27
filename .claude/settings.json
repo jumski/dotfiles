@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(fishtape:*)",
-      "WebFetch(domain:fishshell.com)"
+      "WebFetch(domain:fishshell.com)",
+      "Bash(pamac list:*)",
+      "Bash(pamac search:*)",
+      "Bash(pamac info:*)",
+      "Bash(pamac checkupdates:*)",
+      "Bash(yay -Q:*)",
+      "Bash(yay -Qi:*)",
+      "Bash(yay -Qs:*)",
+      "Bash(yay -Ss:*)",
+      "Bash(yay -Si:*)"
     ],
     "deny": []
   }

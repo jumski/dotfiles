@@ -1,0 +1,72 @@
+#!/bin/bash
+
+set -e
+
+# Colors
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+RESET='\033[0m'
+
+# Find all packages defined in dotfiles
+pacman_packages=$(find . -name packages.pacman -exec cat {} \; | grep -v '^#' | grep -v '^$' | sort -u | tr '\n' ' ')
+aur_packages=$(find . -name packages.aur -exec cat {} \; | grep -v '^#' | grep -v '^$' | sort -u | tr '\n' ' ')
+
+# Get list of outdated packages
+echo -e "${BLUE}Checking for outdated packages...${RESET}"
+outdated_list=$(pamac checkupdates 2>/dev/null || true)
+
+# Arrays to store outdated packages
+outdated_pacman=()
+outdated_aur=()
+
+# Check pacman packages
+for pkg in $pacman_packages; do
+    if echo "$outdated_list" | grep -q "^$pkg "; then
+        outdated_pacman+=("$pkg")
+    fi
+done
+
+# Check AUR packages
+for pkg in $aur_packages; do
+    if echo "$outdated_list" | grep -q "^$pkg "; then
+        outdated_aur+=("$pkg")
+    fi
+done
+
+# Report results
+has_outdated=false
+
+if [ ${#outdated_pacman[@]} -gt 0 ]; then
+    has_outdated=true
+    echo
+    echo -e "${YELLOW}Outdated pacman packages:${RESET}"
+    for pkg in "${outdated_pacman[@]}"; do
+        # Get version info from outdated_list
+        version_info=$(echo "$outdated_list" | grep "^$pkg " | awk '{printf "  %s: %s -> %s", $1, $2, $4}')
+        echo -e "  ${RED}•${RESET} $version_info"
+    done
+fi
+
+if [ ${#outdated_aur[@]} -gt 0 ]; then
+    has_outdated=true
+    echo
+    echo -e "${YELLOW}Outdated AUR packages:${RESET}"
+    for pkg in "${outdated_aur[@]}"; do
+        # Get version info from outdated_list
+        version_info=$(echo "$outdated_list" | grep "^$pkg " | awk '{printf "  %s: %s -> %s", $1, $2, $4}')
+        echo -e "  ${RED}•${RESET} $version_info"
+    done
+fi
+
+if [ "$has_outdated" = true ]; then
+    echo
+    echo -e "${GREEN}To upgrade these packages, run:${RESET}"
+    echo -e "  ${BLUE}make upgrade${RESET}"
+    echo
+    exit 1  # Exit with error to indicate updates are available
+else
+    echo -e "${GREEN}All dotfile packages are up to date!${RESET}"
+    exit 0
+fi
