@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 # Load the common functions
-source (dirname (status filename))/../functions/wt-common.fish
+source (dirname (status filename))/../lib/common.fish
 
 # Response handling tests
 @test "_wt_confirm returns 0 for 'y' response" (echo "y" | _wt_confirm --prompt "Test prompt"; echo $status) -eq 0

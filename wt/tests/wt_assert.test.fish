@@ -1,14 +1,14 @@
 #!/usr/bin/env fish
 
 # Source the function to test
-source /home/jumski/.dotfiles/wt/functions/wt-common.fish
+source /home/jumski/.dotfiles/wt/lib/common.fish
 
 # Success cases
 @test "_wt_assert succeeds on true condition" \
     (_wt_assert "test 1 -eq 1" "should not fail"; echo $status) -eq 0
 
 @test "_wt_assert succeeds on file existence check" \
-    (_wt_assert "test -f /home/jumski/.dotfiles/wt/functions/wt-common.fish" "file should exist"; echo $status) -eq 0
+    (_wt_assert "test -f /home/jumski/.dotfiles/wt/lib/common.fish" "file should exist"; echo $status) -eq 0
 
 @test "_wt_assert succeeds on string comparison" \
     (_wt_assert "test 'foo' = 'foo'" "strings should match"; echo $status) -eq 0

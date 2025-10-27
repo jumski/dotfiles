@@ -3,7 +3,7 @@
 # Tests for _wt_parse_repo_url function
 
 # Source the wt-common functions
-source /home/jumski/.dotfiles/wt/functions/wt-common.fish
+source /home/jumski/.dotfiles/wt/lib/common.fish
 
 @test "parse GitHub SSH URL with .git" \
     (_wt_parse_repo_url "git@github.com:supabase/smart-office-demo.git")[2] = "smart-office-demo"

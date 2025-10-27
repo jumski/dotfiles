@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 # Source the function to test
-source /home/jumski/.dotfiles/wt/functions/wt-common.fish
+source /home/jumski/.dotfiles/wt/lib/common.fish
 
 # Basic functionality
 @test "generates correct session name format" \
