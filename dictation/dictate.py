@@ -34,14 +34,23 @@ def show_recording_indicator(color=RED):
     sys.stderr.flush()
 
 def animate_recording():
-    """Show animated recording indicator"""
-    # Just add a blank line for REC position
-    padding = " " * 9  # 2 columns less than circle padding
-    sys.stderr.write(f"\n\n")
-    
-    # Show the legend below with extra spacing and right shift
-    legend = f"""
+    """Show animated recording indicator with timer"""
+    # WAV format constants (from arecord command)
+    SAMPLE_RATE = 48000  # Hz
+    BITS_PER_SAMPLE = 16
+    CHANNELS = 1
+    BYTES_PER_SEC = SAMPLE_RATE * (BITS_PER_SAMPLE / 8) * CHANNELS  # ~96 KB/s
+    MAX_SIZE_MB = 25  # API limit
+    MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024
+    MAX_DURATION_SEC = MAX_SIZE_BYTES / BYTES_PER_SEC  # ~273 seconds (~4.5 min)
 
+    padding = " " * 9  # 2 columns less than circle padding
+
+    # Reserve space for: timer + blank + status + blank + legend
+    sys.stderr.write(f"\n\n\n")
+
+    # Show the legend below with extra spacing
+    legend = f"""
 
      {GRAY}{BOLD}Enter{RESET}{GRAY}: paste & run
      {BOLD}Tab{RESET}{GRAY}: browse history
@@ -54,17 +63,83 @@ def animate_recording():
 """
     sys.stderr.write(legend)
     sys.stderr.flush()
-    
-    # Move cursor back up to REC line for animation
-    sys.stderr.write("\033[10A")  # Move up 10 lines (one more for markdown line)
-    
+
+    # Move cursor back up to timer line
+    sys.stderr.write("\033[11A")  # Move up to timer line
+
+    # Hide cursor during animation
+    sys.stderr.write("\033[?25l")
+    sys.stderr.flush()
+
+    start_time = time.time()
+    dot_cycle = ["   ", ".  ", ".. ", "..."]
+    dot_index = 0
+
     while not stop_animation.is_set():
-        for dots in ["   ", ".  ", ".. ", "..."]:
-            if stop_animation.is_set():
-                break
-            sys.stderr.write(f"\r{padding}{RED}Listening{dots}{RESET}")
-            sys.stderr.flush()
-            time.sleep(0.5)
+        elapsed = time.time() - start_time
+
+        # Calculate file size and progress
+        current_size_bytes = elapsed * BYTES_PER_SEC
+        current_size_mb = current_size_bytes / (1024 * 1024)
+        percent = (current_size_bytes / MAX_SIZE_BYTES) * 100
+        remaining_sec = MAX_DURATION_SEC - elapsed
+
+        # Format time as MM:SS
+        elapsed_min = int(elapsed // 60)
+        elapsed_sec = int(elapsed % 60)
+        remaining_min = int(remaining_sec // 60)
+        remaining_sec_display = int(remaining_sec % 60)
+
+        # Check if we're in danger zone (<1 minute remaining)
+        danger_zone = remaining_sec < 60
+
+        # Choose colors
+        if danger_zone:
+            # Everything red when <1 minute
+            elapsed_color = RED
+            pct_color = RED
+            remaining_color = RED
+        else:
+            # Normal colors
+            elapsed_color = RESET  # Normal/white color
+            if percent < 70:
+                pct_color = BLUE
+            elif percent < 90:
+                pct_color = '\033[33m'  # Yellow
+            else:
+                pct_color = RED
+            remaining_color = GRAY
+
+        # Format percentage with padding (always NNN%)
+        pct_str = f"{int(percent):3d}%"
+
+        # Line 1: Timer, percentage, remaining (left aligned with small indent)
+        timer_line = f"   {elapsed_color}{elapsed_min:02d}:{elapsed_sec:02d}{RESET}   {pct_color}{pct_str}{RESET}   {remaining_color}~{remaining_min:02d}:{remaining_sec_display:02d}{RESET}"
+
+        # Line 3 (skip line 2 for spacing): Status with animation (centered under mic)
+        status_line = f"{padding}{RED}Listening{dot_cycle[dot_index]}{RESET}"
+
+        # Write timer line (line 1)
+        sys.stderr.write(f"\r{timer_line}\033[K")
+        # Skip line 2 (blank line for spacing)
+        sys.stderr.write(f"\n\r\033[K")
+        # Write status line (line 3)
+        sys.stderr.write(f"\n\r{status_line}\033[K")
+
+        # Move cursor back up to timer line (2 lines up)
+        sys.stderr.write("\033[2A")
+        sys.stderr.flush()
+
+        # Update animation
+        dot_index = (dot_index + 1) % len(dot_cycle)
+        time.sleep(0.5)
+
+        if stop_animation.is_set():
+            break
+
+    # Show cursor again when animation stops
+    sys.stderr.write("\033[?25h")
+    sys.stderr.flush()
 
 def animate_uploading():
     """Show animated uploading indicator"""
