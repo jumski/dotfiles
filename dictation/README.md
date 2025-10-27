@@ -1,6 +1,6 @@
 # Dictation Utility
 
-A voice-to-text dictation system that records audio and transcribes it using Groq or OpenAI's Whisper API. Features seamless tmux integration with multiple action keys for different workflows.
+A voice-to-text dictation system that records audio and transcribes it using Groq or OpenAI's Whisper API. Uses OGG Vorbis format for 10-14x smaller files and 50+ minute recording capacity. Features seamless tmux integration with multiple action keys for different workflows.
 
 ## Features
 
@@ -32,7 +32,7 @@ dictation/
 └── README.md               # This file
 
 ~/SynologyDrive/Areas/Dev/dictation-data/  # Created automatically on NAS
-├── 20240115-143045-123.wav                # Saved recordings (YYYYMMDD-HHMMSS-mmm format)
+├── 20240115-143045-123.ogg                # Saved recordings (YYYYMMDD-HHMMSS-mmm format, OGG Vorbis)
 └── 20240115-143045-123.txt                # Transcribed text (created on success)
 ```
 
@@ -51,6 +51,7 @@ dictation/
 - **Manjaro/Arch Linux** (or any Linux with ALSA)
 - **Synology Drive** mounted at `~/SynologyDrive/` with `Areas/Dev` directory
 - **arecord** (part of `alsa-utils` package)
+- **ffmpeg** (for OGG Vorbis conversion)
 - **sox** (for `play` command - audio playback)
 - **Python 3** with `requests` library
 - **tmux** (for popup integration)
@@ -66,7 +67,7 @@ dictation/
 
 1. **Install system dependencies**:
    ```bash
-   sudo pacman -S alsa-utils sox python-requests tmux xclip firefox
+   sudo pacman -S alsa-utils ffmpeg sox python-requests tmux xclip firefox
    ```
 
 2. **Set up API keys in `~/.env.local`**:
@@ -89,9 +90,9 @@ dictation/
    ```bash
    # Add to your crontab
    crontab -e
-   # Then add this line (removes WAV files after 28 days):
-   0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name "*.wav" -mtime +28 -delete 2>/dev/null
-   
+   # Then add this line (removes OGG files after 28 days):
+   0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name "*.ogg" -mtime +28 -delete 2>/dev/null
+
    # Optional: Also remove txt files (uncomment if you want to clean those too):
    # 0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name "*.txt" -mtime +28 -delete 2>/dev/null
    ```
@@ -112,8 +113,8 @@ dictate-test
 # Set backend via environment
 TRANSCRIPTION_BACKEND=openai dictate
 
-# Retry failed transcriptions
-dictate --retry ~/SynologyDrive/Areas/Dev/dictation-data/20240115-143045-123.wav
+# Retry failed transcriptions (supports both .ogg and .wav)
+dictate --retry ~/SynologyDrive/Areas/Dev/dictation-data/20240115-143045-123.ogg
 dictate --retry-last  # Retries the most recent recording
 ```
 
@@ -131,10 +132,11 @@ dictate --retry-last  # Retries the most recent recording
 
 ## How It Works
 
-1. **Recording**: Uses `arecord` with 200ms buffer for reliable capture
+1. **Recording**: Uses `arecord` with 50ms buffer for reliable capture
    - ALSA direct recording (no PulseAudio overhead)
    - Properly drains buffers on SIGINT (no audio loss)
-   - 48kHz mono, 16-bit PCM WAV format
+   - Records 48kHz mono, 16-bit PCM WAV temporarily
+   - Converts to OGG Vorbis Q4 for upload (10-14x smaller)
 
 2. **Transcription**: Sends audio to chosen API
    - Groq: Uses `whisper-large-v3` model (fast and accurate)
@@ -152,17 +154,20 @@ dictate --retry-last  # Retries the most recent recording
 - **API errors**: Verify API keys are set in `~/.env.local`
 - **No text inserted**: Ensure tmux version ≥ 3.2 (for popup support)
 - **Recording issues**: Test with `dictate-test` to verify audio capture
-- **Failed transcription**: Check `~/SynologyDrive/Areas/Dev/dictation-data/` for your WAV file and use `dictate --retry-last`
+- **Failed transcription**: Check `/tmp` for temporary files or `~/SynologyDrive/Areas/Dev/dictation-data/` for saved OGG files, then use `dictate --retry-last`
 - **NAS not mounted**: Script will fail with a red error if Synology Drive is not mounted or Dev directory is missing
-- **Disk space**: WAV recordings are kept for 28 days by default. Transcripts (.txt files) are kept indefinitely unless you enable their cleanup in the cron job
+- **Disk space**: OGG recordings are kept for 28 days by default. Transcripts (.txt files) are kept indefinitely unless you enable their cleanup in the cron job
 
 ## Technical Notes
 
 - Uses `arecord` instead of `sox/rec` to avoid buffer loss issues
-- Small 200ms ALSA buffer ensures quick draining on stop
+- Small 50ms ALSA buffer ensures quick draining on stop
+- Records to `/tmp` (RAM) for speed, then converts to OGG before uploading
+- OGG Vorbis Q4 provides 10-14x compression with excellent quality
 - Tmux buffers provide reliable cross-pane text transfer
 - All scripts output transcripts to stdout, errors to stderr
-- Recordings saved as `YYYYMMDD-HHMMSS-mmm.wav` in `~/SynologyDrive/Areas/Dev/dictation-data/` (includes milliseconds)
+- Recordings saved as `YYYYMMDD-HHMMSS-mmm.ogg` in `~/SynologyDrive/Areas/Dev/dictation-data/` (includes milliseconds)
 - Transcripts saved alongside as `.txt` files on successful transcription
-- Failed recordings are preserved for manual retry
-- Only successful transcriptions delete the original WAV file
+- Failed recordings are preserved in `/tmp` for manual retry
+- Successful transcriptions save OGG to NAS and delete temp files
+- Legacy WAV files can still be retried with `--retry` flag

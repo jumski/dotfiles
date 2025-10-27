@@ -18,7 +18,7 @@ mkdir -p "$RECORD_DIR"
 echo "✓ Created recordings directory: $RECORD_DIR"
 
 # Install crontab entry (append if not already present)
-CRON_ENTRY="0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name \"*.wav\" -mtime +28 -delete 2>/dev/null"
+CRON_ENTRY="0 3 * * * find ~/SynologyDrive/Areas/Dev/dictation-data -type f -name \"*.ogg\" -mtime +28 -delete 2>/dev/null"
 CRON_COMMENT="# Cleanup old dictation recordings"
 
 # Check if entry already exists

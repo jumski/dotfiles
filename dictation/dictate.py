@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, subprocess, requests, sys, time, signal, io, threading, datetime, argparse
+import os, subprocess, requests, sys, time, signal, io, threading, datetime, argparse, shutil
 
 # ANSI color codes
 GRAY = '\033[90m'
@@ -40,9 +40,15 @@ def animate_recording():
     BITS_PER_SAMPLE = 16
     CHANNELS = 1
     BYTES_PER_SEC = SAMPLE_RATE * (BITS_PER_SAMPLE / 8) * CHANNELS  # ~96 KB/s
-    MAX_SIZE_MB = 25  # API limit
+    MAX_SIZE_MB = 25  # API limit for upload (OGG)
     MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024
-    MAX_DURATION_SEC = MAX_SIZE_BYTES / BYTES_PER_SEC  # ~273 seconds (~4.5 min)
+
+    # OGG compression ratio (Quality 4 gives ~12x typically, use 10x for safety)
+    OGG_COMPRESSION_RATIO = 10  # Conservative estimate (worst case was 9x)
+
+    # Since we convert WAV to OGG, we can record until WAV is 250MB (becomes 25MB OGG)
+    MAX_WAV_SIZE_BYTES = MAX_SIZE_BYTES * OGG_COMPRESSION_RATIO
+    MAX_DURATION_SEC = MAX_WAV_SIZE_BYTES / BYTES_PER_SEC  # ~2730 seconds (~45.5 min)
 
     padding = " " * 9  # 2 columns less than circle padding
 
@@ -78,11 +84,17 @@ def animate_recording():
     while not stop_animation.is_set():
         elapsed = time.time() - start_time
 
-        # Calculate file size and progress
-        current_size_bytes = elapsed * BYTES_PER_SEC
+        # Calculate file size and progress using actual file size
+        if hasattr(animate_recording, 'recording_file') and os.path.exists(animate_recording.recording_file):
+            current_size_bytes = os.path.getsize(animate_recording.recording_file)
+        else:
+            # Fallback to estimate if file doesn't exist yet
+            current_size_bytes = elapsed * BYTES_PER_SEC
+
         current_size_mb = current_size_bytes / (1024 * 1024)
-        percent = (current_size_bytes / MAX_SIZE_BYTES) * 100
-        remaining_sec = MAX_DURATION_SEC - elapsed
+        # Calculate percentage based on WAV size limit (which becomes 25MB OGG after conversion)
+        percent = (current_size_bytes / MAX_WAV_SIZE_BYTES) * 100
+        remaining_sec = MAX_DURATION_SEC - (current_size_bytes / BYTES_PER_SEC)
 
         # Format time as MM:SS
         elapsed_min = int(elapsed // 60)
@@ -181,37 +193,37 @@ def animate_uploading():
             if upload_done.is_set():
                 return
 
-def transcribe_with_groq(file_data):
+def transcribe_with_groq(file_data, mime_type="audio/ogg", filename="out.ogg"):
     """Transcribe audio using Groq's Whisper API"""
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
         raise ValueError("GROQ_API_KEY not set")
-    
+
     file_obj = io.BytesIO(file_data)
-    
+
     r = requests.post(
         "https://api.groq.com/openai/v1/audio/transcriptions",
         headers={"Authorization": f"Bearer {api_key}"},
         data={"model": "whisper-large-v3", "language": "en"},
-        files={"file": ("out.wav", file_obj, "audio/wav")},
+        files={"file": (filename, file_obj, mime_type)},
         timeout=120
     )
     r.raise_for_status()
     return r.json()["text"]
 
-def transcribe_with_openai(file_data):
+def transcribe_with_openai(file_data, mime_type="audio/ogg", filename="out.ogg"):
     """Transcribe audio using OpenAI's Whisper API"""
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise ValueError("OPENAI_API_KEY not set")
-    
+
     file_obj = io.BytesIO(file_data)
-    
+
     r = requests.post(
         "https://api.openai.com/v1/audio/transcriptions",
         headers={"Authorization": f"Bearer {api_key}"},
         data={"model": "whisper-1", "language": "en"},
-        files={"file": ("out.wav", file_obj, "audio/wav")},
+        files={"file": (filename, file_obj, mime_type)},
         timeout=120
     )
     r.raise_for_status()
@@ -242,8 +254,8 @@ os.makedirs(RECORD_DIR, exist_ok=True)
 
 # CLI argument parsing
 ap = argparse.ArgumentParser(add_help=False)
-ap.add_argument("--retry", metavar="FILE", help="re-upload a saved .wav file")
-ap.add_argument("--retry-last", action="store_true", help="re-upload the newest saved .wav file")
+ap.add_argument("--retry", metavar="FILE", help="re-upload a saved .ogg or .wav file")
+ap.add_argument("--retry-last", action="store_true", help="re-upload the newest saved recording (.ogg or .wav)")
 args, _ = ap.parse_known_args()
 
 # Main script starts here
@@ -252,11 +264,24 @@ transcribe_func, backend_name = get_transcription_backend()
 # Helper for retry
 def do_retry(path):
     try:
+        # Determine file format
+        if path.endswith('.ogg'):
+            mime_type = "audio/ogg"
+            filename = "out.ogg"
+            ext = '.ogg'
+        elif path.endswith('.wav'):
+            mime_type = "audio/wav"
+            filename = "out.wav"
+            ext = '.wav'
+        else:
+            err_print(f"\nUnsupported file format: {path}\n")
+            sys.exit(1)
+
         with open(path, "rb") as f:
-            transcript = transcribe_func(f.read())
+            transcript = transcribe_func(f.read(), mime_type, filename)
             print(transcript)
             # Save transcript file
-            txt_file = path.replace('.wav', '.txt')
+            txt_file = path.replace(ext, '.txt')
             with open(txt_file, 'w') as tf:
                 tf.write(transcript)
         sys.exit(0)
@@ -266,19 +291,28 @@ def do_retry(path):
 
 if args.retry or args.retry_last:
     if args.retry:
-        wav_path = args.retry
+        file_path = args.retry
     else:
+        # Look for OGG files first (new format), then WAV (legacy)
+        ogg_files = [f for f in os.listdir(RECORD_DIR) if f.endswith(".ogg")]
         wav_files = [f for f in os.listdir(RECORD_DIR) if f.endswith(".wav")]
-        if not wav_files:
+        all_files = [(f, ".ogg") for f in ogg_files] + [(f, ".wav") for f in wav_files]
+
+        if not all_files:
             err_print("\nNo recordings found to retry\n")
             sys.exit(1)
-        wav_path = os.path.join(RECORD_DIR, sorted(wav_files)[-1])
-    do_retry(wav_path)
 
-# Create a permanent file for recording
+        # Sort by filename (chronological) and get the newest
+        all_files.sort(key=lambda x: x[0])
+        newest_file, ext = all_files[-1]
+        file_path = os.path.join(RECORD_DIR, newest_file)
+
+    do_retry(file_path)
+
+# Create a temp file for recording (in /tmp for speed)
 now = datetime.datetime.now()
 stamp = now.strftime("%Y%m%d-%H%M%S-") + f"{now.microsecond//1000:03d}"
-F = os.path.join(RECORD_DIR, f"{stamp}.wav")
+F_wav = os.path.join("/tmp", f"dictate-{stamp}.wav")
 
 # Use arecord as recommended by Perplexity - it properly drains buffers on SIGINT
 cmd = [
@@ -288,7 +322,7 @@ cmd = [
     "-r", "48000",          # 48kHz sample rate
     "-c", "1",              # Mono
     "--buffer-time", "50000",   # 50ms buffer (reduced for lower latency)
-    F                       # Output file
+    F_wav                   # Output file
 ]
 
 # Start recording FIRST (before showing UI)
@@ -306,6 +340,7 @@ key_pressed = None
 # Start animation thread
 stop_animation = threading.Event()
 upload_done = threading.Event()
+animate_recording.recording_file = F_wav  # Set file path for timer
 animation_thread = threading.Thread(target=animate_recording)
 animation_thread.daemon = True
 animation_thread.start()
@@ -339,52 +374,70 @@ except KeyboardInterrupt:
     # If Ctrl-C was pressed (no key_pressed set), exit immediately
     if key_pressed is None:
         err_print("\nCancelled!\n")
-        err_print(f"Recording kept at: {F}\n")
-        err_print(f"Retry later with: dictate --retry '{F}'\n")
+        err_print(f"Recording kept at: {F_wav}\n")
+        err_print(f"Retry later with: dictate --retry '{F_wav}'\n")
         sys.exit(130)
 
     # Check if Escape was pressed - exit immediately without transcribing
     if key_pressed == '\x1b':
         err_print("\nCancelled!\n")
-        err_print(f"Recording kept at: {F}\n")
-        err_print(f"Retry later with: dictate --retry '{F}'\n")
+        err_print(f"Recording kept at: {F_wav}\n")
+        err_print(f"Retry later with: dictate --retry '{F_wav}'\n")
         sys.exit(130)
 
     # Check if Tab was pressed - exit immediately to open browse
     if key_pressed == '\t':
         err_print("\nOpening history...\n")
         sys.exit(13)
-    
+
     # Check if file exists and has content
-    if not os.path.exists(F):
-        err_print(f"\nError: Recording file {F} not found!\n")
+    if not os.path.exists(F_wav):
+        err_print(f"\nError: Recording file {F_wav} not found!\n")
         sys.exit(1)
-    
-    file_size = os.path.getsize(F)
+
+    file_size = os.path.getsize(F_wav)
     
     if file_size == 0:
         err_print("\nError: Recording file is empty!\n")
         sys.exit(1)
     
-    # Now upload with animation
+    # Now convert to OGG and upload with animation
     upload_thread = threading.Thread(target=animate_uploading)
     upload_thread.daemon = True
     upload_thread.start()
-    
+
     try:
-        with open(F, "rb") as f:
+        # Convert WAV to OGG (in /tmp for speed)
+        F_ogg = os.path.join("/tmp", f"dictate-{stamp}.ogg")
+        subprocess.run([
+            "ffmpeg", "-y", "-i", F_wav,
+            "-acodec", "libvorbis", "-q:a", "4",
+            "-hide_banner", "-loglevel", "error",
+            F_ogg
+        ], check=True)
+
+        # Read OGG file for upload
+        with open(F_ogg, "rb") as f:
             file_data = f.read()
-        
-        # Use the selected transcription backend
-        transcript = transcribe_func(file_data)
+
+        # Use the selected transcription backend with OGG
+        transcript = transcribe_func(file_data, "audio/ogg", "out.ogg")
         upload_done.set()  # Stop animation
         time.sleep(0.1)  # Let animation clear
         print(transcript)
-        
+
+        # Save OGG to NAS permanently
+        F_nas = os.path.join(RECORD_DIR, f"{stamp}.ogg")
+        shutil.copy(F_ogg, F_nas)
+
         # Save transcript to file
-        txt_file = F.replace('.wav', '.txt')
+        txt_file = F_nas.replace('.ogg', '.txt')
         with open(txt_file, 'w') as f:
             f.write(transcript)
+
+        # Cleanup temp files
+        os.remove(F_wav)
+        os.remove(F_ogg)
         
         # Exit with code based on key pressed
         if key_pressed in ['\n', '\r']:  # Enter key
@@ -401,32 +454,29 @@ except KeyboardInterrupt:
     except KeyboardInterrupt:
         upload_done.set()
         err_print("\nUpload aborted!\n")
-        err_print(f"Recording kept at: {F}\n")
-        err_print(f"Retry later with: dictate --retry '{F}'\n")
+        err_print(f"Recording kept at: {F_wav}\n")
+        err_print(f"Retry later with: dictate --retry '{F_wav}'\n")
         sys.exit(1)
     except ValueError as e:
         upload_done.set()
         err_print(f"\nConfiguration error: {e}\n")
-        err_print(f"Recording kept at: {F}\n")
-        err_print(f"Retry later with: dictate --retry '{F}'\n")
+        err_print(f"Recording kept at: {F_wav}\n")
+        err_print(f"Retry later with: dictate --retry '{F_wav}'\n")
         sys.exit(1)
     except requests.exceptions.HTTPError as e:
         upload_done.set()
         err_print(f"\nHTTP Error: {e}\n")
         err_print(f"Response: {e.response.text}\n")
-        err_print(f"Recording kept at: {F}\n")
-        err_print(f"Retry later with: dictate --retry '{F}'\n")
+        err_print(f"Recording kept at: {F_wav}\n")
+        err_print(f"Retry later with: dictate --retry '{F_wav}'\n")
         sys.exit(1)
     except Exception as e:
         upload_done.set()
         err_print(f"\nUpload error: {e}\n")
-        err_print(f"Recording kept at: {F}\n")
-        err_print(f"Retry later with: dictate --retry '{F}'\n")
+        err_print(f"Recording kept at: {F_wav}\n")
+        err_print(f"Retry later with: dictate --retry '{F_wav}'\n")
         sys.exit(1)
 finally:
-    # Only delete if we succeeded (transcript was saved)
-    if 'transcript' in locals() and os.path.exists(F):
-        try:
-            os.remove(F)
-        except OSError:
-            pass
+    # Temp files are already cleaned up in try block on success
+    # On failure, they're kept in /tmp for retry
+    pass
