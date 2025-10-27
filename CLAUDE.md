@@ -60,6 +60,14 @@ Git worktree management with tmux integration:
 - Name should be unique within the session and use full character budget
 - Be specific: include context like "claude-cmd-tmux" not just "claude-cmd"
 
+## Research and Documentation
+
+When you need to search for information or documentation:
+- **Prefer Perplexity Search** for current best practices, tool comparisons, and research
+- **Use Context7 MCP** for library/framework documentation (Fish, Tmux, Git, etc.)
+- **Avoid WebSearch/WebFetch** unless other tools fail
+- See `.claude/core/finding_answers.md` for detailed tool selection guidance
+
 ## Notes
 - `.test.fish` excluded from shell startup
 - Source functions before testing them
