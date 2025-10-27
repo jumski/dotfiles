@@ -1,4 +1,4 @@
-function calculate_max_dirname_length
+function _calculate_max_dirname_length
   set max_length 0
   while read -l path
     set dirname (dirname $path)
@@ -15,7 +15,7 @@ function calculate_max_dirname_length
   echo $max_length
 end
 
-function process_paths
+function _process_paths
   while read -l path
     set dirname (dirname $path)
     if test "$dirname" = "."
@@ -68,14 +68,14 @@ function muxit
     end
 
     # Calculate dynamic left_half_width based on longest dirname + 5
-    set max_dirname_length (cat $cache_file | calculate_max_dirname_length)
+    set max_dirname_length (cat $cache_file | _calculate_max_dirname_length)
     set left_half_width (math $max_dirname_length + 5)
     set fzf_prompt_padding (math $left_half_width + 2)
     set fzf_prompt (printf %{$fzf_prompt_padding}s "")
 
     set dir_name (
     cat $cache_file |
-    process_paths $left_half_width |
+    _process_paths $left_half_width |
     fzf --ansi --keep-right --margin=0,0 --prompt="$fzf_prompt"
     )
 

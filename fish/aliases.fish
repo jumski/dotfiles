@@ -49,3 +49,5 @@ alias compile_tags="ctags -R --exclude=.git --exclude=log * $GEM_HOME/gems/*"
 ## FISHTAPE TESTING
 alias fishtape-run="script/test"
 alias fishtape-watch="watch -n 2 script/test"
+
+alias upgrade_discord_via_pacman='sudo pacman -U https://www.archlinux.org/packages/community/x86_64/discord/download/'
