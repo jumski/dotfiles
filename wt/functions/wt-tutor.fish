@@ -8,6 +8,7 @@ function wt_tutor
 Interactive tutorials for wt/gt workflow
 
 Topics:
+  clone          Cloning repositories with worktree structure
   hotfix         Creating urgent fixes on main branch
   update         Syncing all stacks after merging changes
   branch         Creating a new feature branch
@@ -27,6 +28,8 @@ Run 'wt tutor' with no arguments to see the interactive menu."
     end
     
     switch $topic
+        case clone clone-repo
+            _wt_tutor_clone
         case hotfix main-hotfix
             _wt_tutor_main_hotfix
         case update sync-all update-all
@@ -61,12 +64,17 @@ function _wt_tutor_menu
     
     echo "  Available tutorials:"
     echo ""
-    
+
+    set_color cyan
+    printf "    %-20s" "clone"
+    set_color normal
+    echo "Cloning repositories with worktree structure"
+
     set_color cyan
     printf "    %-20s" "hotfix"
     set_color normal
     echo "Creating urgent fixes on main branch"
-    
+
     set_color cyan
     printf "    %-20s" "update"
     set_color normal
@@ -540,5 +548,100 @@ function _wt_tutor_full_workflow
     echo "   • Use stacks for related changes"
     echo "   • Keep commits focused and clear"
     echo "   • Clean up merged worktrees"
+    echo ""
+end
+
+function _wt_tutor_clone
+    echo ""
+    set_color bryellow
+    echo "📦 Tutorial: Cloning Repositories"
+    set_color normal
+    echo ""
+
+    echo "Clone repositories with worktree structure in various formats:"
+    echo ""
+
+    set_color brgreen
+    echo "Basic Formats:"
+    set_color normal
+    echo ""
+
+    echo "  1. Full URL → default location (~/Code/org/repo)"
+    set_color brblack
+    echo "     wt clone https://github.com/org/repo"
+    set_color normal
+    echo ""
+
+    echo "  2. Short format → default location (~/Code/org/repo)"
+    set_color brblack
+    echo "     wt clone org/repo"
+    set_color normal
+    echo ""
+
+    echo "  3. SSH URL → default location"
+    set_color brblack
+    echo "     wt clone git@github.com:org/repo.git"
+    set_color normal
+    echo ""
+
+    set_color brgreen
+    echo "With Custom Location:"
+    set_color normal
+    echo ""
+
+    echo "  4. Clone to custom relative path"
+    set_color brblack
+    echo "     wt clone org/repo ./my-custom-name"
+    set_color normal
+    echo ""
+
+    echo "  5. Clone to custom absolute path"
+    set_color brblack
+    echo "     wt clone org/repo ~/projects/my-repo"
+    set_color normal
+    echo ""
+
+    set_color brgreen
+    echo "With Auto-Switch (--switch flag):"
+    set_color normal
+    echo ""
+
+    echo "  6. Clone and immediately switch to main worktree"
+    set_color brblack
+    echo "     wt clone org/repo --switch"
+    set_color normal
+    echo ""
+
+    echo "  7. Clone to custom location and switch"
+    set_color brblack
+    echo "     wt clone org/repo ./custom-name --switch"
+    set_color normal
+    echo ""
+
+    set_color bryellow
+    echo "💡 What gets created:"
+    set_color normal
+    echo "   repo/"
+    echo "   ├── .bare/              # bare git repository"
+    echo "   ├── worktrees/"
+    echo "   │   └── main/          # main branch worktree"
+    echo "   ├── envs/              # environment files"
+    echo "   ├── .wt-config         # wt configuration"
+    echo "   └── .wt-post-create    # post-creation hook"
+    echo ""
+
+    set_color bryellow
+    echo "💡 After cloning:"
+    set_color normal
+    echo "   cd repo/worktrees/main      # Navigate to main worktree"
+    echo "   wt new feature-name         # Create new worktree"
+    echo "   wt switch feature-name      # Switch to worktree"
+    echo ""
+
+    set_color brred
+    echo "⚠️  Note about --switch:"
+    set_color normal
+    echo "   • WITHOUT --switch: Clone only, stay in current directory"
+    echo "   • WITH --switch: Clone and open main worktree in tmux"
     echo ""
 end
