@@ -1,31 +1,32 @@
 #!/bin/bash
 
-active=$(xdotool getactivewindow)
-browser=$(xdotool search --name "Mozilla Firefox")
-terminal=$(xdotool search --classname "Kitty")
+# Path to mode configuration file
+MODE_FILE="$HOME/.config/window-focus-mode"
 
-echo active=$active
-echo browser=$browser
-echo terminal=$terminal
-
-function maybe_switch_activity() {
-  local activity="$1"
-  local current_hostname="$(hostname)"
-
-  if [ "$current_hostname" == "pc" ] || [ "$current_hostname" == "laptop" ]; then
-    echo "Switching to activity: $activity on $current_hostname"
-    $(dirname "$0")/switch_to_kde_activity "$activity"
-  else
-    echo "Not on 'pc' or 'laptop' host, skipping activity switch"
-  fi
-}
-
-if [ "$active" == "$terminal" ]; then
-  echo activating browser
-  maybe_switch_activity "browsing"
-  xdotool windowactivate $browser
-else
-  echo activating terminal
-  maybe_switch_activity "coding"
-  xdotool windowactivate $terminal
+# Read mode from file, default to 'activities' if file doesn't exist or is empty
+if [ -f "$MODE_FILE" ]; then
+  MODE=$(cat "$MODE_FILE" | tr -d '[:space:]')
 fi
+
+# Default to 'activities' if MODE is empty
+if [ -z "$MODE" ]; then
+  MODE="activities"
+fi
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FOCUS_TOGGLER_DIR="$(dirname "$SCRIPT_DIR")/focus-toggler"
+
+# Dispatch to the appropriate script based on mode
+case "$MODE" in
+  activities)
+    exec "$FOCUS_TOGGLER_DIR/toggle_activities.sh"
+    ;;
+  windows)
+    exec "$FOCUS_TOGGLER_DIR/toggle_windows.sh"
+    ;;
+  *)
+    echo "Error: Unknown mode '$MODE'. Defaulting to 'activities'."
+    exec "$FOCUS_TOGGLER_DIR/toggle_activities.sh"
+    ;;
+esac
