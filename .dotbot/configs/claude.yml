@@ -1,3 +1,4 @@
 - link:
     ~/.claude/commands: claude/commands
     ~/.claude/settings.json: claude/settings.json
+    ~/.claude/skills: claude/skills
