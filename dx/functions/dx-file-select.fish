@@ -54,17 +54,17 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
                 set dir (string replace "RECURSIVE:" "" -- $dir_spec)
 
                 # Build find command with exclusions
-                set -l find_cmd find "$dir" -type f -name "$pattern"
+                set -l find_args $dir -type f -name $pattern
 
                 # Add exclusions
                 if set -q _flag_exclude_dir
                     for exclude in $_flag_exclude_dir
-                        set find_cmd $find_cmd -not -path "*/$exclude/*"
+                        set -a find_args -not -path "*/$exclude/*"
                     end
                 end
 
                 # Execute find and store results
-                set files_list (eval $find_cmd 2>/dev/null)
+                set files_list (find $find_args 2>/dev/null)
 
                 if test (count $files_list) -gt 0
                     break
@@ -74,7 +74,7 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
                 set dir (eval echo $dir_spec 2>/dev/null)
 
                 if test -d "$dir"
-                    set files_list (find "$dir" -type f -name "$pattern" 2>/dev/null)
+                    set files_list (find $dir -type f -name $pattern 2>/dev/null)
 
                     if test (count $files_list) -gt 0
                         break
