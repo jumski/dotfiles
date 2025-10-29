@@ -8,11 +8,13 @@ A dual-mode window focus system that adapts to different desk setups.
 Toggles between KDE activities AND windows:
 - Browser → switches to "browsing" activity + activates Firefox
 - Terminal → switches to "coding" activity + activates Kitty
+- Windows automatically moved to primary screen (DP-4)
 
 ### Windows Mode
 Simple window toggling without activity switching:
 - Browser ↔ Terminal (Firefox ↔ Kitty)
 - No KDE activity changes
+- Windows automatically moved to secondary screen (HDMI-0)
 
 ## Usage
 
@@ -43,16 +45,25 @@ Mode state persists in: `~/.config/window-focus-mode`
 
 Different physical desk setups require different behavior:
 
-- **Activities mode**: Full desktop setup with multiple monitors
-- **Windows mode**: Small monitor setup where activity switching isn't needed
+- **Activities mode**: Full desktop setup with multiple monitors - windows on primary screen (DP-4)
+- **Windows mode**: Small monitor setup where activity switching isn't needed - windows on secondary screen (HDMI-0)
 
 The mode persists across reboots to match your physical configuration.
+
+### Multi-Screen Support
+
+The system automatically moves Firefox and Kitty windows between screens when switching modes:
+- **Activities mode**: Windows moved to DP-4 (5120x1440 ultrawide primary)
+- **Windows mode**: Windows moved to HDMI-0 (1920x1080 secondary)
+
+Window positions are calculated dynamically using xrandr, so they'll work even if you rearrange your monitor layout.
 
 ## Files
 
 - `bin/toggle_window_focus` - Main wrapper (reads mode, dispatches)
 - `focus-toggler/toggle_activities.sh` - Activities + windows implementation
 - `focus-toggler/toggle_windows.sh` - Windows-only implementation
+- `focus-toggler/move_windows_to_screen.sh` - Multi-screen window positioning
 - `focus-toggler/functions/focus-mode.fish` - Mode management function
 - `focus-toggler/completions.fish` - Tab completion for focus-mode
 
