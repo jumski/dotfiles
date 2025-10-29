@@ -13,6 +13,9 @@ bind r source-file ~/.tmux.conf \; display-message "Configuration reloaded!"
 set-option -g default-shell /usr/bin/fish
 setw -g mode-keys vi
 
+# Enable mouse support (scrolling, pane selection, resizing)
+set -g mouse on
+
 # required by image.nvim plugin for kitty image support
 set-option -g allow-passthrough on
 
