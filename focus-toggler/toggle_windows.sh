@@ -10,8 +10,8 @@ SECONDARY_SCREEN="HDMI-0" # Full HD secondary
 # Get directory where this script lives
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Ensure windows are on the secondary screen for windows mode
-"$SCRIPT_DIR/move_windows_to_screen.sh" "$SECONDARY_SCREEN" > /dev/null 2>&1
+# Ensure windows are on the secondary screen for windows mode (maximized)
+"$SCRIPT_DIR/move_windows_to_screen.sh" "$SECONDARY_SCREEN" --maximize > /dev/null 2>&1
 
 # Toggle between browser and terminal
 active=$(xdotool getactivewindow)

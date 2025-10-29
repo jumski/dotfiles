@@ -1,19 +1,20 @@
 #!/bin/bash
 
 # Move specific windows (Firefox, Kitty) to a target screen
-# Usage: ./move_windows_to_screen.sh <target_output_name>
-# Example: ./move_windows_to_screen.sh HDMI-0
-# Example: ./move_windows_to_screen.sh DP-4
+# Usage: ./move_windows_to_screen.sh <target_output_name> [--maximize|--unmaximize]
+# Example: ./move_windows_to_screen.sh HDMI-0 --maximize
+# Example: ./move_windows_to_screen.sh DP-4 --unmaximize
 
 set -e
 
 # Get target output name from argument
 TARGET_OUTPUT="$1"
+MAXIMIZE_MODE="$2"
 
 if [ -z "$TARGET_OUTPUT" ]; then
   echo "Error: No target output specified" >&2
-  echo "Usage: $0 <output_name>" >&2
-  echo "Example: $0 HDMI-0" >&2
+  echo "Usage: $0 <output_name> [--maximize|--unmaximize]" >&2
+  echo "Example: $0 HDMI-0 --maximize" >&2
   exit 1
 fi
 
@@ -70,7 +71,18 @@ if [ -n "$FIREFOX_WINDOWS" ]; then
   # Only move if it's a real window (not 1x1 or 10x10)
   if [ "$CURRENT_WIDTH" -gt 100 ] && [ "$CURRENT_HEIGHT" -gt 100 ]; then
     echo "Moving Firefox (window $FIREFOX_MAIN) to $TARGET_OUTPUT at $TARGET_X,$TARGET_Y"
+
+    # Unmaximize first to allow movement
+    xdotool windowstate --remove MAXIMIZED_VERT --remove MAXIMIZED_HORZ "$FIREFOX_MAIN"
+
+    # Move window
     xdotool windowmove "$FIREFOX_MAIN" "$TARGET_X" "$TARGET_Y"
+
+    # Handle maximization based on mode
+    if [ "$MAXIMIZE_MODE" = "--maximize" ]; then
+      echo "  Maximizing Firefox window"
+      xdotool windowstate --add MAXIMIZED_VERT --add MAXIMIZED_HORZ "$FIREFOX_MAIN"
+    fi
   else
     echo "Skipping Firefox window $FIREFOX_MAIN (dimensions: ${CURRENT_WIDTH}x${CURRENT_HEIGHT})"
   fi
@@ -83,7 +95,18 @@ if [ -n "$KITTY_WINDOWS" ]; then
   while IFS= read -r KITTY_WIN; do
     if [ -n "$KITTY_WIN" ]; then
       echo "Moving Kitty (window $KITTY_WIN) to $TARGET_OUTPUT at $TARGET_X,$TARGET_Y"
+
+      # Unmaximize first to allow movement
+      xdotool windowstate --remove MAXIMIZED_VERT --remove MAXIMIZED_HORZ "$KITTY_WIN"
+
+      # Move window
       xdotool windowmove "$KITTY_WIN" "$TARGET_X" "$TARGET_Y"
+
+      # Handle maximization based on mode
+      if [ "$MAXIMIZE_MODE" = "--maximize" ]; then
+        echo "  Maximizing Kitty window"
+        xdotool windowstate --add MAXIMIZED_VERT --add MAXIMIZED_HORZ "$KITTY_WIN"
+      fi
       # Offset subsequent windows slightly so they don't overlap completely
       TARGET_X=$((TARGET_X + 30))
       TARGET_Y=$((TARGET_Y + 30))

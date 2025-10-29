@@ -8,13 +8,13 @@ A dual-mode window focus system that adapts to different desk setups.
 Toggles between KDE activities AND windows:
 - Browser → switches to "browsing" activity + activates Firefox
 - Terminal → switches to "coding" activity + activates Kitty
-- Windows automatically moved to primary screen (DP-4)
+- Windows automatically moved to primary screen (DP-4) and **unmaximized** (for tiling WM)
 
 ### Windows Mode
 Simple window toggling without activity switching:
 - Browser ↔ Terminal (Firefox ↔ Kitty)
 - No KDE activity changes
-- Windows automatically moved to secondary screen (HDMI-0)
+- Windows automatically moved to secondary screen (HDMI-0) and **maximized**
 
 ## Usage
 
@@ -53,10 +53,12 @@ The mode persists across reboots to match your physical configuration.
 ### Multi-Screen Support
 
 The system automatically moves Firefox and Kitty windows between screens when switching modes:
-- **Activities mode**: Windows moved to DP-4 (5120x1440 ultrawide primary)
-- **Windows mode**: Windows moved to HDMI-0 (1920x1080 secondary)
+- **Activities mode**: Windows moved to DP-4 (5120x1440 ultrawide primary) and **unmaximized** for tiling WM
+- **Windows mode**: Windows moved to HDMI-0 (1920x1080 secondary) and **maximized**
 
 Window positions are calculated dynamically using xrandr, so they'll work even if you rearrange your monitor layout.
+
+**Technical detail**: The script unmaximizes windows before moving them (maximized windows can't be moved in most WMs), then re-maximizes if needed for the target screen.
 
 ## Files
 
