@@ -1,17 +1,4 @@
 {
-  "hooks": {
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/jumski/.dotfiles/claude/hooks/notify-hook.sh"
-          }
-        ]
-      }
-    ]
-  },
   "permissions": {
     "allow": [
       "Bash(find:*)",
@@ -42,5 +29,19 @@
       "mcp__perplexity__perplexity_search"
     ],
     "deny": []
-  }
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/jumski/.dotfiles/claude/hooks/notify-hook.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "alwaysThinkingEnabled": true
 }
