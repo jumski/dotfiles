@@ -12,6 +12,16 @@ function _wt_tutor_menu
     echo ""
 
     set_color cyan
+    printf "    %-20s" "init"
+    set_color normal
+    echo "Initialize new local repositories from scratch"
+
+    set_color cyan
+    printf "    %-20s" "fork"
+    set_color normal
+    echo "Forking repositories with gh CLI and wt clone"
+
+    set_color cyan
     printf "    %-20s" "clone"
     set_color normal
     echo "Cloning repositories with worktree structure"
@@ -589,5 +599,354 @@ function _wt_tutor_clone
     set_color normal
     echo "   • WITHOUT --switch: Clone only, stay in current directory"
     echo "   • WITH --switch: Clone and open main worktree in tmux"
+    echo ""
+end
+
+function _wt_tutor_init
+    echo ""
+    set_color bryellow
+    echo "🌱 Tutorial: Initializing New Local Repositories"
+    set_color normal
+    echo ""
+
+    echo "Create brand new repositories with worktree structure (no cloning):"
+    echo ""
+
+    set_color brgreen
+    echo "Basic Usage:"
+    set_color normal
+    echo ""
+
+    echo "  1. Simple repo name → default location (~/Code/repo-name)"
+    set_color brblack
+    echo "     wt init my-project"
+    set_color normal
+    echo "     # Creates: ~/Code/my-project/"
+    echo ""
+
+    echo "  2. Initialize in current directory"
+    set_color brblack
+    echo "     wt init ./my-experiment"
+    set_color normal
+    echo "     # Creates: ./my-experiment/"
+    echo ""
+
+    echo "  3. Initialize with relative path"
+    set_color brblack
+    echo "     wt init projects/prototype"
+    set_color normal
+    echo "     # Creates: ./projects/prototype/"
+    echo ""
+
+    echo "  4. Initialize with absolute path"
+    set_color brblack
+    echo "     wt init /home/user/experiments/test-repo"
+    set_color normal
+    echo "     # Creates: /home/user/experiments/test-repo/"
+    echo ""
+
+    set_color brgreen
+    echo "With Auto-Switch (--switch flag):"
+    set_color normal
+    echo ""
+
+    echo "  5. Initialize and immediately open in tmux"
+    set_color brblack
+    echo "     wt init my-project --switch"
+    set_color normal
+    echo "     # Creates repo AND switches to main worktree"
+    echo ""
+
+    echo "  6. Initialize in custom location and switch"
+    set_color brblack
+    echo "     wt init ~/sandbox/quick-test --switch"
+    set_color normal
+    echo ""
+
+    set_color brgreen
+    echo "Common Use Cases:"
+    set_color normal
+    echo ""
+
+    echo "  💡 Personal projects"
+    set_color brblack
+    echo "     wt init personal/blog-redesign"
+    set_color normal
+    echo ""
+
+    echo "  💡 Quick experiments"
+    set_color brblack
+    echo "     wt init ./temp-test --switch"
+    set_color normal
+    echo ""
+
+    echo "  💡 Monorepo setup"
+    set_color brblack
+    echo "     wt init company/monorepo"
+    echo "     cd company/monorepo/worktrees/main"
+    echo "     # Set up your monorepo structure"
+    set_color normal
+    echo ""
+
+    echo "  💡 Fork workflow (init locally first)"
+    set_color brblack
+    echo "     wt init upstream-name"
+    echo "     cd upstream-name/worktrees/main"
+    echo "     git remote add upstream git@github.com:org/repo.git"
+    echo "     git fetch upstream"
+    echo "     git reset --hard upstream/main"
+    set_color normal
+    echo ""
+
+    set_color bryellow
+    echo "📁 Directory Structure Created:"
+    set_color normal
+    echo "   my-project/"
+    echo "   ├── .bare/              # bare git repository"
+    echo "   │   └── ...            # git objects, refs, etc."
+    echo "   ├── worktrees/"
+    echo "   │   └── main/          # main branch worktree"
+    echo "   │       └── ...        # your actual code goes here"
+    echo "   ├── envs/              # environment files (.env, etc.)"
+    echo "   ├── .wt-config         # wt configuration"
+    echo "   └── .wt-post-create    # post-creation hook script"
+    echo ""
+
+    set_color bryellow
+    echo "🚀 What Gets Set Up:"
+    set_color normal
+    echo "   ✓ Bare git repository initialized"
+    echo "   ✓ Main worktree with initial empty commit"
+    echo "   ✓ Graphite (gt) initialized for stack management"
+    echo "   ✓ .wt-config file with repository settings"
+    echo "   ✓ .wt-post-create hook for automation"
+    echo "   ✓ Ready for your first real commit"
+    echo ""
+
+    set_color bryellow
+    echo "💡 After initialization:"
+    set_color normal
+    echo "   cd my-project/worktrees/main    # Navigate to main worktree"
+    echo "   # Add your initial code"
+    echo "   git add ."
+    echo "   git commit -m 'Initial commit'"
+    echo "   wt new feature-name             # Create feature worktree"
+    echo "   wt switch feature-name          # Start working"
+    echo ""
+
+    set_color bryellow
+    echo "🔄 init vs clone:"
+    set_color normal
+    echo "   • wt init  → Create NEW local repository from scratch"
+    echo "   • wt clone → Copy EXISTING remote repository"
+    echo ""
+
+    set_color brred
+    echo "⚠️  Important Notes:"
+    set_color normal
+    echo "   • Init creates a truly empty repo (one empty commit on main)"
+    echo "   • Use clone if you want to work with existing remote repos"
+    echo "   • Use init for brand new projects or local experimentation"
+    echo "   • --switch opens in tmux, without it you stay in current dir"
+    echo "   • Path format determines location (name → ~/Code, ./ → current dir)"
+    echo ""
+end
+
+function _wt_tutor_fork
+    echo ""
+    set_color bryellow
+    echo "🍴 Tutorial: Forking Repositories"
+    set_color normal
+    echo ""
+
+    echo "Fork a repository on GitHub and clone it with worktree structure:"
+    echo ""
+
+    set_color brgreen
+    echo "Basic Fork Workflow (Recommended):"
+    set_color normal
+    echo ""
+
+    echo "  1. Fork the repo on GitHub (without cloning)"
+    set_color brblack
+    echo "     gh repo fork org/repo-name"
+    set_color normal
+    echo "     # Creates fork at your-username/repo-name"
+    echo ""
+
+    echo "  2. Clone YOUR fork with wt"
+    set_color brblack
+    echo "     wt clone your-username/repo-name"
+    set_color normal
+    echo "     # Or use short format if gh CLI is available:"
+    set_color brblack
+    echo "     wt clone repo-name"
+    set_color normal
+    echo ""
+
+    echo "  3. Add upstream remote"
+    set_color brblack
+    echo "     cd repo-name/worktrees/main"
+    echo "     git remote add upstream git@github.com:org/repo-name.git"
+    echo "     git fetch upstream"
+    set_color normal
+    echo ""
+
+    echo "  4. Keep your fork in sync"
+    set_color brblack
+    echo "     git checkout main"
+    echo "     git pull upstream main"
+    echo "     git push origin main"
+    set_color normal
+    echo ""
+
+    set_color brgreen
+    echo "Quick Fork + Clone (with --switch):"
+    set_color normal
+    echo ""
+
+    echo "  1. Fork and clone in one flow"
+    set_color brblack
+    echo "     gh repo fork org/repo-name"
+    echo "     wt clone your-username/repo-name --switch"
+    set_color normal
+    echo "     # Forks, clones, and opens in tmux"
+    echo ""
+
+    set_color brgreen
+    echo "Fork with Custom Settings:"
+    set_color normal
+    echo ""
+
+    echo "  💡 Fork to custom location"
+    set_color brblack
+    echo "     gh repo fork org/repo-name"
+    echo "     wt clone your-username/repo-name ~/projects/my-fork"
+    set_color normal
+    echo ""
+
+    echo "  💡 Fork with renamed repository"
+    set_color brblack
+    echo "     gh repo fork org/repo-name --fork-name my-custom-name"
+    echo "     wt clone your-username/my-custom-name"
+    set_color normal
+    echo ""
+
+    echo "  💡 Fork to organization"
+    set_color brblack
+    echo "     gh repo fork org/repo-name --org your-org-name"
+    echo "     wt clone your-org-name/repo-name"
+    set_color normal
+    echo ""
+
+    echo "  💡 Fork default branch only (smaller/faster)"
+    set_color brblack
+    echo "     gh repo fork org/repo-name --default-branch-only"
+    echo "     wt clone your-username/repo-name"
+    set_color normal
+    echo ""
+
+    set_color brgreen
+    echo "Working on Your Fork:"
+    set_color normal
+    echo ""
+
+    echo "  1. Create feature branch"
+    set_color brblack
+    echo "     wt new feature-name"
+    echo "     wt switch feature-name"
+    set_color normal
+    echo ""
+
+    echo "  2. Make changes and commit"
+    set_color brblack
+    echo "     # ... make changes ..."
+    echo "     git add ."
+    echo "     git commit -m 'feat: add new feature'"
+    set_color normal
+    echo ""
+
+    echo "  3. Push to your fork"
+    set_color brblack
+    echo "     git push -u origin feature-name"
+    set_color normal
+    echo ""
+
+    echo "  4. Create pull request"
+    set_color brblack
+    echo "     gh pr create --repo org/repo-name"
+    set_color normal
+    echo "     # Creates PR from your fork to upstream"
+    echo ""
+
+    set_color brgreen
+    echo "Syncing with Upstream:"
+    set_color normal
+    echo ""
+
+    echo "  💡 Update your main from upstream"
+    set_color brblack
+    echo "     cd repo-name/worktrees/main"
+    echo "     git checkout main"
+    echo "     git fetch upstream"
+    echo "     git merge upstream/main"
+    echo "     git push origin main"
+    set_color normal
+    echo ""
+
+    echo "  💡 Rebase your feature on latest upstream"
+    set_color brblack
+    echo "     wt switch feature-name"
+    echo "     git fetch upstream"
+    echo "     git rebase upstream/main"
+    echo "     git push --force-with-lease"
+    set_color normal
+    echo ""
+
+    set_color bryellow
+    echo "📁 Resulting Structure:"
+    set_color normal
+    echo "   repo-name/                     # ~/Code/your-username/repo-name"
+    echo "   ├── .bare/                     # bare git repository"
+    echo "   ├── worktrees/"
+    echo "   │   ├── main/                 # your fork's main branch"
+    echo "   │   └── feature-name/         # your feature worktree"
+    echo "   ├── envs/"
+    echo "   ├── .wt-config"
+    echo "   └── .wt-post-create"
+    echo ""
+
+    set_color bryellow
+    echo "🔄 Git Remotes Setup:"
+    set_color normal
+    echo "   origin     → git@github.com:your-username/repo-name.git  (your fork)"
+    echo "   upstream   → git@github.com:org/repo-name.git           (original)"
+    echo ""
+
+    set_color bryellow
+    echo "💡 Why This Approach:"
+    set_color normal
+    echo "   ✓ gh repo fork creates fork on GitHub without local clone"
+    echo "   ✓ wt clone sets up proper worktree structure"
+    echo "   ✓ Keeps your local disk clean (no abandoned clones)"
+    echo "   ✓ Integrates with wt/gt workflow from the start"
+    echo "   ✓ Easy to sync with upstream using git commands"
+    echo ""
+
+    set_color brred
+    echo "⚠️  Important Notes:"
+    set_color normal
+    echo "   • DON'T use 'gh repo fork --clone' (conflicts with wt structure)"
+    echo "   • Always fork first, THEN wt clone your fork"
+    echo "   • Add upstream remote to track original repository"
+    echo "   • Use 'gh pr create --repo org/repo' to create PRs to upstream"
+    echo "   • Keep your main in sync with upstream/main regularly"
+    echo ""
+
+    set_color bryellow
+    echo "🆚 Fork vs Clone:"
+    set_color normal
+    echo "   • wt clone org/repo    → Clone original (read-only contribution)"
+    echo "   • gh repo fork + wt    → Fork then clone (full control + PRs)"
     echo ""
 end
