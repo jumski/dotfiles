@@ -1,21 +1,22 @@
 ---
 name: logseq-format
-description: Use ONLY when user explicitly mentions "Logseq" keyword in their request.
+description: Use ONLY when user mentions converting/using/writing in "logseq format" or similar (must mention "logseq")
 ---
 
-# Logseq Format
+# logseq Format
 
-Format content for Logseq, an outliner-based knowledge management tool.
+Format content for logseq, an outliner-based knowledge management tool.
 
 ## Core Principles
 
-- **Everything is a bullet**: Logseq is outliner-first. All content lives in bullet points.
+- **Everything is a bullet**: logseq is outliner-first. All content lives in bullet points.
 - **Hierarchy matters**: Use indentation (2 spaces or 1 tab per level) to create structure.
 - **Top-level = main ideas**: Start with high-level concepts as top-level bullets (no indentation).
 
 ## Formatting Rules
 
 ### Top-Level List Structure
+
 ```markdown
 - First main topic
   - Sub-point with details
@@ -27,6 +28,7 @@ Format content for Logseq, an outliner-based knowledge management tool.
 ```
 
 ### Markup Syntax
+
 - **Bold**: `**text**` or `__text__`
 - **Italic**: `*text*` or `_text_`
 - **Highlight**: `^^highlighted^^`
@@ -38,6 +40,7 @@ Format content for Logseq, an outliner-based knowledge management tool.
 - **TODO markers**: `TODO`, `DOING`, `DONE`, `LATER`, `NOW`
 
 ### Properties (metadata)
+
 ```markdown
 - Main topic
   property-name:: value
@@ -46,6 +49,7 @@ Format content for Logseq, an outliner-based knowledge management tool.
 ```
 
 ### Example Output
+
 ```markdown
 - Project Planning #project
   status:: active
@@ -69,4 +73,3 @@ Format content for Logseq, an outliner-based knowledge management tool.
 4. **Link liberally**: Connect related concepts with `[[page links]]`
 5. **Indent consistently**: Use 2 spaces per indentation level
 6. **Frontload importance**: Put most important info at the top of each branch
-

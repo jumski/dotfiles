@@ -31,7 +31,9 @@
       "Bash(realpath:*)",
       "Bash(mkdir -p:*)",
       "Bash(tree:*)",
-      "SlashCommand(/tmux:rename-window)"
+      "SlashCommand(/tmux:rename-window)",
+      "Skill(logseq-format)",
+      "Skill(skill-builder)"
     ],
     "deny": []
   }
