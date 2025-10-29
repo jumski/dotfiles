@@ -95,27 +95,15 @@ Learn these mistakes to avoid them:
 - Tmux configuration → Context7, topic: "configuration", tokens: 5000
 - Fisher plugins → Context7, topic: "plugins", tokens: 3000
 
-## Perplexity Search Quick Reference
+## Perplexity Tools
 
-**Always limit results:**
-```typescript
-mcp__perplexity__perplexity_search({
-  query: "your search query",
-  max_results: 3,           // Default is 10 - too many!
-  max_tokens_per_page: 512  // Reduce per-result content
-})
-```
+For detailed guidance on Perplexity Search, Ask, and Researcher agent, see the `perplexity` skill.
 
-**When to use Perplexity Search:**
-- Looking for latest best practices
-- Comparing tools or approaches
-- Finding current documentation
-- Researching new tools or features
-
-**Example queries:**
-- "fish shell best practices for custom functions"
-- "tmux vs screen comparison 2025"
-- "fishtape testing framework tutorial"
+**Quick reference:**
+- **Perplexity Search** - Find URLs/resources, always use `max_results: 3` and `max_tokens_per_page: 512`
+- **Perplexity Ask** - Conversational answers when Search returns nothing
+- **Researcher agent** - Deep multi-source research (use `/research <topic>`)
+- **Never use** `perplexity_research` tool - use researcher agent instead
 
 ## Common Dotfiles Topics
 
