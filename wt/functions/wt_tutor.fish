@@ -9,6 +9,7 @@ Interactive tutorials for wt/gt workflow
 
 Topics:
   init           Initialize new local repositories from scratch
+  template       Create new projects from GitHub templates
   fork           Forking repositories with gh CLI and wt clone
   clone          Cloning repositories with worktree structure
   hotfix         Creating urgent fixes on main branch
@@ -32,6 +33,8 @@ Run 'wt tutor' with no arguments to see the interactive menu."
     switch $topic
         case init initialize new-repo
             _wt_tutor_init
+        case template templates boilerplate
+            _wt_tutor_template
         case fork forking
             _wt_tutor_fork
         case clone clone-repo
