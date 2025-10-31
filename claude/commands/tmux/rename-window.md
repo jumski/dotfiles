@@ -7,6 +7,12 @@ allowed-tools: Bash(tmux:*), Bash(xargs:*)
 
 Analyze the current conversation context and any optional arguments provided by the user, then generate a unique, emoji-prefixed tmux window name.
 
+## Target Window (captured at command invocation)
+
+```bash
+!`echo "TARGET_SESSION=$(tmux display-message -p '#S')"; echo "TARGET_WINDOW=$(tmux display-message -p '#I')"`
+```
+
 ## Current Tmux Sessions and Windows
 
 ```bash
@@ -36,8 +42,9 @@ Analyze the current conversation context and any optional arguments provided by 
    - NO SPACE between emoji and name
 
 4. **Execute Rename**
+   Use the captured TARGET_SESSION and TARGET_WINDOW variables to rename the correct window:
    ```bash
-   tmux rename-window "emoji-name-here"
+   tmux rename-window -t "${TARGET_SESSION}:${TARGET_WINDOW}" "emoji-name-here"
    ```
 
 ## Example names

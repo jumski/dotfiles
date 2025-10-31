@@ -2,9 +2,8 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
     # Usage: dx-file-select [options]
     #
     # Options:
-    #   --dirs DIR1 DIR2 ...      Directories to search (in priority order)
+    #   --dirs DIR1 DIR2 ...      Directories to search recursively (in priority order)
     #                             Can use env vars like \$notes
-    #                             Use 'RECURSIVE:.' to search recursively from current dir
     #   --pattern PATTERN         File pattern (default: *.md)
     #   --exclude-dir DIR         Directories to exclude (can be repeated)
     #   --preview-cmd CMD         Preview command (use {} as placeholder for file)
@@ -44,42 +43,27 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
     # Build list of files
     set -l files_list
 
-    # Try each directory in priority order
+    # Try each directory in priority order (all searches are recursive)
     if set -q _flag_dirs
         for dir_spec in $_flag_dirs
-            set -l dir ""
+            # Expand env variables or use as-is
+            set -l dir (eval echo $dir_spec 2>/dev/null)
 
-            # Check if it's a RECURSIVE: spec
-            if string match -q "RECURSIVE:*" -- $dir_spec
-                set dir (string replace "RECURSIVE:" "" -- $dir_spec)
+            # Build find command with exclusions
+            set -l find_args $dir -type f -name $pattern
 
-                # Build find command with exclusions
-                set -l find_args $dir -type f -name $pattern
-
-                # Add exclusions
-                if set -q _flag_exclude_dir
-                    for exclude in $_flag_exclude_dir
-                        set -a find_args -not -path "*/$exclude/*"
-                    end
+            # Add exclusions
+            if set -q _flag_exclude_dir
+                for exclude in $_flag_exclude_dir
+                    set -a find_args -not -path "*/$exclude/*"
                 end
+            end
 
-                # Execute find and store results
-                set files_list (find $find_args 2>/dev/null)
+            # Execute find and store results
+            set files_list (find $find_args 2>/dev/null)
 
-                if test (count $files_list) -gt 0
-                    break
-                end
-            else
-                # Expand env variables or use as-is
-                set dir (eval echo $dir_spec 2>/dev/null)
-
-                if test -d "$dir"
-                    set files_list (find $dir -type f -name $pattern 2>/dev/null)
-
-                    if test (count $files_list) -gt 0
-                        break
-                    end
-                end
+            if test (count $files_list) -gt 0
+                break
             end
         end
     end

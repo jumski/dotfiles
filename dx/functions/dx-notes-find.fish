@@ -10,9 +10,11 @@ function dx-notes-find -d "Find and select notes using fzf with bat preview"
         echo "Find and select markdown notes using fzf with bat preview."
         echo ""
         echo "Search priority (stops at first match):"
-        echo "  1. ./.notes/          Recursively search in notes directory"
-        echo "  2. ./branch-docs/     Recursively search in branch docs directory"
-        echo "  3. ./                 Recursively search all .md files from current directory"
+        echo "  1. ./.notes/          Search in notes directory"
+        echo "  2. ./branch-docs/     Search in branch docs directory"
+        echo "  3. ./                 Search all .md files from current directory"
+        echo ""
+        echo "All searches are recursive by default."
         echo ""
         echo "Exclusions:"
         echo "  - node_modules/"
@@ -28,14 +30,14 @@ function dx-notes-find -d "Find and select notes using fzf with bat preview"
 
     # Use the generalized file selector with note-specific defaults
     # Priority order:
-    #   1. ./.notes directory (recursive)
-    #   2. ./branch-docs directory (recursive)
-    #   3. All .md files recursively from current dir (excluding node_modules and .git)
+    #   1. ./.notes directory
+    #   2. ./branch-docs directory
+    #   3. Current directory (all searches are recursive)
 
     dx-file-select \
-        --dirs 'RECURSIVE:./.notes' \
-        --dirs 'RECURSIVE:./branch-docs' \
-        --dirs 'RECURSIVE:.' \
+        --dirs ./.notes \
+        --dirs ./branch-docs \
+        --dirs . \
         --pattern '*.md' \
         --exclude-dir node_modules \
         --exclude-dir .git \
