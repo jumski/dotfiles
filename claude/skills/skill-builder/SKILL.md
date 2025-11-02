@@ -21,11 +21,39 @@ Follow 3-phase process below
 
 ## Guided Process
 
-### Phase 1: Requirements (3 questions max)
+### Phase 1: Requirements (via AskUserQuestion tool)
+
+<critical>
+Use AskUserQuestion tool for all requirement gathering.
+Interactive buttons prevent ambiguity and force clear decisions.
+Ask as many questions as needed to clarify requirements and design decisions.
+</critical>
+
+Core questions (always ask):
 
 1. **What & When**: Purpose and trigger conditions
 2. **Freedom level**: High (creative) / Medium (pattern) / Low (scripted)
 3. **Scope**: Personal (~/.claude/skills) or project (.claude/skills)
+
+Additional questions (ask when relevant):
+
+- Tool permissions needed?
+- Expected token budget?
+- Multiple modes/approaches?
+- Integration with other skills?
+- Example scenarios to handle?
+
+Example using AskUserQuestion:
+```
+question: "What level of freedom should this skill have?"
+options:
+  - label: "High (creative)"
+    description: "Skill makes autonomous decisions, adapts to context"
+  - label: "Medium (pattern)"
+    description: "Follows established patterns with some flexibility"
+  - label: "Low (scripted)"
+    description: "Strictly follows predefined steps"
+```
 
 ### Phase 2: Propose Pattern
 
