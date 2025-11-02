@@ -4,6 +4,12 @@
 # right_format = """$all"""
 
 
+[hostname]
+ssh_only = false
+disabled = false
+format = '[🖥️$hostname](dimmed) '
+ssh_symbol = '🌐'
+
 [dotnet]
 disabled = true
 
