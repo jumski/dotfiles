@@ -26,4 +26,3 @@ if status is-interactive
   # remove greeting
   set fish_greeting
 end
-alias claude="/home/jumski/.claude/local/claude"

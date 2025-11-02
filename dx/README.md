@@ -1,118 +1,100 @@
 # dx - Developer Experience Utilities
 
-Collection of productivity tools for faster file navigation and workspace management.
+Smart file navigation and note management with fzf.
 
-## Functions
-
-### `dx-file-select` - Generic File Selector
-
-Reusable fzf-based file picker with directory fallback, exclusions, and customizable preview.
-
-**Options:**
-- `--dirs DIR1 DIR2 ...` - Search directories in priority order (supports env vars)
-- `--pattern PATTERN` - File pattern (default: `*.md`)
-- `--exclude-dir DIR` - Directories to exclude (repeatable)
-- `--preview-cmd CMD` - Preview command (use `{}` as file placeholder)
-- `--preview-window LAYOUT` - fzf preview layout (default: `right:60%:wrap`)
-- `--prompt TEXT` - fzf prompt text
-
-Use `RECURSIVE:.` to search recursively from current directory.
-
-**Example Usage:**
+## Cheatsheet
 
 ```fish
-# Find config files with YAML preview
-dx-file-select \
-    --dirs '$XDG_CONFIG_HOME' ~/.config \
-    --pattern '*.{yaml,json,toml}' \
-    --preview-cmd 'bat --language=yaml {}' \
-    --prompt 'Select config > '
+# Find and select notes
+dx-notes-find
 
-# Find logs with tail preview
+# Open note in editor
+nvim (dx-notes-find)
+
+# Tmux: Insert note path at cursor
+# Press: <prefix> + a
+```
+
+## Commands
+
+### `dx-notes-find`
+
+Find markdown notes with automatic directory detection.
+
+**Priority (stops at first match):**
+1. `./.notes/` - Project notes
+2. `./branch-docs/` - Branch documentation
+3. `./` - All markdown files (recursive)
+
+**Exclusions:** `node_modules/`, `.git/`
+
+```fish
+dx-notes-find              # Interactive selection
+nvim (dx-notes-find)       # Edit selected note
+dx-notes-find --help       # Show help
+```
+
+### `dx-file-select`
+
+Generic file picker with directory fallback and preview.
+
+**Options:**
+- `--dirs DIR1 --dirs DIR2` - Search directories (recursive, priority order)
+- `--pattern PATTERN` - File pattern (default: `*.md`)
+- `--exclude-dir DIR` - Exclude directories (repeatable)
+- `--preview-cmd CMD` - Preview command (`{}` = file path)
+- `--preview-window LAYOUT` - fzf layout (default: `right:60%:wrap`)
+- `--prompt TEXT` - Prompt text
+
+```fish
+# Find configs
 dx-file-select \
-    --dirs /var/log ./logs \
+    --dirs ~/.config \
+    --pattern '*.{yaml,json}' \
+    --preview-cmd 'bat --language=yaml {}'
+
+# Find logs
+dx-file-select \
+    --dirs /var/log --dirs ./logs \
     --pattern '*.log' \
-    --preview-cmd 'tail -n 50 {}' \
     --exclude-dir archive
 ```
 
----
-
-### `dx-notes-find` - Smart Notes Finder
-
-Find and select notes with automatic directory detection and markdown preview.
-
-**Directory Priority:**
-1. `$notes` environment variable
-2. `./branch-docs` directory
-3. All `*.md` files recursively (excludes `node_modules`, `.git`)
-
-**Example Usage:**
-
-```fish
-# Simple usage - just run it
-dx-notes-find
-
-# Use in scripts
-set selected_note (dx-notes-find)
-if test -n "$selected_note"
-    nvim "$selected_note"
-end
-
-# Quick edit
-nvim (dx-notes-find)
-```
-
----
-
 ## Tmux Integration
 
-### `prefix + a` - Insert Note Path
+**Binding:** `<prefix> + a` - Insert note path at cursor
 
-Opens fzf popup to select a note, then inserts its path at cursor position in current pane.
+Workflow:
+1. Press `<prefix> + a`
+2. Select note in fzf popup
+3. Path inserted at cursor position
 
-Useful for quickly referencing notes in commands:
-```bash
-cat <prefix+a>  # Select note, path gets inserted
-```
-
-**How it works:**
-- Sends `Escape` then `A` (vim-style: append at end of line)
-- Loads selected path into tmux buffer
-- Pastes into current pane
-
----
-
-## Installation
-
-The module auto-loads via Fish's function autoloading. Tmux binding requires reload:
-
-```bash
-tmux source-file ~/.tmux.conf
-```
-
----
+Useful for: `cat <path>`, `nvim <path>`, command completion
 
 ## Creating Custom Selectors
 
-Build specialized selectors by wrapping `dx-file-select`:
-
 ```fish
 # Find shell scripts
-function my-script-find
+function my-scripts
     dx-file-select \
-        --dirs ./scripts ~/bin \
+        --dirs ./scripts --dirs ~/bin \
         --pattern '*.{sh,fish}' \
-        --preview-cmd 'bat --language=bash {}' \
         --prompt 'Select script > '
 end
 
-# Find test files
-function my-test-find
+# Find tests
+function my-tests
     dx-file-select \
-        --dirs 'RECURSIVE:./tests' \
-        --pattern '*.test.{js,ts,fish}' \
-        --exclude-dir node_modules \
-        --preview-cmd 'bat {}'
+        --dirs ./tests \
+        --pattern '*.test.{js,ts}' \
+        --exclude-dir node_modules
 end
+```
+
+## Installation
+
+Functions auto-load via Fish. For tmux binding:
+
+```bash
+tmux source-file ~/.tmux.conf
 ```

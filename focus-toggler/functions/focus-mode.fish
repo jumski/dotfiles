@@ -30,4 +30,16 @@ function focus-mode -d "Manage window focus mode (activities or windows)"
     # Write mode to file
     echo $requested_mode > "$mode_file"
     echo "Focus mode set to: $requested_mode"
+
+    # Move windows to appropriate screen based on mode
+    set -l script_dir (dirname (status --current-filename))/../
+    if test "$requested_mode" = "windows"
+        # Windows mode: move to secondary screen (HDMI-0) and maximize
+        echo "Moving windows to secondary screen (maximized)..."
+        bash "$script_dir/move_windows_to_screen.sh" HDMI-0 --maximize
+    else if test "$requested_mode" = "activities"
+        # Activities mode: move to primary screen (DP-4) and unmaximize for tiling
+        echo "Moving windows to primary screen (unmaximized for tiling)..."
+        bash "$script_dir/move_windows_to_screen.sh" DP-4 --unmaximize
+    end
 end

@@ -11,12 +11,7 @@
       "Bash(yay -Qi:*)",
       "Bash(yay -Qs:*)",
       "Bash(yay -Ss:*)",
-      "Bash(yay -Si:*)",
-      "mcp__perplexity__perplexity_search",
-      "mcp__perplexity__perplexity_ask",
-      "mcp__crawl4ai__md",
-      "mcp__context7__resolve-library-id",
-      "mcp__context7__get-library-docs"
+      "Bash(yay -Si:*)"
     ],
     "deny": []
   }

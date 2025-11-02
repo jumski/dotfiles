@@ -16,11 +16,26 @@ without restarting your shell."
 
     echo -e "\033[34m→\033[0m Reloading wt..."
 
-    # Source main wt.fish (which sources all functions)
-    source $wt_dir/wt.fish
+    # Source lib files first (common utilities and tutor)
+    source $wt_dir/lib/common.fish
     or begin
-        echo -e "\033[31m✗\033[0m Failed to reload wt.fish" >&2
+        echo -e "\033[31m✗\033[0m Failed to reload lib/common.fish" >&2
         return 1
+    end
+
+    source $wt_dir/lib/tutor.fish
+    or begin
+        echo -e "\033[31m✗\033[0m Failed to reload lib/tutor.fish" >&2
+        return 1
+    end
+
+    # Explicitly reload all function files (don't rely on autoloading)
+    for func_file in $wt_dir/functions/*.fish
+        source $func_file
+        or begin
+            echo -e "\033[31m✗\033[0m Failed to reload $(basename $func_file)" >&2
+            return 1
+        end
     end
 
     # Source completions

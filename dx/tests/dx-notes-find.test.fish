@@ -1,12 +1,11 @@
 #!/usr/bin/env fish
 
+source (dirname (status -f))/../functions/dx-file-select.fish
 source (dirname (status -f))/../functions/dx-notes-find.fish
-
-# Create a temporary directory for testing
-set -l test_dir (mktemp -d)
 
 function setup
     # Create test markdown files
+    set -l test_dir (mktemp -d)
     mkdir -p $test_dir/notes
     mkdir -p $test_dir/branch-docs
     mkdir -p $test_dir/nested/dir
@@ -18,17 +17,21 @@ function setup
     echo "# Root Note" > $test_dir/root.md
     echo "# Nested Note" > $test_dir/nested/dir/nested.md
     echo "# Ignored" > $test_dir/node_modules/ignored.md
+
+    echo $test_dir
 end
 
 function teardown
+    set -l test_dir $argv[1]
     rm -rf $test_dir
 end
 
-@test "finds files in \$notes directory when set" (
-    setup
+@test "finds files in .notes directory" (
+    set -l test_dir (setup)
 
-    set -x notes $test_dir/notes
     cd $test_dir
+    # Rename notes to .notes to match the actual priority
+    mv notes .notes
 
     # Mock fzf to return the first file
     function fzf
@@ -41,18 +44,17 @@ end
     test $exit_code -eq 0
     or return 1
 
-    string match -q "*/notes/note1.md" -- $result
+    string match -q "*/.notes/*" -- $result
     or return 1
 
-    set -e notes
-    teardown
+    teardown $test_dir
 )
 
-@test "falls back to branch-docs when \$notes not set" (
-    setup
+@test "falls back to branch-docs when .notes not present" (
+    set -l test_dir (setup)
 
-    set -e notes
     cd $test_dir
+    # Don't create .notes, so it falls back to branch-docs
 
     function fzf
         head -n 1
@@ -67,14 +69,14 @@ end
     string match -q "*/branch-docs/doc1.md" -- $result
     or return 1
 
-    teardown
+    teardown $test_dir
 )
 
 @test "finds all markdown files recursively when no specific directory" (
-    setup
+    set -l test_dir (setup)
 
-    set -e notes
     cd $test_dir
+    # Remove branch-docs so it falls back to recursive search from current dir
     rm -rf branch-docs
 
     function fzf
@@ -90,14 +92,14 @@ end
     string match -q "*/nested/dir/nested.md" -- $result
     or return 1
 
-    teardown
+    teardown $test_dir
 )
 
 @test "excludes node_modules from search" (
-    setup
+    set -l test_dir (setup)
 
-    set -e notes
     cd $test_dir
+    # Remove branch-docs so it searches recursively from current dir
     rm -rf branch-docs
 
     function fzf
@@ -113,13 +115,12 @@ end
     and return 1
     or return 0
 
-    teardown
+    teardown $test_dir
 )
 
 @test "returns error when no markdown files found" (
     set -l empty_dir (mktemp -d)
 
-    set -e notes
     cd $empty_dir
 
     dx-notes-find 2>/dev/null
