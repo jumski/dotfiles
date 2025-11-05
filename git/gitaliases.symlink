@@ -25,7 +25,7 @@
 
   chr = cherry -v
   rmt = remote -v
-  wc = show --name-status --diff-filter=AMD --pretty="" HEAD
+  wc = log --raw --no-merges
   lp = log -p
   hist = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short --decorate-refs-exclude=refs/tags
   h = log --pretty=format:\"%Cgreen%h%Creset %Cblue%ad%Creset %s%C(yellow)%d%Creset %Cblue[%an]%Creset\" --graph --date=short
