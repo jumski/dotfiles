@@ -52,7 +52,7 @@ The mode persists across reboots to match your physical configuration.
 
 ### Multi-Screen Support
 
-The system automatically moves Firefox and Kitty windows between screens when switching modes:
+The system automatically moves Firefox, Kitty, and Logseq windows between screens when switching modes:
 - **Activities mode**: Windows moved to DP-4 (5120x1440 ultrawide primary) and **unmaximized** for tiling WM
 - **Windows mode**: Windows moved to HDMI-0 (1920x1080 secondary) and **maximized**
 
