@@ -83,29 +83,8 @@ bind-key -r  M-j resize-pane -D
 bind-key -r  M-h resize-pane -L
 bind-key -r M-l resize-pane -R
 
-# copy/paste
-bind-key -n M-PPage copy-mode -u
-bind-key -n M-u copy-mode
-bind-key -n M-i paste-buffer
-bind-key p run-shell "xclip -o | tmux load-buffer - ; tmux paste-buffer"
-# # Vi copypaste
-# setw -g mode-keys vi
-# bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "xclip -i -sel p -f | xclip -i -sel c"
-bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "kitty +kitten clipboard"
-# bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xclip -i -sel p -f | xclip -i -sel c" \; display-message "highlighted selection copied to system clipboard"
-# set-option -s set-clipboard off
-set-option -s set-clipboard on
-
-# bind-key -t vi-copy MouseDragEnd1Pane copy-pipe "xclip -se c -i"
-
-
-###unbind-key -T copy-mode Enter
-###bind-key -T copy-mode Enter copy-pipe "xclip -sel clipboard"
-
-bind -Tcopy-mode-vi M-y send -X copy-pipe "xclip -i -sel p -f | xclip -i -sel c" \; display-message "copied to system clipboard"
-
-###unbind p
-###bind-key p run-shell "xclip -o | tmux load-buffer - ; tmux paste-buffer"
+# Clipboard configuration (copy/paste)
+source-file ~/.dotfiles/tmux/clipboard.conf
 
 # shortcuts
 bind-key -n M-q kill-pane
