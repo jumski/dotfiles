@@ -26,21 +26,8 @@ source-file ~/.dotfiles/tmux/navigation.conf
 # Clipboard configuration (copy/paste)
 source-file ~/.dotfiles/tmux/clipboard.conf
 
-# shortcuts
-bind-key -n M-q kill-pane
-bind-key -n M-c new-window
-bind-key -n M-r refresh-client -S
-
-# switch sessions
-bind-key -n M-0 choose-session
-bind-key -n M-8 switch-client -p
-bind-key -n M-9 switch-client -n
-
-
-# pull/send panes
-bind j command-prompt -p "join pane from:" "join-pane -h -s '%%'"
-bind J command-prompt -p "join pane to:" "join-pane -h -t '%%'"
-bind B break-pane -d -t :
+# Shortcuts (session, window, pane management)
+source-file ~/.dotfiles/tmux/shortcuts.conf
 
 # open a man page in new window
 bind -n M-m command-prompt "split-window -h 'exec man %%'"
@@ -78,9 +65,6 @@ bind a run-shell -b "tmux display-popup -E -w 95% -h 95% -e TARGET_PANE='#{pane_
 
 # Claude Code integration (see claude-neovim/README.md)
 source-file ~/.dotfiles/claude-neovim/tmux-keys.conf
-
-# detach tmux
-bind d detach
 
 # include theme
 # source-file ~/.dotfiles/tmux/themes/gruvbox.conf
