@@ -1,9 +1,0 @@
-name: amvp-rails
-root: ~/work/agencymvp.com/
-windows:
-  - server: bin/rails s --binding 127.0.0.1 --port 3000
-  - bash:
-  - vim: vim
-  - console: bin/rails c
-  - bash: tail -100f log/development.log
-  - worker: INSTANCE_TYPE=worker bundle exec shoryuken -v -L log/shoryuken.log -R -C config/shoryuken.yml

@@ -1,7 +1,0 @@
-name: super-octo-mafia
-root: ~/work/super-octo-mafia/
-windows:
-  - server: cd backend_python && ./run_server
-  - bash:
-  - vim: vim
-  - api_tests: cd tests/api

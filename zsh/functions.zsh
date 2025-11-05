@@ -37,14 +37,6 @@ function cdscr
   cd ~/scratch/*$1*
 end
 
-function mux-edit
-  set SESSION $1
-  if test $SESSION -eq ""
-    set SESSION (tmux_current_session)
-  end
-  vim ~/.tmuxinator/$SESSION.yml;
-end
-
 function sizes
   du --max-depth=1 -h .
 end
