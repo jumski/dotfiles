@@ -1,0 +1,33 @@
+-- Native OSC 52 clipboard provider (Neovim 0.10+)
+-- Works seamlessly with tmux + kitty
+
+if vim.env.TMUX ~= nil then
+  -- When inside tmux, sync clipboard with tmux buffer
+  local copy = {'tmux', 'load-buffer', '-w', '-'}
+  local paste = {'bash', '-c', 'tmux refresh-client -l && sleep 0.05 && tmux save-buffer -'}
+  vim.g.clipboard = {
+    name = 'tmux',
+    copy = {
+      ['+'] = copy,
+      ['*'] = copy,
+    },
+    paste = {
+      ['+'] = paste,
+      ['*'] = paste,
+    },
+    cache_enabled = 0,
+  }
+else
+  -- When not in tmux, use native OSC 52
+  vim.g.clipboard = {
+    name = 'OSC 52',
+    copy = {
+      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+    },
+    paste = {
+      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+    },
+  }
+end

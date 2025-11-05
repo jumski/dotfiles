@@ -16,7 +16,7 @@ opt.hidden = true                                              -- 1. The current
 -- 2. When a background buffer becomes current again, marks and undo-history are remembered
 opt.sessionoptions = "buffers,winsize,tabpages,winpos,winsize" -- session saving options
 
-opt.clipboard = "unnamedplus"                                  -- use system clipboard
+opt.clipboard = "unnamedplus"                                  -- use system clipboard (provider configured in core/clipboard.lua)
 
 --- Performance
 opt.ttyfast = true    -- indicates a fast terminal connection

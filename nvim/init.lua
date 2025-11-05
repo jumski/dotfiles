@@ -1,5 +1,6 @@
 require("core.envs")
 require("core.settings")
+require("core.clipboard")
 require("core.mappings")
 require("core.qargs")
 
