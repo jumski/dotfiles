@@ -1,25 +1,6 @@
 # Core settings
 source-file ~/.dotfiles/tmux/settings.conf
 
-set -g @plugin 'tmux-plugins/tpm'
-#
-# set -g @plugin 'tmux-plugins/tmux-pain-control'
-# set -g @plugin 'tmux-plugins/tmux-sensible'
-# set -g @plugin 'tmux-plugins/tmux-logging'
-#
-# set -g @plugin 'fabioluciano/tmux-tokyo-night'
-#
-# ### Tokyo Night Theme configuration
-# set -g @theme_variation 'moon'
-# set -g @theme_left_separator ''
-# set -g @theme_right_separator ''
-#
-# run '~/.tmux/plugins/tpm/tpm'
-
-# improve flow control, so tmux is workable even when large files are cat'ed
-#setw -g c0-change-trigger 10
-# setw -g c0-change-interval 100
-
 # Navigation configuration (windows, panes, splits, resizing)
 source-file ~/.dotfiles/tmux/navigation.conf
 
@@ -66,39 +47,5 @@ bind a run-shell -b "tmux display-popup -E -w 95% -h 95% -e TARGET_PANE='#{pane_
 # Claude Code integration (see claude-neovim/README.md)
 source-file ~/.dotfiles/claude-neovim/tmux-keys.conf
 
-# include theme
-# source-file ~/.dotfiles/tmux/themes/gruvbox.conf
-# source-file ~/.dotfiles/tmux/themes/tokyonight_day.tmux
-# source-file ~/.dotfiles/tmux/themes/tokyonight_moon.tmux
-# source-file ~/.dotfiles/tmux/themes/tokyonight_night.tmux
-# source-file ~/.dotfiles/tmux/themes/tokyonight_storm.tmux
-
-# Use custom enhanced status line
-# source-file ~/.dotfiles/tmux/themes/custom/statusline.conf
-
-######################################
-################ TPM #################
-######################################
-set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'tmux-plugins/tmux-sensible'
-set -g @plugin 'jaclu/tmux-menus'
-set -g @plugin 'tmux-plugins/tmux-prefix-highlight'
-
-set -g @plugin 'fabioluciano/tmux-tokyo-night'
-
-### Tokyo Night Theme configuration
-set -g @theme_variation 'night'
-set -g @theme_left_separator ''
-set -g @theme_right_separator ''
-set -g @theme_plugins 'datetime,battery'
-set -g @theme_plugin_weather_icon ''
-set -g @theme_plugin_weather_format '%t'
-set -g @theme_plugin_battery_red_threshold 30
-set -g @theme_plugin_battery_yellow_threshold 70
-set -g @theme_plugin_datetime_format "%Y-%m-%d %H:%M"
-
-# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run '~/.tmux/plugins/tpm/tpm'
-
-# Custom urgent tasks indicator - prepend to Tokyo Night theme's status-left
-set-option -g status-left "#(/home/jumski/.dotfiles/todoist-helper/bin/tmux-urgent-indicator.sh)#[fg=#3b4261,bold]#{?client_prefix,#[bg=#e0af68],#[bg=#9ece6a]} ⋅ #S #{?client_prefix,#[fg=#e0af68],#[fg=#9ece6a]}#[bg=default] #[none]"
+# Plugins and theme (must be at the end)
+source-file ~/.dotfiles/tmux/plugins.conf
