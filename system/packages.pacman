@@ -46,3 +46,4 @@ nvtop
 nmap
 graphviz
 extra-cmake-modules
+parallel
