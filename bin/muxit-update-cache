@@ -4,6 +4,13 @@
 mkdir -p ~/.cache
 
 # Generate the project list and save to cache
+# Exclude wt-managed repo roots (those with .bare directory)
 fd -H --glob .git --no-ignore-vcs --exec echo {//} \; /home/jumski/Code |
+while read -r path; do
+  # Skip if directory contains .bare (wt-managed root)
+  if [[ ! -d "$path/.bare" ]]; then
+    echo "$path"
+  fi
+done |
 sed 's|/home/jumski/Code/||' |
 sed '1i\.dotfiles' > ~/.cache/muxit-projects

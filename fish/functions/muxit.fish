@@ -1,3 +1,99 @@
+# Source wt toolkit utilities for compatible session naming with worktrees
+set -l dotfiles_root (dirname (dirname (dirname (status filename))))
+set -l wt_lib "$dotfiles_root/wt/lib/common.fish"
+if test -f "$wt_lib"
+  source "$wt_lib"
+end
+
+# Session Naming Strategy
+# =======================
+# This function generates tmux session names that are:
+# 1. Consistent across muxit and wt toolkit (critical for coordination)
+# 2. Descriptive for human identification
+# 3. Tmux-compatible (only alphanumeric, hyphens, underscores, @ symbol)
+#
+# Three naming cases:
+#
+# 1. .dotfiles (special case)
+#    Input:  /home/jumski/.dotfiles/
+#    Output: "dotfiles"
+#    Reason: Single special repo, simple name
+#
+# 2. wt-managed worktrees (paths containing /worktrees/)
+#    Input:  /home/jumski/Code/pgflow-dev/pgflow/worktrees/feat-auto-compile/
+#    Output: "feat-auto-compile@pgflow" (via _wt_get_session_name)
+#    Logic:  Uses wt toolkit's _wt_get_session_name() for compatibility
+#    - Extracts worktree name: "feat-auto-compile" (basename of worktree dir)
+#    - Extracts repo name: "pgflow" (basename of bare repo parent)
+#    - Combines via _wt_get_session_name: "worktree@repo" format
+#    Why: wt toolkit also creates sessions this way; ensures muxit and wt
+#         can detect and reuse each other's sessions
+#    Note: Only uses basename of repo parent to match wt's expectations
+#
+# 3. Regular repos in ~/Code/ hierarchy
+#    Input:  /home/jumski/Code/org/repo/
+#    Output: "org/repo"
+#    Logic:  Extract org/repo from ~/Code/ path, keep forward slash
+#    Note:   DIFFERENT from worktrees! Regular repos keep slashes,
+#           worktrees remove them. This distinguishes them visually.
+#
+# Fallback: Any other path uses basename only
+#
+# Important: Session naming rules are enforced by tmux:
+# - Use "=$session_name" in has-session/switch-client to avoid partial matches
+#   (prevents "main" from matching "main@repo")
+
+function _muxit_get_session_name
+  set -l start_dir $argv[1]
+  set -l session_name
+
+  # Calculate session name based on directory structure
+  if string match -q "*/.dotfiles/*" "$start_dir"; or string match -q "*/.dotfiles" "$start_dir"
+    # Special case for .dotfiles
+    set session_name "dotfiles"
+  else if string match -q "*/worktrees/*" "$start_dir"
+    # wt-managed worktree: use wt's session naming convention
+    set -l worktree_name (basename "$start_dir")
+
+    # Get parent path and extract just the repo name (last component)
+    # e.g., /home/jumski/Code/pgflow-dev/pgflow/worktrees/feat -> pgflow
+    set -l parent_path (string replace -r '/worktrees/[^/]+/?$' '' "$start_dir")
+    set -l repo_name (basename "$parent_path")
+
+    # Use wt's session naming function if available for proper sanitization
+    if type -q _wt_get_session_name
+      set session_name (_wt_get_session_name "$worktree_name" "$repo_name")
+    else
+      # Fallback: manual construction matching wt's sanitization rules
+      set session_name "$worktree_name@$repo_name"
+      set session_name (echo $session_name | tr -cd '[:alnum:]-_@')
+    end
+  else if string match -q "*/Code/*" "$start_dir"
+    # Regular repo: Extract org/repo from ~/Code/org/repo structure
+    set -l code_path (string replace -r '.*/Code/' '' "$start_dir")
+    set -l code_path (string trim -r -c '/' "$code_path")  # Remove trailing slash
+
+    # Count path components
+    set -l parts (string split '/' "$code_path")
+
+    if test (count $parts) -ge 2
+      # Has org/repo structure - use org/repo format
+      set session_name "$parts[1]/$parts[2]"
+    else
+      # Just repo name
+      set session_name "$parts[1]"
+    end
+
+    # Sanitize: keep alphanumeric, hyphens, underscores, and forward slashes
+    set session_name (echo $session_name | tr -cd '[:alnum:]-_/')
+  else
+    # Fallback: just use basename
+    set session_name (basename "$start_dir" | tr -cd '[:alnum:]-_')
+  end
+
+  echo $session_name
+end
+
 function _calculate_max_dirname_length
   set max_length 0
   while read -l path
@@ -105,17 +201,17 @@ function muxit
     return 1
   end
 
-  set session_name (basename "$start_dir" | tr -cd '[:alnum:]-_')
-
+  set session_name (_muxit_get_session_name "$start_dir")
 
   # switch to existing session if possible to speed up the process
+  # Use exact matching with = prefix to prevent partial matches (e.g., "main" matching "main@repo")
   if test -n "$TMUX"
-    if tmux has-session -t $session_name 2>/dev/null
+    if tmux has-session -t "=$session_name" 2>/dev/null
       tmux switch-client -t $session_name
       return
     end
   else
-    if tmux has-session -t $session_name 2>/dev/null
+    if tmux has-session -t "=$session_name" 2>/dev/null
       tmux attach-session -t $session_name
       return
     end
