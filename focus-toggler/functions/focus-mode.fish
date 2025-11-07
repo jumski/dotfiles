@@ -1,9 +1,20 @@
 function focus-mode -d "Manage window focus mode (activities or windows)"
     set -l mode_file "$HOME/.config/window-focus-mode"
     set -l valid_modes activities windows
+    set -l move_windows false
 
-    # If no argument, show current mode
-    if test (count $argv) -eq 0
+    # Parse arguments
+    set -l mode_arg
+    for arg in $argv
+        if test "$arg" = "--move"
+            set move_windows true
+        else
+            set mode_arg $arg
+        end
+    end
+
+    # If no mode argument, show current mode
+    if test -z "$mode_arg"
         if test -f "$mode_file"
             set -l current_mode (cat "$mode_file" | string trim)
             if test -z "$current_mode"
@@ -17,29 +28,28 @@ function focus-mode -d "Manage window focus mode (activities or windows)"
         return 0
     end
 
-    # Set mode
-    set -l requested_mode $argv[1]
-
     # Validate mode
-    if not contains $requested_mode $valid_modes
-        echo "Error: Invalid mode '$requested_mode'" >&2
+    if not contains $mode_arg $valid_modes
+        echo "Error: Invalid mode '$mode_arg'" >&2
         echo "Valid modes: activities, windows" >&2
         return 1
     end
 
     # Write mode to file
-    echo $requested_mode > "$mode_file"
-    echo "Focus mode set to: $requested_mode"
+    echo $mode_arg > "$mode_file"
+    echo "Focus mode set to: $mode_arg"
 
-    # Move windows to appropriate screen based on mode
-    set -l script_dir (dirname (status --current-filename))/../
-    if test "$requested_mode" = "windows"
-        # Windows mode: move to secondary screen (HDMI-0) and maximize
-        echo "Moving windows to secondary screen (maximized)..."
-        bash "$script_dir/move_windows_to_screen.sh" HDMI-0 --maximize
-    else if test "$requested_mode" = "activities"
-        # Activities mode: move to primary screen (DP-4) and unmaximize for tiling
-        echo "Moving windows to primary screen (unmaximized for tiling)..."
-        bash "$script_dir/move_windows_to_screen.sh" DP-4 --unmaximize
+    # Move windows only if --move flag is provided
+    if test "$move_windows" = true
+        set -l script_dir (dirname (status --current-filename))/../
+        if test "$mode_arg" = "windows"
+            # Windows mode: move to secondary screen (HDMI-0) and maximize
+            echo "Moving windows to secondary screen (maximized)..."
+            bash "$script_dir/move_windows_to_screen.sh" HDMI-0 --maximize
+        else if test "$mode_arg" = "activities"
+            # Activities mode: move to primary screen (DP-4) and unmaximize for tiling
+            echo "Moving windows to primary screen (unmaximized for tiling)..."
+            bash "$script_dir/move_windows_to_screen.sh" DP-4 --unmaximize
+        end
     end
 end
