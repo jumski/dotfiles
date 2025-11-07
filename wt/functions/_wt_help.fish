@@ -119,21 +119,6 @@ function _wt_help
     printf "%-32s" "switch <name> (sw)"
     set_color normal
     echo "open worktree in muxit (no cd)"
-    echo -n "    "
-    set_color cyan
-    printf "%-32s" "up"
-    set_color normal
-    echo "switch to upstack worktree"
-    echo -n "    "
-    set_color cyan
-    printf "%-32s" "down"
-    set_color normal
-    echo "switch to downstack worktree"
-    echo -n "    "
-    set_color cyan
-    printf "%-32s" "bottom"
-    set_color normal
-    echo "switch to stack base"
     echo ""
 
     # Development

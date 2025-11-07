@@ -162,34 +162,9 @@ function wt_dashboard
     printf "%-12s" "remove"
     set_color normal
     echo "remove worktree (auto-detects current if no name)"
-    
+
     echo ""
-    
-    # Stack Commands section
-    set_color white
-    echo "  stack navigation"
-    set_color normal
-    
-    echo -n "    "
-    set_color cyan
-    printf "%-12s" "up"
-    set_color normal
-    echo "move up the stack to parent branch"
-    
-    echo -n "    "
-    set_color cyan
-    printf "%-12s" "down"
-    set_color normal
-    echo "move down the stack to child branch"
-    
-    echo -n "    "
-    set_color cyan
-    printf "%-12s" "bottom"
-    set_color normal
-    echo "move to bottom of current stack"
-    
-    echo ""
-    
+
     # Sync Commands section
     set_color white
     echo "  synchronization"

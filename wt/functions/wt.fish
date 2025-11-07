@@ -22,12 +22,6 @@ function wt
             wt_remove $remaining_args
         case switch sw
             wt_switch $remaining_args
-        case up
-            wt_up $remaining_args
-        case down
-            wt_down $remaining_args
-        case bottom
-            wt_bottom $remaining_args
         case sync-all
             wt_sync_all $remaining_args
         case env

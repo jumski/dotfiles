@@ -44,11 +44,6 @@ wt switch <name>             # Open worktree in muxit (doesn't cd)
 wt switch                    # Interactive selection with fzf
 wt remove <name>             # Remove worktree (prompts for confirmation)
 
-# Stack Navigation (with automatic worktree switching)
-wt up                        # Switch to upstack worktree via muxit
-wt down                      # Switch to downstack worktree via muxit
-wt bottom                    # Switch to stack base worktree via muxit
-
 # Development Flow
 wt sync-all                  # Sync all worktrees with remote
 wt sync-all --force          # Sync all, stashing uncommitted changes
@@ -160,18 +155,6 @@ gt stack rebase && gt submit --stack
 wt sync-all
 ```
 
-### 5. Navigate stacks efficiently
-
-```bash
-# You're in auth-system worktree
-wt up     # Opens user-profiles in tmux
-wt up     # Opens user-settings (if it exists)
-wt down   # Back to user-profiles
-wt bottom # Back to auth-system (stack base)
-
-# No more confusion between branch and directory!
-```
-
 ## Directory Structure
 
 ```
@@ -246,32 +229,6 @@ Shows commits that need rebasing
 
 # Sync all worktrees with remote
 $ wt sync-all
-```
-
-### Smart Stack Navigation
-
-Navigate through your stack with automatic worktree switching:
-
-```bash
-# Traditional gt navigation (confusing with worktrees)
-$ pwd
-/myapp/worktrees/auth-system
-$ gt up  # Goes to login-api branch
-$ pwd
-/myapp/worktrees/auth-system  # Still in wrong directory!
-
-# wt navigation (switches both branch AND directory)
-$ wt up
-Switching to worktree: login-api
-[Opens login-api/ in new tmux window]
-
-$ wt down
-Switching to worktree: auth-system
-[Opens auth-system/ in new tmux window]
-
-# Quick stack traversal
-$ wt bottom  # Go to stack base
-$ wt top     # Go to stack tip (coming soon)
 ```
 
 ## Advanced Features
