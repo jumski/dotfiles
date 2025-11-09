@@ -119,19 +119,7 @@ Options:
         echo "Error: Failed to create worktree" >&2
         return 1
     end
-    
-    # Initialize Graphite
-    echo -e "\033[34m→\033[0m Initializing Graphite..."
-    pushd "$repo_root/$worktree_path"
-    if test -n "$trunk_branch"
-        gt init --trunk $trunk_branch
-        or echo "Warning: Failed to initialize Graphite in worktree" >&2
-    else
-        gt init --trunk $DEFAULT_TRUNK
-        or echo "Warning: Failed to initialize Graphite in worktree" >&2
-    end
-    popd
-    
+
     # Copy environment files to the new worktree
     echo -e "\033[34m→\033[0m Copying environment files..."
 

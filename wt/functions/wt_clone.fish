@@ -135,14 +135,7 @@ echo \"Post-creation hook executed in: \$(pwd)\"
     
     # Make hook script executable
     chmod +x $repo_path/.wt-post-create
-    
-    # Initialize Graphite in main worktree
-    echo -e "\033[34m→\033[0m Initializing Graphite in main worktree..."
-    pushd $repo_path/worktrees/$default_branch
-    gt init --trunk $default_branch
-    or echo "Warning: Failed to initialize Graphite in main worktree" >&2
-    popd
-    
+
     echo -e "\033[32m✓\033[0m Repository initialized at $repo_path"
     echo -e "\033[32m✓\033[0m Main worktree at worktrees/$default_branch"
     echo ""
