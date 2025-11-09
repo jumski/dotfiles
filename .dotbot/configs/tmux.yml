@@ -1,3 +1,2 @@
 - link:
     ~/.tmux.conf: tmux/tmux.conf.symlink
-    ~/.tmuxinator: tmux/tmuxinator.symlink
