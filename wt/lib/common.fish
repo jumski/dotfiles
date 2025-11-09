@@ -221,6 +221,27 @@ function _wt_line
     echo (string repeat -n $width $char)
 end
 
+# Print action message with arrow prefix
+# Usage: _wt_action "Creating worktree..."
+function _wt_action
+    set -l message $argv[1]
+    echo -e "\033[34m→\033[0m $message"
+end
+
+# Print success message with checkmark
+# Usage: _wt_success "Worktree created"
+function _wt_success
+    set -l message $argv[1]
+    echo -e "\033[32m✓\033[0m $message"
+end
+
+# Print warning message
+# Usage: _wt_warning "Graphite not initialized"
+function _wt_warning
+    set -l message $argv[1]
+    echo -e "\033[33m⚠️\033[0m  $message"
+end
+
 # Generate tmux session name for a worktree
 # Usage: _wt_get_session_name <worktree_name> <repo_name>
 # Returns sanitized session name in format: worktree@repo

@@ -95,6 +95,7 @@ Options:
     set -l tracking_remote false
     set -l remote_exists false
     if test "$force_new" = "false"
+        _wt_action "Checking remote for branch '$name'..."
         git -C $BARE_PATH fetch origin --quiet 2>/dev/null
         if git -C $BARE_PATH show-ref --verify --quiet refs/remotes/origin/$name
             set remote_exists true
