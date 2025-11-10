@@ -1,0 +1,17 @@
+# Bob (Neovim Version Manager) Configuration
+# https://github.com/MordechaiHadad/bob
+
+# Where Bob downloads and stores Neovim builds
+downloads_location = "~/.local/share/bob"
+
+# Where the proxy nvim binary is installed (added to PATH)
+installation_location = "~/.local/share/bob/nvim-bin"
+
+# Number of nightly versions to keep for rollback
+rollback_limit = 3
+
+# Use release builds (false = faster downloads, true = optimized builds)
+enable_release_build = false
+
+# Show commit info for nightly builds
+enable_nightly_info = true
