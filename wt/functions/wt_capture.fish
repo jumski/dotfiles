@@ -3,79 +3,76 @@
 
 function wt_capture
     # Show help if requested
-    _wt_show_help_if_requested $argv "Usage: wt capture [worktree-name] [--switch] [--from <branch>] [--force]
+    _wt_show_help_if_requested $argv "Usage: wt capture [--switch] [--force]
 
-Capture current (or specified) branch to a new worktree
+Capture current branch to a new worktree
 
 This command is designed for Graphite stacks: it creates a worktree for the
 current branch and switches the original worktree to the parent branch.
 
-Arguments:
-  [worktree-name]    Name for new worktree (default: branch name)
+The worktree name will be the same as the branch name.
 
 Options:
   --switch           Switch to new worktree after creation (default: no)
-  --from <branch>    Capture specific branch instead of current
   --force            Skip Graphite checks, use git reflog fallback
 
 Examples:
   wt capture                    # Capture current branch
   wt capture --switch           # Capture and switch
-  wt capture auth-hotfix        # Custom worktree name
-  wt capture --from auth-api    # Capture different branch
 
 Requirements:
   - Graphite must be installed (unless --force)
   - Branch must be tracked by Graphite (unless --force)
-  - Cannot capture trunk branch"
+  - Cannot capture trunk branch
+
+Note:
+  To create a worktree for a different branch, use: wt new <branch-name>"
     and return 0
 
-    set -l worktree_name ""
-    set -l branch_to_capture ""
     set -l switch_after false
     set -l force false
 
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
 
-    # Parse arguments
-    set -l i 1
-    while test $i -le (count $argv)
-        switch $argv[$i]
+    # Parse arguments - only accept flags, no positional arguments
+    for arg in $argv
+        switch $arg
             case --switch
                 set switch_after true
-            case --from
-                set i (math $i + 1)
-                set branch_to_capture $argv[$i]
             case --force
                 set force true
             case --yes
                 # Pass through to wt new
+            case '-*'
+                echo "Error: Unknown option '$arg'" >&2
+                echo "  Run 'wt capture --help' for usage" >&2
+                return 1
             case '*'
-                # First non-flag argument is worktree name
-                if not string match -q -- '-*' $argv[$i]
-                    if test -z "$worktree_name"
-                        set worktree_name $argv[$i]
-                    end
-                end
+                echo "Error: wt capture does not accept positional arguments" >&2
+                echo "  It always captures the current branch" >&2
+                echo "" >&2
+                echo "  Current branch: $(git branch --show-current)" >&2
+                echo "" >&2
+                echo "To create a worktree for a different branch:" >&2
+                echo "  wt new <branch-name>" >&2
+                return 1
         end
-        set i (math $i + 1)
     end
 
-    # Determine branch to capture
+    # Get current branch - this is what we're capturing
+    set -l branch_to_capture (git branch --show-current)
     if test -z "$branch_to_capture"
-        set branch_to_capture (git branch --show-current)
-        if test -z "$branch_to_capture"
-            echo "Error: Not on a branch (detached HEAD)" >&2
-            echo "  Use --from <branch> to specify branch to capture" >&2
-            return 1
-        end
+        echo "Error: Not on a branch (detached HEAD)" >&2
+        echo "  Cannot capture a detached HEAD" >&2
+        echo "" >&2
+        echo "To create a worktree for a specific branch:" >&2
+        echo "  wt new <branch-name>" >&2
+        return 1
     end
 
-    # Default worktree name to branch name
-    if test -z "$worktree_name"
-        set worktree_name $branch_to_capture
-    end
+    # Worktree name is always the branch name
+    set -l worktree_name $branch_to_capture
 
     # ============================================================
     # PHASE 1: SAFETY CHECKS
