@@ -63,7 +63,7 @@ Options:
     end
     
     # Confirm deletion
-    echo -e "\033[34m→\033[0m This will remove worktree: $name"
+    _wt_action "This will remove worktree: $name"
     echo "Path: $worktree_path"
     echo
 
@@ -90,7 +90,7 @@ Options:
     
     # Remove worktree from git if it exists there
     if test $git_has_worktree -eq 0
-        echo -e "\033[34m→\033[0m Removing worktree from git..."
+        _wt_action "Removing worktree from git..."
         git -C $BARE_PATH worktree remove $worktree_path --force
         or echo "Warning: Failed to remove worktree from git, but continuing cleanup..." >&2
     else
@@ -99,7 +99,7 @@ Options:
     
     # Remove directory if it exists
     if test $dir_exists -eq 0
-        echo -e "\033[34m→\033[0m Removing worktree directory: $worktree_path"
+        _wt_action "Removing worktree directory: $worktree_path"
         if not rm -rf $worktree_path
             echo "Error: Failed to remove directory $worktree_path" >&2
             return 1
@@ -109,10 +109,10 @@ Options:
     end
     
     # Remove branch if not checked out elsewhere
-    echo -e "\033[34m→\033[0m Cleaning up branch..."
+    _wt_action "Cleaning up branch..."
     git -C $BARE_PATH branch -d $name 2>/dev/null
-    
-    echo -e "\033[32m✓\033[0m Worktree '$name' removed"
+
+    _wt_success "Worktree '$name' removed"
 
     # Kill tmux session for the removed worktree if it exists
     set -l repo_name (basename $repo_root)
@@ -120,7 +120,7 @@ Options:
 
     if tmux has-session -t "$session_name" 2>/dev/null
         _wt_notify "💀 Killing tmux session: $session_name"
-        echo -e "\033[34m→\033[0m Killing tmux session: $session_name"
+        _wt_action "Killing tmux session: $session_name"
         tmux kill-session -t "$session_name"
     end
     

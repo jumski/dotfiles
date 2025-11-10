@@ -213,7 +213,7 @@ Options:
     # PHASE 4: EXECUTE - Do all the work (no more prompts)
     # ============================================================
 
-    echo -e "\033[34m→\033[0m Creating worktree..."
+    _wt_action "Creating worktree..."
 
     # Create the worktree
     if test "$tracking_remote" = "true"
@@ -242,7 +242,7 @@ Options:
     end
 
     # Copy environment files to the new worktree
-    echo -e "\033[34m→\033[0m Copying environment files..."
+    _wt_action "Copying environment files..."
 
     # Call env sync with auto-confirm to copy env files to the new worktree
     set -l current_dir (pwd)
@@ -259,18 +259,18 @@ Options:
 
     cd $current_dir
 
-    echo -e "\033[32m✓\033[0m Worktree created"
+    _wt_success "Worktree created"
 
     if test "$tracking_remote" = "true"
-        echo -e "\033[32m✓\033[0m Branch '$name' tracking 'origin/$name'"
+        _wt_success "Branch '$name' tracking 'origin/$name'"
     else if test $local_branch_exists = false
-        echo -e "\033[32m✓\033[0m Branch '$name' created from '$base_branch'"
+        _wt_success "Branch '$name' created from '$base_branch'"
     end
 
     # Run post-creation hook if it exists
     set -l hook_script "$repo_root/.wt-post-create"
     if test -f "$hook_script" -a -x "$hook_script"
-        echo -e "\033[34m→\033[0m Running post-creation hook..."
+        _wt_action "Running post-creation hook..."
         pushd "$repo_root/$worktree_path"
         $hook_script
         or begin
@@ -295,7 +295,7 @@ Options:
 
     # Check if session already exists (shouldn't happen for new worktrees, but be safe)
     if not tmux has-session -t $session_name 2>/dev/null
-        echo -e "\033[34m→\033[0m Creating tmux session: $session_name"
+        _wt_action "Creating tmux session: $session_name"
 
         # Create detached session with standard windows (use absolute path!)
         set -l absolute_worktree_path "$repo_root/$worktree_path"
@@ -317,12 +317,12 @@ Options:
             return 0
         end
 
-        echo -e "\033[32m✓\033[0m Tmux session created"
+        _wt_success "Tmux session created"
     end
 
     # Now decide: switch or notify
     if test "$switch_after" = "true"
-        echo -e "\033[34m→\033[0m Switching to session..."
+        _wt_action "Switching to session..."
         if test -n "$TMUX"
             tmux switch-client -t $session_name
             or echo "Warning: Failed to switch to session" >&2
@@ -336,7 +336,7 @@ Options:
 
         # Notify user that session is ready
         _wt_notify "✨ Worktree '$name' ready in session '$session_name'"
-        echo -e "\033[32m✓\033[0m Session ready: $session_name"
+        _wt_success "Session ready: $session_name"
         echo -e "\033[90m  Use 'wt switch $name' to switch\033[0m"
     end
 end

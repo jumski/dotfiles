@@ -14,7 +14,7 @@ without restarting your shell."
     # Get the directory where wt is installed
     set -l wt_dir (dirname (status -f))/../
 
-    echo -e "\033[34m→\033[0m Reloading wt..."
+    _wt_action "Reloading wt..."
 
     # Source lib files first (common utilities and tutor)
     source $wt_dir/lib/common.fish
@@ -45,5 +45,5 @@ without restarting your shell."
         return 1
     end
 
-    echo -e "\033[32m✓\033[0m Worktree Toolkit reloaded successfully!"
+    _wt_success "Worktree Toolkit reloaded successfully!"
 end
