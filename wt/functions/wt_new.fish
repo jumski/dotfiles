@@ -3,32 +3,33 @@
 
 function wt_new
     # Show help if requested
-    _wt_show_help_if_requested $argv "Usage: wt new <worktree-name> [branch-name] [--from <branch>] [--trunk <branch>] [--force-new] [--switch] [--yes]
+    _wt_show_help_if_requested $argv "Usage: wt new <worktree-name> [branch-name] [--switch] [--yes]
 
-Create new worktree
+Create new worktree for an existing branch
 
 Arguments:
   <worktree-name>    Name for the new worktree directory
   [branch-name]      Optional branch name (default: same as worktree-name)
 
 Options:
-  --from <branch>    Base branch (default: DEFAULT_TRUNK from config)
-  --trunk <branch>   Trunk branch for Graphite
-  --force-new        Force creation even if branch exists
   --switch           Automatically switch to the new worktree after creation
-  --yes, --force     Skip confirmation prompts
+  --yes              Skip confirmation prompts
 
 Examples:
   wt new auth-system              # Worktree and branch both 'auth-system'
   wt new auth-system auth-db      # Worktree 'auth-system', branch 'auth-db'
-  wt new profiles jumski/add-profiles  # Handle branches with slashes"
+  wt new profiles jumski/add-profiles  # Handle branches with slashes
+
+Note:
+  This command requires the branch to exist locally.
+  If branch doesn't exist, create it first with one of:
+    - gt get <branch>               (for Graphite repos, syncs from remote)
+    - gt create <branch>            (for Graphite repos, creates new)
+    - git checkout -b <branch>      (for non-Graphite repos)"
     and return 0
 
     set -l name $argv[1]
     set -l branch_name ""
-    set -l base_branch ""
-    set -l trunk_branch ""
-    set -l force_new false
     set -l switch_after false
 
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
@@ -54,18 +55,14 @@ Examples:
     # Parse options
     while test $i -le (count $argv)
         switch $argv[$i]
-            case --from
-                set i (math $i + 1)
-                set base_branch $argv[$i]
-            case --trunk
-                set i (math $i + 1)
-                set trunk_branch $argv[$i]
-            case --force-new
-                set force_new true
             case --switch
                 set switch_after true
-            case --yes --force
-                # These will be passed to _wt_confirm
+            case --yes
+                # Will be passed to _wt_confirm
+            case '*'
+                echo "Error: Unknown option '$argv[$i]'" >&2
+                echo "  Run 'wt new --help' for usage" >&2
+                return 1
         end
         set i (math $i + 1)
     end
@@ -76,13 +73,8 @@ Examples:
     _wt_get_repo_config
 
     # ============================================================
-    # PHASE 1: GATHER - Collect all information (read-only)
+    # PHASE 1: SAFETY CHECKS - Fail fast if branch doesn't exist
     # ============================================================
-
-    # Default to main trunk if not specified
-    if test -z "$base_branch"
-        set base_branch $DEFAULT_TRUNK
-    end
 
     set -l worktree_path "$WORKTREES_PATH/$name"
 
@@ -104,32 +96,74 @@ Examples:
         echo "  Location: $worktree_location" >&2
         echo "" >&2
         echo "Suggestions:" >&2
-        echo "  - Switch to that worktree instead" >&2
-        echo "  - Remove that worktree first" >&2
+        echo "  - Switch to that worktree instead: wt switch <worktree>" >&2
+        echo "  - Remove that worktree first: wt remove <worktree>" >&2
         echo "  - Use a different branch name" >&2
         cd $saved_pwd
         return 1
     end
 
-    # Check 3: Check for remote branch
-    set -l tracking_remote false
-    set -l remote_exists false
-    if test "$force_new" = "false"
-        _wt_action "Checking remote for branch '$branch_name'..."
+    # Check 3: FAIL FAST - Branch must exist locally
+    if not git -C $BARE_PATH show-ref --verify --quiet refs/heads/$branch_name
+        echo "Error: Branch '$branch_name' does not exist locally" >&2
+        echo "" >&2
+
+        # Check if remote exists
         git -C $BARE_PATH fetch origin --quiet 2>/dev/null
+        set -l remote_exists false
         if git -C $BARE_PATH show-ref --verify --quiet refs/remotes/origin/$branch_name
             set remote_exists true
         end
-    end
 
-    # Check 4: Check if local branch exists
-    set -l local_branch_exists false
-    if git -C $BARE_PATH show-ref --verify --quiet refs/heads/$branch_name
-        set local_branch_exists true
+        # Check if Graphite is in use
+        set -l graphite_detected false
+        if command -q gt
+            if git config --get graphite.trunk >/dev/null 2>&1
+                set graphite_detected true
+            end
+        end
+
+        # Provide helpful error message
+        if test $remote_exists = true -a $graphite_detected = true
+            echo -e "\033[33mRemote branch '\033[1morigin/$branch_name\033[0;33m' found in Graphite repo.\033[0m" >&2
+            echo "" >&2
+            echo "Sync Graphite stack first:" >&2
+            echo -e "  \033[36mgt get $branch_name\033[0m" >&2
+            echo "" >&2
+            echo "Then create worktree:" >&2
+            echo -e "  \033[36mwt new $name $branch_name\033[0m" >&2
+        else if test $remote_exists = true
+            echo "Remote branch 'origin/$branch_name' found." >&2
+            echo "" >&2
+            echo "Create local branch first:" >&2
+            echo -e "  \033[36mgit fetch origin $branch_name:$branch_name\033[0m" >&2
+            echo "" >&2
+            echo "Then create worktree:" >&2
+            echo -e "  \033[36mwt new $name $branch_name\033[0m" >&2
+        else if test $graphite_detected = true
+            echo "Branch not found locally or remotely." >&2
+            echo "" >&2
+            echo "Create branch first:" >&2
+            echo -e "  \033[36mgt create $branch_name\033[0m" >&2
+            echo "" >&2
+            echo "Then create worktree:" >&2
+            echo -e "  \033[36mwt new $name $branch_name\033[0m" >&2
+        else
+            echo "Branch not found locally or remotely." >&2
+            echo "" >&2
+            echo "Create branch first:" >&2
+            echo -e "  \033[36mgit checkout -b $branch_name\033[0m" >&2
+            echo "" >&2
+            echo "Then create worktree:" >&2
+            echo -e "  \033[36mwt new $name $branch_name\033[0m" >&2
+        end
+
+        cd $saved_pwd
+        return 1
     end
 
     # ============================================================
-    # PHASE 2: PLAN - Show user what will happen
+    # PHASE 2: CONFIRM - Show user what will happen
     # ============================================================
 
     echo ""
@@ -139,42 +173,12 @@ Examples:
     echo ""
 
     echo -e "\033[33m  Worktree:\033[0m \033[1m$name\033[0m"
-    echo -e "\033[33m  Path:    \033[0m \033[90m$repo_root/$worktree_path\033[0m"
-
-    # Determine what action will be taken with the branch
-    if test $local_branch_exists = true -a $remote_exists = true
-        echo ""
-        echo -e "\033[33m  Branch:  \033[0m \033[1;33m$branch_name\033[0m \033[90m(exists locally and remotely)\033[0m"
-        echo -e "\033[33m  Remote:  \033[0m \033[1;32morigin/$branch_name\033[0m"
-    else if test $local_branch_exists = true
-        echo ""
-        echo -e "\033[33m  Branch:  \033[0m \033[1;33m$branch_name\033[0m \033[90m(exists locally)\033[0m"
-    else if test $remote_exists = true
-        echo ""
-        echo -e "\033[33m  Branch:  \033[0m \033[1m$branch_name\033[0m \033[90m(new, tracking remote)\033[0m"
-        echo -e "\033[33m  Remote:  \033[0m \033[1;32morigin/$branch_name\033[0m"
-    else
-        echo ""
-        echo -e "\033[33m  Branch:  \033[0m \033[1m$branch_name\033[0m \033[90m(new)\033[0m"
-        echo -e "\033[33m  Base:    \033[0m \033[1;32m$base_branch\033[0m"
-    end
+    echo -e "\033[33m  Branch:  \033[0m \033[1m$branch_name\033[0m"
+    echo -e "\033[33m  Path:    \033[0m \033[90m$worktree_path\033[0m"
 
     echo ""
     echo -e "\033[1mWill:\033[0m"
-
-    if test $local_branch_exists = true
-        if test $remote_exists = true
-            echo -e "\033[32m  ✓\033[0m Use existing local branch '\033[1m$branch_name\033[0m'"
-        else
-            echo -e "\033[32m  ✓\033[0m Use existing local branch '\033[1m$branch_name\033[0m'"
-        end
-    else if test $remote_exists = true
-        echo -e "\033[32m  ✓\033[0m Create local branch tracking '\033[1morigin/$branch_name\033[0m'"
-    else
-        echo -e "\033[32m  ✓\033[0m Create new branch from '\033[1m$base_branch\033[0m'"
-    end
-
-    echo -e "\033[32m  ✓\033[0m Create worktree at '\033[1m$worktree_path\033[0m'"
+    echo -e "\033[32m  ✓\033[0m Create worktree for existing branch '\033[1m$branch_name\033[0m'"
     echo -e "\033[32m  ✓\033[0m Copy environment files"
     echo -e "\033[32m  ✓\033[0m Create tmux session"
 
@@ -184,40 +188,8 @@ Examples:
         echo -e "\033[90m  →\033[0m Stay in current location"
     end
 
-    # Graphite stack warning if applicable
-    if test $remote_exists = true
-        # Check if Graphite is initialized
-        if git config --get graphite.trunk >/dev/null 2>&1
-            # Graphite is in use - check if branch is tracked
-            set -l gt_trunk (git config --get graphite.trunk)
-
-            echo ""
-            echo -e "\033[33m⚠️  Graphite Detection:\033[0m"
-            echo -e "   This repo uses Graphite (trunk: \033[1m$gt_trunk\033[0m)"
-            echo ""
-            echo -e "\033[90m   Remote branch found, but Graphite stack metadata unknown.\033[0m"
-            echo -e "\033[90m   To sync stack relationships, run:\033[0m"
-            echo -e "\033[36m   gt downstack get $branch_name\033[0m"
-            echo -e "\033[90m   before creating this worktree.\033[0m"
-        end
-    end
-
     echo -e "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     echo ""
-
-    # ============================================================
-    # PHASE 3: QUESTIONS - Ask all questions upfront
-    # ============================================================
-
-    # Ask about tracking remote if it exists
-    if test $remote_exists = true -a "$force_new" = "false"
-        _wt_confirm --prompt "Track remote branch 'origin/$branch_name'" --default-yes $argv
-        and set tracking_remote true
-        or begin
-            echo "Will create new local branch instead"
-        end
-        echo ""
-    end
 
     # Final confirmation
     _wt_confirm --prompt "Proceed" --default-yes $argv
@@ -230,31 +202,13 @@ Examples:
     echo ""
 
     # ============================================================
-    # PHASE 4: EXECUTE - Do all the work (no more prompts)
+    # PHASE 3: EXECUTE - Create worktree for existing branch
     # ============================================================
 
     _wt_action "Creating worktree..."
 
-    # Create the worktree
-    if test "$tracking_remote" = "true"
-        # Check if local branch already exists
-        if test $local_branch_exists = true
-            # Local branch exists, just use it
-            git -C $BARE_PATH worktree add ../$worktree_path $branch_name
-        else
-            # Create new local branch tracking the remote
-            git -C $BARE_PATH worktree add ../$worktree_path -b $branch_name --track origin/$branch_name
-        end
-    else
-        # Check if local branch already exists
-        if test $local_branch_exists = true
-            # Use existing branch (user already confirmed in PHASE 2)
-            git -C $BARE_PATH worktree add ../$worktree_path $branch_name
-        else
-            # Create new branch
-            git -C $BARE_PATH worktree add ../$worktree_path -b $branch_name $base_branch
-        end
-    end
+    # Branch exists locally - just create worktree for it
+    git -C $BARE_PATH worktree add ../$worktree_path $branch_name
     or begin
         echo "Error: Failed to create worktree" >&2
         cd $saved_pwd
@@ -279,13 +233,7 @@ Examples:
 
     cd $current_dir
 
-    _wt_success "Worktree created"
-
-    if test "$tracking_remote" = "true"
-        _wt_success "Branch '$branch_name' tracking 'origin/$branch_name'"
-    else if test $local_branch_exists = false
-        _wt_success "Branch '$branch_name' created from '$base_branch'"
-    end
+    _wt_success "Worktree created for branch '$branch_name'"
 
     # Run post-creation hook if it exists
     set -l hook_script "$repo_root/.wt-post-create"

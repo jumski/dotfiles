@@ -113,15 +113,16 @@ cd ~/myapp/worktrees/auth-system
 gt create -am "feat: add authentication base"
 
 # Or create and switch in one command
-wt new auth-system --switch
+wt branch auth-system --switch
+# This creates the branch via Graphite and opens worktree
 
 # Build on top in same worktree
 gt create -am "feat: add login endpoint"
 gt submit --stack  # Creates 2 PRs
 
 # Or create dependent feature in new worktree
-wt new user-profiles --from auth-system
-gt create -am "feat: add user profiles"
+wt branch user-profiles -m "feat: add user profiles" --switch
+# Creates stacked branch and worktree
 ```
 
 ### 3. Work in parallel
@@ -287,11 +288,12 @@ $ wt sync-all
 ### Multiple Base Branches
 
 ```bash
-# Configure additional trunk
-gt trunk --add release-v2
+# Create branch from different base
+git checkout release-v2
+gt create hotfix-issue-123
 
-# Create worktree from different trunk
-wt new hotfix --from release-v2 --trunk release-v2
+# Then create worktree
+wt new hotfix-issue-123 --switch
 ```
 
 ### Batch Operations

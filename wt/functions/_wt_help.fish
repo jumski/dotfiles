@@ -50,29 +50,19 @@ function _wt_help
     set_color normal
     echo -n "    "
     set_color cyan
-    printf "%-32s" "new <name> [options]"
+    printf "%-32s" "new <name> [branch] [options]"
     set_color normal
-    echo "create new worktree (or checkout remote)"
-    echo -n "      "
-    set_color brblack
-    printf "%-30s" "--from <base>"
-    set_color normal
-    echo "base branch (default: trunk)"
-    echo -n "      "
-    set_color brblack
-    printf "%-30s" "--trunk <branch>"
-    set_color normal
-    echo "trunk branch for graphite init"
-    echo -n "      "
-    set_color brblack
-    printf "%-30s" "--force-new"
-    set_color normal
-    echo "skip remote check, always create new"
+    echo "create worktree for existing branch"
     echo -n "      "
     set_color brblack
     printf "%-30s" "--switch"
     set_color normal
     echo "open in muxit after creation"
+    echo -n "      "
+    set_color brblack
+    printf "%-30s" "--yes"
+    set_color normal
+    echo "skip confirmation prompt"
     echo -n "    "
     set_color cyan
     printf "%-32s" "branch <name> [options] (br)"

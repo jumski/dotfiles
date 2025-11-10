@@ -89,15 +89,18 @@ function _wt_tutor_main_hotfix
     echo ""
 
     set_color brgreen
-    echo "1. Create hotfix worktree from main:"
+    echo "1. Create hotfix branch from main:"
     set_color normal
-    echo "   wt new hotfix-issue-123 --from main"
+    echo "   wt branch hotfix-issue-123"
+    echo ""
+    echo "   Or with Graphite:"
+    echo "   gt create hotfix-issue-123"
     echo ""
 
     set_color brgreen
-    echo "2. Switch to the hotfix worktree:"
+    echo "2. Create worktree for the hotfix:"
     set_color normal
-    echo "   wt switch hotfix-issue-123"
+    echo "   wt new hotfix-issue-123 --switch"
     echo ""
 
     set_color brgreen
@@ -126,9 +129,8 @@ function _wt_tutor_main_hotfix
     echo ""
 
     set_color bryellow
-    echo "💡 Tip: Use --switch flag to automatically open in muxit:"
+    echo "💡 Note: wt branch creates both branch and worktree in one step"
     set_color normal
-    echo "   wt new hotfix-issue-123 --from main --switch"
     echo ""
 end
 
@@ -191,19 +193,15 @@ function _wt_tutor_new_branch
     echo ""
 
     set_color brgreen
-    echo "2. Create new worktree from main:"
+    echo "2. Create new branch and worktree:"
     set_color normal
-    echo "   wt new feature-awesome-thing --from main --switch"
+    echo "   wt branch feature-awesome-thing --switch"
+    echo ""
+    echo "   This creates the branch via Graphite and opens worktree"
     echo ""
 
     set_color brgreen
-    echo "3. Initialize the branch in gt (automatic in wt new):"
-    set_color normal
-    echo "   gt branch create feature-awesome-thing"
-    echo ""
-
-    set_color brgreen
-    echo "4. Start developing:"
+    echo "3. Start developing:"
     set_color normal
     echo "   # Make changes, add files..."
     echo "   git add ."
@@ -244,20 +242,14 @@ function _wt_tutor_stack_branch
     echo ""
 
     set_color brgreen
-    echo "2. Alternative: manual worktree creation:"
+    echo "2. Alternative: use gt then create worktree:"
     set_color normal
-    echo "   wt new feature-part-2 --from feature-part-1"
+    echo "   gt create feature-part-2"
+    echo "   wt new feature-part-2 --switch"
     echo ""
 
     set_color brgreen
-    echo "3. Alternative: use gt in current worktree:"
-    set_color normal
-    echo "   gt branch create feature-part-2"
-    echo "   # This creates new branch in same worktree"
-    echo ""
-
-    set_color brgreen
-    echo "4. Develop the next part:"
+    echo "3. Develop the next part:"
     set_color normal
     echo "   git add ."
     echo "   git commit -m 'feat: extend awesome thing with part 2'"
@@ -368,9 +360,8 @@ function _wt_tutor_fork_pr
     set_color brgreen
     echo "4. Create a worktree for the branch:"
     set_color normal
-    echo "   wt new restore-toml-patch-comments --from restore-toml-patch-comments --switch"
-    echo "   # Or if the branch already exists:"
-    echo "   wt checkout restore-toml-patch-comments --switch"
+    echo "   wt new restore-toml-patch-comments --switch"
+    echo "   # Branch already exists locally, just create worktree"
     echo ""
 
     set_color brgreen
