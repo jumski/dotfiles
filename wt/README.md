@@ -33,25 +33,27 @@ wt sync-all
 
 ```bash
 # Repository Management
-wt init <name>               # Initialize new local repository
-wt clone <repo-url> [name]   # Clone and set up worktree structure
+wt init <name>                          # Initialize new local repository
+wt clone <repo-url> [name]              # Clone and set up worktree structure
 
 # Worktree Operations
-wt new <name>                # Create new worktree from main
-wt new <name> --from <base>  # Create from specific branch
-wt new <name> --switch       # Create and open in muxit
-wt switch <name>             # Open worktree in muxit (doesn't cd)
-wt switch                    # Interactive selection with fzf
-wt remove <name>             # Remove worktree (prompts for confirmation)
+wt new <worktree>                       # Create worktree & branch (same name)
+wt new <worktree> <branch>              # Create worktree with different branch
+wt new <worktree> <branch> --switch     # Create and switch immediately
+wt capture [worktree]                   # Capture current branch to new worktree
+wt capture [worktree] --switch          # Capture and switch
+wt switch <name>                        # Switch to worktree session
+wt switch                               # Interactive selection with fzf
+wt remove <name>                        # Remove worktree (prompts for confirmation)
 
 # Development Flow
-wt sync-all                  # Sync all worktrees with remote
-wt sync-all --force          # Sync all, stashing uncommitted changes
-wt sync-all --reset          # Hard reset all worktrees to origin
+wt sync-all                             # Sync all worktrees with remote
+wt sync-all --force                     # Sync all, stashing uncommitted changes
+wt sync-all --reset                     # Hard reset all worktrees to origin
 
 # Environment Management
-wt env sync                  # Copy latest envs/ to current worktree
-wt env sync --all            # Update envs in all worktrees
+wt env sync                             # Copy latest envs/ to current worktree
+wt env sync --all                       # Update envs in all worktrees
 
 ```
 
@@ -153,6 +155,55 @@ gt stack rebase && gt submit --stack
 
 # Sync all worktrees
 wt sync-all
+```
+
+## Modern Stack-First Workflow
+
+The recommended approach is to use **one worktree per milestone** and navigate branches with `gt`:
+
+### Primary Pattern: Single Worktree Stack
+
+```bash
+# Create worktree for milestone (not just first branch)
+wt new auth-system auth-db --switch
+
+# Build stack with Graphite in same worktree
+gt create auth-api -am "feat: add login endpoints"
+gt create auth-middleware -am "feat: add auth middleware"
+gt create auth-ui -am "feat: add login forms"
+
+# Navigate stack with gt (stays in worktree)
+gt up      # Move to next branch
+gt down    # Move to previous branch
+```
+
+**Result**: One worktree (`auth-system/`), multiple branches, one tmux session.
+
+### Secondary Pattern: Capture Branch to New Worktree
+
+When you need a separate context (different tool sessions, parallel work):
+
+```bash
+# You're in auth-system/ on auth-middleware branch
+wt capture auth-hotfix --switch
+
+# Creates:
+# - New worktree: auth-hotfix/
+# - With branch: auth-middleware
+# - Original worktree switches to parent branch automatically
+```
+
+**Use when**:
+- Fixing bug in middle of stack while keeping other work open
+- Need separate Claude Code/editor session
+- Comparing different approaches side-by-side
+
+### Handling Remote Branches with Slashes
+
+```bash
+# Branch created by Claude Web: jumski/add-user-profiles
+# Worktree name without slash: add-profiles
+wt new add-profiles jumski/add-user-profiles --switch
 ```
 
 ## Directory Structure

@@ -18,6 +18,8 @@ function wt
             wt_new $remaining_args
         case branch br
             wt_branch $remaining_args
+        case capture cap
+            wt_capture $remaining_args
         case remove rm
             wt_remove $remaining_args
         case switch sw
