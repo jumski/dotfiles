@@ -342,6 +342,9 @@ Examples:
 
     # Now decide: switch or notify
     if test "$switch_after" = "true"
+        # Restore directory before switching (tmux will inherit new directory)
+        cd $saved_pwd
+
         _wt_action "Switching to session..."
         if test -n "$TMUX"
             tmux switch-client -t $session_name
