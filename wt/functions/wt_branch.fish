@@ -218,7 +218,7 @@ Options:
 
     # Track with Graphite if decided
     if test $should_track_with_graphite = true
-        echo -e "\033[34m→\033[0m Tracking with Graphite..."
+        _wt_action "Tracking with Graphite..."
         git checkout $branch_name --quiet
         or begin
             echo "Error: Failed to checkout '$branch_name'" >&2
@@ -234,7 +234,7 @@ Options:
             echo "Warning: Failed to track with Graphite" >&2
             # Continue anyway - worktree can still be created
         else
-            echo -e "\033[32m✓\033[0m Tracked with Graphite"
+            _wt_success "Tracked with Graphite"
         end
     end
 
@@ -242,7 +242,7 @@ Options:
     set -l new_branch ""
     if test $will_create_branch = true
         if test $will_use_graphite_create = true
-            echo -e "\033[34m→\033[0m Creating with Graphite..."
+            _wt_action "Creating with Graphite..."
 
             gt create $gt_args
             or begin
@@ -250,7 +250,7 @@ Options:
                 return 1
             end
         else
-            echo -e "\033[34m→\033[0m Creating with git..."
+            _wt_action "Creating with git..."
 
             git checkout -b $branch_name
             or begin
@@ -268,13 +268,13 @@ Options:
         end
 
         if test $will_use_graphite_create = true
-            echo -e "\033[32m✓\033[0m Created '$new_branch' stacked on '$original_branch'"
+            _wt_success "Created '$new_branch' stacked on '$original_branch'"
         else
-            echo -e "\033[32m✓\033[0m Created '$new_branch' from '$original_branch'"
+            _wt_success "Created '$new_branch' from '$original_branch'"
         end
 
         # Switch back to original branch
-        echo -e "\033[34m→\033[0m Returning to '$original_branch'..."
+        _wt_action "Returning to '$original_branch'..."
         git switch $original_branch --quiet
         or begin
             echo "Error: Failed to return to '$original_branch'" >&2
@@ -283,11 +283,11 @@ Options:
     else
         # Branch already exists, use it
         set new_branch $branch_name
-        echo -e "\033[32m✓\033[0m Using existing '$new_branch'"
+        _wt_success "Using existing '$new_branch'"
     end
 
     # Create worktree using wt_new
-    echo -e "\033[34m→\033[0m Creating worktree..."
+    _wt_action "Creating worktree..."
 
     # Build wt_new arguments
     set -l wt_new_args $new_branch --force-new
@@ -303,7 +303,7 @@ Options:
     end
 
     if test $switch_after = false
-        echo -e "\033[32m✓\033[0m Staying on '$original_branch'"
+        _wt_success "Staying on '$original_branch'"
         echo -e "\033[90m  Use 'wt switch $new_branch' to switch\033[0m"
     end
 end

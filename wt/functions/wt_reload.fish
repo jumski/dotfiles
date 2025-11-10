@@ -14,36 +14,41 @@ without restarting your shell."
     # Get the directory where wt is installed
     set -l wt_dir (dirname (status -f))/../
 
-    _wt_action "Reloading wt..."
+    echo -e "\033[34m→\033[0m Reloading wt..."
 
-    # Source lib files first (common utilities and tutor)
-    source $wt_dir/lib/common.fish
-    or begin
-        echo -e "\033[31m✗\033[0m Failed to reload lib/common.fish" >&2
-        return 1
-    end
-
-    source $wt_dir/lib/tutor.fish
-    or begin
-        echo -e "\033[31m✗\033[0m Failed to reload lib/tutor.fish" >&2
-        return 1
+    # Source lib files first (all files in lib/)
+    if test -d $wt_dir/lib
+        for lib_file in $wt_dir/lib/*.fish
+            echo -e "\033[90m  Loading $(basename $lib_file)...\033[0m"
+            source $lib_file
+            or begin
+                echo -e "\033[31m✗\033[0m Failed to reload $(basename $lib_file)" >&2
+                return 1
+            end
+        end
     end
 
     # Explicitly reload all function files (don't rely on autoloading)
+    set -l func_count 0
     for func_file in $wt_dir/functions/*.fish
         source $func_file
         or begin
             echo -e "\033[31m✗\033[0m Failed to reload $(basename $func_file)" >&2
             return 1
         end
+        set func_count (math $func_count + 1)
     end
+    echo -e "\033[90m  Loaded $func_count functions\033[0m"
 
     # Source completions
-    source $wt_dir/completions.fish
-    or begin
-        echo -e "\033[31m✗\033[0m Failed to reload completions.fish" >&2
-        return 1
+    if test -f $wt_dir/completions.fish
+        echo -e "\033[90m  Loading completions...\033[0m"
+        source $wt_dir/completions.fish
+        or begin
+            echo -e "\033[31m✗\033[0m Failed to reload completions.fish" >&2
+            return 1
+        end
     end
 
-    _wt_success "Worktree Toolkit reloaded successfully!"
+    echo -e "\033[32m✓\033[0m Worktree Toolkit reloaded successfully!"
 end

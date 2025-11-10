@@ -93,16 +93,16 @@ Options:
     end
 
     echo ""
-    echo -e "\033[34m→\033[0m Initializing new worktree repository: "(basename $repo_path)
+    _wt_action "Initializing new worktree repository: "(basename $repo_path)
     
     # Create directory structure
-    echo -e "\033[34m→\033[0m Creating directory structure..."
+    _wt_action "Creating directory structure..."
     mkdir -p $repo_path
     mkdir -p $repo_path/worktrees
     mkdir -p $repo_path/envs
     
     # Initialize bare repository
-    echo -e "\033[34m→\033[0m Initializing bare repository..."
+    _wt_action "Initializing bare repository..."
     git init --bare $repo_path/.bare
     or begin
         echo "Error: Failed to initialize bare repository" >&2
@@ -111,11 +111,11 @@ Options:
     end
     
     # Set default branch to main
-    echo -e "\033[34m→\033[0m Setting default branch to main..."
+    _wt_action "Setting default branch to main..."
     git -C $repo_path/.bare symbolic-ref HEAD refs/heads/main
     
     # Create main worktree
-    echo -e "\033[34m→\033[0m Creating main worktree..."
+    _wt_action "Creating main worktree..."
     git -C $repo_path/.bare worktree add $repo_path/worktrees/main
     or begin
         echo "Error: Failed to create main worktree" >&2
@@ -124,7 +124,7 @@ Options:
     end
     
     # Create initial empty commit
-    echo -e "\033[34m→\033[0m Creating initial commit..."
+    _wt_action "Creating initial commit..."
     pushd $repo_path/worktrees/main
     git commit --allow-empty -m "Initial commit"
     or begin
@@ -159,8 +159,8 @@ echo \"Post-creation hook executed in: \$(pwd)\"
     # Make hook script executable
     chmod +x $repo_path/.wt-post-create
 
-    echo -e "\033[32m✓\033[0m Repository initialized at $repo_path"
-    echo -e "\033[32m✓\033[0m Main worktree at worktrees/main"
+    _wt_success "Repository initialized at $repo_path"
+    _wt_success "Main worktree at worktrees/main"
     echo ""
     echo "Next steps:"
     echo "  cd $repo_path/worktrees/main"

@@ -61,7 +61,7 @@ function _wt_env_sync
     if not test -d "$source_path"
         if test $skip_confirm = true
             # Auto mode (called from wt-new) - show warning and continue
-            echo -e "\033[33m⚠\033[0m No envs directory found at $source_path - skipping environment sync"
+            _wt_warning "No envs directory found at $source_path - skipping environment sync"
             cd $saved_pwd
             return 0
         else
@@ -177,7 +177,7 @@ function _wt_env_sync
 
         # Only show detailed output if not in auto mode
         if test $skip_confirm = false
-            echo -e "\033[34m→\033[0m Syncing files..."
+            _wt_action "Syncing files..."
             echo -e "  \033[34m→\033[0m Syncing to: $target"
         end
 
@@ -202,7 +202,7 @@ function _wt_env_sync
 
     # Only show final success message if not in auto mode
     if test $skip_confirm = false
-        echo -e "\033[32m✓\033[0m Files synced successfully"
+        _wt_success "Files synced successfully"
     end
     cd $saved_pwd
 end

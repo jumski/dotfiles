@@ -34,13 +34,13 @@ Options:
     cd $repo_root
     _wt_get_repo_config
 
-    echo -e "\033[34m→\033[0m Syncing all worktrees..."
+    _wt_action "Syncing all worktrees..."
 
     for worktree_dir in $WORKTREES_PATH/*
         if test -d $worktree_dir
             set -l name (basename $worktree_dir)
             echo ""
-            echo -e "\033[34m→\033[0m Syncing $name..."
+            _wt_action "Syncing $name..."
             cd $worktree_dir
             _wt_sync_single $force $reset
         end
@@ -56,7 +56,7 @@ function _wt_sync_single
     set -l branch (git branch --show-current)
     
     if test $reset = true
-        echo -e "\033[34m→\033[0m Resetting to origin/$branch..."
+        _wt_action "Resetting to origin/$branch..."
         git fetch origin $branch
         git reset --hard origin/$branch
         return
@@ -65,7 +65,7 @@ function _wt_sync_single
     # Check for uncommitted changes
     if test (git status --porcelain | count) -gt 0
         if test $force = true
-            echo -e "\033[34m→\033[0m Stashing changes..."
+            _wt_action "Stashing changes..."
             git stash push -m "wt sync auto-stash"
         else
             echo "Error: Uncommitted changes. Use --force to stash" >&2
@@ -74,12 +74,12 @@ function _wt_sync_single
     end
     
     # Sync with remote
-    echo -e "\033[34m→\033[0m Syncing with remote..."
+    _wt_action "Syncing with remote..."
     gt sync
     
     # Restore stash if needed
     if test $force = true -a (git stash list | head -1 | string match -q "*wt sync auto-stash*")
-        echo -e "\033[34m→\033[0m Restoring stashed changes..."
+        _wt_action "Restoring stashed changes..."
         git stash pop
     end
 end

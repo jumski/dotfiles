@@ -63,16 +63,16 @@ Options:
         return 1
     end
     
-    echo -e "\033[34m→\033[0m Initializing worktree repository: "(basename $repo_path)
+    _wt_action "Initializing worktree repository: "(basename $repo_path)
     
     # Create directory structure
-    echo -e "\033[34m→\033[0m Creating directory structure..."
+    _wt_action "Creating directory structure..."
     mkdir -p $repo_path
     mkdir -p $repo_path/worktrees
     mkdir -p $repo_path/envs
     
     # Clone as bare repository
-    echo -e "\033[34m→\033[0m Cloning repository as bare..."
+    _wt_action "Cloning repository as bare..."
     
     # Check if it's a short format (org/repo) and gh is available
     set -l clone_success false
@@ -91,7 +91,7 @@ Options:
     end
 
     # Configure remote fetch refspec for bare repository
-    echo -e "\033[34m→\033[0m Configuring remote fetch refspec..."
+    _wt_action "Configuring remote fetch refspec..."
     _wt_configure_remote_fetch $repo_path/.bare origin
     or begin
         echo "Warning: Failed to configure remote fetch refspec" >&2
@@ -104,7 +104,7 @@ Options:
     end
     
     # Create main worktree
-    echo -e "\033[34m→\033[0m Creating main worktree..."
+    _wt_action "Creating main worktree..."
     git -C $repo_path/.bare worktree add $repo_path/worktrees/$default_branch $default_branch
     or begin
         echo "Error: Failed to create main worktree" >&2
@@ -136,8 +136,8 @@ echo \"Post-creation hook executed in: \$(pwd)\"
     # Make hook script executable
     chmod +x $repo_path/.wt-post-create
 
-    echo -e "\033[32m✓\033[0m Repository initialized at $repo_path"
-    echo -e "\033[32m✓\033[0m Main worktree at worktrees/$default_branch"
+    _wt_success "Repository initialized at $repo_path"
+    _wt_success "Main worktree at worktrees/$default_branch"
     echo ""
     echo "Next steps:"
     echo "  cd $repo_path/worktrees/$default_branch"
