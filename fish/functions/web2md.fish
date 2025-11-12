@@ -12,5 +12,10 @@ function web2md --description "Convert web page to markdown using r.jina.ai"
     set url "https://$url"
   end
 
-  curl -s "https://r.jina.ai/$url"
+  # Add Authorization header if JINA_API_KEY is set
+  if set -q JINA_API_KEY
+    curl -s -H "Authorization: Bearer $JINA_API_KEY" "https://r.jina.ai/$url"
+  else
+    curl -s "https://r.jina.ai/$url"
+  end
 end
