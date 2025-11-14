@@ -86,6 +86,7 @@
   "vim-qml": { "branch": "master", "commit": "892c36a80a8711025af7bb9d09a8a6b90fe3d0c8" },
   "vim-rails": { "branch": "master", "commit": "b0a5c76f86ea214ade36ab0b811e730c3f0add67" },
   "vim-rake": { "branch": "master", "commit": "af4ee966f5479fa89e60be067b6183f6addf9e4e" },
+  "vim-repeat": { "branch": "master", "commit": "65846025c15494983dafe5e3b46c8f88ab2e9635" },
   "vim-rhubarb": { "branch": "master", "commit": "5496d7c94581c4c9ad7430357449bb57fc59f501" },
   "vim-sensible": { "branch": "master", "commit": "0ce2d843d6f588bb0c8c7eec6449171615dc56d9" },
   "vim-sexp-mappings-for-regular-people": { "branch": "master", "commit": "4debb74b0a3e530f1b18e5b7dff98a40b2ad26f1" },
