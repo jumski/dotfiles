@@ -133,13 +133,18 @@ Note:
             echo "Then create worktree:" >&2
             echo -e "  \033[36mwt new $name $branch_name\033[0m" >&2
         else if test $remote_exists = true
-            echo "Remote branch 'origin/$branch_name' found." >&2
+            echo -e "\033[33mRemote branch '\033[1morigin/$branch_name\033[0;33m' found.\033[0m" >&2
             echo "" >&2
-            echo "Create local branch first:" >&2
-            echo -e "  \033[36mgit fetch origin $branch_name:$branch_name\033[0m" >&2
-            echo "" >&2
-            echo "Then create worktree:" >&2
+            echo "Option 1 (recommended - proper tracking):" >&2
+            echo -e "  \033[36mgt get $branch_name\033[0m" >&2
             echo -e "  \033[36mwt new $name $branch_name\033[0m" >&2
+            echo "" >&2
+            echo "Option 2 (git-only - if not using Graphite):" >&2
+            echo -e "  \033[36mgit checkout --track origin/$branch_name\033[0m" >&2
+            echo -e "  \033[36mwt new $name $branch_name\033[0m" >&2
+            echo "" >&2
+            echo -e "\033[90mNote: 'git fetch origin branch:branch' creates untracked branches\033[0m" >&2
+            echo -e "\033[90m      Use '--track' or 'gt get' for proper tracking\033[0m" >&2
         else if test $graphite_detected = true
             echo "Branch not found locally or remotely." >&2
             echo "" >&2
