@@ -112,7 +112,15 @@ Options:
         return 1
     end
     
-    # Create config file with defaults commented
+    # Create dotfiles directory for this repo's config
+    set -l dotfiles_path "$HOME/.dotfiles/wt/repos/$repo_name"
+    mkdir -p "$dotfiles_path"
+    or begin
+        echo "Error: Failed to create $dotfiles_path" >&2
+        return 1
+    end
+
+    # Create config file in dotfiles
     echo "# Worktree repository configuration
 REPO_NAME=$repo_name
 
@@ -122,19 +130,26 @@ REPO_NAME=$repo_name
 # ENVS_PATH=envs
 
 # Default branch detected from repository
-DEFAULT_TRUNK=$default_branch" > $repo_path/.wt-config
-    
-    # Create empty post-creation hook script
+DEFAULT_TRUNK=$default_branch" > "$dotfiles_path/config"
+
+    # Create empty post-creation hook script in dotfiles
     echo "#!/bin/bash
 # Post-creation hook for new worktrees
 # This script runs in the new worktree directory after creation
 # Add commands like: pnpm install, npm install, etc.
 
 echo \"Post-creation hook executed in: \$(pwd)\"
-# Add your setup commands here" > $repo_path/.wt-post-create
-    
+# Add your setup commands here" > "$dotfiles_path/post-create"
+
     # Make hook script executable
-    chmod +x $repo_path/.wt-post-create
+    chmod +x "$dotfiles_path/post-create"
+
+    # Create symlink from repo to dotfiles
+    ln -s "$dotfiles_path" "$repo_path/.wt"
+    or begin
+        echo "Error: Failed to create symlink" >&2
+        return 1
+    end
 
     _wt_success "Repository initialized at $repo_path"
     _wt_success "Main worktree at worktrees/$default_branch"

@@ -26,8 +26,16 @@ Arguments:
     
     set -l current_dir (pwd)
     cd $repo_root
+
+    # Check for legacy format and fail if detected
+    _wt_check_legacy_format
+    or begin
+        cd $current_dir
+        return 1
+    end
+
     _wt_get_repo_config
-    
+
     # If no name provided, use fzf to select
     if test -z "$name"
         if not command -q fzf

@@ -72,8 +72,7 @@ Options:
     echo -e "    \033[90m├──\033[0m \033[32mworktrees/\033[0m"
     echo -e "    \033[90m│   └──\033[0m \033[32mmain/\033[0m          \033[90m(initial worktree)\033[0m"
     echo -e "    \033[90m├──\033[0m \033[32menvs/\033[0m              \033[90m(environment files)\033[0m"
-    echo -e "    \033[90m├──\033[0m \033[33m.wt-config\033[0m        \033[90m(configuration)\033[0m"
-    echo -e "    \033[90m└──\033[0m \033[33m.wt-post-create\033[0m   \033[90m(hook script)\033[0m"
+    echo -e "    \033[90m└──\033[0m \033[33m.wt/\033[0m → \033[90m~/.dotfiles/wt/repos/$repo_name\033[0m"
     echo ""
     echo -e "  \033[1;37mActions to perform:\033[0m"
     echo -e "    \033[32m✓\033[0m Initialize bare Git repository"
@@ -134,8 +133,16 @@ Options:
         return 1
     end
     popd
-    
-    # Create config file with defaults commented
+
+    # Create dotfiles directory for this repo's config
+    set -l dotfiles_path "$HOME/.dotfiles/wt/repos/$repo_name"
+    mkdir -p "$dotfiles_path"
+    or begin
+        echo "Error: Failed to create $dotfiles_path" >&2
+        return 1
+    end
+
+    # Create config file in dotfiles
     echo "# Worktree repository configuration
 REPO_NAME=$repo_name
 
@@ -145,19 +152,26 @@ REPO_NAME=$repo_name
 # ENVS_PATH=envs
 
 # Default branch
-DEFAULT_TRUNK=main" > $repo_path/.wt-config
-    
-    # Create empty post-creation hook script
+DEFAULT_TRUNK=main" > "$dotfiles_path/config"
+
+    # Create empty post-creation hook script in dotfiles
     echo "#!/bin/bash
 # Post-creation hook for new worktrees
 # This script runs in the new worktree directory after creation
 # Add commands like: pnpm install, npm install, etc.
 
 echo \"Post-creation hook executed in: \$(pwd)\"
-# Add your setup commands here" > $repo_path/.wt-post-create
-    
+# Add your setup commands here" > "$dotfiles_path/post-create"
+
     # Make hook script executable
-    chmod +x $repo_path/.wt-post-create
+    chmod +x "$dotfiles_path/post-create"
+
+    # Create symlink from repo to dotfiles
+    ln -s "$dotfiles_path" "$repo_path/.wt"
+    or begin
+        echo "Error: Failed to create symlink" >&2
+        return 1
+    end
 
     _wt_success "Repository initialized at $repo_path"
     _wt_success "Main worktree at worktrees/main"

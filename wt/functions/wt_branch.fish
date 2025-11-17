@@ -25,6 +25,10 @@ Options:
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
 
+    # Check for legacy format and fail if detected
+    _wt_check_legacy_format
+    or return 1
+
     # Parse arguments - separate wt-specific from gt create args
     set -l i 1
     while test $i -le (count $argv)

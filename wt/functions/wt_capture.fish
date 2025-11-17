@@ -35,6 +35,10 @@ Note:
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
 
+    # Check for legacy format and fail if detected
+    _wt_check_legacy_format
+    or return 1
+
     # Parse arguments - only accept flags, no positional arguments
     for arg in $argv
         switch $arg

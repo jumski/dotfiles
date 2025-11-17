@@ -148,6 +148,32 @@ function _wt_in_worktree_repo
     return 1
 end
 
+# Check for legacy format and fail with migration instructions
+function _wt_check_legacy_format
+    set -l repo_root (_wt_get_repo_root)
+
+    if test -z "$repo_root"
+        return 0
+    end
+
+    # If .wt directory/symlink exists, we're using new format (or already migrated)
+    if test -d "$repo_root/.wt" -o -L "$repo_root/.wt"
+        return 0
+    end
+
+    # Check for legacy files
+    if test -f "$repo_root/.wt-config" -o -f "$repo_root/.wt-post-create"
+        echo "" >&2
+        _wt_color_line red "❌ Legacy wt format detected" >&2
+        _wt_color_line yellow "   Migrate to new format with:" >&2
+        echo "   cd $repo_root && wt config-link" >&2
+        echo "" >&2
+        return 1
+    end
+
+    return 0
+end
+
 # Get repository root
 function _wt_get_repo_root
     set -l current_dir (pwd)

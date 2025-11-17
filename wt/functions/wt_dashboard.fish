@@ -26,7 +26,13 @@ function wt_dashboard
         set -l repo_root (_wt_get_repo_root)
         set -l saved_pwd (pwd)
         cd $repo_root
-        
+
+        # Check for legacy format and fail if detected
+        if not _wt_check_legacy_format
+            cd $saved_pwd
+            return 1
+        end
+
         # Check for config file
         set -l config_file (_wt_get_config_file 2>/dev/null)
         if test -n "$config_file"

@@ -28,6 +28,10 @@ function _wt_env_sync
     _wt_assert "_wt_in_worktree_repo" "Not in a worktree repository"
     or return 1
 
+    # Check for legacy format and fail if detected
+    _wt_check_legacy_format
+    or return 1
+
     # Get current worktree name BEFORE changing directories
     set -l current_worktree_name (_wt_get_current_worktree)
 
