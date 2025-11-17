@@ -2,10 +2,10 @@
 # https://github.com/MordechaiHadad/bob
 
 # Where Bob downloads and stores Neovim builds
-downloads_location = "~/.local/share/bob"
+downloads_location = "/home/jumski/.local/share/bob"
 
 # Where the proxy nvim binary is installed (added to PATH)
-installation_location = "~/.local/share/bob/nvim-bin"
+installation_location = "/home/jumski/.local/share/bob/nvim-bin"
 
 # Number of nightly versions to keep for rollback
 rollback_limit = 3
