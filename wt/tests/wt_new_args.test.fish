@@ -9,10 +9,10 @@ source /home/jumski/.dotfiles/wt/lib/common.fish
 
 # Test help output
 @test "wt new shows help with --help" \
-    (wt_new --help 2>&1 | grep -q "Usage: wt new") -eq 0
+    (wt_new --help 2>&1 | grep -q "Usage: wt new"; echo $status) -eq 0
 
 @test "wt new help mentions two-arg syntax" \
-    (wt_new --help 2>&1 | grep -q "worktree-name.*branch-name") -eq 0
+    (wt_new --help 2>&1 | grep -q "worktree-name.*branch-name"; echo $status) -eq 0
 
 @test "wt new help shows examples" \
-    (wt_new --help 2>&1 | grep -q "Examples:") -eq 0
+    (wt_new --help 2>&1 | grep -q "Examples:"; echo $status) -eq 0

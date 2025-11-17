@@ -9,13 +9,13 @@ source /home/jumski/.dotfiles/wt/lib/common.fish
 
 # Test help output
 @test "wt capture shows help with --help" \
-    (wt_capture --help 2>&1 | grep -q "Usage: wt capture") -eq 0
+    (wt_capture --help 2>&1 | grep -q "Usage: wt capture"; echo $status) -eq 0
 
 @test "wt capture help mentions Graphite requirement" \
-    (wt_capture --help 2>&1 | grep -q "Graphite") -eq 0
+    (wt_capture --help 2>&1 | grep -q "Graphite"; echo $status) -eq 0
 
 @test "wt capture help shows --force option" \
-    (wt_capture --help 2>&1 | grep -q "\--force") -eq 0
+    (wt_capture --help 2>&1 | grep -q "\--force"; echo $status) -eq 0
 
 @test "wt capture help shows examples" \
-    (wt_capture --help 2>&1 | grep -q "Examples:") -eq 0
+    (wt_capture --help 2>&1 | grep -q "Examples:"; echo $status) -eq 0
