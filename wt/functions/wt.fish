@@ -30,6 +30,8 @@ function wt
             wt_env $remaining_args
         case git
             wt_git $remaining_args
+        case config-link
+            wt_config_link $remaining_args
         case doctor
             wt_doctor $remaining_args
         case tutor

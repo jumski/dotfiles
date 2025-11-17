@@ -17,6 +17,8 @@ complete -c wt -n "__fish_use_subcommand" -a "bottom" -d "Navigate to stack bott
 complete -c wt -n "__fish_use_subcommand" -a "sync-all" -d "Sync all worktrees with remote"
 complete -c wt -n "__fish_use_subcommand" -a "env" -d "Environment file operations"
 complete -c wt -n "__fish_use_subcommand" -a "git" -d "Run git in bare repository"
+complete -c wt -n "__fish_use_subcommand" -a "config-link" -d "Migrate config to dotfiles"
+complete -c wt -n "__fish_use_subcommand" -a "doctor" -d "Diagnose repository issues"
 complete -c wt -n "__fish_use_subcommand" -a "tutor" -d "Interactive workflow tutorials"
 complete -c wt -n "__fish_use_subcommand" -a "reload" -d "Reload wt functions and completions"
 complete -c wt -n "__fish_use_subcommand" -a "help" -d "Show help"
@@ -39,6 +41,8 @@ complete -c wt -n "__fish_seen_subcommand_from branch br" -s p -l patch -d "Pick
 
 complete -c wt -n "__fish_seen_subcommand_from sync-all" -l force -d "Force sync (stash changes)"
 complete -c wt -n "__fish_seen_subcommand_from sync-all" -l reset -d "Hard reset to remote"
+
+complete -c wt -n "__fish_seen_subcommand_from doctor" -l fix -d "Automatically fix detected issues"
 
 # Env subcommands
 complete -c wt -n "__fish_seen_subcommand_from env" -a "sync" -d "Sync environment files"

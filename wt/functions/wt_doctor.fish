@@ -129,7 +129,25 @@ Options:
         echo -e "\033[32m✓\033[0m"
     end
 
-    # Check 4: Envs directory exists
+    # Check 4: Config format (new vs legacy)
+    echo -n "  Checking config format... "
+    if test -L "$repo_path/.wt"
+        echo -e "\033[32m✓ NEW FORMAT\033[0m (symlinked to dotfiles)"
+        set -l target (readlink "$repo_path/.wt")
+        echo "    → $target"
+    else if test -d "$repo_path/.wt"
+        echo -e "\033[32m✓ NEW FORMAT\033[0m (local directory)"
+    else if test -f "$repo_path/.wt-config"
+        echo -e "\033[33m⚠ LEGACY FORMAT\033[0m"
+        echo "    Using .wt-config (deprecated)"
+        echo "    Migrate to new format: cd $repo_path && wt config-link"
+        set issues_found (math $issues_found + 1)
+    else
+        echo -e "\033[31m✗ NO CONFIG\033[0m"
+        set issues_found (math $issues_found + 1)
+    end
+
+    # Check 5: Envs directory exists
     echo -n "  Checking envs directory... "
     if not test -d "$repo_path/envs"
         echo -e "\033[33m⚠ MISSING\033[0m (optional)"
@@ -144,7 +162,7 @@ Options:
         echo -e "\033[32m✓\033[0m"
     end
 
-    # Check 5: Verify worktrees are valid
+    # Check 6: Verify worktrees are valid
     if test -d "$repo_path/worktrees"
         echo -n "  Checking worktree validity... "
         set -l invalid_worktrees 0

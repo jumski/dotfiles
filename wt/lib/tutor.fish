@@ -578,8 +578,10 @@ function _wt_tutor_clone
     echo "   ├── worktrees/"
     echo "   │   └── main/          # main branch worktree"
     echo "   ├── envs/              # environment files"
-    echo "   ├── .wt-config         # wt configuration"
-    echo "   └── .wt-post-create    # post-creation hook"
+    echo "   ├── .wt/               # wt configuration (symlink to dotfiles)"
+    echo "   │   ├── config         # repository settings"
+    echo "   │   └── post-create    # post-creation hook"
+    echo "   └── ...                # (legacy: .wt-config, .wt-post-create)"
     echo ""
 
     set_color bryellow

@@ -160,6 +160,11 @@ function _wt_help
     set_color normal
     echo -n "    "
     set_color cyan
+    printf "%-32s" "config-link"
+    set_color normal
+    echo "migrate config to dotfiles (once per repo)"
+    echo -n "    "
+    set_color cyan
     printf "%-32s" "doctor [--fix] [path]"
     set_color normal
     echo "diagnose and fix repository issues"

@@ -5,6 +5,31 @@ function wt_config_link -d "Link wt config to dotfiles"
     # Load common utilities
     source ~/.dotfiles/wt/lib/common.fish
 
+    # Show help if requested
+    _wt_show_help_if_requested $argv "Usage: wt config-link
+
+Migrate wt configuration to dotfiles for version control.
+
+This command:
+  • Moves .wt-config → ~/.dotfiles/wt/repos/REPO/config
+  • Moves .wt-post-create → ~/.dotfiles/wt/repos/REPO/post-create
+  • Creates symlink: .wt → ~/.dotfiles/wt/repos/REPO/
+
+Benefits:
+  • Config is version controlled via dotfiles
+  • Automatically synced across machines
+  • Run once per repository
+
+Requirements:
+  • Must be in repository root
+  • Must have .wt-config file (legacy format)
+  • ~/.dotfiles/wt directory must exist
+
+After migration:
+  • Commit to dotfiles: cd ~/.dotfiles && git add wt/repos/
+  • On other machines: Run 'wt config-link' to create symlink"
+    and return 0
+
     # Get repo root
     set -l repo_root (_wt_get_repo_root)
     if test -z "$repo_root"

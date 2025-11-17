@@ -462,7 +462,7 @@ end
 function _wt_show_help_if_requested
     # Check if --help is in the arguments
     for arg in $argv[1..-2]
-        if test "$arg" = "--help" -o "$arg" = "-h"
+        if test "$arg" = "--help"; or test "$arg" = "-h"
             echo $argv[-1]
             return 0
         end
