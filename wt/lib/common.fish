@@ -30,6 +30,47 @@ function wt_check_dependencies
     return 0
 end
 
+# Create pre-remove hook template
+function _wt_create_pre_remove_hook
+    set -l hook_path $argv[1]
+
+    echo "#!/bin/bash
+# Pre-remove hook for worktrees
+# This script runs in the worktree directory before removal
+# Add cleanup commands like: docker-compose down, clean up temp files, etc.
+
+echo \"Pre-remove hook executed in: \$(pwd)\"
+# Add your cleanup commands here" > "$hook_path"
+    chmod +x "$hook_path"
+end
+
+# Create hook template files
+function _wt_create_hook_templates
+    set -l dotfiles_path $argv[1]
+
+    # Create post-create hook
+    echo "#!/bin/bash
+# Post-creation hook for new worktrees
+# This script runs in the new worktree directory after creation
+# Add commands like: pnpm install, npm install, etc.
+
+echo \"Post-creation hook executed in: \$(pwd)\"
+# Add your setup commands here" > "$dotfiles_path/post-create"
+    chmod +x "$dotfiles_path/post-create"
+
+    # Create pre-remove hook
+    _wt_create_pre_remove_hook "$dotfiles_path/pre-remove"
+end
+
+# Create pre-remove hook template if it doesn't exist
+function _wt_ensure_pre_remove_hook
+    set -l dotfiles_path $argv[1]
+
+    if not test -f "$dotfiles_path/pre-remove"
+        _wt_create_pre_remove_hook "$dotfiles_path/pre-remove"
+    end
+end
+
 # Guard clause helper
 function _wt_assert
     set -l condition $argv[1]

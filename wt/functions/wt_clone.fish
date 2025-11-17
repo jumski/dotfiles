@@ -132,17 +132,8 @@ REPO_NAME=$repo_name
 # Default branch detected from repository
 DEFAULT_TRUNK=$default_branch" > "$dotfiles_path/config"
 
-    # Create empty post-creation hook script in dotfiles
-    echo "#!/bin/bash
-# Post-creation hook for new worktrees
-# This script runs in the new worktree directory after creation
-# Add commands like: pnpm install, npm install, etc.
-
-echo \"Post-creation hook executed in: \$(pwd)\"
-# Add your setup commands here" > "$dotfiles_path/post-create"
-
-    # Make hook script executable
-    chmod +x "$dotfiles_path/post-create"
+    # Create hook templates
+    _wt_create_hook_templates "$dotfiles_path"
 
     # Create symlink from repo to dotfiles
     ln -s "$dotfiles_path" "$repo_path/.wt"

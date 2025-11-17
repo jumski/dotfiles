@@ -97,6 +97,9 @@ After migration:
         end
     end
 
+    # Create pre-remove hook template (new feature, won't exist in legacy repos)
+    _wt_ensure_pre_remove_hook "$dotfiles_path"
+
     # Create symlink
     ln -s "$dotfiles_path" "$repo_root/.wt"
     or begin

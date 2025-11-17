@@ -75,7 +75,24 @@ Options:
         echo "Cancelled"
         return 0
     end
-    
+
+    # Run pre-remove hook if it exists
+    set -l hook_script "$repo_root/.wt/pre-remove"
+    if test -f "$hook_script" -a -x "$hook_script"
+        _wt_action "Running pre-remove hook..."
+        if test -d "$worktree_path"
+            pushd "$worktree_path"
+            $hook_script
+            or begin
+                echo "Warning: Pre-remove hook failed" >&2
+                _wt_notify "❌ Worktree '$name': pre-remove hook failed"
+            end
+            popd
+        else
+            echo "Warning: Cannot run pre-remove hook - worktree directory not found" >&2
+        end
+    end
+
     # If we're removing the current worktree, move to repo root first
     set -l current_worktree (_wt_get_current_worktree)
     set -l original_session ""
