@@ -240,9 +240,15 @@ Note:
 
     _wt_success "Worktree created for branch '$branch_name'"
 
-    # Run post-creation hook if it exists
-    set -l hook_script "$repo_root/.wt-post-create"
-    if test -f "$hook_script" -a -x "$hook_script"
+    # Run post-creation hook if it exists (check both new and legacy locations)
+    set -l hook_script ""
+    if test -f "$repo_root/.wt/post-create" -a -x "$repo_root/.wt/post-create"
+        set hook_script "$repo_root/.wt/post-create"
+    else if test -f "$repo_root/.wt-post-create" -a -x "$repo_root/.wt-post-create"
+        set hook_script "$repo_root/.wt-post-create"
+    end
+
+    if test -n "$hook_script"
         _wt_action "Running post-creation hook..."
         pushd "$repo_root/$worktree_path"
         $hook_script

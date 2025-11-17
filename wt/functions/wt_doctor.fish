@@ -42,7 +42,7 @@ Options:
         return 1
     end
 
-    if not test -f "$repo_path/.wt-config"
+    if not test -d "$repo_path/.wt"; and not test -f "$repo_path/.wt-config"
         echo "Error: Not a worktree repository: $repo_path" >&2
         return 1
     end

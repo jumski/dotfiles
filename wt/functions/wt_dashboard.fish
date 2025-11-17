@@ -28,16 +28,17 @@ function wt_dashboard
         cd $repo_root
         
         # Check for config file
-        if test -f .wt-config
+        set -l config_file (_wt_get_config_file 2>/dev/null)
+        if test -n "$config_file"
             # Load config to show key info
             _wt_get_repo_config
-            
+
             # Show repository name and origin
             set_color brwhite
             echo -n "  repository: "
             set_color bryellow
             echo "$REPO_NAME"
-            
+
             # Get and show remote origin
             set -l origin (_wt_get_remote_origin)
             if test -n "$origin"
@@ -46,17 +47,24 @@ function wt_dashboard
                 set_color brblue
                 echo "$origin"
             end
-            
+
             echo ""
-            
+
             # Show repository path and structure
             set_color brwhite
             echo "$repo_root/"
-            
+
             set_color brblack
             echo -n "  ├─ "
             set_color brwhite
-            echo ".wt-config"
+            # Show config format (new or legacy)
+            if test -L "$repo_root/.wt"
+                echo ".wt/ → dotfiles"
+            else if test -d "$repo_root/.wt"
+                echo ".wt/"
+            else
+                echo ".wt-config"
+            end
             
             set_color brblack
             echo -n "  ├─ "
@@ -111,7 +119,7 @@ function wt_dashboard
             echo " (environment files)"
         else
             set_color brred
-            echo "  no .wt-config found"
+            echo "  no wt config found"
             set_color brblack
             echo "  └─ commands will use current directory"
         end

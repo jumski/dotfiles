@@ -1,0 +1,10 @@
+# Worktree repository configuration
+REPO_NAME=pgflow
+
+# Default paths (uncomment to override)
+# BARE_PATH=.bare
+# WORKTREES_PATH=worktrees
+# ENVS_PATH=envs
+
+# Default branch detected from repository
+DEFAULT_TRUNK=main

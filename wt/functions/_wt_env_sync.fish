@@ -39,7 +39,7 @@ function _wt_env_sync
     end
 
     # Additional safety: verify it looks like a worktree repo
-    if not test -f "$repo_root/.wt-config"
+    if not test -d "$repo_root/.wt"; and not test -f "$repo_root/.wt-config"
         echo "Error: Invalid repository root: $repo_root" >&2
         return 1
     end

@@ -75,20 +75,49 @@ function _wt_get_worktrees
     end
 end
 
-# Get repository config
-function _wt_get_repo_config
-    set -l config_file ".wt-config"
-    
-    if not test -f $config_file
+# Get config file path (new .wt/config or legacy .wt-config)
+# Outputs path to stdout, warnings to stderr
+function _wt_get_config_file
+    set -l repo_root (_wt_get_repo_root)
+
+    if test -z "$repo_root"
         return 1
     end
-    
+
+    # New format
+    if test -f "$repo_root/.wt/config"
+        echo "$repo_root/.wt/config"
+        return 0
+    end
+
+    # Old format - warn and fall back
+    if test -f "$repo_root/.wt-config"
+        echo "$repo_root/.wt-config"
+        echo "" >&2
+        _wt_color_line red "⚠️  Using legacy .wt-config format" >&2
+        _wt_color_line yellow "   Migrate to new format:" >&2
+        echo "   cd $repo_root && wt-config-link" >&2
+        echo "" >&2
+        return 0
+    end
+
+    return 1
+end
+
+# Get repository config
+function _wt_get_repo_config
+    set -l config_file (_wt_get_config_file)
+
+    if test -z "$config_file"
+        return 1
+    end
+
     # Set defaults first
     set -g BARE_PATH ".bare"
     set -g WORKTREES_PATH "worktrees"
     set -g ENVS_PATH "envs"
     set -g DEFAULT_TRUNK "main"
-    
+
     # Parse config file (overrides defaults)
     while read -l line
         # Skip comments and empty lines
@@ -102,19 +131,20 @@ end
 
 # Check if in worktree repository
 function _wt_in_worktree_repo
-    if test -f .wt-config
+    # Check for new format
+    if test -d .wt -o -f .wt-config
         return 0
     end
-    
+
     # Check parent directories
     set -l current_dir (pwd)
     while test "$current_dir" != "/"
-        if test -f "$current_dir/.wt-config"
+        if test -d "$current_dir/.wt" -o -f "$current_dir/.wt-config"
             return 0
         end
         set current_dir (dirname $current_dir)
     end
-    
+
     return 1
 end
 
@@ -122,13 +152,13 @@ end
 function _wt_get_repo_root
     set -l current_dir (pwd)
     while test "$current_dir" != "/"
-        if test -f "$current_dir/.wt-config"
+        if test -d "$current_dir/.wt" -o -f "$current_dir/.wt-config"
             echo $current_dir
             return 0
         end
         set current_dir (dirname $current_dir)
     end
-    
+
     return 1
 end
 
