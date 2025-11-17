@@ -5,14 +5,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Setting up Bob (Neovim version manager)..."
 
-# Install bob if not already installed
+# Verify bob is installed
 if ! command -v bob &> /dev/null; then
-    echo "Installing bob via pacman..."
-    if [ -f "$SCRIPT_DIR/packages.pacman" ]; then
-        sudo pacman -S --needed --noconfirm bob
-    fi
-else
-    echo "Bob is already installed"
+    echo "ERROR: bob is not installed. This should have been installed by script/install_pacman_packages"
+    exit 1
 fi
 
 # Create config directory
