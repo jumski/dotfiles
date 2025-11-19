@@ -1,0 +1,5 @@
+context.properties = {
+    # Force NVIDIA card to use HDMI 2 profile (AG493UG7R4 monitor)
+    # This fixes audio routing after NVIDIA driver updates
+    alsa.card.profile.default = "output:hdmi-stereo-extra1"
+}

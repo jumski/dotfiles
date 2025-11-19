@@ -1,0 +1,4 @@
+- link:
+    ~/.config/pipewire/pipewire.conf.d/50-nvidia-hdmi.conf:
+      path: pipewire/50-nvidia-hdmi.conf.symlink
+      create: true
