@@ -1,1 +1,0 @@
-set -gx DIRENV_LOG_FORMAT ""
