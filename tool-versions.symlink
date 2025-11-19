@@ -8,4 +8,4 @@ poetry 1.5.1
 pnpm 10.20.0
 pdm 2.19.1
 bun 1.1.27
-deno 1.45.2
+deno 2.1.4
