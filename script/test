@@ -21,6 +21,9 @@ end
 # Change to dotfiles directory
 cd (dirname (status -f))/..
 
+# Track test failures
+set -l failed 0
+
 # Find test files
 if test -n "$module"
     # Run tests for specific module
@@ -35,7 +38,9 @@ if test -n "$module"
 
     for file in $test_files
         echo -e "{$blue}Testing: $file{$reset}"
-        fishtape $file
+        if not fishtape $file
+            set failed 1
+        end
     end
 else
     # Run all tests
@@ -54,8 +59,13 @@ else
 
     for file in $test_files
         echo -e "{$blue}[$current/$total_files] Testing: $file{$reset}"
-        fishtape $file
+        if not fishtape $file
+            set failed 1
+        end
         set current (math $current + 1)
         echo
     end
 end
+
+# Exit with failure if any tests failed
+exit $failed
