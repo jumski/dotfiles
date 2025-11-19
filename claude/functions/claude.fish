@@ -4,8 +4,8 @@ function claude --description "Wrapper for claude command that disables focus-ev
         # Disable focus-events for this pane to prevent [O[I sequences
         tmux set-option -p focus-events off >/dev/null 2>&1
 
-        # Run the actual claude command from local installation
-        ~/.claude/local/claude $argv
+        # Run the actual claude command from local installation with bash shell
+        env SHELL=/bin/bash ~/.claude/local/claude $argv
         set -l claude_exit_status $status
 
         # Always unset pane-specific option to inherit from session (focus-events on)
@@ -14,7 +14,7 @@ function claude --description "Wrapper for claude command that disables focus-ev
 
         return $claude_exit_status
     else
-        # Not in tmux, just run claude normally from local installation
-        ~/.claude/local/claude $argv
+        # Not in tmux, just run claude normally from local installation with bash shell
+        env SHELL=/bin/bash ~/.claude/local/claude $argv
     end
 end
