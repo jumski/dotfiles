@@ -1,17 +1,26 @@
 {
   "permissions": {
     "allow": [
+      "Bash(./script/test:*)",
+      "Bash(awk:*)",
+      "Bash(df -h:*)",
       "Bash(fishtape:*)",
-      "WebFetch(domain:fishshell.com)",
+      "Bash(gh repo view:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(pamac checkupdates:*)",
+      "Bash(pamac info:*)",
       "Bash(pamac list:*)",
       "Bash(pamac search:*)",
-      "Bash(pamac info:*)",
-      "Bash(pamac checkupdates:*)",
+      "Bash(tmux has-session:*)",
+      "Bash(tmux show-options:*)",
+      "Bash(tmux source-file:*)",
       "Bash(yay -Q:*)",
       "Bash(yay -Qi:*)",
       "Bash(yay -Qs:*)",
+      "Bash(yay -Si:*)",
       "Bash(yay -Ss:*)",
-      "Bash(yay -Si:*)"
+      "WebFetch(domain:fishshell.com)"
     ],
     "deny": []
   }
