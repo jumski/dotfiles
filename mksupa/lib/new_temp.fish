@@ -2,16 +2,49 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set -l prefix $argv[1]
     set -l base_dir "$HOME/Code/pgflow-dev/supatemp"
 
-    # Ensure base directory exists
-    if not test -d "$base_dir"
-        echo "Creating base directory: $base_dir"
-        mkdir -p "$base_dir"
+    # Check git repo status
+    __mksupa_check_repo
+    set -l repo_status $status
+
+    if test $repo_status -eq 1
+        # Directory doesn't exist - offer to clone
+        __mksupa_offer_clone
+        if test $status -ne 0
+            return 1
+        end
+    else if test $repo_status -eq 2
+        # Directory exists but is not a git repo - fail with error
+        echo ""
+        set_color red
+        echo "✗ Error: $base_dir exists but is not a git repository"
+        set_color normal
+        echo ""
+        set_color brblack
+        echo "Please remove it and clone the repository:"
+        echo "  → rm -rf $base_dir"
+        echo "  → gh repo clone pgflow-dev/supatemp $base_dir"
+        set_color normal
+        echo ""
+        return 1
     end
+    # If repo_status is 0, it's a git repo - proceed
+
+    echo ""
+    set_color blue
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📁 Creating new temp project: $prefix"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    set_color normal
 
     # Create temporary directory with prefix
+    set_color brblack
+    echo "  → Creating temp directory..."
+    set_color normal
     set -l temp_dir (mktemp -d "$base_dir/$prefix-XXXXXX")
     if test $status -ne 0
-        echo "Error: Failed to create temporary directory"
+        set_color red
+        echo "  ✗ Failed to create temporary directory"
+        set_color normal
         return 1
     end
 
@@ -19,6 +52,9 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set -l session_name "supatemp-$dir_name"
 
     # Create tmux session with 4 windows
+    set_color brblack
+    echo "  → Creating tmux session with 4 windows..."
+    set_color normal
     # new-session creates window 0, then we add 3 more windows (1, 2, 3)
     tmux new-session -d -s "$session_name" -c "$temp_dir"
     tmux new-window -t "$session_name" -c "$temp_dir"
@@ -26,18 +62,42 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     tmux new-window -t "$session_name" -c "$temp_dir"
 
     # Trigger mksupa --init in window 1 (second window, 0-indexed)
+    set_color brblack
+    echo "  → Triggering initialization in tmux window..."
+    set_color normal
     tmux send-keys -t "$session_name:1" "mksupa --init" C-m
+
+    # Commit and push to git
+    __mksupa_git_commit_push "$dir_name"
+    # Continue even if git fails - error messages already shown
 
     # Pretty print information
     echo ""
-    echo "✨ Created new Supabase temp project"
+    set_color green; set_color --bold
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "✨ Temp project created successfully!"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    set_color normal
     echo ""
-    echo "  Directory: $temp_dir"
-    echo "  Session:   $session_name"
+    set_color cyan
+    echo "  📂 Directory: "
+    set_color normal
+    set_color brblack
+    echo "     $temp_dir"
+    set_color normal
+    echo ""
+    set_color cyan
+    echo "  🖥  Session:   "
+    set_color normal
+    set_color brblack
+    echo "     $session_name"
+    set_color normal
     echo ""
 
     # Ask user if should switch to session
+    set_color yellow
     read -l -P "Switch to this tmux session? [y/N] " response
+    set_color normal
 
     if test "$response" = "y" -o "$response" = "Y"
         # Check if we're inside tmux
@@ -51,10 +111,13 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
             tmux select-window -t "$session_name:1"
         end
     else
+        echo ""
+        set_color brblack
         if test -n "$TMUX"
-            echo "Session created but not switched. Use: tmux switch-client -t \"$session_name\""
+            echo "To switch later: tmux switch-client -t \"$session_name\""
         else
-            echo "Session created but not attached. Use: tmux attach-session -t \"$session_name\""
+            echo "To attach later: tmux attach-session -t \"$session_name\""
         end
+        set_color normal
     end
 end

@@ -1,6 +1,7 @@
 function mksupa -d "Manage temporary Supabase projects"
     # Source lib functions
     set -l lib_dir (dirname (status --current-filename))/../lib
+    source "$lib_dir/git.fish"
     source "$lib_dir/new_temp.fish"
     source "$lib_dir/init.fish"
 
