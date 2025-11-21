@@ -128,15 +128,18 @@ return {
         local root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc" })
         if root then on_dir(root) end
       end,
-      init_options = {
-        lint = true,
-        unstable = true,
-        suggest = {
-          imports = {
-            hosts = {
-              ["https://deno.land"] = true,
-              ["https://cdn.nest.land"] = true,
-              ["https://crux.land"] = true,
+      settings = {
+        deno = {
+          enable = true,
+          lint = true,
+          unstable = { "sloppy-imports" },
+          suggest = {
+            imports = {
+              hosts = {
+                ["https://deno.land"] = true,
+                ["https://cdn.nest.land"] = true,
+                ["https://crux.land"] = true,
+              },
             },
           },
         },
