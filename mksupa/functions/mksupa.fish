@@ -5,40 +5,72 @@ function mksupa -d "Manage temporary Supabase projects"
     source "$lib_dir/new_temp.fish"
     source "$lib_dir/init.fish"
 
-    # Route to appropriate mode
-    if test (count $argv) -eq 0
-        echo "Usage: mksupa <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
+    # Show help if no arguments or --help
+    if test (count $argv) -eq 0; or test "$argv[1]" = "--help"
+        echo "Usage: mksupa new <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
         echo "       mksupa --init [--supabase=VERSION]"
-        return 1
+        echo "       mksupa --help"
+        echo ""
+        echo "Commands:"
+        echo "  new <prefix>  Create new temporary Supabase project"
+        echo "  --init        Initialize Supabase in current directory"
+        echo "  --help        Show this help message"
+        echo ""
+        echo "Options:"
+        echo "  --supabase=VERSION  Use specific Supabase CLI version (default: 2.50.3)"
+        echo "  --pgflow=VERSION    Create PGFLOW.md with specified version"
+        return 0
     end
 
-    # Parse arguments
-    set -l prefix ""
-    set -l supabase_version ""
-    set -l pgflow_version ""
-    set -l is_init 0
+    set -l subcommand $argv[1]
 
-    for arg in $argv
-        if test "$arg" = "--init"
-            set is_init 1
-        else if string match -q -- "--supabase=*" $arg
-            set supabase_version (string replace -- "--supabase=" "" $arg)
-        else if string match -q -- "--pgflow=*" $arg
-            set pgflow_version (string replace -- "--pgflow=" "" $arg)
-        else
-            set prefix $arg
+    # Handle --init subcommand
+    if test "$subcommand" = "--init"
+        set -l supabase_version ""
+
+        # Parse options for --init
+        for arg in $argv[2..-1]
+            if string match -q -- "--supabase=*" $arg
+                set supabase_version (string replace -- "--supabase=" "" $arg)
+            end
         end
+
+        __mksupa_init $supabase_version
+        return $status
     end
 
-    if test $is_init -eq 1
-        __mksupa_init $supabase_version
-    else
+    # Handle 'new' subcommand
+    if test "$subcommand" = "new"
+        set -l prefix ""
+        set -l supabase_version ""
+        set -l pgflow_version ""
+
+        # Parse arguments for 'new'
+        for arg in $argv[2..-1]
+            if string match -q -- "--supabase=*" $arg
+                set supabase_version (string replace -- "--supabase=" "" $arg)
+            else if string match -q -- "--pgflow=*" $arg
+                set pgflow_version (string replace -- "--pgflow=" "" $arg)
+            else
+                set prefix $arg
+            end
+        end
+
         # Validate prefix is provided
         if test -z "$prefix"
-            echo "Error: prefix is required when creating a new project"
-            echo "Usage: mksupa <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
+            echo "Error: prefix is required"
+            echo "Usage: mksupa new <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
             return 1
         end
+
         __mksupa_new_temp $prefix $supabase_version $pgflow_version
+        return $status
     end
+
+    # Invalid subcommand
+    echo "Error: unknown command '$subcommand'"
+    echo "Usage: mksupa new <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
+    echo "       mksupa --init [--supabase=VERSION]"
+    echo "       mksupa --help"
+    return 1
 end

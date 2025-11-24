@@ -60,6 +60,12 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color normal
     printf '%s\n' 'use asdf' 'dotenv_if_exists ~/.env.local' '' 'PATH_add bin' > "$temp_dir/.envrc"
 
+    # Allow direnv immediately to prevent error in tmux windows
+    set_color brblack
+    echo "  → Allowing .envrc..."
+    set_color normal
+    direnv allow "$temp_dir"
+
     # Create PGFLOW.md if pgflow_version is provided
     if test -n "$pgflow_version"
         set_color brblack
