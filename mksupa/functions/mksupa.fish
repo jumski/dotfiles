@@ -4,16 +4,19 @@ function mksupa -d "Manage temporary Supabase projects"
     source "$lib_dir/git.fish"
     source "$lib_dir/new_temp.fish"
     source "$lib_dir/init.fish"
+    source "$lib_dir/remove.fish"
 
     # Show help if no arguments or --help
     if test (count $argv) -eq 0; or test "$argv[1]" = "--help"
         echo "Usage: mksupa new <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
         echo "       mksupa --init [--supabase=VERSION]"
+        echo "       mksupa remove"
         echo "       mksupa --help"
         echo ""
         echo "Commands:"
         echo "  new <prefix>  Create new temporary Supabase project"
         echo "  --init        Initialize Supabase in current directory"
+        echo "  remove        Stop, cleanup and remove current supatemp project"
         echo "  --help        Show this help message"
         echo ""
         echo "Options:"
@@ -67,10 +70,17 @@ function mksupa -d "Manage temporary Supabase projects"
         return $status
     end
 
+    # Handle 'remove' subcommand
+    if test "$subcommand" = "remove"
+        __mksupa_remove
+        return $status
+    end
+
     # Invalid subcommand
     echo "Error: unknown command '$subcommand'"
     echo "Usage: mksupa new <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
     echo "       mksupa --init [--supabase=VERSION]"
+    echo "       mksupa remove"
     echo "       mksupa --help"
     return 1
 end
