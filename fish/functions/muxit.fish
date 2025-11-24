@@ -12,14 +12,20 @@ end
 # 2. Descriptive for human identification
 # 3. Tmux-compatible (only alphanumeric, hyphens, underscores, @ symbol)
 #
-# Three naming cases:
+# Four naming cases:
 #
 # 1. .dotfiles (special case)
 #    Input:  /home/jumski/.dotfiles/
 #    Output: "dotfiles"
 #    Reason: Single special repo, simple name
 #
-# 2. wt-managed worktrees (paths containing /worktrees/)
+# 2. supatemp projects (paths containing /supatemp/)
+#    Input:  /home/jumski/Code/pgflow-dev/supatemp/myproject-2025-11-24-abc123/
+#    Output: "supatemp-myproject-2025-11-24-abc123"
+#    Logic:  Uses basename of supatemp directory
+#    Why:    Matches session naming from mksupa new command for consistency
+#
+# 3. wt-managed worktrees (paths containing /worktrees/)
 #    Input:  /home/jumski/Code/pgflow-dev/pgflow/worktrees/feat-auto-compile/
 #    Output: "feat-auto-compile@pgflow" (via _wt_get_session_name)
 #    Logic:  Uses wt toolkit's _wt_get_session_name() for compatibility
@@ -30,7 +36,7 @@ end
 #         can detect and reuse each other's sessions
 #    Note: Only uses basename of repo parent to match wt's expectations
 #
-# 3. Regular repos in ~/Code/ hierarchy
+# 4. Regular repos in ~/Code/ hierarchy
 #    Input:  /home/jumski/Code/org/repo/
 #    Output: "org/repo"
 #    Logic:  Extract org/repo from ~/Code/ path, keep forward slash
@@ -51,6 +57,11 @@ function _muxit_get_session_name
   if string match -q "*/.dotfiles/*" "$start_dir"; or string match -q "*/.dotfiles" "$start_dir"
     # Special case for .dotfiles
     set session_name "dotfiles"
+  else if string match -q "*/supatemp/*" "$start_dir"
+    # Special case for supatemp projects: use supatemp-<dir_name> format
+    # to match session naming from mksupa new
+    set -l dir_name (basename "$start_dir")
+    set session_name "supatemp-$dir_name"
   else if string match -q "*/worktrees/*" "$start_dir"
     # wt-managed worktree: use wt's session naming convention
     set -l worktree_name (basename "$start_dir")
