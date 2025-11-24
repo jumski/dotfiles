@@ -24,12 +24,29 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     echo "⚙  Setting up environment..."
     set_color normal
 
+    # Create or update .env file with versions
+    if test -n "$custom_version" -o -n "$pgflow_version"
+        set_color brblack
+        echo "  → Creating/updating .env..."
+        set_color normal
+
+        set -l env_lines
+        if test -n "$custom_version"
+            set -a env_lines "SUPABASE_VERSION=$custom_version"
+        end
+        if test -n "$pgflow_version"
+            set -a env_lines "PGFLOW_VERSION=$pgflow_version"
+        end
+
+        printf '%s\n' $env_lines > .env
+    end
+
     # Only create .envrc if it doesn't exist
     if not test -f .envrc
         set_color brblack
         echo "  → Creating .envrc"
         set_color normal
-        printf '%s\n' 'use asdf' 'dotenv_if_exists ~/.env.local' '' 'PATH_add bin' > .envrc
+        printf '%s\n' 'use asdf' 'dotenv_if_exists ~/.env.local' 'dotenv_if_exists .env' '' 'PATH_add bin' > .envrc
     else
         set_color brblack
         echo "  → .envrc already exists"
@@ -72,11 +89,10 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     set_color brblack
     echo "  → Creating bin/supa wrapper script"
     set_color normal
-    echo "#!/bin/bash" > bin/supa
-    echo "exec npx -y supabase@$supa_version \"\$@\"" >> bin/supa
+    printf '%s\n' '#!/bin/bash' 'exec npx -y supabase@${SUPABASE_VERSION:-2.50.3} "$@"' > bin/supa
     chmod +x bin/supa
     set_color brblack
-    echo "    (wraps: npx -y supabase@$supa_version)"
+    echo "    (wraps: npx -y supabase@\${SUPABASE_VERSION:-2.50.3})"
     set_color normal
 
     # Create bin/pgflow wrapper if pgflow version is provided
@@ -84,11 +100,10 @@ function __mksupa_init -d "Initialize Supabase in current directory"
         set_color brblack
         echo "  → Creating bin/pgflow wrapper script"
         set_color normal
-        echo "#!/bin/bash" > bin/pgflow
-        echo "exec npx -y pgflow@$pgflow_version \"\$@\"" >> bin/pgflow
+        printf '%s\n' '#!/bin/bash' 'exec npx -y pgflow@${PGFLOW_VERSION:-latest} "$@"' > bin/pgflow
         chmod +x bin/pgflow
         set_color brblack
-        echo "    (wraps: npx -y pgflow@$pgflow_version)"
+        echo "    (wraps: npx -y pgflow@\${PGFLOW_VERSION:-latest})"
         set_color normal
     end
 

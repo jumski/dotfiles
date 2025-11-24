@@ -54,30 +54,28 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set -l dir_name (basename "$temp_dir")
     set -l session_name "supatemp-$dir_name"
 
+    # Create .env file with version variables
+    if test -n "$supabase_version" -o -n "$pgflow_version"
+        set_color brblack
+        echo "  → Creating .env..."
+        set_color normal
+
+        set -l env_lines
+        if test -n "$supabase_version"
+            set -a env_lines "SUPABASE_VERSION=$supabase_version"
+        end
+        if test -n "$pgflow_version"
+            set -a env_lines "PGFLOW_VERSION=$pgflow_version"
+        end
+
+        printf '%s\n' $env_lines > "$temp_dir/.env"
+    end
+
     # Create .envrc from template
     set_color brblack
     echo "  → Creating .envrc..."
     set_color normal
-
-    # Build .envrc content with version env vars
-    set -l envrc_lines 'use asdf' 'dotenv_if_exists ~/.env.local' ''
-
-    # Add version environment variables if provided
-    if test -n "$supabase_version"
-        set -a envrc_lines "export SUPABASE_VERSION=\"$supabase_version\""
-    end
-    if test -n "$pgflow_version"
-        set -a envrc_lines "export PGFLOW_VERSION=\"$pgflow_version\""
-    end
-
-    # Add empty line before PATH_add if we added env vars
-    if test -n "$supabase_version" -o -n "$pgflow_version"
-        set -a envrc_lines ''
-    end
-
-    set -a envrc_lines 'PATH_add bin'
-
-    printf '%s\n' $envrc_lines > "$temp_dir/.envrc"
+    printf '%s\n' 'use asdf' 'dotenv_if_exists ~/.env.local' 'dotenv_if_exists .env' '' 'PATH_add bin' > "$temp_dir/.envrc"
 
     # Allow direnv immediately to prevent error in tmux windows
     set_color brblack
