@@ -58,7 +58,26 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color brblack
     echo "  → Creating .envrc..."
     set_color normal
-    printf '%s\n' 'use asdf' 'dotenv_if_exists ~/.env.local' '' 'PATH_add bin' > "$temp_dir/.envrc"
+
+    # Build .envrc content with version env vars
+    set -l envrc_lines 'use asdf' 'dotenv_if_exists ~/.env.local' ''
+
+    # Add version environment variables if provided
+    if test -n "$supabase_version"
+        set -a envrc_lines "export SUPABASE_VERSION=\"$supabase_version\""
+    end
+    if test -n "$pgflow_version"
+        set -a envrc_lines "export PGFLOW_VERSION=\"$pgflow_version\""
+    end
+
+    # Add empty line before PATH_add if we added env vars
+    if test -n "$supabase_version" -o -n "$pgflow_version"
+        set -a envrc_lines ''
+    end
+
+    set -a envrc_lines 'PATH_add bin'
+
+    printf '%s\n' $envrc_lines > "$temp_dir/.envrc"
 
     # Allow direnv immediately to prevent error in tmux windows
     set_color brblack
@@ -119,15 +138,11 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color brblack
     echo "  → Triggering initialization in tmux window..."
     set_color normal
-    set -l init_cmd "mksupa --init"
+    set -l init_cmd "mksupa --init --commit"
     if test -n "$supabase_version"
         set init_cmd "$init_cmd --supabase=$supabase_version"
     end
     tmux send-keys -t "$session_name:1" "$init_cmd" C-m
-
-    # Commit and push to git
-    __mksupa_git_commit_push "$dir_name"
-    # Continue even if git fails - error messages already shown
 
     # Pretty print information
     echo ""
