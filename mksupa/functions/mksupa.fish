@@ -9,7 +9,7 @@ function mksupa -d "Manage temporary Supabase projects"
     # Show help if no arguments or --help
     if test (count $argv) -eq 0; or test "$argv[1]" = "--help"
         echo "Usage: mksupa new <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
-        echo "       mksupa --init [--supabase=VERSION] [--commit]"
+        echo "       mksupa --init [--supabase=VERSION] [--pgflow=VERSION] [--commit]"
         echo "       mksupa remove"
         echo "       mksupa --help"
         echo ""
@@ -21,7 +21,7 @@ function mksupa -d "Manage temporary Supabase projects"
         echo ""
         echo "Options:"
         echo "  --supabase=VERSION  Use specific Supabase CLI version (default: 2.50.3)"
-        echo "  --pgflow=VERSION    Create PGFLOW.md with specified version"
+        echo "  --pgflow=VERSION    Create PGFLOW.md and bin/pgflow with specified version"
         echo "  --commit            Commit and push all files after init (auto-set by 'new')"
         return 0
     end
@@ -31,18 +31,21 @@ function mksupa -d "Manage temporary Supabase projects"
     # Handle --init subcommand
     if test "$subcommand" = "--init"
         set -l supabase_version ""
+        set -l pgflow_version ""
         set -l should_commit 0
 
         # Parse options for --init
         for arg in $argv[2..-1]
             if string match -q -- "--supabase=*" $arg
                 set supabase_version (string replace -- "--supabase=" "" $arg)
+            else if string match -q -- "--pgflow=*" $arg
+                set pgflow_version (string replace -- "--pgflow=" "" $arg)
             else if test "$arg" = "--commit"
                 set should_commit 1
             end
         end
 
-        __mksupa_init $supabase_version $should_commit
+        __mksupa_init $supabase_version $should_commit $pgflow_version
         return $status
     end
 
@@ -83,7 +86,7 @@ function mksupa -d "Manage temporary Supabase projects"
     # Invalid subcommand
     echo "Error: unknown command '$subcommand'"
     echo "Usage: mksupa new <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
-    echo "       mksupa --init [--supabase=VERSION] [--commit]"
+    echo "       mksupa --init [--supabase=VERSION] [--pgflow=VERSION] [--commit]"
     echo "       mksupa remove"
     echo "       mksupa --help"
     return 1

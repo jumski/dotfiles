@@ -142,6 +142,9 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     if test -n "$supabase_version"
         set init_cmd "$init_cmd --supabase=$supabase_version"
     end
+    if test -n "$pgflow_version"
+        set init_cmd "$init_cmd --pgflow=$pgflow_version"
+    end
     tmux send-keys -t "$session_name:1" "$init_cmd" C-m
 
     # Pretty print information
