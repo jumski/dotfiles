@@ -1,5 +1,6 @@
 function __mksupa_init -d "Initialize Supabase in current directory"
     set -l custom_version $argv[1]
+    set -l should_commit $argv[2]
     set -l supa_version "2.50.3"
 
     # Use custom version if provided
@@ -132,4 +133,17 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     set_color green; set_color --bold
     echo "✨ Supabase project initialized and started!"
     set_color normal
+
+    # Commit and push to git if requested (from mksupa new)
+    if test "$should_commit" = "1"
+        # Get directory name for commit message
+        set -l dir_name (basename $PWD)
+
+        # Source git functions
+        set -l lib_dir (dirname (status --current-filename))
+        source "$lib_dir/git.fish"
+
+        __mksupa_git_commit_push "$dir_name"
+        # Continue even if git fails - error messages already shown
+    end
 end
