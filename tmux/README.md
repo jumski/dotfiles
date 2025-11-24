@@ -87,9 +87,28 @@ See `claude-neovim/README.md` for full setup and usage guide.
 - tpm (Tmux Plugin Manager)
 - tmux-sensible
 - tmux-menus
+- erikw/tmux-powerline (status bar)
 
-## 🌈 Theme
-Using Tokyo Night theme (night variant)
+## 🌈 Status Bar
+Using [tmux-powerline](https://github.com/erikw/tmux-powerline) with custom configuration:
+- **Configuration**: `powerline/config.sh`
+- **Theme**: `powerline/themes/default.sh`
+- **Custom segments**: `powerline/segments/`
+
+### Status Bar Segments
+**Left side:**
+- Todoist urgent tasks indicator (custom segment)
+- Session name
+- Mode indicator (shows when prefix is active)
+
+**Right side:**
+- Battery status
+- Date
+- Time
+
+### Custom Segment: todoist_urgent
+Shows "TODO" in red when urgent Todoist tasks are detected.
+Implementation: `powerline/segments/todoist_urgent.sh`
 
 ## 💡 Pro Tips
 1. Use `muxit` for project-based sessions

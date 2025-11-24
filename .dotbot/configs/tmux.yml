@@ -1,2 +1,3 @@
 - link:
     ~/.tmux.conf: tmux/tmux.conf.symlink
+    ~/.config/tmux-powerline: tmux/powerline
