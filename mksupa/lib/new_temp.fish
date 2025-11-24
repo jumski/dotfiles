@@ -56,12 +56,7 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color brblack
     echo "  → Creating .envrc..."
     set_color normal
-    cat > "$temp_dir/.envrc" << 'EOF'
-use asdf
-dotenv_if_exists ~/.env.local
-
-PATH_add bin
-EOF
+    printf '%s\n' 'use asdf' 'dotenv_if_exists ~/.env.local' '' 'PATH_add bin' > "$temp_dir/.envrc"
 
     # Create tmux session with 4 windows
     set_color brblack
