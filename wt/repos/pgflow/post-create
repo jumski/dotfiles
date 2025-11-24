@@ -3,4 +3,4 @@
 direnv allow
 pnpm install --frozen-lockfile
 ln -s /home/jumski/Code/pgflow-dev/notes $(pwd)/.notes
-/home/jumski/Code/pgflow-dev/claude/symlink.sh $(pwd)
+/home/jumski/Code/pgflow-dev/claude/symlink.sh --yes $(pwd)
