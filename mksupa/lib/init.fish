@@ -1,5 +1,5 @@
 function __mksupa_init -d "Initialize Supabase in current directory"
-    set -l supa_version "2.34.3"
+    set -l supa_version "2.50.3"
     set -l npx_cmd "npx -y supabase@$supa_version"
 
     echo ""
