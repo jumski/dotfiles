@@ -1,5 +1,7 @@
 function __mksupa_new_temp -d "Create new temporary Supabase project"
     set -l prefix $argv[1]
+    set -l supabase_version $argv[2]
+    set -l pgflow_version $argv[3]
     set -l base_dir "$HOME/Code/pgflow-dev/supatemp"
 
     # Check git repo status
@@ -58,6 +60,45 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color normal
     printf '%s\n' 'use asdf' 'dotenv_if_exists ~/.env.local' '' 'PATH_add bin' > "$temp_dir/.envrc"
 
+    # Create PGFLOW.md if pgflow_version is provided
+    if test -n "$pgflow_version"
+        set_color brblack
+        echo "  → Creating PGFLOW.md..."
+        set_color normal
+        printf '%s\n' \
+            "# Testing control-plane snapshot release" \
+            "" \
+            "Install with npm:" \
+            "" \
+            '```sh' \
+            "npm install pgflow@$pgflow_version" \
+            "npm install @pgflow/client@$pgflow_version" \
+            "npm install @pgflow/core@$pgflow_version" \
+            "npm install @pgflow/dsl@$pgflow_version" \
+            "npm install @pgflow/example-flows@$pgflow_version" \
+            '```' \
+            "" \
+            "For Deno/Supabase Edge Functions:" \
+            "" \
+            '```ts' \
+            "import { EdgeWorker } from \"jsr:@pgflow/edge-worker@$pgflow_version\";" \
+            '```' \
+            "" \
+            "Or add to deno.json imports:" \
+            "" \
+            '```json' \
+            '{' \
+            '  "imports": {' \
+            "    \"@pgflow/edge-worker\": \"jsr:@pgflow/edge-worker@$pgflow_version\"," \
+            "    \"@pgflow/dsl\": \"npm:@pgflow/dsl@$pgflow_version\"," \
+            "    \"@pgflow/dsl/supabase\": \"npm:@pgflow/dsl@$pgflow_version/supabase\"," \
+            "    \"@pgflow/core\": \"npm:@pgflow/core@$pgflow_version\"" \
+            '  }' \
+            '}' \
+            '```' \
+            > "$temp_dir/PGFLOW.md"
+    end
+
     # Create tmux session with 4 windows
     set_color brblack
     echo "  → Creating tmux session with 4 windows..."
@@ -72,7 +113,11 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color brblack
     echo "  → Triggering initialization in tmux window..."
     set_color normal
-    tmux send-keys -t "$session_name:1" "mksupa --init" C-m
+    set -l init_cmd "mksupa --init"
+    if test -n "$supabase_version"
+        set init_cmd "$init_cmd --supabase=$supabase_version"
+    end
+    tmux send-keys -t "$session_name:1" "$init_cmd" C-m
 
     # Commit and push to git
     __mksupa_git_commit_push "$dir_name"

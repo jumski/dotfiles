@@ -1,5 +1,12 @@
 function __mksupa_init -d "Initialize Supabase in current directory"
+    set -l custom_version $argv[1]
     set -l supa_version "2.50.3"
+
+    # Use custom version if provided
+    if test -n "$custom_version"
+        set supa_version $custom_version
+    end
+
     set -l npx_cmd "npx -y supabase@$supa_version"
 
     echo ""
@@ -8,6 +15,34 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     echo "🚀 Supabase: Initialization"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     set_color normal
+    echo ""
+
+    # Setup environment FIRST (before using npx)
+    set_color yellow
+    echo "⚙  Setting up environment..."
+    set_color normal
+
+    # Only create .envrc if it doesn't exist
+    if not test -f .envrc
+        set_color brblack
+        echo "  → Creating .envrc"
+        set_color normal
+        printf '%s\n' 'use asdf' 'dotenv_if_exists ~/.env.local' '' 'PATH_add bin' > .envrc
+    else
+        set_color brblack
+        echo "  → .envrc already exists"
+        set_color normal
+    end
+
+    set_color brblack
+    echo "  → Running direnv allow"
+    set_color normal
+    direnv allow .
+
+    set_color brblack
+    echo "  → Loading direnv environment"
+    set_color normal
+    eval (direnv export fish)
     echo ""
 
     # Run supabase init
@@ -23,7 +58,7 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     end
     echo ""
 
-    # Setup local supa command via direnv
+    # Create local supa command wrapper
     set_color yellow
     echo "⚙  Setting up local 'supa' command..."
     set_color normal
@@ -41,16 +76,6 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     set_color brblack
     echo "    (wraps: npx -y supabase@$supa_version)"
     set_color normal
-
-    set_color brblack
-    echo "  → Creating .envrc with PATH_add bin"
-    set_color normal
-    echo "PATH_add bin" > .envrc
-
-    set_color brblack
-    echo "  → Running direnv allow"
-    set_color normal
-    direnv allow .
 
     set_color green
     echo "  ✓ Local 'supa' command is now available"
