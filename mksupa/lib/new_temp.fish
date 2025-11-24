@@ -40,7 +40,8 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color brblack
     echo "  → Creating temp directory..."
     set_color normal
-    set -l temp_dir (mktemp -d "$base_dir/$prefix-XXXXXX")
+    set -l date_stamp (date +%Y-%m-%d)
+    set -l temp_dir (mktemp -d "$base_dir/$prefix-$date_stamp-XXXXXX")
     if test $status -ne 0
         set_color red
         echo "  ✗ Failed to create temporary directory"
@@ -50,6 +51,17 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
 
     set -l dir_name (basename "$temp_dir")
     set -l session_name "supatemp-$dir_name"
+
+    # Create .envrc from template
+    set_color brblack
+    echo "  → Creating .envrc..."
+    set_color normal
+    cat > "$temp_dir/.envrc" << 'EOF'
+use asdf
+dotenv_if_exists ~/.env.local
+
+PATH_add bin
+EOF
 
     # Create tmux session with 4 windows
     set_color brblack
