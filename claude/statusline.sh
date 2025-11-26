@@ -143,7 +143,10 @@ if [ "$DURATION_MS" -gt 0 ]; then
 fi
 
 # Build output parts (prefix - everything before summary)
-OUTPUT="${MODEL_COLOR}${MODEL_DISPLAY}${RESET}"
+# Model: first letter colored, rest muted
+MODEL_FIRST="${MODEL_DISPLAY:0:1}"
+MODEL_REST="${MODEL_DISPLAY:1}"
+OUTPUT="${MODEL_COLOR}${MODEL_FIRST}${RESET}${DIM}${MODEL_REST}${RESET}"
 
 # Add context info
 if [ -n "$CONTEXT_INFO" ]; then
