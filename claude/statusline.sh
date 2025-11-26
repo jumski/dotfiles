@@ -108,7 +108,7 @@ LINES_ADDED=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
 LINES_REMOVED=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
 LINES_INFO=""
 if [ "$LINES_ADDED" -gt 0 ] || [ "$LINES_REMOVED" -gt 0 ]; then
-    LINES_INFO=" ${GREEN}+${LINES_ADDED}${RESET} ${DIM}/${RESET} ${RED}-${LINES_REMOVED}${RESET}"
+    LINES_INFO=" ${GREEN}+${LINES_ADDED}${RESET} ${RED}-${LINES_REMOVED}${RESET}"
 fi
 
 # Build output parts
