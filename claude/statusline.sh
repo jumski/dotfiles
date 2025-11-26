@@ -49,9 +49,10 @@ TRANSCRIPT_PATH=$(echo "$input" | jq -r '.transcript_path // empty')
 
 # Calculate context usage from transcript
 CONTEXT_INFO=""
+TURNS_INFO=""
+SUMMARY_INFO=""
 if [ -n "$TRANSCRIPT_PATH" ] && [ -f "$TRANSCRIPT_PATH" ]; then
     # Get the most recent non-sidechain message with usage data
-    # Use jq filter that avoids != escaping issues
     USAGE_DATA=$(tail -100 "$TRANSCRIPT_PATH" 2>/dev/null | \
         jq -s '[.[] | select(.message.usage) | select(.isSidechain | not) | select(.isApiErrorMessage | not)] | last | .message.usage // empty' 2>/dev/null)
 
@@ -99,7 +100,17 @@ if [ -n "$TRANSCRIPT_PATH" ] && [ -f "$TRANSCRIPT_PATH" ]; then
     # Count turns (assistant messages that are not sidechains)
     TURN_COUNT=$(jq -s '[.[] | select(.type == "assistant") | select(.isSidechain | not)] | length' "$TRANSCRIPT_PATH" 2>/dev/null)
     if [ -n "$TURN_COUNT" ] && [ "$TURN_COUNT" -gt 0 ]; then
-        TURNS_INFO=" ${DIM}${TURN_COUNT} turns${RESET}"
+        if [ "$TURN_COUNT" -eq 1 ]; then
+            TURNS_INFO="1 turn"
+        else
+            TURNS_INFO="${TURN_COUNT} turns"
+        fi
+    fi
+
+    # Get summary from transcript (first summary entry) - will be truncated later to fit terminal
+    SUMMARY=$(head -50 "$TRANSCRIPT_PATH" 2>/dev/null | jq -r 'select(.type == "summary") | .summary // empty' 2>/dev/null | head -1)
+    if [ -n "$SUMMARY" ]; then
+        SUMMARY_INFO="$SUMMARY"
     fi
 fi
 
@@ -108,10 +119,29 @@ LINES_ADDED=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
 LINES_REMOVED=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
 LINES_INFO=""
 if [ "$LINES_ADDED" -gt 0 ] || [ "$LINES_REMOVED" -gt 0 ]; then
-    LINES_INFO=" ${GREEN}+${LINES_ADDED}${RESET} ${RED}-${LINES_REMOVED}${RESET}"
+    LINES_INFO="${GREEN}+${LINES_ADDED}${RESET} ${RED}-${LINES_REMOVED}${RESET}"
 fi
 
-# Build output parts
+# Get session duration from cost object and format as human readable
+DURATION_MS=$(echo "$input" | jq -r '.cost.total_duration_ms // 0')
+DURATION_INFO=""
+if [ "$DURATION_MS" -gt 0 ]; then
+    # Convert to seconds
+    DURATION_SEC=$((DURATION_MS / 1000))
+    if [ "$DURATION_SEC" -ge 3600 ]; then
+        HOURS=$((DURATION_SEC / 3600))
+        MINS=$(((DURATION_SEC % 3600) / 60))
+        DURATION_INFO="${HOURS}h ${MINS}m"
+    elif [ "$DURATION_SEC" -ge 60 ]; then
+        MINS=$((DURATION_SEC / 60))
+        SECS=$((DURATION_SEC % 60))
+        DURATION_INFO="${MINS}m ${SECS}s"
+    else
+        DURATION_INFO="${DURATION_SEC}s"
+    fi
+fi
+
+# Build output parts (prefix - everything before summary)
 OUTPUT="${MODEL_COLOR}${MODEL_DISPLAY}${RESET}"
 
 # Add context info
@@ -119,14 +149,32 @@ if [ -n "$CONTEXT_INFO" ]; then
     OUTPUT="${OUTPUT} ${DIM}|${RESET}${CONTEXT_INFO}"
 fi
 
-# Add turns info
-if [ -n "$TURNS_INFO" ]; then
-    OUTPUT="${OUTPUT} ${DIM}|${RESET}${TURNS_INFO}"
+# Add lines changed (before turns)
+if [ -n "$LINES_INFO" ]; then
+    OUTPUT="${OUTPUT} ${DIM}|${RESET} ${LINES_INFO}"
 fi
 
-# Add lines changed
-if [ -n "$LINES_INFO" ]; then
-    OUTPUT="${OUTPUT} ${DIM}|${RESET}${LINES_INFO}"
+# Add turns and duration (muted)
+if [ -n "$TURNS_INFO" ] || [ -n "$DURATION_INFO" ]; then
+    OUTPUT="${OUTPUT} ${DIM}|"
+    if [ -n "$TURNS_INFO" ]; then
+        OUTPUT="${OUTPUT} ${TURNS_INFO}"
+    fi
+    if [ -n "$DURATION_INFO" ]; then
+        if [ -n "$TURNS_INFO" ]; then
+            OUTPUT="${OUTPUT},"
+        fi
+        OUTPUT="${OUTPUT} ${DURATION_INFO}"
+    fi
+    OUTPUT="${OUTPUT}${RESET}"
+fi
+
+# Add summary (muted, truncated to 100 chars)
+if [ -n "$SUMMARY_INFO" ]; then
+    if [ ${#SUMMARY_INFO} -gt 100 ]; then
+        SUMMARY_INFO="${SUMMARY_INFO:0:97}..."
+    fi
+    OUTPUT="${OUTPUT} ${DIM}| ${SUMMARY_INFO}${RESET}"
 fi
 
 echo -e "$OUTPUT"
