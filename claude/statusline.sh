@@ -6,9 +6,10 @@ RESET="\033[0m"
 DIM="\033[2m"
 BOLD="\033[1m"
 UNDERLINE="\033[4m"
+GREEN="\033[32m"
 YELLOW="\033[33m"
 RED="\033[31m"
-GREEN="\033[32m"
+ORANGE="\033[38;5;208m"
 # Model colors
 OPUS_COLOR="\033[38;5;208m"    # Orange for Opus
 SONNET_COLOR="\033[38;5;141m"  # Purple for Sonnet
@@ -68,8 +69,8 @@ if [ -n "$TRANSCRIPT_PATH" ] && [ -f "$TRANSCRIPT_PATH" ]; then
         MAX_CONTEXT=200000
 
         if [ "$TOTAL_TOKENS" -gt 0 ]; then
-            # Calculate percentage
-            PERCENT=$((TOTAL_TOKENS * 100 / MAX_CONTEXT))
+            # Calculate remaining percentage
+            PERCENT_REMAINING=$(( (MAX_CONTEXT - TOTAL_TOKENS) * 100 / MAX_CONTEXT ))
 
             # Format tokens in K notation
             if [ "$TOTAL_TOKENS" -ge 1000 ]; then
@@ -79,21 +80,21 @@ if [ -n "$TRANSCRIPT_PATH" ] && [ -f "$TRANSCRIPT_PATH" ]; then
                 TOKENS_DISPLAY="$TOTAL_TOKENS"
             fi
 
-            # Color based on percentage
-            # <25%: muted, <50%: normal, <75%: yellow, <90%: red, <100%: red bold underline
-            if [ "$PERCENT" -ge 90 ]; then
-                COLOR="${RED}${BOLD}${UNDERLINE}"
-            elif [ "$PERCENT" -ge 75 ]; then
+            # Color based on remaining percentage
+            # ≥40%: muted, 30-39%: green, 20-29%: yellow, 10-19%: orange, <10%: red
+            if [ "$PERCENT_REMAINING" -lt 10 ]; then
                 COLOR="${RED}"
-            elif [ "$PERCENT" -ge 50 ]; then
+            elif [ "$PERCENT_REMAINING" -lt 20 ]; then
+                COLOR="${ORANGE}"
+            elif [ "$PERCENT_REMAINING" -lt 30 ]; then
                 COLOR="${YELLOW}"
-            elif [ "$PERCENT" -ge 25 ]; then
-                COLOR=""
+            elif [ "$PERCENT_REMAINING" -lt 40 ]; then
+                COLOR="${GREEN}"
             else
                 COLOR="${DIM}"
             fi
 
-            CONTEXT_INFO=" ${COLOR}${TOKENS_DISPLAY} (${PERCENT}%)${RESET}"
+            CONTEXT_INFO=" ${COLOR}${PERCENT_REMAINING}% left${RESET}"
         fi
     fi
 
