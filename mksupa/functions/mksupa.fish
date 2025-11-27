@@ -20,7 +20,7 @@ function mksupa -d "Manage temporary Supabase projects"
         echo "  --help        Show this help message"
         echo ""
         echo "Options:"
-        echo "  --supabase=VERSION  Use specific Supabase CLI version (default: 2.50.3)"
+        echo "  --supabase=VERSION  Use specific Supabase CLI version (default: 2.62.10)"
         echo "  --pgflow=VERSION    Create PGFLOW.md and bin/pgflow with specified version"
         echo "  --commit            Commit and push all files after init (auto-set by 'new')"
         return 0

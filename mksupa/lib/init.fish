@@ -2,7 +2,7 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     set -l custom_version $argv[1]
     set -l should_commit $argv[2]
     set -l pgflow_version $argv[3]
-    set -l supa_version "2.50.3"
+    set -l supa_version "2.62.10"
 
     # Use custom version if provided
     if test -n "$custom_version"
@@ -89,10 +89,10 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     set_color brblack
     echo "  → Creating bin/supa wrapper script"
     set_color normal
-    printf '%s\n' '#!/bin/bash' 'exec npx -y supabase@${SUPABASE_VERSION:-2.50.3} "$@"' > bin/supa
+    printf '%s\n' '#!/bin/bash' 'exec npx -y supabase@${SUPABASE_VERSION:-2.62.10} "$@"' > bin/supa
     chmod +x bin/supa
     set_color brblack
-    echo "    (wraps: npx -y supabase@\${SUPABASE_VERSION:-2.50.3})"
+    echo "    (wraps: npx -y supabase@\${SUPABASE_VERSION:-2.62.10})"
     set_color normal
 
     # Create bin/pgflow wrapper if pgflow version is provided
