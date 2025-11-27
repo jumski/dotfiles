@@ -15,3 +15,6 @@ export TMUX_POWERLINE_STATUS_JUSTIFICATION="left"
 # Status bar visibility
 export TMUX_POWERLINE_STATUS_LEFT_LENGTH="60"
 export TMUX_POWERLINE_STATUS_RIGHT_LENGTH="90"
+
+# Session segment: show only session name (not window.pane)
+export TMUX_POWERLINE_SEG_TMUX_SESSION_INFO_FORMAT="#S"
