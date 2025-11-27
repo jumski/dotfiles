@@ -102,16 +102,16 @@ fi
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-		"battery 137 127"
+		"battery_if_present 137 127"
 		"hostname 33 0"
+		"tmux_session_info 148 234 default_separator 235"
 	)
 fi
 
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=(
-		"tmux_session_info 148 234"
-		"date 235 136 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
+		"date 235 136"
 		"time 235 136 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
 	)
 fi
