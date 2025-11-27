@@ -15,8 +15,9 @@ else
 fi
 
 # See Color formatting section below for details on what colors can be used here.
+# Tokyo Night: dark bg (235), purple fg (141) - inverse makes selected window purple
 TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR:-'235'}
-TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR:-'255'}
+TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR:-'141'}
 # shellcheck disable=SC2034
 TMUX_POWERLINE_SEG_AIR_COLOR=$(tp_air_color)
 
@@ -102,16 +103,17 @@ fi
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-		"battery_if_present 137 127"
-		"tmux_session_info 148 234 default_separator 235"
+		"battery_if_present 141 232"
+		"tmux_session_info 117 232 default_separator 235"
 	)
 fi
 
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=(
-		"date 235 136"
-		"time 235 136 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
-		"hostname 33 0"
+		"date 235 146"
+		"time 235 146 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
+		"hostname_laptop 215 232"
+		"hostname_pc 149 232"
 	)
 fi
