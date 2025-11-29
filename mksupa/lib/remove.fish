@@ -58,17 +58,24 @@ function __mksupa_remove -d "Stop and cleanup current supatemp project"
     end
     echo ""
 
-    # Kill tmux session if we're in one
+    # Kill tmux session only if we're in a session matching the project
     if test -n "$TMUX"
-        set -l session_name (tmux display-message -p '#S')
-        set_color blue
-        echo "🔌 Killing tmux session: $session_name"
-        set_color normal
+        set -l current_session (tmux display-message -p '#S')
+        # Only kill if current session contains the project name
+        if string match -q "*$project_dir*" $current_session
+            set_color blue
+            echo "🔌 Killing tmux session: $current_session"
+            set_color normal
 
-        # Need to detach first, then kill in background
-        # We'll switch to a different session or detach before killing
-        tmux switch-client -n 2>/dev/null; or tmux detach-client
-        tmux kill-session -t "$session_name" 2>/dev/null &
+            # Need to detach first, then kill in background
+            # We'll switch to a different session or detach before killing
+            tmux switch-client -n 2>/dev/null; or tmux detach-client
+            tmux kill-session -t "$current_session" 2>/dev/null &
+        else
+            set_color brblack
+            echo "  → Current session '$current_session' doesn't match project, keeping it"
+            set_color normal
+        end
     else
         set_color brblack
         echo "  → Not in tmux session, skipping"
