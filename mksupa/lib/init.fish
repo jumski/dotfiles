@@ -166,6 +166,11 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     echo "✨ Supabase project initialized and started!"
     set_color normal
 
+    # Send tmux notification
+    if test -n "$TMUX"
+        tmux display-message -d 4000 "✨ Supabase initialized!"
+    end
+
     # Commit and push to git if requested (from mksupa new)
     if test "$should_commit" = "1"
         # Get directory name for commit message
