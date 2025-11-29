@@ -28,32 +28,32 @@ TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SEPARATOR=${TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SE
 # The `format regular` and `format inverse` functions are provided as conveniences
 
 # shellcheck disable=SC2128
+# Current window: [muted-blue #I] ◤ [purple #W] ◤
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-		"#[$(tp_format inverse)]"
-		"$TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR"
-		" #I#F "
-		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
-		" #W "
-		"#[$(tp_format regular)]"
-		"$TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR"
+		"#[fg=colour235,bg=colour60]◤"         # dark→muted-blue diagonal
+		"#[fg=colour189,bg=colour60] #I#F "    # number: light text on muted-blue
+		"#[fg=colour60,bg=colour141]◤"         # muted-blue→purple diagonal
+		"#[fg=colour232,bg=colour141] #W "     # name: dark text on purple
+		"#[fg=colour141,bg=colour235]◤"        # purple→dark diagonal
 	)
 fi
 
 # shellcheck disable=SC2128
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_STYLE" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_STYLE=(
-		"$(tp_format regular)"
+		"#[fg=colour146,bg=colour235]"
 	)
 fi
 
 # shellcheck disable=SC2128
+# Regular window: [blue #I] ◤ [dark #W]
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_FORMAT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
-		"#[$(tp_format regular)]"
-		"  #I#{?window_flags,#F, } "
-		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
-		" #W "
+		"#[fg=colour235,bg=colour111]◤"        # dark→blue diagonal
+		"#[fg=colour232,bg=colour111] #I#{?window_flags,#F, } "  # number: dark text on blue
+		"#[fg=colour111,bg=colour235]◤"        # blue→dark diagonal
+		"#[fg=colour146,bg=colour235] #W "     # name: light text on dark
 	)
 fi
 
