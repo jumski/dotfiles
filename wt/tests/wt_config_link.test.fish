@@ -8,20 +8,25 @@ source ~/.dotfiles/wt/lib/common.fish
 
 # Setup and teardown helpers
 function setup_config_link_test
-    # Create test repo
+    # Create test repo with .bare directory (makes it a wt repo)
     set -g test_repo_path (mktemp -d)
     set -g test_repo_name (basename "$test_repo_path")
-
-    # Create fake git repo
     mkdir -p "$test_repo_path/.bare"
     mkdir -p "$test_repo_path/worktrees"
 
     # Create test dotfiles directory
     set -g test_dotfiles_path (mktemp -d)
-    mkdir -p "$test_dotfiles_path/wt/repos"
+    set -g original_home $HOME
+    set -gx HOME "$test_dotfiles_path"
+    mkdir -p "$HOME/.dotfiles/wt/repos"
 end
 
 function cleanup_config_link_test
+    # Restore original HOME
+    if test -n "$original_home"
+        set -gx HOME "$original_home"
+    end
+
     if test -n "$test_repo_path" -a -d "$test_repo_path"
         rm -rf "$test_repo_path"
     end

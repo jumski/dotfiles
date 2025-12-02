@@ -21,4 +21,5 @@ echo -e "\033[32m✓\033[0m Linked notes: $NOTES_TARGET -> $NOTES_SOURCE_REAL"
 
 direnv allow
 pnpm install --frozen-lockfile
-/home/jumski/Code/pgflow-dev/claude/symlink.sh $(pwd)
+ln -s /home/jumski/Code/pgflow-dev/notes $(pwd)/.notes
+/home/jumski/Code/pgflow-dev/claude/symlink.sh --yes $(pwd)

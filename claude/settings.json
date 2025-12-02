@@ -43,5 +43,10 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "/home/jumski/.dotfiles/claude/statusline.sh",
+    "padding": 0
+  },
   "alwaysThinkingEnabled": true
 }
