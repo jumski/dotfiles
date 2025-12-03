@@ -31,11 +31,11 @@ TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SEPARATOR=${TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SE
 # Current window: [muted-blue #I] ◤ [purple #W] ◤
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-		"#[fg=colour235,bg=colour232]◤"        # dark→very dark diagonal
-		"#[fg=colour255,bg=colour232] #I#F "   # number: white text on very dark
-		"#[fg=colour232,bg=colour141]◤"        # very dark→purple diagonal
-		"#[fg=colour232,bg=colour141] #W "     # name: dark text on purple
-		"#[fg=colour141,bg=colour235]◤"        # purple→dark diagonal
+		"#[fg=colour235,bg=colour232]◤"              # dark→very dark diagonal
+		"#[fg=colour255,bg=colour232,bold] #I#F "    # number: white bold on very dark
+		"#[fg=colour232,bg=colour141]◤"              # very dark→purple diagonal
+		"#[fg=colour232,bg=colour141,bold] #W "      # name: dark bold on purple
+		"#[fg=colour141,bg=colour235,nobold]◤"       # purple→dark diagonal
 	)
 fi
 
