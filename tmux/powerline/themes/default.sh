@@ -31,9 +31,9 @@ TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SEPARATOR=${TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SE
 # Current window: [muted-blue #I] ◤ [purple #W] ◤
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-		"#[fg=colour235,bg=colour60]◤"         # dark→muted-blue diagonal
-		"#[fg=colour189,bg=colour60] #I#F "    # number: light text on muted-blue
-		"#[fg=colour60,bg=colour141]◤"         # muted-blue→purple diagonal
+		"#[fg=colour235,bg=colour232]◤"        # dark→very dark diagonal
+		"#[fg=colour255,bg=colour232] #I#F "   # number: white text on very dark
+		"#[fg=colour232,bg=colour141]◤"        # very dark→purple diagonal
 		"#[fg=colour232,bg=colour141] #W "     # name: dark text on purple
 		"#[fg=colour141,bg=colour235]◤"        # purple→dark diagonal
 	)
@@ -47,14 +47,14 @@ if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_STYLE" ]; then
 fi
 
 # shellcheck disable=SC2128
-# Regular window: [blue #I] ◤ [muted #W]
+# Regular window: [blue #I] ◤ [darker #W]
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_FORMAT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
 		"#[fg=colour235,bg=colour111]◤"        # dark→blue diagonal
 		"#[fg=colour232,bg=colour111] #I#{?window_flags,#F, } "  # number: dark text on blue
-		"#[fg=colour111,bg=colour60]◤"         # blue→muted diagonal
-		"#[fg=colour146,bg=colour60] #W "      # name: light text on muted
-		"#[fg=colour60,bg=colour235]◤"         # muted→dark diagonal
+		"#[fg=colour111,bg=colour236]◤"        # blue→darker diagonal
+		"#[fg=colour252,bg=colour236] #W "     # name: bright text on darker bg
+		"#[fg=colour236,bg=colour235]◤"        # darker→dark diagonal
 	)
 fi
 
