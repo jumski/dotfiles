@@ -47,13 +47,14 @@ if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_STYLE" ]; then
 fi
 
 # shellcheck disable=SC2128
-# Regular window: [blue #I] ◤ [dark #W]
+# Regular window: [blue #I] ◤ [muted #W]
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_FORMAT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
 		"#[fg=colour235,bg=colour111]◤"        # dark→blue diagonal
 		"#[fg=colour232,bg=colour111] #I#{?window_flags,#F, } "  # number: dark text on blue
-		"#[fg=colour111,bg=colour235]◤"        # blue→dark diagonal
-		"#[fg=colour146,bg=colour235] #W "     # name: light text on dark
+		"#[fg=colour111,bg=colour60]◤"         # blue→muted diagonal
+		"#[fg=colour146,bg=colour60] #W "      # name: light text on muted
+		"#[fg=colour60,bg=colour235]◤"         # muted→dark diagonal
 	)
 fi
 
