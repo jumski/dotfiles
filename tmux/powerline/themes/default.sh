@@ -32,9 +32,9 @@ TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SEPARATOR=${TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SE
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
 		"#[fg=colour235,bg=colour232]◤"              # dark→very dark diagonal
-		"#[fg=colour255,bg=colour232,bold] #I#F "    # number: white bold on very dark
+		"#[fg=colour255,bg=colour232,bold] #I#F#{?#{==:#{pane_current_command},claude}, ◆,#{?#{==:#{pane_current_command},fish}, ❯,#{?#{||:#{==:#{pane_current_command},nvim},#{==:#{pane_current_command},vim}}, 📝,}}} "  # number + icon
 		"#[fg=colour232,bg=colour141]◤"              # very dark→purple diagonal
-		"#[fg=colour232,bg=colour141,bold] #W "      # name: dark bold on purple
+		"#[fg=colour232,bg=colour141,bold] #W "      # name
 		"#[fg=colour141,bg=colour235,nobold]◤"       # purple→dark diagonal
 	)
 fi
@@ -50,11 +50,9 @@ fi
 # Regular window: [blue #I] ◤ [darker #W]
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_FORMAT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
-		"#[fg=colour235,bg=colour111]◤"        # dark→blue diagonal
-		"#[fg=colour232,bg=colour111] #I#{?window_flags,#F, } "  # number: dark text on blue
-		"#[fg=colour111,bg=colour236]◤"        # blue→darker diagonal
-		"#[fg=colour252,bg=colour236] #W "     # name: bright text on darker bg
-		"#[fg=colour236,bg=colour235]◤"        # darker→dark diagonal
+		"#[fg=colour235,bg=colour234]◤"        # dark→darker diagonal
+		"#[fg=colour255,bg=colour234] #I#{?window_flags,#F, }#{?#{==:#{pane_current_command},claude}, ◆,#{?#{==:#{pane_current_command},fish}, ❯,#{?#{||:#{==:#{pane_current_command},nvim},#{==:#{pane_current_command},vim}}, 📝,}}} #W "  # number + icon + name
+		"#[fg=colour234,bg=colour235]◤"        # darker→dark diagonal
 	)
 fi
 
