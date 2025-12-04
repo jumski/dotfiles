@@ -35,12 +35,12 @@ PRESERVE existing good names - stability is preferred over novelty.
 
 Rules for NEW names (only if current name doesn't fit):
 1. Start with ONE emoji representing the main topic/tool (🐟fish, 🔐auth, 📚docs, 🐛bug, ⚙️config, 🧪test, 📦npm, 🐍python, 🦀rust, 🌐web, 💾db, 🔧fix, 🚀deploy, 📝edit, 🔍search, 🖥️tmux, ⚡perf)
-2. Follow with lowercase name, max 15 chars, use hyphens
-3. NO SPACE between emoji and name
-4. Be specific: \"fish-func-test\" not \"fish\"
+2. STRICT 12 CHAR LIMIT for text (emoji doesn't count). Names over 12 chars WILL BE TRUNCATED.
+3. NO SPACE between emoji and name, use hyphens between words
+4. KEEP IT SHORT: 1-2 words max, use abbreviations (cfg, fn, pkg, auth, db, srv)
 5. Name should describe WHAT is being worked on
 
-Examples: 🐟fish-fns-test, 🔐jwt-refresh, 📦pkg-upgrade, 🐛null-ptr-fix, ⚙️nvim-config
+Examples: 🐟fish-fn, 🔐jwt-auth, 📦pkg-upd, 🐛null-fix, ⚙️nvim-cfg, 🧪test-api, 💾db-migr, 🌐api-srv, 🚀ci-deploy, 📝readme, 🔧env-cfg, ⚡perf-opt, 🐍py-script, 🦀rs-build, 🖥️tmux-cfg
 
 Output ONLY valid JSON:
 {\"name\": \"emoji-plus-name\"}"
