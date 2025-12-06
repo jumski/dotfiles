@@ -28,13 +28,11 @@ TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SEPARATOR=${TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SE
 # The `format regular` and `format inverse` functions are provided as conveniences
 
 # shellcheck disable=SC2128
-# Current window: [muted-blue #I] ◤ [purple #W] ◤
+# Current window: [purple #I:#W] ◤
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-		"#[fg=colour235,bg=colour232]◤"              # dark→very dark diagonal
-		"#[fg=colour255,bg=colour232,bold] #I#F#{?#{==:#{pane_current_command},claude}, ◆,#{?#{==:#{pane_current_command},fish}, ❯,#{?#{||:#{==:#{pane_current_command},nvim},#{==:#{pane_current_command},vim}}, 📝,}}} "  # number + icon
-		"#[fg=colour232,bg=colour141]◤"              # very dark→purple diagonal
-		"#[fg=colour232,bg=colour141,bold] #W "      # name
+		"#[fg=colour235,bg=colour141]◤"              # dark→purple diagonal
+		"#[fg=colour232,bg=colour141,bold]#I#F #{=12:window_name}"  # number name
 		"#[fg=colour141,bg=colour235,nobold]◤"       # purple→dark diagonal
 	)
 fi
@@ -47,11 +45,11 @@ if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_STYLE" ]; then
 fi
 
 # shellcheck disable=SC2128
-# Regular window: [blue #I] ◤ [darker #W]
+# Regular window: [darker #I:#W]
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_FORMAT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
 		"#[fg=colour235,bg=colour234]◤"        # dark→darker diagonal
-		"#[fg=colour255,bg=colour234] #I#{?window_flags,#F, }#{?#{==:#{pane_current_command},claude}, ◆,#{?#{==:#{pane_current_command},fish}, ❯,#{?#{||:#{==:#{pane_current_command},nvim},#{==:#{pane_current_command},vim}}, 📝,}}} #W "  # number + icon + name
+		"#[fg=colour255,bg=colour234]#I#F #{=12:window_name}"  # number name
 		"#[fg=colour234,bg=colour235]◤"        # darker→dark diagonal
 	)
 fi
