@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Deskflow Server
+Comment=Share keyboard/mouse with other computers
+Exec=deskflow-server -c /home/jumski/.dotfiles/deskflow/deskflow.conf
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
