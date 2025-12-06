@@ -30,17 +30,39 @@ fi
 PROMPT="Current window name: ${CURRENT_NAME}
 
 IMPORTANT: If the current name ALREADY FITS the terminal content, return it UNCHANGED.
-Only generate a new name if the current one is generic (like 'bash', 'fish', 'zsh') or clearly mismatches the content.
+Only generate a new name if the current one is generic (like 'bash', 'fish', 'zsh', 'vim') or clearly mismatches the content.
 PRESERVE existing good names - stability is preferred over novelty.
 
-Rules for NEW names (only if current name doesn't fit):
-1. Start with ONE emoji representing the main topic/tool (🐟fish, 🔐auth, 📚docs, 🐛bug, ⚙️config, 🧪test, 📦npm, 🐍python, 🦀rust, 🌐web, 💾db, 🔧fix, 🚀deploy, 📝edit, 🔍search, 🖥️tmux, ⚡perf)
-2. STRICT 12 CHAR LIMIT for text (emoji doesn't count). Names over 12 chars WILL BE TRUNCATED.
-3. NO SPACE between emoji and name, use hyphens between words
-4. KEEP IT SHORT: 1-2 words max, use abbreviations (cfg, fn, pkg, auth, db, srv)
-5. Name should describe WHAT is being worked on
+First, identify what APP is running (not shell commands):
+- Editor (nvim, vim, nano) → ✏️
+- AI/LLM (claude, aichat) → 💬  [look for: 'Opus'/'Sonnet', '% left', 'turns', '●' tool calls, '⎿' output]
+- Test runner (jest, pytest, vitest) → ✅
+- Server/process (node, npm start, dev server) → 🚀
+- Monitor/logs (htop, tail -f, watching) → 📊
+- Idle shell (just prompt, no app) → 💲
 
-Examples: 🐟fish-fn, 🔐jwt-auth, 📦pkg-upd, 🐛null-fix, ⚙️nvim-cfg, 🧪test-api, 💾db-migr, 🌐api-srv, 🚀ci-deploy, 📝readme, 🔧env-cfg, ⚡perf-opt, 🐍py-script, 🦀rs-build, 🖥️tmux-cfg
+ONLY USE THESE 6 EMOJIS. Pick based on the RUNNING APP, not shell commands.
+
+Rules:
+1. STRICT 12 CHAR LIMIT for text (emoji doesn't count). WILL BE TRUNCATED if longer.
+2. NO SPACE between emoji and name, use hyphens between words
+3. KEEP IT SHORT: 1-2 words max, use abbreviations (cfg, fn, srv, db)
+4. Icon = WHAT APP is running
+5. Text = WHAT TOPIC/WORK is being done (file, feature, problem)
+
+Examples:
+- ✏️api-routes (nvim editing api routes)
+- ✏️tmux-cfg (nvim editing tmux config)
+- 💬tmux-rename (claude discussing tmux rename feature)
+- 💬fish-tests (claude working on fish tests)
+- ✅api-auth (running auth tests)
+- ✅unit-db (running db unit tests)
+- 🚀next-dev (next.js dev server)
+- 🚀api-srv (api server running)
+- 📊cpu-mem (htop monitoring)
+- 📊app-logs (tailing app logs)
+- 💲dotfiles (shell in dotfiles dir)
+- 💲pgflow (shell in pgflow project)
 
 Output ONLY valid JSON:
 {\"name\": \"emoji-plus-name\"}"
