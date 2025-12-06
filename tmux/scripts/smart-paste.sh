@@ -2,8 +2,10 @@
 # Smart paste for tmux - reads from CLIPBOARD, falls back to PRIMARY
 
 if [ -n "$SSH_TTY" ]; then
-  # SSH: just paste from tmux buffer (use Ctrl+Shift+V for local clipboard)
-  tmux paste-buffer
+  # SSH: try to sync clipboard via OSC 52, then paste from tmux buffer
+  tmux refresh-client -l
+  sleep 0.05
+  tmux paste-buffer 2>/dev/null || true
   exit 0
 fi
 
@@ -16,4 +18,7 @@ fi
 if [ -n "$content" ]; then
   echo -n "$content" | tmux load-buffer -b sysclip - 2>/dev/null
   tmux paste-buffer -b sysclip -d
+else
+  # Fallback: paste from existing tmux buffer if no X11 content
+  tmux paste-buffer 2>/dev/null || true
 fi
