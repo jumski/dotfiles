@@ -41,12 +41,9 @@ end
     # Create local .wt-config
     echo "local_setting=value1" > "$test_repo_path/.wt-config"
 
-    # Create existing config in dotfiles
-    mkdir -p "$test_dotfiles_path/wt/repos/$test_repo_name"
-    echo "dotfiles_setting=value2" > "$test_dotfiles_path/wt/repos/$test_repo_name/config"
-
-    # Override HOME to use test dotfiles
-    set -lx HOME "$test_dotfiles_path"
+    # Create existing config in dotfiles (HOME is already set in setup)
+    mkdir -p "$HOME/.dotfiles/wt/repos/$test_repo_name"
+    echo "dotfiles_setting=value2" > "$HOME/.dotfiles/wt/repos/$test_repo_name/config"
 
     cd "$test_repo_path"
     wt_config_link 2>&1 | grep -q "Config already exists in dotfiles"
@@ -62,12 +59,9 @@ end
     # Create local .wt-config
     echo "local_setting=value1" > "$test_repo_path/.wt-config"
 
-    # Create existing config in dotfiles
-    mkdir -p "$test_dotfiles_path/wt/repos/$test_repo_name"
-    echo "dotfiles_setting=value2" > "$test_dotfiles_path/wt/repos/$test_repo_name/config"
-
-    # Override HOME to use test dotfiles
-    set -lx HOME "$test_dotfiles_path"
+    # Create existing config in dotfiles (HOME is already set in setup)
+    mkdir -p "$HOME/.dotfiles/wt/repos/$test_repo_name"
+    echo "dotfiles_setting=value2" > "$HOME/.dotfiles/wt/repos/$test_repo_name/config"
 
     cd "$test_repo_path"
     wt_config_link 2>/dev/null
@@ -83,12 +77,9 @@ end
     # Create local .wt-config
     echo "local_setting=value1" > "$test_repo_path/.wt-config"
 
-    # Create existing config in dotfiles
-    mkdir -p "$test_dotfiles_path/wt/repos/$test_repo_name"
-    echo "dotfiles_setting=value2" > "$test_dotfiles_path/wt/repos/$test_repo_name/config"
-
-    # Override HOME to use test dotfiles
-    set -lx HOME "$test_dotfiles_path"
+    # Create existing config in dotfiles (HOME is already set in setup)
+    mkdir -p "$HOME/.dotfiles/wt/repos/$test_repo_name"
+    echo "dotfiles_setting=value2" > "$HOME/.dotfiles/wt/repos/$test_repo_name/config"
 
     cd "$test_repo_path"
     wt_config_link 2>&1 | grep -q "rm .wt-config"
@@ -103,9 +94,6 @@ end
 
     # Create local .wt-config
     echo "local_setting=value1" > "$test_repo_path/.wt-config"
-
-    # Override HOME to use test dotfiles
-    set -lx HOME "$test_dotfiles_path"
 
     cd "$test_repo_path"
     wt_config_link >/dev/null 2>&1
@@ -124,12 +112,9 @@ end
     # Create local .wt-config
     echo "local_setting=value1" > "$test_repo_path/.wt-config"
 
-    # Create existing config in dotfiles
-    mkdir -p "$test_dotfiles_path/wt/repos/$test_repo_name"
-    echo "dotfiles_setting=value2" > "$test_dotfiles_path/wt/repos/$test_repo_name/config"
-
-    # Override HOME to use test dotfiles
-    set -lx HOME "$test_dotfiles_path"
+    # Create existing config in dotfiles (HOME is already set in setup)
+    mkdir -p "$HOME/.dotfiles/wt/repos/$test_repo_name"
+    echo "dotfiles_setting=value2" > "$HOME/.dotfiles/wt/repos/$test_repo_name/config"
 
     cd "$test_repo_path"
 
