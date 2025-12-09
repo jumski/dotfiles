@@ -26,6 +26,9 @@ if [[ -z "$CONTENT" ]]; then
   exit 1
 fi
 
+# Show thinking indicator
+tmux rename-window -t "$TARGET" "🤔${CURRENT_NAME}"
+
 # Generate window name via LLM
 PROMPT="Current window name: ${CURRENT_NAME}
 
@@ -84,13 +87,17 @@ RESULT=$(echo "$CONTENT" | aichat -m openai:gpt-4o-mini --code "$PROMPT" 2>/dev/
 NAME=$(echo "$RESULT" | jq -r '.name // empty' 2>/dev/null)
 
 if [[ -z "$NAME" ]]; then
+  # Restore original name on error
+  tmux rename-window -t "$TARGET" "$CURRENT_NAME"
   echo "Error: Could not parse LLM response" >&2
   echo "Raw response: $RESULT" >&2
   exit 1
 fi
 
-# Rename the window (skip if unchanged)
+# Rename the window
 if [[ "$NAME" == "$CURRENT_NAME" ]]; then
+  # Restore original (remove 🤔)
+  tmux rename-window -t "$TARGET" "$CURRENT_NAME"
   echo "Window $TARGET: keeping '$NAME' (still fits)"
 else
   tmux rename-window -t "$TARGET" "$NAME"
