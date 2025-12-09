@@ -14,9 +14,13 @@ fi
 # Get current window name
 CURRENT_NAME=$(tmux display-message -t "$TARGET" -p '#{window_name}')
 
-# Get pane height and capture 3x that amount of content
+# Get pane metadata
+PANE_PWD=$(tmux display-message -t "$TARGET" -p '#{pane_current_path}')
+PANE_CMD=$(tmux display-message -t "$TARGET" -p '#{pane_current_command}')
+
+# Get pane height and capture 2x that amount of content
 PANE_HEIGHT=$(tmux display-message -t "$TARGET" -p '#{pane_height}')
-LINES_TO_CAPTURE=$((PANE_HEIGHT * 3))
+LINES_TO_CAPTURE=$((PANE_HEIGHT * 2))
 
 # Capture pane content
 CONTENT=$(tmux capture-pane -p -t "$TARGET" -S -"$LINES_TO_CAPTURE" 2>/dev/null || echo "")
@@ -31,18 +35,21 @@ tmux rename-window -t "$TARGET" "🤔${CURRENT_NAME}"
 
 # Generate window name via LLM
 PROMPT="Current window name: ${CURRENT_NAME}
+Current directory: ${PANE_PWD}
+Running command: ${PANE_CMD}
 
 IMPORTANT: If the current name ALREADY FITS the terminal content, return it UNCHANGED.
 Only generate a new name if the current one is generic (like 'bash', 'fish', 'zsh', 'vim') or clearly mismatches the content.
 PRESERVE existing good names - stability is preferred over novelty.
 
-First, identify what APP is running (not shell commands):
-- Editor (nvim, vim, nano) → ✏️
-- AI/LLM (claude, aichat) → 💬
-- Test runner (jest, pytest, vitest) → ✅
-- Server/process (node, npm start, dev server) → 🚀
-- Monitor/logs (htop, tail -f, watching) → 📊
-- Idle shell (just prompt, no app) → 💲
+Use 'Running command' to identify the app:
+- nvim, vim, nano → ✏️ (editor)
+- fish, bash, zsh → check content: could be 💬 (claude) or 💲 (idle shell)
+- node, npm, pnpm, yarn → 🚀 (server) or ✅ (test) based on content
+- htop, top, tail → 📊 (monitor)
+- jest, vitest, pytest → ✅ (test)
+
+Use 'Current directory' basename for shell names (e.g., /home/user/pgflow → 'pgflow').
 
 CLAUDE CODE DETECTION (use 💬):
 If you see ANY of these patterns, it's Claude Code:
