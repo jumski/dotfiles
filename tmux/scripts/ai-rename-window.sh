@@ -35,11 +35,21 @@ PRESERVE existing good names - stability is preferred over novelty.
 
 First, identify what APP is running (not shell commands):
 - Editor (nvim, vim, nano) → ✏️
-- AI/LLM (claude, aichat) → 💬  [look for: 'Opus'/'Sonnet', '% left', 'turns', '●' tool calls, '⎿' output]
+- AI/LLM (claude, aichat) → 💬
 - Test runner (jest, pytest, vitest) → ✅
 - Server/process (node, npm start, dev server) → 🚀
 - Monitor/logs (htop, tail -f, watching) → 📊
 - Idle shell (just prompt, no app) → 💲
+
+CLAUDE CODE DETECTION (use 💬):
+If you see ANY of these patterns, it's Claude Code:
+- '⏵⏵ accept edits' or '⏸ plan mode' with '(shift+tab to cycle)'
+- 'Opus'/'Sonnet' model names, '% left', 'turns', time like '73h 21m'
+- Tool calls: '● Read', '● Update', '● Bash', '⎿' output markers
+- 'ctrl-g to edit in Nvim'
+- Plan confirmation: 'Would you like to proceed?' with 'Yes, and auto-accept edits'
+- Question dialogs with '☐' checkbox, numbered options, 'Enter to select · Tab/Arrow keys'
+- 'Here is Claude\\'s plan:'
 
 ONLY USE THESE 6 EMOJIS. Pick based on the RUNNING APP, not shell commands.
 
