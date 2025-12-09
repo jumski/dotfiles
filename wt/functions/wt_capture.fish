@@ -71,6 +71,11 @@ Note:
             case '--claude-session=*'
                 set claude_session_mode "explicit"
                 set claude_session_id (string replace '--claude-session=' '' $arg)
+                if test -z "$claude_session_id"
+                    echo "Error: --claude-session= requires a session ID" >&2
+                    echo "  Use --claude-session (without =) for interactive picker" >&2
+                    return 1
+                end
             case --claude-session
                 set claude_session_mode "picker"
             case '-*'
@@ -259,7 +264,7 @@ Note:
                       --header="ID | TIMESTAMP | FIRST MESSAGE" \
                       --delimiter="\t" \
                       --with-nth=2,3 \
-                      --preview="jq -r 'select(.type==\"user\") | .message.content' \"$old_project_dir/{1}.jsonl\" 2>/dev/null | head -20" \
+                      --preview="jq -r 'select(.type==\"user\") | .message.content' $old_project_dir/{1}.jsonl 2>/dev/null | head -20" \
                       --height=40% \
             | read -l selected_line
 
