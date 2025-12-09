@@ -64,11 +64,12 @@ If you see ANY of these patterns, it's Claude Code:
 ONLY USE THESE 6 EMOJIS. Pick based on the RUNNING APP, not shell commands.
 
 Rules:
-1. STRICT 12 CHAR LIMIT for text (emoji doesn't count). WILL BE TRUNCATED if longer.
+1. CHAR LIMIT (emoji doesn't count): regular windows ≤12 chars, Claude windows ≤16 chars
 2. NO SPACE between emoji and name, use hyphens between words
 3. KEEP IT SHORT: 1-2 words max, use abbreviations (cfg, fn, srv, db)
 4. Icon = WHAT APP is running
-5. Text = WHAT TOPIC/WORK is being done (file, feature, problem)
+5. Text = the MAIN FEATURE being built/discussed (ignore diff artifacts, tool output)
+6. For Claude: look at what USER is asking about, not internal tool output
 
 Examples:
 - ✏️api-routes (nvim editing api routes)
