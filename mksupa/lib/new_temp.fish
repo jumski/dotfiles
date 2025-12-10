@@ -122,6 +122,18 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
             > "$temp_dir/PGFLOW.md"
     end
 
+    # Create bin/serve script
+    set_color brblack
+    echo "  → Creating bin/serve..."
+    set_color normal
+    mkdir -p "$temp_dir/bin"
+    printf '%s\n' \
+        '#!/usr/bin/env bash' \
+        '' \
+        'supabase functions serve --no-verify-jwt 2>&1 | grep -Pv '\''serving the request with supabase/functions/[a-zA-Z0-9-]+-worker|^\d{4}-\d{2}-\d{2}T[\d:.]+Z\s\*$'\''' \
+        > "$temp_dir/bin/serve"
+    chmod +x "$temp_dir/bin/serve"
+
     # Stage and commit initial files
     set_color brblack
     echo "  → Committing initial files..."
