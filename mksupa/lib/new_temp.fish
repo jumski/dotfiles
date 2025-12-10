@@ -122,6 +122,13 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
             > "$temp_dir/PGFLOW.md"
     end
 
+    # Stage and commit initial files
+    set_color brblack
+    echo "  → Committing initial files..."
+    set_color normal
+    git -C "$temp_dir" add -A
+    git -C "$temp_dir" commit -m "chore: initialize temp project $dir_name"
+
     # Create tmux session with 4 windows
     set_color brblack
     echo "  → Creating tmux session with 4 windows..."
