@@ -134,6 +134,56 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
         > "$temp_dir/bin/serve"
     chmod +x "$temp_dir/bin/serve"
 
+    # Create queries directory and SQL files
+    set_color brblack
+    echo "  → Creating queries/start_flow.sql..."
+    set_color normal
+    mkdir -p "$temp_dir/queries"
+    printf '%s\n' \
+        "SELECT pgflow.start_flow(" \
+        "  flow_slug => 'greetUser'," \
+        "  input => '{\"firstName\": \"Alice\", \"lastName\": \"Smith\"}'::jsonb" \
+        ") FROM generate_series(1, :COUNT::int);" \
+        > "$temp_dir/queries/start_flow.sql"
+
+    set_color brblack
+    echo "  → Creating queries/runs.sql..."
+    set_color normal
+    printf '%s\n' \
+        "SELECT status, remaining_steps, output FROM pgflow.runs" \
+        "WHERE flow_slug = 'greetUser'" \
+        "ORDER BY started_at DESC" \
+        "LIMIT :COUNT::int;" \
+        > "$temp_dir/queries/runs.sql"
+
+    # Create bin/start_flow script
+    set_color brblack
+    echo "  → Creating bin/start_flow..."
+    set_color normal
+    printf '%s\n' \
+        '#!/usr/bin/env bash' \
+        '' \
+        'COUNT=${1:-1}' \
+        'psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" \' \
+        '  -v COUNT="$COUNT" \' \
+        '  -f queries/start_flow.sql' \
+        > "$temp_dir/bin/start_flow"
+    chmod +x "$temp_dir/bin/start_flow"
+
+    # Create bin/runs script
+    set_color brblack
+    echo "  → Creating bin/runs..."
+    set_color normal
+    printf '%s\n' \
+        '#!/usr/bin/env bash' \
+        '' \
+        'COUNT=${1:-1}' \
+        'psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" \' \
+        '  -v COUNT="$COUNT" \' \
+        '  -f queries/runs.sql' \
+        > "$temp_dir/bin/runs"
+    chmod +x "$temp_dir/bin/runs"
+
     # Stage and commit initial files
     set_color brblack
     echo "  → Committing initial files..."
