@@ -42,7 +42,7 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color brblack
     echo "  → Creating temp directory..."
     set_color normal
-    set -l date_stamp (date +%Y-%m-%d)
+    set -l date_stamp (date +%Y-%m-%d-%H%M)
     set -l temp_dir (mktemp -d "$base_dir/$date_stamp-$prefix-XXXXXX")
     if test $status -ne 0
         set_color red
