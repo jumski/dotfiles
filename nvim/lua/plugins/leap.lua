@@ -22,6 +22,7 @@ return {
     }
 
     -- Use the traversal keys to repeat the previous motion
-    require('leap.user').set_repeat_keys('<enter>', '<backspace>')
+    -- NOTE: disabled because it breaks <Enter> in command history window (q:)
+    -- require('leap.user').set_repeat_keys('<enter>', '<backspace>')
   end,
 }
