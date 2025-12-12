@@ -194,6 +194,11 @@ Note:
 
     if test "$skip_claude_session" = false
         for session_file in (ls -t "$old_project_dir"/*.jsonl 2>/dev/null)
+            # Skip agent sessions (subagent files)
+            if string match -q "agent-*" (basename $session_file .jsonl)
+                continue
+            end
+
             set -l session_branch (jq -r 'select(.gitBranch) | .gitBranch' "$session_file" 2>/dev/null | head -1)
             if test "$session_branch" = "$branch_to_capture"
                 set -a branch_sessions $session_file
@@ -233,10 +238,25 @@ Note:
             echo -e "\033[32m  ✓\033[0m Migrate "(count $branch_sessions)" Claude session(s):"
             for session_file in $branch_sessions
                 set -l session_id (basename $session_file .jsonl)
-                if test "$session_id" = "$most_recent_session"
-                    echo -e "\033[90m      → $session_id \033[32m(will resume)\033[0m"
+
+                # Get summary or first user message as display text
+                set -l summary (jq -r 'select(.summary) | .summary' "$session_file" 2>/dev/null | head -1)
+                set -l display_text ""
+                if test -n "$summary"
+                    set display_text (string sub -l 50 "$summary")
                 else
-                    echo -e "\033[90m      → $session_id\033[0m"
+                    set display_text (jq -r 'select(.type=="user") | .message.content' "$session_file" 2>/dev/null | head -1 | string sub -l 50)
+                end
+
+                # Get relative time from first user message timestamp
+                set -l timestamp (jq -r 'select(.type=="user") | .timestamp' "$session_file" 2>/dev/null | head -1)
+                set -l relative_time (_wt_relative_time "$timestamp")
+
+                # Display with indicator for most recent
+                if test "$session_id" = "$most_recent_session"
+                    echo -e "\033[90m      → $display_text ($relative_time) \033[32m[will resume]\033[0m"
+                else
+                    echo -e "\033[90m      → $display_text ($relative_time)\033[0m"
                 end
             end
         else
