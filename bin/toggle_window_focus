@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# ALWAYS_FOCUS_TERMINAL - When set to "1", skip toggling and always focus terminal.
+# Useful for dictation workflows where you always want to return to terminal.
+# Example: ALWAYS_FOCUS_TERMINAL=1 toggle_window_focus
+ALWAYS_FOCUS_TERMINAL=1
+
+if [ "$ALWAYS_FOCUS_TERMINAL" = "1" ]; then
+  terminal=$(xdotool search --classname "Kitty" | tail -1)
+  if [ -n "$terminal" ]; then
+    xdotool windowactivate "$terminal"
+  fi
+  exit 0
+fi
+
 # Path to mode configuration file
 MODE_FILE="$HOME/.config/window-focus-mode"
 

@@ -4,7 +4,7 @@ end
 
 function pgflow_ai
   set -l important_files_path /home/jumski/Code/pgflow-dev/important-files.txt
-  
+
   # Check if important files file exists
   if not test -f $important_files_path
     set_color red
@@ -12,13 +12,13 @@ function pgflow_ai
     set_color normal
     return 1
   end
-  
+
   # Read the important files and build -f flags
   set -l file_flags
   for file in (cat $important_files_path)
     set file_flags $file_flags -f $file
   end
-  
+
   # Show the command to be executed
   if test -t 2
     # stderr is a terminal, use color
@@ -29,7 +29,7 @@ function pgflow_ai
     # stderr is redirected, no color
     echo "\$ aichat $file_flags $argv" >&2
   end
-  
+
   # Check if stdin is available (piped input)
   if test -t 0
     # No piped input, run aichat directly
@@ -42,3 +42,14 @@ end
 
 # Use the same completions as aichat
 complete -c pgflow_ai -w aichat
+
+function wip-notes
+  test -d .notes || echo .notes does not exist && return
+  pushd .notes
+  echo Commiting notes...
+  git wip
+  echo Pushing notes...
+  git push
+  echo Done
+  popd
+end

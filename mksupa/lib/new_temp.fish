@@ -42,8 +42,8 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color brblack
     echo "  → Creating temp directory..."
     set_color normal
-    set -l date_stamp (date +%Y-%m-%d)
-    set -l temp_dir (mktemp -d "$base_dir/$prefix-$date_stamp-XXXXXX")
+    set -l date_stamp (date +%Y-%m-%d-%H%M)
+    set -l temp_dir (mktemp -d "$base_dir/$date_stamp-$prefix-XXXXXX")
     if test $status -ne 0
         set_color red
         echo "  ✗ Failed to create temporary directory"
@@ -121,6 +121,75 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
             '```' \
             > "$temp_dir/PGFLOW.md"
     end
+
+    # Create bin/serve script
+    set_color brblack
+    echo "  → Creating bin/serve..."
+    set_color normal
+    mkdir -p "$temp_dir/bin"
+    printf '%s\n' \
+        '#!/usr/bin/env bash' \
+        '' \
+        'supabase functions serve --no-verify-jwt 2>&1 | grep -Pv '\''serving the request with supabase/functions/[a-zA-Z0-9-]+-worker|^\d{4}-\d{2}-\d{2}T[\d:.]+Z\s\*$'\''' \
+        > "$temp_dir/bin/serve"
+    chmod +x "$temp_dir/bin/serve"
+
+    # Create queries directory and SQL files
+    set_color brblack
+    echo "  → Creating queries/start_flow.sql..."
+    set_color normal
+    mkdir -p "$temp_dir/queries"
+    printf '%s\n' \
+        "SELECT pgflow.start_flow(" \
+        "  flow_slug => 'greetUser'," \
+        "  input => '{\"firstName\": \"Alice\", \"lastName\": \"Smith\"}'::jsonb" \
+        ") FROM generate_series(1, :COUNT::int);" \
+        > "$temp_dir/queries/start_flow.sql"
+
+    set_color brblack
+    echo "  → Creating queries/runs.sql..."
+    set_color normal
+    printf '%s\n' \
+        "SELECT status, remaining_steps, output FROM pgflow.runs" \
+        "WHERE flow_slug = 'greetUser'" \
+        "ORDER BY started_at DESC" \
+        "LIMIT :COUNT::int;" \
+        > "$temp_dir/queries/runs.sql"
+
+    # Create bin/start_flow script
+    set_color brblack
+    echo "  → Creating bin/start_flow..."
+    set_color normal
+    printf '%s\n' \
+        '#!/usr/bin/env bash' \
+        '' \
+        'COUNT=${1:-1}' \
+        'psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" \' \
+        '  -v COUNT="$COUNT" \' \
+        '  -f queries/start_flow.sql' \
+        > "$temp_dir/bin/start_flow"
+    chmod +x "$temp_dir/bin/start_flow"
+
+    # Create bin/runs script
+    set_color brblack
+    echo "  → Creating bin/runs..."
+    set_color normal
+    printf '%s\n' \
+        '#!/usr/bin/env bash' \
+        '' \
+        'COUNT=${1:-1}' \
+        'psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" \' \
+        '  -v COUNT="$COUNT" \' \
+        '  -f queries/runs.sql' \
+        > "$temp_dir/bin/runs"
+    chmod +x "$temp_dir/bin/runs"
+
+    # Stage and commit initial files
+    set_color brblack
+    echo "  → Committing initial files..."
+    set_color normal
+    git -C "$temp_dir" add -A
+    git -C "$temp_dir" commit -m "chore: initialize temp project $dir_name"
 
     # Create tmux session with 4 windows
     set_color brblack
