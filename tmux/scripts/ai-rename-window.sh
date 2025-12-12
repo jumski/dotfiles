@@ -30,6 +30,17 @@ if [[ -z "$CONTENT" ]]; then
   exit 1
 fi
 
+# Detect empty Claude Code window (cleared or fresh session)
+# Check for Claude markers AND empty content indicators
+if echo "$CONTENT" | grep -qE '(⏵⏵ accept edits|Opus|Sonnet).*(shift\+tab|Thinking)'; then
+  # It's Claude Code - check if empty
+  if echo "$CONTENT" | grep -qE '(\(no content\)|Claude Code v[0-9]|Try "refactor)'; then
+    tmux rename-window -t "$TARGET" "💬"
+    echo "Window $TARGET: empty Claude session → '💬'"
+    exit 0
+  fi
+fi
+
 # Show thinking indicator
 tmux rename-window -t "$TARGET" "🤔${CURRENT_NAME}"
 
@@ -60,6 +71,8 @@ If you see ANY of these patterns, it's Claude Code:
 - Plan confirmation: 'Would you like to proceed?' with 'Yes, and auto-accept edits'
 - Question dialogs with '☐' checkbox, numbered options, 'Enter to select · Tab/Arrow keys'
 - 'Here is Claude\\'s plan:'
+
+EMPTY CLAUDE WINDOW: If Claude Code is detected but content is empty/cleared (shows '/clear', '(no content)', or just empty prompt with status bar), return ONLY the emoji with NO text: {"name": "💬"}
 
 ONLY USE THESE 6 EMOJIS. Pick based on the RUNNING APP, not shell commands.
 
