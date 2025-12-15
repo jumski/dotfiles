@@ -19,4 +19,9 @@ if ! [[ "$LIMIT" =~ ^[0-9]+$ ]]; then
   exit 1
 fi
 
-curl -sS "https://r.jina.ai/${URL}" | head -c "$LIMIT"
+CURL_ARGS=(-sS)
+if [[ -n "${JINA_API_KEY:-}" ]]; then
+  CURL_ARGS+=(-H "Authorization: Bearer ${JINA_API_KEY}")
+fi
+
+curl "${CURL_ARGS[@]}" "https://r.jina.ai/${URL}" | head -c "$LIMIT"

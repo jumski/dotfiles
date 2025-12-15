@@ -1,19 +1,21 @@
 ---
 name: reading-websites
-description: Use when you need to read, fetch, or view content from a URL or website - provides a secure wrapper script that returns website content as text without requiring broad curl permissions
+description: Use ONLY this skill when user mentions a domain (example.com, site.pl, docs.io), URL (https://...), or asks to read/fetch/check a website or webpage - MANDATORY, replaces WebFetch, crawl4ai, and curl
 ---
 
 # Reading Websites
 
 ## Overview
 
-**Use `fetch-url.sh` to read website content.** This wrapper script is the ONLY approved method for fetching URLs.
+**MANDATORY:** Use `fetch-url.sh` for ALL web content fetching. This REPLACES WebFetch, crawl4ai, and curl.
 
 ## When to Use
 
-- User asks you to read/fetch/check a URL
-- You need to see what's on a webpage
-- Documentation, articles, or web content needs to be retrieved
+Trigger on ANY of these:
+- Domain names: `example.com`, `site.pl`, `docs.io`, `github.com/path`
+- URLs: `https://...`, `http://...`
+- Keywords: "website", "webpage", "web page", "site content"
+- User asks to read/fetch/check/view web content
 
 ## The Command
 
@@ -60,7 +62,10 @@ description: Use when you need to read, fetch, or view content from a URL or web
 - "curl is simpler for this"
 - "WebFetch is already available"
 - "crawl4ai returns cleaner output"
+- "MCP tools are more capable"
+- "I have direct access to web fetching tools"
 - "This is just a quick fetch"
 - "The wrapper is overkill for this"
+- "The skill is a workaround for restricted environments"
 
-**All of these mean: Use fetch-url.sh anyway.**
+**All of these mean: Use fetch-url.sh anyway. No exceptions.**
