@@ -7,9 +7,9 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Toggle between browser and terminal
-active=$(xdotool getactivewindow)
-browser=$(xdotool search --name "Mozilla Firefox" | tail -1)
-terminal=$(xdotool search --classname "Kitty" | tail -1)
+active=$(dotool getactivewindow)
+browser=$(dotool search --name "Mozilla Firefox" | tail -1)
+terminal=$(dotool search --classname "Kitty" | tail -1)
 
 echo active=$active
 echo browser=$browser
@@ -30,9 +30,9 @@ function maybe_switch_activity() {
 if [ "$active" == "$terminal" ]; then
   echo activating browser
   maybe_switch_activity "browsing"
-  xdotool windowactivate $browser
+  dotool windowactivate $browser
 else
   echo activating terminal
   maybe_switch_activity "coding"
-  xdotool windowactivate $terminal
+  dotool windowactivate $terminal
 fi

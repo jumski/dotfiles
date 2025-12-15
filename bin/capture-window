@@ -6,21 +6,21 @@ output_path = ARGV[1] || 'tmp.gif'
 if !window_name || !output_path
     puts "Usage: "
     puts
-    puts "  capture-window window_to_search [gif_path]" 
+    puts "  capture-window window_to_search [gif_path]"
     puts
     puts "Example:"
     puts "  capture-window Google-Chrome tmp.gif"
     exit 1
 end
 
-window_id = `xdotool search #{window_name} 2>/dev/null`.scan(/\d+/).first
+window_id = `dotool search #{window_name} 2>/dev/null`.scan(/\d+/).first
 
 unless window_id
     puts "Window '#{window_name}' not found!"
     exit 1
 end
 
-window_info = `xdotool getwindowgeometry #{window_id}`
+window_info = `dotool getwindowgeometry #{window_id}`
 puts window_info
 
 x, y = window_info.scan(/Position: (\d+),(\d+)/).flatten

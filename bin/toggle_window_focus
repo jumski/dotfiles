@@ -6,9 +6,9 @@
 ALWAYS_FOCUS_TERMINAL=1
 
 if [ "$ALWAYS_FOCUS_TERMINAL" = "1" ]; then
-  terminal=$(xdotool search --classname "Kitty" | tail -1)
+  terminal=$(dotool search --classname "Kitty" | tail -1)
   if [ -n "$terminal" ]; then
-    xdotool windowactivate "$terminal"
+    dotool windowactivate "$terminal"
   fi
   exit 0
 fi

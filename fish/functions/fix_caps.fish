@@ -4,7 +4,7 @@ function fix_caps
 
   # Only toggle Caps Lock if it's currently on
   if test "$caps_state" = "on"
-    xdotool key Caps_Lock
+    dotool key Caps_Lock
     echo "Caps Lock disabled"
   else
     echo "Caps Lock is already off"

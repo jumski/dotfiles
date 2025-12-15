@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Wrapper that delegates to xdotool (X11) or kdotool (Wayland)
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+  exec kdotool "$@"
+else
+  exec xdotool "$@"
+fi

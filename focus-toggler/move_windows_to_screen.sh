@@ -58,13 +58,13 @@ TARGET_X=$((X_OFFSET + 10))
 TARGET_Y=$((Y_OFFSET + 10))
 
 # Find and move Firefox
-FIREFOX_WINDOWS=$(xdotool search --class firefox 2>/dev/null || true)
+FIREFOX_WINDOWS=$(dotool search --class firefox 2>/dev/null || true)
 if [ -n "$FIREFOX_WINDOWS" ]; then
   # Get the main Firefox window (usually the last one, which has actual dimensions)
   FIREFOX_MAIN=$(echo "$FIREFOX_WINDOWS" | tail -1)
 
   # Check if window has valid dimensions (not a popup/notification)
-  CURRENT_GEOM=$(xdotool getwindowgeometry --shell "$FIREFOX_MAIN" | grep -E '^(WIDTH|HEIGHT)=')
+  CURRENT_GEOM=$(dotool getwindowgeometry --shell "$FIREFOX_MAIN" | grep -E '^(WIDTH|HEIGHT)=')
   CURRENT_WIDTH=$(echo "$CURRENT_GEOM" | grep '^WIDTH=' | cut -d'=' -f2)
   CURRENT_HEIGHT=$(echo "$CURRENT_GEOM" | grep '^HEIGHT=' | cut -d'=' -f2)
 
@@ -73,17 +73,17 @@ if [ -n "$FIREFOX_WINDOWS" ]; then
     echo "Moving Firefox (window $FIREFOX_MAIN) to $TARGET_OUTPUT at $TARGET_X,$TARGET_Y"
 
     # Unmaximize first to allow movement
-    xdotool windowstate --remove MAXIMIZED_VERT --remove MAXIMIZED_HORZ "$FIREFOX_MAIN"
+    dotool windowstate --remove MAXIMIZED_VERT --remove MAXIMIZED_HORZ "$FIREFOX_MAIN"
 
     # Move window
-    xdotool windowmove "$FIREFOX_MAIN" "$TARGET_X" "$TARGET_Y"
+    dotool windowmove "$FIREFOX_MAIN" "$TARGET_X" "$TARGET_Y"
 
     # Handle maximization based on mode
     if [ "$MAXIMIZE_MODE" = "--maximize" ]; then
       echo "  Maximizing Firefox window"
       # Small delay to let WM register the window position before maximizing
       sleep 0.1
-      xdotool windowstate --add MAXIMIZED_VERT --add MAXIMIZED_HORZ "$FIREFOX_MAIN"
+      dotool windowstate --add MAXIMIZED_VERT --add MAXIMIZED_HORZ "$FIREFOX_MAIN"
     fi
   else
     echo "Skipping Firefox window $FIREFOX_MAIN (dimensions: ${CURRENT_WIDTH}x${CURRENT_HEIGHT})"
@@ -91,7 +91,7 @@ if [ -n "$FIREFOX_WINDOWS" ]; then
 fi
 
 # Find and move Kitty
-KITTY_WINDOWS=$(xdotool search --class kitty 2>/dev/null || true)
+KITTY_WINDOWS=$(dotool search --class kitty 2>/dev/null || true)
 if [ -n "$KITTY_WINDOWS" ]; then
   # Kitty might have multiple windows, move all of them
   while IFS= read -r KITTY_WIN; do
@@ -99,17 +99,17 @@ if [ -n "$KITTY_WINDOWS" ]; then
       echo "Moving Kitty (window $KITTY_WIN) to $TARGET_OUTPUT at $TARGET_X,$TARGET_Y"
 
       # Unmaximize first to allow movement
-      xdotool windowstate --remove MAXIMIZED_VERT --remove MAXIMIZED_HORZ "$KITTY_WIN"
+      dotool windowstate --remove MAXIMIZED_VERT --remove MAXIMIZED_HORZ "$KITTY_WIN"
 
       # Move window
-      xdotool windowmove "$KITTY_WIN" "$TARGET_X" "$TARGET_Y"
+      dotool windowmove "$KITTY_WIN" "$TARGET_X" "$TARGET_Y"
 
       # Handle maximization based on mode
       if [ "$MAXIMIZE_MODE" = "--maximize" ]; then
         echo "  Maximizing Kitty window"
         # Small delay to let WM register the window position before maximizing
         sleep 0.1
-        xdotool windowstate --add MAXIMIZED_VERT --add MAXIMIZED_HORZ "$KITTY_WIN"
+        dotool windowstate --add MAXIMIZED_VERT --add MAXIMIZED_HORZ "$KITTY_WIN"
       fi
       # Offset subsequent windows slightly so they don't overlap completely
       TARGET_X=$((TARGET_X + 30))
@@ -119,13 +119,13 @@ if [ -n "$KITTY_WINDOWS" ]; then
 fi
 
 # Find and move Logseq
-LOGSEQ_WINDOWS=$(xdotool search --class logseq 2>/dev/null || true)
+LOGSEQ_WINDOWS=$(dotool search --class logseq 2>/dev/null || true)
 if [ -n "$LOGSEQ_WINDOWS" ]; then
   # Get the main Logseq window (usually the last one, which has actual dimensions)
   LOGSEQ_MAIN=$(echo "$LOGSEQ_WINDOWS" | tail -1)
 
   # Check if window has valid dimensions (not a popup/notification)
-  CURRENT_GEOM=$(xdotool getwindowgeometry --shell "$LOGSEQ_MAIN" | grep -E '^(WIDTH|HEIGHT)=')
+  CURRENT_GEOM=$(dotool getwindowgeometry --shell "$LOGSEQ_MAIN" | grep -E '^(WIDTH|HEIGHT)=')
   CURRENT_WIDTH=$(echo "$CURRENT_GEOM" | grep '^WIDTH=' | cut -d'=' -f2)
   CURRENT_HEIGHT=$(echo "$CURRENT_GEOM" | grep '^HEIGHT=' | cut -d'=' -f2)
 
@@ -134,17 +134,17 @@ if [ -n "$LOGSEQ_WINDOWS" ]; then
     echo "Moving Logseq (window $LOGSEQ_MAIN) to $TARGET_OUTPUT at $TARGET_X,$TARGET_Y"
 
     # Unmaximize first to allow movement
-    xdotool windowstate --remove MAXIMIZED_VERT --remove MAXIMIZED_HORZ "$LOGSEQ_MAIN"
+    dotool windowstate --remove MAXIMIZED_VERT --remove MAXIMIZED_HORZ "$LOGSEQ_MAIN"
 
     # Move window
-    xdotool windowmove "$LOGSEQ_MAIN" "$TARGET_X" "$TARGET_Y"
+    dotool windowmove "$LOGSEQ_MAIN" "$TARGET_X" "$TARGET_Y"
 
     # Handle maximization based on mode
     if [ "$MAXIMIZE_MODE" = "--maximize" ]; then
       echo "  Maximizing Logseq window"
       # Small delay to let WM register the window position before maximizing
       sleep 0.1
-      xdotool windowstate --add MAXIMIZED_VERT --add MAXIMIZED_HORZ "$LOGSEQ_MAIN"
+      dotool windowstate --add MAXIMIZED_VERT --add MAXIMIZED_HORZ "$LOGSEQ_MAIN"
     fi
   else
     echo "Skipping Logseq window $LOGSEQ_MAIN (dimensions: ${CURRENT_WIDTH}x${CURRENT_HEIGHT})"
