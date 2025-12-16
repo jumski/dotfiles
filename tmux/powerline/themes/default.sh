@@ -101,7 +101,8 @@ fi
 if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
 		"battery_if_present 141 232"
-		"tmux_session_info 117 232 default_separator 235"
+		"tmux_session_info 117 232"
+		"last_session 238 245"
 	)
 fi
 
