@@ -5,36 +5,41 @@ import io
 import requests
 import argparse
 
-def transcribe_with_groq(file_data):
+# Language configuration - can be overridden via AUDIO_LANGUAGE env var
+DEFAULT_LANGUAGE = os.getenv("AUDIO_LANGUAGE", "en")
+
+def transcribe_with_groq(file_data, language=None):
     """Transcribe audio using Groq's Whisper API"""
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
         raise ValueError("GROQ_API_KEY not set")
-    
+
+    lang = language or DEFAULT_LANGUAGE
     file_obj = io.BytesIO(file_data)
-    
+
     r = requests.post(
         "https://api.groq.com/openai/v1/audio/transcriptions",
         headers={"Authorization": f"Bearer {api_key}"},
-        data={"model": "whisper-large-v3", "language": "en"},
+        data={"model": "whisper-large-v3", "language": lang},
         files={"file": ("audio.wav", file_obj, "audio/wav")},
         timeout=120
     )
     r.raise_for_status()
     return r.json()["text"]
 
-def transcribe_with_openai(file_data):
+def transcribe_with_openai(file_data, language=None):
     """Transcribe audio using OpenAI's Whisper API"""
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise ValueError("OPENAI_API_KEY not set")
-    
+
+    lang = language or DEFAULT_LANGUAGE
     file_obj = io.BytesIO(file_data)
-    
+
     r = requests.post(
         "https://api.openai.com/v1/audio/transcriptions",
         headers={"Authorization": f"Bearer {api_key}"},
-        data={"model": "whisper-1", "language": "en"},
+        data={"model": "whisper-1", "language": lang},
         files={"file": ("audio.wav", file_obj, "audio/wav")},
         timeout=120
     )

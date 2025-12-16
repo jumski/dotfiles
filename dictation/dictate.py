@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import os, subprocess, requests, sys, time, signal, io, threading, datetime, argparse, shutil
 
+# Language configuration - can be overridden via AUDIO_LANGUAGE env var
+DEFAULT_LANGUAGE = os.getenv("AUDIO_LANGUAGE", "en")
+
 # ANSI color codes
 GRAY = '\033[90m'
 RED = '\033[31m'
@@ -63,6 +66,7 @@ def animate_recording():
      {BOLD}C{RESET}{GRAY}: clipboard
      {BOLD}S{RESET}{GRAY}: search Firefox
      {BOLD}F{RESET}{GRAY}: format markdown
+     {BOLD}P{RESET}{GRAY}: polski
      {BOLD}Esc/^C{RESET}{GRAY}: cancel
      {BOLD}Other{RESET}{GRAY}: paste only{RESET}
 
@@ -71,7 +75,7 @@ def animate_recording():
     sys.stderr.flush()
 
     # Move cursor back up to timer line
-    sys.stderr.write("\033[11A")  # Move up to timer line
+    sys.stderr.write("\033[12A")  # Move up to timer line (adjusted for P legend line)
 
     # Hide cursor during animation
     sys.stderr.write("\033[?25l")
@@ -175,6 +179,7 @@ def animate_uploading():
      {BOLD}C{RESET}{GRAY}: clipboard
      {BOLD}S{RESET}{GRAY}: search Firefox
      {BOLD}F{RESET}{GRAY}: format markdown
+     {BOLD}P{RESET}{GRAY}: polski
      {BOLD}Esc/^C{RESET}{GRAY}: cancel
      {BOLD}Other{RESET}{GRAY}: paste only{RESET}
 
@@ -183,7 +188,7 @@ def animate_uploading():
     sys.stderr.flush()
     
     # Move cursor back to UP line for animation
-    sys.stderr.write("\033[10A")  # Move up 10 lines (one more for markdown line)
+    sys.stderr.write("\033[11A")  # Move up 11 lines (adjusted for P legend line)
     
     for i in range(20):  # Max 10 seconds of animation
         for dots in ["   ", ".  ", ".. ", "..."]:
@@ -193,36 +198,38 @@ def animate_uploading():
             if upload_done.is_set():
                 return
 
-def transcribe_with_groq(file_data, mime_type="audio/ogg", filename="out.ogg"):
+def transcribe_with_groq(file_data, mime_type="audio/ogg", filename="out.ogg", language=None):
     """Transcribe audio using Groq's Whisper API"""
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
         raise ValueError("GROQ_API_KEY not set")
 
+    lang = language or DEFAULT_LANGUAGE
     file_obj = io.BytesIO(file_data)
 
     r = requests.post(
         "https://api.groq.com/openai/v1/audio/transcriptions",
         headers={"Authorization": f"Bearer {api_key}"},
-        data={"model": "whisper-large-v3", "language": "en"},
+        data={"model": "whisper-large-v3", "language": lang},
         files={"file": (filename, file_obj, mime_type)},
         timeout=120
     )
     r.raise_for_status()
     return r.json()["text"]
 
-def transcribe_with_openai(file_data, mime_type="audio/ogg", filename="out.ogg"):
+def transcribe_with_openai(file_data, mime_type="audio/ogg", filename="out.ogg", language=None):
     """Transcribe audio using OpenAI's Whisper API"""
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise ValueError("OPENAI_API_KEY not set")
 
+    lang = language or DEFAULT_LANGUAGE
     file_obj = io.BytesIO(file_data)
 
     r = requests.post(
         "https://api.openai.com/v1/audio/transcriptions",
         headers={"Authorization": f"Bearer {api_key}"},
-        data={"model": "whisper-1", "language": "en"},
+        data={"model": "whisper-1", "language": lang},
         files={"file": (filename, file_obj, mime_type)},
         timeout=120
     )
@@ -420,8 +427,12 @@ except KeyboardInterrupt:
         with open(F_ogg, "rb") as f:
             file_data = f.read()
 
+        # Determine language - 'P' key forces Polish, otherwise use env var or default
+        transcribe_language = "pl" if key_pressed in ('p', 'P') else DEFAULT_LANGUAGE
+        err_print(f"\n[DEBUG] key_pressed={repr(key_pressed)}, language={transcribe_language}\n")
+
         # Use the selected transcription backend with OGG
-        transcript = transcribe_func(file_data, "audio/ogg", "out.ogg")
+        transcript = transcribe_func(file_data, "audio/ogg", "out.ogg", language=transcribe_language)
         upload_done.set()  # Stop animation
         time.sleep(0.1)  # Let animation clear
         print(transcript)
@@ -448,6 +459,8 @@ except KeyboardInterrupt:
             sys.exit(11)
         elif key_pressed in ['f', 'F']:  # F key for markdown formatting
             sys.exit(12)
+        elif key_pressed in ['p', 'P']:  # P key for Polish (just paste)
+            sys.exit(99)
         else:
             sys.exit(99)  # Default action (just paste)
         
