@@ -14,6 +14,50 @@ for pkg in $aur_packages; do
     fi
 done
 
+# Check for and remove conflicting packages
+if [ -n "$aur_missing_packages" ]; then
+    echo "Checking for conflicting packages..."
+    for pkg in $aur_missing_packages; do
+        # Get the conflicts from package metadata
+        conflicts=$(yay -Si "$pkg" 2>/dev/null | grep "^Conflicts With" | cut -d: -f2 | xargs)
+
+        if [ -n "$conflicts" ] && [ "$conflicts" != "None" ]; then
+            for conflict in $conflicts; do
+                if yay -Qi "$conflict" &> /dev/null; then
+                    echo " -> removing conflicting package: $conflict (conflicts with $pkg)"
+
+                    # Temporarily disable exit-on-error to handle removal failure gracefully
+                    set +e
+                    yay -R --noconfirm "$conflict" 2>&1
+                    removal_status=$?
+                    set -e
+
+                    if [ $removal_status -ne 0 ]; then
+                        echo ""
+                        echo "=========================================="
+                        echo "ERROR: Failed to remove conflicting package '$conflict'"
+                        echo "=========================================="
+                        echo ""
+                        echo "This usually means other packages depend on it."
+                        echo ""
+                        echo "Manual steps to fix:"
+                        echo "  1. Check what depends on it:"
+                        echo "     yay -Qi $conflict | grep 'Required By'"
+                        echo ""
+                        echo "  2. Either:"
+                        echo "     a) Remove dependents first, then retry this script"
+                        echo "     b) Force remove (if you know $pkg provides the same functionality):"
+                        echo "        yay -Rdd $conflict"
+                        echo "        script/install_aur_packages"
+                        echo ""
+                        exit 1
+                    fi
+                fi
+            done
+        fi
+    done
+fi
+
 # Install missing AUR packages, if any
 if [ -n "$aur_missing_packages" ]; then
     echo " -> installing AUR packages..."

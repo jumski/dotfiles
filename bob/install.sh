@@ -20,14 +20,14 @@ if [ ! -f "$HOME/.config/bob/config.toml" ] || ! cmp -s "$SCRIPT_DIR/config.toml
     cp "$SCRIPT_DIR/config.toml" "$HOME/.config/bob/config.toml"
 fi
 
-# Install stable Neovim if no versions are installed yet
-if ! bob list 2>/dev/null | grep -q "stable"; then
-    echo "Installing stable Neovim via Bob..."
-    bob install stable
-    bob use stable
-    echo "Neovim stable installed and activated"
+# Install Neovim if no versions are installed yet
+if ! bob list 2>/dev/null | grep -q "Used"; then
+    echo "Installing latest Neovim via Bob..."
+    bob install latest
+    bob use latest
+    echo "Neovim latest installed and activated"
 else
-    echo "Neovim versions already installed"
+    echo "Neovim already installed and active"
 fi
 
 echo "Bob setup complete!"

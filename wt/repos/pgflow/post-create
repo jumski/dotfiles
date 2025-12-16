@@ -1,5 +1,24 @@
 #!/bin/bash
 
+# Setup notes directory
+NOTES_SOURCE="$HOME/Code/pgflow-dev/notes"
+NOTES_TARGET="$(pwd)/.notes"
+
+# Clone notes repo if it doesn't exist
+if [[ ! -d "$NOTES_SOURCE" ]]; then
+    echo -e "\033[34m→\033[0m Cloning notes repository..."
+    mkdir -p "$(dirname "$NOTES_SOURCE")"
+    gh repo clone pgflow-dev/notes "$NOTES_SOURCE" || {
+        echo -e "\033[31mError: Failed to clone notes repository\033[0m" >&2
+        exit 1
+    }
+fi
+
+# Get realpath and create symlink
+NOTES_SOURCE_REAL=$(realpath "$NOTES_SOURCE")
+ln -sf "$NOTES_SOURCE_REAL" "$NOTES_TARGET"
+echo -e "\033[32m✓\033[0m Linked notes: $NOTES_TARGET -> $NOTES_SOURCE_REAL"
+
 direnv allow
 pnpm install --frozen-lockfile
 ln -s /home/jumski/Code/pgflow-dev/notes $(pwd)/.notes

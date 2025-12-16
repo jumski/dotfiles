@@ -30,11 +30,20 @@ After migration:
   • On other machines: Run 'wt config-link' to create symlink"
     and return 0
 
-    # Get repo root
+    # Get repo root - try wt repo first, fall back to git repo or .bare directory
     set -l repo_root (_wt_get_repo_root)
     if test -z "$repo_root"
-        echo "Error: Not in a wt repository" >&2
-        return 1
+        # Not a wt repo (no .wt or .wt-config), check other indicators
+        if test -d ".bare"
+            # This is a wt repo root (has .bare directory)
+            set repo_root (pwd)
+        else if git rev-parse --git-dir >/dev/null 2>&1
+            # This is a regular git repo or worktree
+            set repo_root (git rev-parse --show-toplevel)
+        else
+            echo "Error: Not in a git or wt repository" >&2
+            return 1
+        end
     end
 
     set -l repo_name (basename $repo_root)
@@ -54,9 +63,12 @@ After migration:
         return 1
     end
 
-    # Nothing to migrate?
-    if not test -f "$repo_root/.wt-config"
-        echo "Error: No .wt-config found to migrate" >&2
+    # Check if there's anything to do
+    set -l has_local_config (test -f "$repo_root/.wt-config"; and echo yes; or echo no)
+    set -l has_dotfiles_config (test -f "$dotfiles_path/config"; and echo yes; or echo no)
+
+    if test "$has_local_config" = "no" -a "$has_dotfiles_config" = "no"
+        echo "Error: No .wt-config found to link" >&2
         echo "  Are you in the repository root?" >&2
         return 1
     end
@@ -67,7 +79,53 @@ After migration:
         return 1
     end
 
-    # Show what will happen
+    # Handle case where config exists in both places
+    if test "$has_local_config" = "yes" -a "$has_dotfiles_config" = "yes"
+        echo "⚠️  Config already exists in dotfiles" >&2
+        echo ""
+        echo "  Dotfiles: $dotfiles_path/config" >&2
+        echo "  Local:    $repo_root/.wt-config" >&2
+        echo ""
+        echo "  Differences:" >&2
+        echo "  ────────────" >&2
+
+        # Show diff (exit code 0 if identical, 1 if different)
+        if diff -u "$dotfiles_path/config" "$repo_root/.wt-config"
+            echo "  (Files are identical)" >&2
+        end
+
+        echo "" >&2
+        echo "  Options:" >&2
+        echo "  1. Remove local config and re-run to create symlink:" >&2
+        echo "     rm .wt-config && wt config-link" >&2
+        echo "" >&2
+        echo "  2. Manually merge changes, then remove local config:" >&2
+        echo "     # Edit $dotfiles_path/config" >&2
+        echo "     rm .wt-config && wt config-link" >&2
+        return 1
+    end
+
+    # Handle case where only dotfiles config exists - just link it
+    if test "$has_local_config" = "no" -a "$has_dotfiles_config" = "yes"
+        _wt_action "Linking existing dotfiles config..."
+        echo "  From: $dotfiles_path"
+
+        # Ensure pre-remove hook exists
+        _wt_ensure_pre_remove_hook "$dotfiles_path"
+
+        # Create symlink
+        ln -s "$dotfiles_path" "$repo_root/.wt"
+        or begin
+            echo "Error: Failed to create symlink" >&2
+            return 1
+        end
+
+        _wt_success "Config linked to dotfiles"
+        echo "  Location: $dotfiles_path"
+        return 0
+    end
+
+    # Handle case where only local config exists - migrate it
     _wt_action "Moving config to dotfiles..."
     echo "  From: $repo_root/.wt-config"
     echo "  To:   $dotfiles_path/"
