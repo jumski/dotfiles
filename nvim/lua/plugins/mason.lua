@@ -21,6 +21,7 @@ return {
         "denols",
         "docker-compose-language-service",
         "dockerfile-language-server",
+        "json-lsp",
         "lua_ls",
         "mdx-analyzer",
         "pyright",

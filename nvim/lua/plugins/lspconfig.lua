@@ -185,6 +185,8 @@ return {
     vim.lsp.enable("cssls")
 
     vim.lsp.config("jsonls", {
+      capabilities = capabilities,
+      on_attach = setup_keybindings,
       settings = {
         json = {
           schemas = require("schemastore").json.schemas(),
