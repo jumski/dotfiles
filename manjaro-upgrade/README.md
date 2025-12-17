@@ -38,8 +38,6 @@ Open Timeshift GUI and configure:
 | Daily    | 7    |
 | Weekly   | 4    |
 
-5. **Create first snapshot** - Click "Create" button
-
 ### Step 3: Verify setup
 
 ```bash
@@ -47,6 +45,8 @@ Open Timeshift GUI and configure:
 ```
 
 This runs automatically at end of `script/install` and will fail loudly if Timeshift isn't configured.
+
+Note: First snapshot will be created automatically when you run `safe-upgrade`.
 
 ## Safe Upgrade Procedure
 

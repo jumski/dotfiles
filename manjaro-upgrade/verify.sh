@@ -17,7 +17,6 @@ verify_fail() {
     echo -e "${RED}║    1. Select BTRFS snapshot type                                  ║${NC}"
     echo -e "${RED}║    2. Include @home subvolume in backups                          ║${NC}"
     echo -e "${RED}║    3. Enable: Boot (keep 3), Daily (keep 7), Weekly (keep 4)      ║${NC}"
-    echo -e "${RED}║    4. Create your first snapshot                                  ║${NC}"
     echo -e "${RED}║                                                                   ║${NC}"
     echo -e "${RED}║  Then re-run: ./manjaro-upgrade/verify.sh                         ║${NC}"
     echo -e "${RED}╚═══════════════════════════════════════════════════════════════════╝${NC}"
