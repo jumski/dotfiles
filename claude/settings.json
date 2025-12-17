@@ -116,7 +116,8 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "superpowers@superpowers-marketplace": true
+    "superpowers@superpowers-marketplace": true,
+    "superpowers@superpowers-dev": true
   },
   "alwaysThinkingEnabled": true
 }

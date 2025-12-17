@@ -19,3 +19,6 @@ get-platformio.py
 
 **/.claude/settings.local.json
 *.wav
+
+# Deskflow autostart managed by deskflow/install.sh per hostname
+kde/autostart/deskflow-*.desktop
