@@ -1,0 +1,106 @@
+#!/bin/bash
+
+# Wayland keyboard configuration
+# Equivalent settings to X11's xset, setxkbmap, and xmodmap
+
+COMPOSITOR="${1:-unknown}"
+SWAPCAPS="${2:-}"
+
+# Keyboard repeat settings (equivalent to xset r rate 250 100)
+REPEAT_DELAY=250
+REPEAT_RATE=100
+
+# XKB options (equivalent to setxkbmap options)
+# ctrl:menu_rctrl - Menu key as right Ctrl
+# ctrl:nocaps - Caps Lock as Ctrl
+# altwin:ctrl_win - Win keys as Ctrl
+XKB_OPTIONS="ctrl:nocaps,altwin:ctrl_win"
+
+if [[ "$SWAPCAPS" == "swapcaps" ]]; then
+  XKB_OPTIONS="$XKB_OPTIONS,ctrl:swapcaps"
+fi
+
+setup_kde() {
+  echo "Configuring keyboard for KDE Plasma Wayland..."
+
+  # Set repeat rate and delay
+  kwriteconfig6 --file kcminputrc --group Keyboard --key RepeatRate "$REPEAT_RATE" 2>/dev/null || \
+    kwriteconfig5 --file kcminputrc --group Keyboard --key RepeatRate "$REPEAT_RATE"
+  kwriteconfig6 --file kcminputrc --group Keyboard --key RepeatDelay "$REPEAT_DELAY" 2>/dev/null || \
+    kwriteconfig5 --file kcminputrc --group Keyboard --key RepeatDelay "$REPEAT_DELAY"
+
+  # Set XKB options
+  kwriteconfig6 --file kxkbrc --group Layout --key Options "$XKB_OPTIONS" 2>/dev/null || \
+    kwriteconfig5 --file kxkbrc --group Layout --key Options "$XKB_OPTIONS"
+
+  # Reload KWin configuration
+  if command -v qdbus6 &>/dev/null; then
+    qdbus6 org.kde.KWin /KWin reconfigure 2>/dev/null
+  elif command -v qdbus &>/dev/null; then
+    qdbus org.kde.KWin /KWin reconfigure 2>/dev/null
+  fi
+
+  echo "KDE keyboard configured: delay=${REPEAT_DELAY}ms, rate=${REPEAT_RATE}/s, options=${XKB_OPTIONS}"
+}
+
+setup_hyprland() {
+  echo "Configuring keyboard for Hyprland..."
+
+  if ! command -v hyprctl &>/dev/null; then
+    echo "Warning: hyprctl not found, skipping Hyprland keyboard setup"
+    return 1
+  fi
+
+  hyprctl keyword input:repeat_delay "$REPEAT_DELAY"
+  hyprctl keyword input:repeat_rate "$REPEAT_RATE"
+  hyprctl keyword input:kb_options "$XKB_OPTIONS"
+
+  echo "Hyprland keyboard configured: delay=${REPEAT_DELAY}ms, rate=${REPEAT_RATE}/s, options=${XKB_OPTIONS}"
+}
+
+setup_sway() {
+  echo "Configuring keyboard for Sway..."
+
+  if ! command -v swaymsg &>/dev/null; then
+    echo "Warning: swaymsg not found, skipping Sway keyboard setup"
+    return 1
+  fi
+
+  swaymsg input type:keyboard repeat_delay "$REPEAT_DELAY"
+  swaymsg input type:keyboard repeat_rate "$REPEAT_RATE"
+  swaymsg input type:keyboard xkb_options "$XKB_OPTIONS"
+
+  echo "Sway keyboard configured: delay=${REPEAT_DELAY}ms, rate=${REPEAT_RATE}/s, options=${XKB_OPTIONS}"
+}
+
+setup_generic() {
+  echo "Unknown Wayland compositor, attempting generic configuration..."
+
+  # Try each compositor's tool in order
+  if command -v hyprctl &>/dev/null && [[ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]]; then
+    setup_hyprland
+  elif command -v swaymsg &>/dev/null && [[ -n "$SWAYSOCK" ]]; then
+    setup_sway
+  elif command -v kwriteconfig6 &>/dev/null || command -v kwriteconfig5 &>/dev/null; then
+    setup_kde
+  else
+    echo "No supported Wayland compositor tools found"
+    echo "Please configure keyboard settings manually in your compositor config"
+    return 1
+  fi
+}
+
+case "$COMPOSITOR" in
+  kde)
+    setup_kde
+    ;;
+  hyprland)
+    setup_hyprland
+    ;;
+  sway)
+    setup_sway
+    ;;
+  *)
+    setup_generic
+    ;;
+esac

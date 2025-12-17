@@ -1,9 +1,49 @@
 #!/bin/bash
 
-if [[ -z "$DISPLAY" ]]; then
-  echo No \$DISPLAY available - skipping input device setup
-  exit 0
-fi
+# Detect session type
+detect_session_type() {
+  if [[ -n "$WAYLAND_DISPLAY" ]]; then
+    echo "wayland"
+  elif [[ "$XDG_SESSION_TYPE" == "wayland" ]]; then
+    echo "wayland"
+  elif [[ -n "$DISPLAY" ]]; then
+    echo "x11"
+  else
+    echo "none"
+  fi
+}
 
-$HOME/.dotfiles/bin/setup_keyboard
-$HOME/.dotfiles/bin/setup_touchpad
+# Detect Wayland compositor
+detect_compositor() {
+  if [[ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]]; then
+    echo "hyprland"
+  elif [[ "$XDG_CURRENT_DESKTOP" == "Hyprland" ]]; then
+    echo "hyprland"
+  elif [[ "$XDG_CURRENT_DESKTOP" == "KDE" ]] || [[ "$XDG_SESSION_DESKTOP" == "plasma" ]]; then
+    echo "kde"
+  elif [[ "$XDG_CURRENT_DESKTOP" == "sway" ]]; then
+    echo "sway"
+  else
+    echo "unknown"
+  fi
+}
+
+SESSION_TYPE=$(detect_session_type)
+
+case "$SESSION_TYPE" in
+  x11)
+    echo "X11 session detected"
+    $HOME/.dotfiles/bin/setup_keyboard "$@"
+    $HOME/.dotfiles/bin/setup_touchpad
+    ;;
+  wayland)
+    COMPOSITOR=$(detect_compositor)
+    echo "Wayland session detected (compositor: $COMPOSITOR)"
+    $HOME/.dotfiles/bin/setup_keyboard_wayland "$COMPOSITOR" "$@"
+    $HOME/.dotfiles/bin/setup_touchpad_wayland "$COMPOSITOR"
+    ;;
+  none)
+    echo "No display session available - skipping input device setup"
+    exit 0
+    ;;
+esac

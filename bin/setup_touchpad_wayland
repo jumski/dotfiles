@@ -1,0 +1,98 @@
+#!/bin/bash
+
+# Wayland touchpad configuration
+# Equivalent to X11's syndaemon (disable-while-typing)
+
+COMPOSITOR="${1:-unknown}"
+
+# Touchpad settings
+DWT="true"  # disable-while-typing
+
+setup_kde() {
+  echo "Configuring touchpad for KDE Plasma Wayland..."
+
+  # Enable disable-while-typing via libinput
+  kwriteconfig6 --file touchpadxlibinputrc --group "$(get_kde_touchpad_group)" --key DisableWhileTyping "$DWT" 2>/dev/null || \
+    kwriteconfig5 --file touchpadxlibinputrc --group "$(get_kde_touchpad_group)" --key DisableWhileTyping "$DWT"
+
+  # Reload
+  if command -v qdbus6 &>/dev/null; then
+    qdbus6 org.kde.KWin /KWin reconfigure 2>/dev/null
+  elif command -v qdbus &>/dev/null; then
+    qdbus org.kde.KWin /KWin reconfigure 2>/dev/null
+  fi
+
+  echo "KDE touchpad configured: disable-while-typing=${DWT}"
+}
+
+get_kde_touchpad_group() {
+  # KDE stores touchpad config per-device, try to find existing group or use generic
+  local config_file="$HOME/.config/touchpadxlibinputrc"
+  if [[ -f "$config_file" ]]; then
+    # Get first touchpad device group
+    grep -oP '^\[.*\]' "$config_file" | head -1 | tr -d '[]'
+  else
+    echo "Touchpad"
+  fi
+}
+
+setup_hyprland() {
+  echo "Configuring touchpad for Hyprland..."
+
+  if ! command -v hyprctl &>/dev/null; then
+    echo "Warning: hyprctl not found, skipping Hyprland touchpad setup"
+    return 1
+  fi
+
+  # Hyprland uses libinput, disable-while-typing is enabled by default
+  # but we can explicitly set it
+  hyprctl keyword input:touchpad:disable_while_typing "$DWT"
+
+  echo "Hyprland touchpad configured: disable-while-typing=${DWT}"
+}
+
+setup_sway() {
+  echo "Configuring touchpad for Sway..."
+
+  if ! command -v swaymsg &>/dev/null; then
+    echo "Warning: swaymsg not found, skipping Sway touchpad setup"
+    return 1
+  fi
+
+  # Sway uses libinput
+  swaymsg input type:touchpad dwt enabled
+
+  echo "Sway touchpad configured: disable-while-typing=${DWT}"
+}
+
+setup_generic() {
+  echo "Unknown Wayland compositor for touchpad configuration..."
+
+  # Try each compositor's tool in order
+  if command -v hyprctl &>/dev/null && [[ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]]; then
+    setup_hyprland
+  elif command -v swaymsg &>/dev/null && [[ -n "$SWAYSOCK" ]]; then
+    setup_sway
+  elif command -v kwriteconfig6 &>/dev/null || command -v kwriteconfig5 &>/dev/null; then
+    setup_kde
+  else
+    echo "No supported Wayland compositor tools found"
+    echo "Touchpad disable-while-typing is usually enabled by default via libinput"
+    return 0
+  fi
+}
+
+case "$COMPOSITOR" in
+  kde)
+    setup_kde
+    ;;
+  hyprland)
+    setup_hyprland
+    ;;
+  sway)
+    setup_sway
+    ;;
+  *)
+    setup_generic
+    ;;
+esac
