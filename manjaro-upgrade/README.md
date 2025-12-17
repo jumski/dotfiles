@@ -15,15 +15,38 @@ Automatic BTRFS snapshots before every system upgrade with bootable recovery.
 
 ## Installation
 
+### Step 1: Run install script
+
 ```bash
 ./manjaro-upgrade/install.sh
 ```
 
-Then open Timeshift GUI and:
-1. Select **BTRFS** snapshot type
-2. Choose snapshot location (your root BTRFS partition)
-3. Enable **weekly** scheduled snapshots
-4. Create your first snapshot manually
+This installs packages and configures services.
+
+### Step 2: Configure Timeshift (REQUIRED)
+
+Open Timeshift GUI and configure:
+
+1. **Snapshot Type:** Select **BTRFS**
+2. **Snapshot Location:** Select your root BTRFS partition
+3. **Include @home:** Check "Include @home subvolume in backups"
+4. **Schedule** (maximum protection):
+
+| Schedule | Keep |
+|----------|------|
+| Boot     | 3    |
+| Daily    | 7    |
+| Weekly   | 4    |
+
+### Step 3: Verify setup
+
+```bash
+./manjaro-upgrade/verify.sh
+```
+
+This runs automatically at end of `script/install` and will fail loudly if Timeshift isn't configured.
+
+Note: First snapshot will be created automatically when you run `safe-upgrade`.
 
 ## Safe Upgrade Procedure
 
@@ -42,22 +65,11 @@ This script:
 
 ### Manual Way
 
-1. **Read release notes** at https://forum.manjaro.org/c/announcements/stable-updates
-2. Create manual snapshot:
-   ```bash
-   sudo timeshift --create --comments "Before YYYY-MM-DD update"
-   ```
-3. Run upgrade:
-   ```bash
-   sudo pacman -Syu
-   ```
+```bash
+sudo pacman -Syu
+```
 
-Note: `timeshift-autosnap-manjaro` also creates snapshots automatically on every upgrade.
-
-### After Update
-
-1. Reboot and verify system works
-2. If broken, see Recovery section below
+Note: `timeshift-autosnap-manjaro` creates snapshots automatically on every upgrade.
 
 ## Recovery Procedures
 
@@ -111,17 +123,22 @@ sudo timeshift --list
 sudo timeshift --restore --snapshot '2024-12-15_10-30-00'
 ```
 
-## Timeshift Configuration
+## Snapshot Types Summary
 
-Config file: `/etc/timeshift-autosnap.conf`
+| Type | Trigger | Purpose |
+|------|---------|---------|
+| Boot | Every boot | Catches issues after reboot |
+| Daily | Once per day | Week of rollback points |
+| Weekly | Once per week | Month of history |
+| Autosnap | Before `pacman -Syu` | Pre-upgrade safety net |
+| Manual | `safe-upgrade` script | Named, explicit backup |
 
-```ini
-# Skip autosnap for specific operations
-# SKIP_AUTOSNAP=1 pamac upgrade -a
+## Disk Space
 
-# Number of autosnap snapshots to keep
-maxSnapshots=3
-```
+BTRFS snapshots are copy-on-write - they only store **differences**.
+- First snapshot: ~0 bytes (just metadata)
+- Subsequent snapshots: only changed blocks
+- Typical usage: 5-20GB for all snapshots combined
 
 ## Troubleshooting
 
@@ -135,22 +152,9 @@ systemctl status grub-btrfsd
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-### Timeshift not creating BTRFS snapshots
+### Verification fails
 
-Verify subvolume setup:
-```bash
-sudo btrfs subvolume list /
-```
-
-Should show `@` and `@home` subvolumes.
-
-## Disk Space
-
-BTRFS snapshots are copy-on-write - they only store **differences**.
-- First snapshot: ~0 bytes (just metadata)
-- Subsequent snapshots: only changed blocks
-
-Safe to keep 3-5 snapshots without significant space impact.
+Run `./manjaro-upgrade/verify.sh` to see what's missing, then configure Timeshift accordingly.
 
 ## Related Resources
 
