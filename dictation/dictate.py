@@ -53,7 +53,7 @@ def animate_recording():
     MAX_WAV_SIZE_BYTES = MAX_SIZE_BYTES * OGG_COMPRESSION_RATIO
     MAX_DURATION_SEC = MAX_WAV_SIZE_BYTES / BYTES_PER_SEC  # ~2730 seconds (~45.5 min)
 
-    padding = " " * 9  # 2 columns less than circle padding
+    padding = " " * 7  # adjusted for language indicator
 
     # Reserve space for: timer + blank + status + blank + legend
     sys.stderr.write(f"\n\n\n")
@@ -132,8 +132,9 @@ def animate_recording():
         # Line 1: Timer, percentage, remaining (left aligned with small indent)
         timer_line = f"   {elapsed_color}{elapsed_min:02d}:{elapsed_sec:02d}{RESET}   {pct_color}{pct_str}{RESET}   {remaining_color}~{remaining_min:02d}:{remaining_sec_display:02d}{RESET}"
 
-        # Line 3 (skip line 2 for spacing): Status with animation (centered under mic)
-        status_line = f"{padding}{RED}Listening{dot_cycle[dot_index]}{RESET}"
+        # Line 3 (skip line 2 for spacing): Status with animation and language
+        lang_display = DEFAULT_LANGUAGE.upper()
+        status_line = f"{padding}{RED}Listening{dot_cycle[dot_index]}{RESET} {BOLD}[{lang_display}]{RESET}"
 
         # Write timer line (line 1)
         sys.stderr.write(f"\r{timer_line}\033[K")
@@ -162,14 +163,14 @@ def animate_uploading():
     # Clear the entire screen and redraw
     sys.stderr.write("\033[2J")  # Clear screen
     sys.stderr.write("\033[H")   # Move cursor to home position
-    
+
     # Show green circle
     show_recording_indicator(GREEN)
-    
+
     # Just add blank lines for UP position (no static text)
-    padding = " " * 9  # 2 columns less than circle padding
+    padding = " " * 7  # adjusted for language indicator
     sys.stderr.write(f"\n\n")
-    
+
     # Show the legend again
     legend = f"""
 
@@ -186,13 +187,16 @@ def animate_uploading():
 """
     sys.stderr.write(legend)
     sys.stderr.flush()
-    
+
     # Move cursor back to UP line for animation
-    sys.stderr.write("\033[11A")  # Move up 11 lines (adjusted for P legend line)
-    
+    sys.stderr.write("\033[10A")  # Move up 10 lines (one less to position transcribing lower)
+
+    # Determine language for display (P key forces Polish)
+    display_lang = "PL" if key_pressed in ('p', 'P') else DEFAULT_LANGUAGE.upper()
+
     for i in range(20):  # Max 10 seconds of animation
         for dots in ["   ", ".  ", ".. ", "..."]:
-            sys.stderr.write(f"\r{padding}{GREEN}Transcribing{dots}{RESET}")
+            sys.stderr.write(f"\r{padding}{GREEN}Transcribing{dots}{RESET} {BOLD}[{display_lang}]{RESET}")
             sys.stderr.flush()
             time.sleep(0.5)
             if upload_done.is_set():
