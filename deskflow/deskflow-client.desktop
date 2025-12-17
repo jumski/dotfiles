@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Deskflow Client
+Comment=Connect to Deskflow server
+Exec=deskflow-client pc
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
