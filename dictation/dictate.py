@@ -413,9 +413,13 @@ except KeyboardInterrupt:
     upload_thread.daemon = True
     upload_thread.start()
 
+    # Define paths upfront so error handlers can use them
+    F_ogg = os.path.join("/tmp", f"dictate-{stamp}.ogg")
+    F_nas = os.path.join(RECORD_DIR, f"{stamp}.ogg")
+    nas_saved = False  # Track if we saved to NAS yet
+
     try:
         # Convert WAV to OGG (in /tmp for speed)
-        F_ogg = os.path.join("/tmp", f"dictate-{stamp}.ogg")
         subprocess.run([
             "ffmpeg", "-y", "-i", F_wav,
             "-acodec", "libvorbis", "-q:a", "4",
@@ -427,9 +431,12 @@ except KeyboardInterrupt:
         with open(F_ogg, "rb") as f:
             file_data = f.read()
 
+        # Save OGG to NAS BEFORE transcription (so recording is safe even if API fails)
+        shutil.copy(F_ogg, F_nas)
+        nas_saved = True
+
         # Determine language - 'P' key forces Polish, otherwise use env var or default
         transcribe_language = "pl" if key_pressed in ('p', 'P') else DEFAULT_LANGUAGE
-        err_print(f"\n[DEBUG] key_pressed={repr(key_pressed)}, language={transcribe_language}\n")
 
         # Use the selected transcription backend with OGG
         transcript = transcribe_func(file_data, "audio/ogg", "out.ogg", language=transcribe_language)
@@ -437,11 +444,7 @@ except KeyboardInterrupt:
         time.sleep(0.1)  # Let animation clear
         print(transcript)
 
-        # Save OGG to NAS permanently
-        F_nas = os.path.join(RECORD_DIR, f"{stamp}.ogg")
-        shutil.copy(F_ogg, F_nas)
-
-        # Save transcript to file
+        # Save transcript to file (recording already saved above)
         txt_file = F_nas.replace('.ogg', '.txt')
         with open(txt_file, 'w') as f:
             f.write(transcript)
@@ -467,27 +470,31 @@ except KeyboardInterrupt:
     except KeyboardInterrupt:
         upload_done.set()
         err_print("\nUpload aborted!\n")
-        err_print(f"Recording kept at: {F_wav}\n")
-        err_print(f"Retry later with: dictate --retry '{F_wav}'\n")
+        retry_path = F_nas if nas_saved else F_wav
+        err_print(f"Recording saved at: {retry_path}\n")
+        err_print(f"Retry later with: dictate --retry '{retry_path}'\n")
         sys.exit(1)
     except ValueError as e:
         upload_done.set()
         err_print(f"\nConfiguration error: {e}\n")
-        err_print(f"Recording kept at: {F_wav}\n")
-        err_print(f"Retry later with: dictate --retry '{F_wav}'\n")
+        retry_path = F_nas if nas_saved else F_wav
+        err_print(f"Recording saved at: {retry_path}\n")
+        err_print(f"Retry later with: dictate --retry '{retry_path}'\n")
         sys.exit(1)
     except requests.exceptions.HTTPError as e:
         upload_done.set()
         err_print(f"\nHTTP Error: {e}\n")
         err_print(f"Response: {e.response.text}\n")
-        err_print(f"Recording kept at: {F_wav}\n")
-        err_print(f"Retry later with: dictate --retry '{F_wav}'\n")
+        retry_path = F_nas if nas_saved else F_wav
+        err_print(f"Recording saved at: {retry_path}\n")
+        err_print(f"Retry later with: dictate --retry '{retry_path}'\n")
         sys.exit(1)
     except Exception as e:
         upload_done.set()
         err_print(f"\nUpload error: {e}\n")
-        err_print(f"Recording kept at: {F_wav}\n")
-        err_print(f"Retry later with: dictate --retry '{F_wav}'\n")
+        retry_path = F_nas if nas_saved else F_wav
+        err_print(f"Recording saved at: {retry_path}\n")
+        err_print(f"Retry later with: dictate --retry '{retry_path}'\n")
         sys.exit(1)
 finally:
     # Temp files are already cleaned up in try block on success
