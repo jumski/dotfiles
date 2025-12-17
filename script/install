@@ -80,3 +80,10 @@ echo
 # Check for outdated packages
 log_section "Checking for outdated packages"
 script/check_outdated_packages || true  # Don't fail install if updates are available
+
+### Run verification scripts (run all, don't stop on failures)
+log_section "Running verification checks"
+for verifier in $(find . -executable -name verify.sh); do
+  log_section "${verifier}"
+  sh -c "${verifier}" || true
+done
