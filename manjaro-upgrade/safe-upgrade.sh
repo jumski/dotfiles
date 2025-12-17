@@ -11,6 +11,34 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}=== Manjaro Safe Upgrade ===${NC}"
 echo ""
 
+# Generate recovery gist
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+GIST_SCRIPT="${SCRIPT_DIR}/generate-recovery-gist.sh"
+if [[ -x "$GIST_SCRIPT" ]]; then
+    echo -e "${YELLOW}Generating recovery gist...${NC}"
+    "$GIST_SCRIPT"
+    GIST_FILE="${SCRIPT_DIR}/$(hostname)-upgrade-recovery.md"
+    echo ""
+    echo -e "${YELLOW}╔════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${YELLOW}║                                                                ║${NC}"
+    echo -e "${YELLOW}║   ⚠️  IMPORTANT: SAVE YOUR RECOVERY GIST BEFORE PROCEEDING ⚠️   ║${NC}"
+    echo -e "${YELLOW}║                                                                ║${NC}"
+    echo -e "${YELLOW}║   Upload to GitHub Gist, send to phone, or save somewhere     ║${NC}"
+    echo -e "${YELLOW}║   accessible OUTSIDE this machine in case GRUB breaks!        ║${NC}"
+    echo -e "${YELLOW}║                                                                ║${NC}"
+    echo -e "${YELLOW}║   File: ${GIST_FILE}${NC}"
+    echo -e "${YELLOW}║                                                                ║${NC}"
+    echo -e "${YELLOW}╚════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    read -p "Have you saved the recovery gist? [y/N] " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${RED}Please save the recovery gist first, then run safe-upgrade again.${NC}"
+        exit 1
+    fi
+    echo ""
+fi
+
 # Check if running as root
 if [[ $EUID -eq 0 ]]; then
     echo -e "${RED}ERROR: Don't run as root. Script will use sudo when needed.${NC}"
