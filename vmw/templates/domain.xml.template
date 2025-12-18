@@ -1,0 +1,72 @@
+<domain type='kvm'>
+  <name>{{VM_NAME}}</name>
+  <memory unit='GiB'>4</memory>
+  <vcpu>4</vcpu>
+  <os>
+    <type arch='x86_64'>hvm</type>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+  <cpu mode='host-passthrough'/>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+
+  <!-- Memory backing required for virtiofs -->
+  <memoryBacking>
+    <source type='memfd'/>
+    <access mode='shared'/>
+  </memoryBacking>
+
+  <devices>
+    <!-- Main disk (linked clone) -->
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='{{DISK_PATH}}'/>
+      <target dev='vda' bus='virtio'/>
+    </disk>
+
+    <!-- Cloud-init ISO -->
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='{{CLOUDINIT_ISO}}'/>
+      <target dev='sda' bus='sata'/>
+      <readonly/>
+    </disk>
+
+    <!-- Virtiofs: worktree mount -->
+    <filesystem type='mount' accessmode='passthrough'>
+      <driver type='virtiofs'/>
+      <source socket='{{VIRTIOFS_REPO_SOCKET}}'/>
+      <target dir='repo'/>
+    </filesystem>
+
+    <!-- Virtiofs: secrets mount -->
+    <filesystem type='mount' accessmode='passthrough'>
+      <driver type='virtiofs'/>
+      <source socket='{{VIRTIOFS_SECRETS_SOCKET}}'/>
+      <target dir='secrets'/>
+    </filesystem>
+
+    <!-- Network: bridged -->
+    <interface type='bridge'>
+      <source bridge='{{BRIDGE_NAME}}'/>
+      <model type='virtio'/>
+    </interface>
+
+    <!-- Console -->
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+
+    <!-- Graphics (optional, for debugging) -->
+    <graphics type='vnc' port='-1' autoport='yes' listen='127.0.0.1'/>
+  </devices>
+</domain>

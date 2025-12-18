@@ -1,0 +1,82 @@
+#cloud-config
+
+hostname: {{VM_NAME}}
+manage_etc_hosts: true
+
+users:
+  - name: claude
+    uid: 1000
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - {{SSH_PUBLIC_KEY}}
+
+package_update: true
+package_upgrade: false
+
+packages:
+  - avahi-daemon
+  - git
+  - curl
+  - build-essential
+
+runcmd:
+  # Enable avahi for mDNS
+  - systemctl enable --now avahi-daemon
+
+  # Create mount points
+  - mkdir -p /home/claude/repo
+  - mkdir -p /home/claude/.secrets
+  - chown claude:claude /home/claude/repo /home/claude/.secrets
+
+  # Mount virtiofs filesystems
+  - mount -t virtiofs repo /home/claude/repo
+  - mount -t virtiofs secrets /home/claude/.secrets -o ro
+
+  # Add mounts to fstab for persistence
+  - echo 'repo /home/claude/repo virtiofs defaults 0 0' >> /etc/fstab
+  - echo 'secrets /home/claude/.secrets virtiofs ro 0 0' >> /etc/fstab
+
+  # Install Node.js 24 via nodesource
+  - curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
+  - apt-get install -y nodejs
+
+  # Install Claude Code globally
+  - npm install -g @anthropic-ai/claude-code
+
+  # Add secrets sourcing to claude's profile
+  - echo 'if [ -f ~/.secrets/secrets.env ]; then set -a; source ~/.secrets/secrets.env; set +a; fi' >> /home/claude/.bashrc
+
+write_files:
+  - path: /etc/systemd/system/virtiofs-repo.mount
+    content: |
+      [Unit]
+      Description=Mount virtiofs repo share
+      After=local-fs.target
+
+      [Mount]
+      What=repo
+      Where=/home/claude/repo
+      Type=virtiofs
+      Options=defaults
+
+      [Install]
+      WantedBy=multi-user.target
+
+  - path: /etc/systemd/system/virtiofs-secrets.mount
+    content: |
+      [Unit]
+      Description=Mount virtiofs secrets share
+      After=local-fs.target
+
+      [Mount]
+      What=secrets
+      Where=/home/claude/.secrets
+      Type=virtiofs
+      Options=ro
+
+      [Install]
+      WantedBy=multi-user.target
+
+final_message: "VMW instance {{VM_NAME}} ready after $UPTIME seconds"
