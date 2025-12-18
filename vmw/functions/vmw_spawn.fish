@@ -99,19 +99,20 @@ function vmw_spawn --description "Spawn a VM for a worktree"
     echo "Starting virtiofsd for worktree..."
     set -l repo_socket $instance_dir/virtiofsd-repo.sock
     set -l secrets_socket $instance_dir/virtiofsd-secrets.sock
+    set -l virtiofsd_bin (_vmw_virtiofsd_path)
 
     # Kill any existing virtiofsd for this VM
     pkill -f "virtiofsd.*$repo_socket" 2>/dev/null
     pkill -f "virtiofsd.*$secrets_socket" 2>/dev/null
 
     # Start virtiofsd for repo (writable)
-    virtiofsd --socket-path=$repo_socket \
+    $virtiofsd_bin --socket-path=$repo_socket \
         --shared-dir=$worktree_path \
         --cache=auto &
     set -l repo_pid $last_pid
 
     # Start virtiofsd for secrets (read-only would be ideal but virtiofsd doesn't support it directly)
-    virtiofsd --socket-path=$secrets_socket \
+    $virtiofsd_bin --socket-path=$secrets_socket \
         --shared-dir=$secrets_dir \
         --cache=auto &
     set -l secrets_pid $last_pid

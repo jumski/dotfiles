@@ -36,7 +36,10 @@ source $functions_dir/vmw_check_deps.fish
 # Test: returns failure when virtiofsd missing
 @test "vmw_check_deps fails when virtiofsd missing" (
     function which
-        test "$argv[1]" != "virtiofsd"
+        return 0
+    end
+    function _vmw_virtiofsd_exists
+        return 1
     end
     vmw_check_deps 2>/dev/null
     echo $status
@@ -46,6 +49,9 @@ source $functions_dir/vmw_check_deps.fish
 @test "vmw_check_deps lists missing deps" (
     function which
         test "$argv[1]" = "virsh"; or test "$argv[1]" = "qemu-img"
+    end
+    function _vmw_virtiofsd_exists
+        return 1
     end
     vmw_check_deps 2>&1 | grep -c "Missing"
 ) -eq 1

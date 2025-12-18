@@ -1,5 +1,6 @@
 libvirt
 qemu-img
+qemu-full
 virtiofsd
 cdrtools
 nss-mdns
