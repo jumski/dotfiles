@@ -16,8 +16,7 @@ opt.hidden = true                                              -- 1. The current
 -- 2. When a background buffer becomes current again, marks and undo-history are remembered
 opt.sessionoptions = "buffers,winsize,tabpages,winpos,winsize" -- session saving options
 
--- opt.clipboard = "unnamedplus"                               -- DISABLED: keeps vim registers separate from system clipboard
-                                                               -- Use <leader>p for system clipboard paste, "+y for explicit clipboard yank
+-- clipboard config in core/clipboard.lua (registers kept separate from system clipboard)
 
 --- Performance
 opt.ttyfast = true    -- indicates a fast terminal connection

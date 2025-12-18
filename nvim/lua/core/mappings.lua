@@ -49,23 +49,4 @@ map('i', '<C-s>', '<Esc>:update<CR>', default_opts)
 -- this allows all window commands in insert mode and i'm not accidentally deleting words anymore :-)"
 map('i', '<C-w>', '<C-o><C-w>', default_opts)
 
--- easier pasting from OS
--- Paste from system clipboard on new line (xclip locally, OSC 52 over SSH)
-vim.keymap.set('n', '<leader>p', function()
-  local content
-  if vim.env.SSH_TTY then
-    vim.fn.system('tmux refresh-client -l')
-    vim.cmd('sleep 100m')
-    content = vim.fn.system('tmux save-buffer -')
-  else
-    content = vim.fn.system('xclip -o -sel clipboard 2>/dev/null')
-    if content == '' then
-      content = vim.fn.system('xclip -o -sel primary 2>/dev/null')
-    end
-  end
-  if content ~= '' then
-    vim.cmd('normal! o')
-    vim.api.nvim_put(vim.split(content, '\n'), 'c', false, true)
-  end
-end, { noremap = true, silent = true, desc = 'Paste from system clipboard on new line' })
--- map('n', '<leader>c', '"+c', default_opts) -- conflicts with new-tab
+-- clipboard mappings moved to core/clipboard.lua
