@@ -1,4 +1,5 @@
 - link:
     ~/.claude/commands: claude/commands
     ~/.claude/settings.json: claude/settings.json
+    ~/.claude/file-suggestion.sh: claude/file-suggestion.sh
     ~/.claude/skills: claude/skills

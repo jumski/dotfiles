@@ -115,6 +115,10 @@
     "command": "/home/jumski/.dotfiles/claude/statusline.sh",
     "padding": 0
   },
+  "fileSuggestion": {
+    "type": "command",
+    "command": "/home/jumski/.claude/file-suggestion.sh"
+  },
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true,
     "superpowers@superpowers-dev": true
