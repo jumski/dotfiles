@@ -9,6 +9,9 @@ QUERY=$(jq -r '.query // ""')
 # Use project dir from env, fallback to pwd
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
 
+# cd into project dir so rg outputs relative paths
+cd "$PROJECT_DIR" || exit 1
+
 # Use rg to list files:
 # --files: list files instead of searching content
 # --follow: follow symlinks (critical for .notes symlink)
@@ -28,6 +31,6 @@ rg --files \
   --glob '!build' \
   --glob '!coverage' \
   --glob '!.nx' \
-  "$PROJECT_DIR" 2>/dev/null | \
+  . 2>/dev/null | \
   fzf --filter "$QUERY" | \
   head -15
