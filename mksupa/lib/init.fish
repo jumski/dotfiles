@@ -153,18 +153,33 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     set_color green
     echo "▶  Starting Supabase..."
     set_color normal
+    set -l supabase_start_failed 0
     eval "$npx_cmd start"
     if test $status -ne 0
+        set supabase_start_failed 1
+        echo ""
         set_color red
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "✗ Failed to start Supabase"
+        echo "  (Is another Supabase instance already running?)"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         set_color normal
-        return 1
+        echo ""
+        set_color yellow
+        echo "⚠  Continuing with project setup..."
+        set_color normal
     end
 
     echo ""
-    set_color green; set_color --bold
-    echo "✨ Supabase project initialized and started!"
-    set_color normal
+    if test $supabase_start_failed -eq 0
+        set_color green; set_color --bold
+        echo "✨ Supabase project initialized and started!"
+        set_color normal
+    else
+        set_color yellow; set_color --bold
+        echo "✨ Supabase project initialized (but not started)"
+        set_color normal
+    end
 
     # Send tmux notification
     if test -n "$TMUX"
