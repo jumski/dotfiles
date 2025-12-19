@@ -4,6 +4,10 @@ local fn = vim.fn             -- call Vim functions
 local g = vim.g               -- global variables
 local opt = vim.opt           -- global/buffer/windows-scoped options
 
+-- Set leader keys early (before any mappings are defined)
+g.mapleader = ','
+g.maplocalleader = ','
+
 opt.shell = "/bin/sh"         -- vim must use POSIX shell and fish is not POSIX
 
 --- General

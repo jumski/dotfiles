@@ -63,14 +63,21 @@ set -g set-clipboard external
 bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "~/.dotfiles/tmux/scripts/copy-to-clipboard.sh"
 ```
 
-### Neovim (`~/.dotfiles/nvim/lua/core/clipboard.lua`)
+### Neovim
 
-Clipboard provider configuration:
+**Leader key** (`~/.dotfiles/nvim/lua/core/settings.lua`):
+```lua
+g.mapleader = ','
+g.maplocalleader = ','
+```
+Note: Leader must be set before clipboard.lua loads (load order in init.lua matters).
+
+**Clipboard provider** (`~/.dotfiles/nvim/lua/core/clipboard.lua`):
 - **Copy**: Uses `tmux load-buffer -w -` (writes to tmux buffer + OSC 52)
 - **Paste**: Tries xclip first (X CLIPBOARD), falls back to tmux buffer
 
-Key mapping:
-- `<leader>p` - Paste from system clipboard on new line (uses `"+p`)
+**Key mapping**:
+- `<leader>p` (`,p`) - Paste from system clipboard on new line (uses `:put +`)
 
 ## Troubleshooting
 
@@ -95,3 +102,15 @@ tmux save-buffer -
 ```vim
 :lua print(vim.fn.system('xclip -o -sel clipboard'))
 ```
+
+### Check + register content
+```vim
+:echo getreg('+')
+:registers +
+```
+
+### Verify mapping is loaded
+```vim
+:verbose map <leader>p
+```
+Should show mapping from `clipboard.lua`. If "No mapping found", check load order in init.lua.
