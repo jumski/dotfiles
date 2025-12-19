@@ -1,8 +1,0 @@
-#!/bin/bash
-/home/jumski/.dotfiles/bin/setup_input_devices
-gnome-terminal --maximize --hide-menubar &
-$BROWSER &
-chromium --incognito &
-slack &
-discord &
-signal-desktop &

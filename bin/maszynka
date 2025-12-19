@@ -1,6 +1,0 @@
-#!/bin/bash
-
-pdf_path=$(cd ~/Dropbox/maszynki/$1 && zenity --file-selection)
-echo "$pdf_path"
-
-evince "$pdf_path"
