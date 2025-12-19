@@ -1,4 +1,5 @@
 -- Clipboard Configuration
+-- See CLIPBOARD.md for full documentation
 --
 -- DESIGN: Vim registers are kept SEPARATE from system clipboard.
 -- This prevents external copies (browser, etc.) from overwriting vim yanks.
@@ -14,15 +15,20 @@
 --   - Loses linewise/charwise metadata on paste
 --
 -- Provider (for explicit "+ register access):
---   Local:  tmux buffer with OSC 52 sync
---   SSH:    OSC 52 passthrough via tmux
+--   Copy:  tmux buffer with OSC 52 sync
+--   Paste: xclip first (for Firefox/Kitty), fallback to tmux buffer
 
 -- Clipboard provider for "+ and "* registers
 if vim.env.TMUX ~= nil then
   local copy = {'tmux', 'load-buffer', '-w', '-'}
-  local paste = {'bash', '-c', 'tmux refresh-client -l && sleep 0.05 && tmux save-buffer -'}
+  -- Paste: try xclip first (for Firefox/Kitty copies), fall back to tmux buffer
+  local paste = {'bash', '-c', [[
+    content=$(xclip -o -sel clipboard 2>/dev/null)
+    [ -z "$content" ] && content=$(tmux save-buffer - 2>/dev/null)
+    echo -n "$content"
+  ]]}
   vim.g.clipboard = {
-    name = 'tmux',
+    name = 'tmux+xclip',
     copy = {['+'] = copy, ['*'] = copy},
     paste = {['+'] = paste, ['*'] = paste},
     cache_enabled = 0,
@@ -42,21 +48,9 @@ else
 end
 
 -- <leader>p: Paste from system clipboard on new line
--- Uses xclip locally, OSC 52 over SSH
-vim.keymap.set('n', '<leader>p', function()
-  local content
-  if vim.env.SSH_TTY then
-    vim.fn.system('tmux refresh-client -l')
-    vim.cmd('sleep 100m')
-    content = vim.fn.system('tmux save-buffer -')
-  else
-    content = vim.fn.system('xclip -o -sel clipboard 2>/dev/null')
-    if content == '' then
-      content = vim.fn.system('xclip -o -sel primary 2>/dev/null')
-    end
-  end
-  if content ~= '' then
-    vim.cmd('normal! o')
-    vim.api.nvim_put(vim.split(content, '\n'), 'c', false, true)
-  end
-end, { noremap = true, silent = true, desc = 'Paste from system clipboard on new line' })
+-- Uses :put + which explicitly pastes the + register on a new line
+vim.keymap.set('n', '<leader>p', ':put +<CR>', {
+  noremap = true,
+  silent = true,
+  desc = 'Paste from system clipboard on new line'
+})

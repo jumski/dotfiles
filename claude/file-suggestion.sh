@@ -1,7 +1,6 @@
 #!/bin/bash
 # Custom file suggestion script for Claude Code
-# Uses rg + fzf for reliable symlink support and fuzzy matching
-# Includes .notes and .claude folders despite gitignore
+# Uses rg + fzf for fuzzy matching and symlink support
 
 # Parse JSON input to get query
 QUERY=$(jq -r '.query // ""')
@@ -12,25 +11,11 @@ PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
 # cd into project dir so rg outputs relative paths
 cd "$PROJECT_DIR" || exit 1
 
-# Use rg to list files:
-# --files: list files instead of searching content
-# --follow: follow symlinks (critical for .notes symlink)
-# --hidden: include dotfiles
-# --no-ignore-vcs: ignore .gitignore (we control exclusions manually)
-# --glob '!pattern': exclude specific patterns we don't want
-rg --files \
-  --follow \
-  --hidden \
-  --no-ignore-vcs \
-  --glob '!.git' \
-  --glob '!node_modules' \
-  --glob '!*.pyc' \
-  --glob '!__pycache__' \
-  --glob '!.cache' \
-  --glob '!dist' \
-  --glob '!build' \
-  --glob '!coverage' \
-  --glob '!.nx' \
-  . 2>/dev/null | \
-  fzf --filter "$QUERY" | \
-  head -15
+{
+  # Main search - respects .gitignore, includes hidden files, follows symlinks
+  rg --files --follow --hidden . 2>/dev/null
+
+  # Additional paths - include even if gitignored (uncomment and customize)
+  [ -e .claude ] && rg --files --follow --hidden --no-ignore-vcs .claude 2>/dev/null
+  [ -e .notes ] && rg --files --follow --hidden --no-ignore-vcs .notes 2>/dev/null
+} | sort -u | fzf --filter "$QUERY" | head -15
