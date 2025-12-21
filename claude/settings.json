@@ -1,4 +1,8 @@
 {
+  "fileSuggestion": {
+    "type": "command",
+    "command": "~/.claude/file-suggestion.sh"
+  },
   "permissions": {
     "allow": [
       "Bash(script/test:*)",
@@ -115,13 +119,10 @@
     "command": "/home/jumski/.dotfiles/claude/statusline.sh",
     "padding": 0
   },
-  "fileSuggestion": {
-    "type": "command",
-    "command": "~/.claude/file-suggestion.sh"
-  },
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true,
-    "superpowers@superpowers-dev": true
+    "superpowers@superpowers-dev": true,
+    "dev-browser@dev-browser-marketplace": true
   },
   "alwaysThinkingEnabled": true
 }
