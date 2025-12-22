@@ -76,8 +76,10 @@ Note: Leader must be set before clipboard.lua loads (load order in init.lua matt
 - **Copy**: Uses `tmux load-buffer -w -` (writes to tmux buffer + OSC 52)
 - **Paste**: Tries xclip first (X CLIPBOARD), falls back to tmux buffer
 
-**Key mapping**:
-- `<leader>p` (`,p`) - Paste from system clipboard on new line (uses `:put +`)
+**Key mappings**:
+- `,p` (`<leader>p`) - Paste from system clipboard at cursor
+- `gp` - Paste from system clipboard on new line below
+- `gP` - Paste from system clipboard on new line above
 
 ## Troubleshooting
 

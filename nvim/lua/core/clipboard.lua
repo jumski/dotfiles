@@ -47,10 +47,24 @@ else
   }
 end
 
--- <leader>p: Paste from system clipboard on new line
--- Uses :put + which explicitly pastes the + register on a new line
-vim.keymap.set('n', '<leader>p', ':put +<CR>', {
+-- System clipboard paste mappings
+-- <leader>p: Paste at cursor
+vim.keymap.set('n', '<leader>p', '"+p', {
   noremap = true,
   silent = true,
-  desc = 'Paste from system clipboard on new line'
+  desc = 'Paste from system clipboard at cursor'
+})
+
+-- gp: Paste on new line below
+vim.keymap.set('n', 'gp', ':put +<CR>', {
+  noremap = true,
+  silent = true,
+  desc = 'Paste from system clipboard on new line below'
+})
+
+-- gP: Paste on new line above
+vim.keymap.set('n', 'gP', ':put! +<CR>', {
+  noremap = true,
+  silent = true,
+  desc = 'Paste from system clipboard on new line above'
 })
