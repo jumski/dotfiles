@@ -121,7 +121,6 @@
   },
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true,
-    "superpowers@superpowers-dev": true,
     "dev-browser@dev-browser-marketplace": true
   },
   "alwaysThinkingEnabled": true
