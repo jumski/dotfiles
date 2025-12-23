@@ -35,6 +35,28 @@ as_user() {
 
 step "Checking vmw setup..."
 
+# --- 0. Check required dependencies ---
+REQUIRED_DEPS=(virsh qemu-img qemu-system-x86_64 genisoimage wget)
+MISSING_DEPS=()
+
+for dep in "${REQUIRED_DEPS[@]}"; do
+    if ! command -v "$dep" &>/dev/null; then
+        MISSING_DEPS+=("$dep")
+    fi
+done
+
+# virtiofsd is installed at /usr/lib/virtiofsd on Arch/Manjaro
+if ! command -v virtiofsd &>/dev/null && [[ ! -x /usr/lib/virtiofsd ]]; then
+    MISSING_DEPS+=("virtiofsd")
+fi
+
+if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
+    error "Missing dependencies: ${MISSING_DEPS[*]}"
+    echo "    Install with: yay -S ${MISSING_DEPS[*]}"
+    exit 1
+fi
+info "All dependencies available"
+
 # --- 1. Enable KVM modules auto-load ---
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KVM_CONF_SRC="${SCRIPT_DIR}/kvm.conf"
@@ -137,9 +159,16 @@ if virsh net-info default &>/dev/null; then
         info "libvirt default network started"
     fi
 else
-    warn "libvirt default network does not exist"
-    echo "    Run: virsh net-define /usr/share/libvirt/networks/default.xml"
-    echo "    Then: virsh net-start default && virsh net-autostart default"
+    warn "libvirt default network does not exist, creating..."
+    if [[ -f /usr/share/libvirt/networks/default.xml ]]; then
+        virsh net-define /usr/share/libvirt/networks/default.xml
+        virsh net-start default
+        virsh net-autostart default
+        info "libvirt default network created and started"
+    else
+        error "Cannot find /usr/share/libvirt/networks/default.xml"
+        echo "    Please create the default network manually"
+    fi
 fi
 
 # --- 9. Check for SSH key ---
@@ -150,16 +179,37 @@ else
     echo "    Generate one with: ssh-keygen -t ed25519"
 fi
 
+# --- 10. Download Debian golden image ---
+VMW_GOLDEN_IMAGE="${VMW_CONFIG_DIR}/golden-image.qcow2"
+DEBIAN_IMAGE_URL="https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2"
+
+if [[ -f "$VMW_GOLDEN_IMAGE" ]]; then
+    info "Golden image already exists: $VMW_GOLDEN_IMAGE"
+else
+    step "Downloading Debian 12 cloud image..."
+    as_user "wget -O '$VMW_GOLDEN_IMAGE' '$DEBIAN_IMAGE_URL'"
+    if [[ $? -ne 0 ]]; then
+        error "Failed to download Debian image"
+        exit 1
+    fi
+    info "Downloaded golden image"
+
+    # Resize to 20GB
+    step "Resizing image to 20GB..."
+    as_user "qemu-img resize '$VMW_GOLDEN_IMAGE' 20G"
+    info "Golden image resized to 20GB"
+fi
+
 # --- Summary ---
 step "Setup summary"
 echo ""
 echo "Config directory:  $VMW_CONFIG_DIR"
 echo "Secrets file:      $VMW_SECRETS_FILE"
 echo "Instances dir:     $VMW_INSTANCES_DIR"
+echo "Golden image:      $VMW_GOLDEN_IMAGE"
 echo ""
 echo "Next steps:"
 echo "  1. Log out and back in (if added to libvirt group)"
 echo "  2. Edit $VMW_SECRETS_FILE with your API keys"
-echo "  3. Run: vmw setup    (to download Debian golden image)"
-echo "  4. Run: vmw spawn /path/to/worktree"
+echo "  3. Run: vmw spawn /path/to/worktree"
 echo ""

@@ -19,8 +19,6 @@ function vmw --description "VM Worktree Manager - run Claude Code safely in KVM 
             vmw_ssh $args
         case destroy rm
             vmw_destroy $args
-        case setup
-            vmw_setup $args
         case '*'
             echo "Unknown command: $cmd" >&2
             __vmw_help >&2
@@ -37,7 +35,8 @@ function __vmw_help
     echo "  stop <name>    Stop VM gracefully"
     echo "  ssh <name>     SSH into VM (with agent forwarding)"
     echo "  destroy <name> Stop and remove VM"
-    echo "  setup          One-time setup (create golden image)"
+    echo ""
+    echo "Setup: Run vmw/install.sh (requires sudo)"
     echo ""
     echo "Examples:"
     echo "  vmw spawn /path/to/worktree"
