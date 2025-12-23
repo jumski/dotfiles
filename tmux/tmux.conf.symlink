@@ -1,6 +1,9 @@
 # Core settings
 source-file ~/.dotfiles/tmux/settings.conf
 
+# SSH agent (static socket path for systemd-managed agent)
+source-file ~/.dotfiles/tmux/ssh-agent.conf
+
 # Navigation configuration (windows, panes, splits, resizing)
 source-file ~/.dotfiles/tmux/navigation.conf
 

@@ -1,0 +1,6 @@
+- shell:
+    - [mkdir -p ~/.config/systemd/user ~/.config/environment.d, Creating config directories]
+
+- link:
+    ~/.config/systemd/user/ssh-agent.service: ssh-agent/ssh-agent.service
+    ~/.config/environment.d/ssh_auth_socket.conf: ssh-agent/ssh_auth_socket.conf
