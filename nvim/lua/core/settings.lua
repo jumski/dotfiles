@@ -60,6 +60,7 @@ opt.sidescrolloff = 5 -- always show at least n-chars before and after cursor
 opt.wildmenu = true   -- change behaviour of <TAB> completion of commands
 -- to similar to bash completion
 opt.wildmode = "list:longest,list:full"
+opt.wildoptions = "fuzzy,pum"  -- fuzzy matching + popup menu (requires nvim 0.11+)
 opt.colorcolumn = "80" -- back to the 80s XD
 
 --- Typing / characters / matching
