@@ -106,6 +106,22 @@ else
     info "avahi-daemon service enabled and started"
 fi
 
+# --- 4b. Enable avahi reflector for VM mDNS ---
+AVAHI_CONF="/etc/avahi/avahi-daemon.conf"
+if grep -q '^enable-reflector=yes' "$AVAHI_CONF" 2>/dev/null; then
+    info "avahi reflector is enabled"
+else
+    if grep -q '#enable-reflector=no' "$AVAHI_CONF" 2>/dev/null; then
+        sed -i 's/#enable-reflector=no/enable-reflector=yes/' "$AVAHI_CONF"
+    elif grep -q 'enable-reflector=no' "$AVAHI_CONF" 2>/dev/null; then
+        sed -i 's/enable-reflector=no/enable-reflector=yes/' "$AVAHI_CONF"
+    else
+        echo "enable-reflector=yes" >> "$AVAHI_CONF"
+    fi
+    systemctl restart avahi-daemon
+    info "avahi reflector enabled (for VM mDNS resolution)"
+fi
+
 # --- 5. Check nsswitch.conf for mDNS ---
 if grep -q 'mdns_minimal' /etc/nsswitch.conf; then
     info "nsswitch.conf has mdns_minimal configured"
@@ -149,15 +165,13 @@ EOF
 fi
 
 # --- 8. Check libvirt default network ---
-if virsh net-info default &>/dev/null; then
-    if virsh net-info default 2>/dev/null | grep -q 'Active:.*yes'; then
-        info "libvirt default network is active"
-    else
-        warn "libvirt default network exists but is not active, starting..."
-        virsh net-start default
-        virsh net-autostart default
-        info "libvirt default network started"
-    fi
+if virsh net-list --all 2>/dev/null | grep -q 'default.*active'; then
+    info "libvirt default network is active"
+elif virsh net-list --all 2>/dev/null | grep -q 'default'; then
+    warn "libvirt default network exists but is not active, starting..."
+    virsh net-start default || true
+    virsh net-autostart default || true
+    info "libvirt default network started"
 else
     warn "libvirt default network does not exist, creating..."
     if [[ -f /usr/share/libvirt/networks/default.xml ]]; then
