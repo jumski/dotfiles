@@ -121,7 +121,7 @@
   },
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true,
-    "dev-browser@dev-browser-marketplace": true
-  },
-  "alwaysThinkingEnabled": true
+    "dev-browser@dev-browser-marketplace": true,
+    "code-review@claude-plugins-official": true
+  }
 }
