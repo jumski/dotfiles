@@ -1,2 +1,0 @@
-#!/bin/bash
-ls -cr | head -100 | tail -1

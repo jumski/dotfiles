@@ -1,3 +1,0 @@
-#!/bin/bash
-
-find /home/jumski/work/ -type d -name .git -exec dirname {} \; | fzf --preview '/home/jumski/.dotfiles/bin/preview_readme {}' --preview-window right,65%

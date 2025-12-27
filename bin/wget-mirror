@@ -1,2 +1,0 @@
-#/bin/bash
-echo wget --mirror -p --convert-links -P \$DOWNLOAD_DIR -D \$DOMAIN_WHITELIST \$START_URL

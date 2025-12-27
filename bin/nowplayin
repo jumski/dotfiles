@@ -1,2 +1,0 @@
-#!/bin/bash
-mocp -i | grep SongTitle | awk {'gsub("SongTitle: ", ""); print $0'}

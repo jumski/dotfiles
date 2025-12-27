@@ -1,9 +1,0 @@
-# ~/.local/share/kwin/scripts/exquisite/contents/layouts/
-- link:
-    ~/.local/share/kwin/scripts/exquisite/contents/layouts:
-      path: exquisite/layouts
-      create: true
-      relink: true
-    ~/.local/share/kwin/scripts/exquisite/contents/config/main.xml:
-      create: true
-      path: exquisite/config-main.xml
