@@ -58,7 +58,6 @@ fi
 info "All dependencies available"
 
 # --- 1. Enable KVM modules auto-load ---
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KVM_CONF_SRC="${SCRIPT_DIR}/kvm.conf"
 KVM_CONF_DST="/etc/modules-load.d/kvm.conf"
 
@@ -201,8 +200,7 @@ if [[ -f "$VMW_GOLDEN_IMAGE" ]]; then
     info "Golden image already exists: $VMW_GOLDEN_IMAGE"
 else
     step "Downloading Debian 12 cloud image..."
-    as_user "wget -O '$VMW_GOLDEN_IMAGE' '$DEBIAN_IMAGE_URL'"
-    if [[ $? -ne 0 ]]; then
+    if ! as_user "wget -O '$VMW_GOLDEN_IMAGE' '$DEBIAN_IMAGE_URL'"; then
         error "Failed to download Debian image"
         exit 1
     fi
