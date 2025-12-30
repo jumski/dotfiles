@@ -14,6 +14,7 @@ ORANGE="\033[38;5;208m"
 OPUS_COLOR="\033[38;5;208m"    # Orange for Opus
 SONNET_COLOR="\033[38;5;141m"  # Purple for Sonnet
 HAIKU_COLOR="\033[38;5;123m"   # Cyan for Haiku
+GLM_COLOR="\033[38;5;82m"      # Lime green for GLM
 
 # Read JSON input from stdin
 input=$(cat)
@@ -43,6 +44,12 @@ if [ -n "$MODEL_ID" ]; then
     esac
 else
     MODEL_DISPLAY=$(echo "$input" | jq -r '.model.display_name // "Unknown"')
+fi
+
+# Override for z.ai API
+if [ "$ANTHROPIC_BASE_URL" = "https://api.z.ai/api/anthropic" ]; then
+    MODEL_DISPLAY="GLM 4.7"
+    MODEL_COLOR="$GLM_COLOR"
 fi
 
 # Get transcript path for context calculation
