@@ -21,7 +21,7 @@ function _test_dx_notes_find
     rm -rf $test_dir
     functions -e fzf
 
-    if test $code -eq 0; and string match -q "*/.notes/*" -- $result
+    if test $code -eq 0; and string match -q "*.notes/*" -- $result
         return 0
     end
     return 1

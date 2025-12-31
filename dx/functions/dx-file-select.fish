@@ -59,8 +59,8 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
                 end
             end
 
-            # Execute find and store results
-            set files_list (find $find_args 2>/dev/null)
+            # Execute find and store results, strip ./ prefix
+            set files_list (find $find_args 2>/dev/null | string replace -r '^\./' '')
 
             if test (count $files_list) -gt 0
                 break

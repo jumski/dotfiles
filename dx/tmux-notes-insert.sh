@@ -23,26 +23,29 @@ if [ ! -d "$NOTES_DIR" ] || [ -z "$(find -L "$NOTES_DIR" -name '*.md' 2>/dev/nul
     exit 0
 fi
 
-# Run the fish function to select a note
-selected_note=$(fish -c "
+# Run the fish function to select a note (from notes dir so paths are relative)
+selected_note=$(cd "$NOTES_DIR" && fish -c "
     source ~/.dotfiles/dx/functions/dx-file-select.fish
     dx-file-select \
-        --dirs '$NOTES_DIR' \
+        --dirs . \
         --pattern '*.md' \
         --preview-cmd 'bat --style=numbers,changes --color=always --language=markdown {}' \
-        --preview-window 'right:60%:wrap' \
+        --preview-window 'right:50%:wrap' \
         --prompt 'Select note > '
 ")
 exit_code=$?
 
 # If selection was made, insert it into the pane
 if [ $exit_code -eq 0 ] && [ -n "$selected_note" ]; then
+    # Convert relative path to absolute
+    full_path="$NOTES_DIR/$selected_note"
+
     # Escape to normal mode, then A to append at end of line
     tmux send-keys -t "$target_pane" Escape
     tmux send-keys -t "$target_pane" A
 
     # Load the path into buffer and paste it
-    echo -n "$selected_note" | tmux load-buffer -
+    echo -n "$full_path" | tmux load-buffer -
     tmux paste-buffer -p -t "$target_pane"
 else
     # User cancelled or error occurred
