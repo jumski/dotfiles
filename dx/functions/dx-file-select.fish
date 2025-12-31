@@ -49,8 +49,8 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
             # Expand env variables or use as-is
             set -l dir (eval echo $dir_spec 2>/dev/null)
 
-            # Build find command with exclusions
-            set -l find_args $dir -type f -name $pattern
+            # Build find command with exclusions (-L follows symlinks)
+            set -l find_args -L $dir -type f -name $pattern
 
             # Add exclusions
             if set -q _flag_exclude_dir
