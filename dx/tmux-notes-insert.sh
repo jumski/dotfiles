@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # Insert selected note path into tmux pane
 
-set -e
-
 # Hardcoded notes directory
 NOTES_DIR="$HOME/Code/pgflow-dev/notes"
 
@@ -29,8 +27,9 @@ selected_note=$(cd "$NOTES_DIR" && fish -c "
     dx-file-select \
         --dirs . \
         --pattern '*.md' \
+        --sort-mtime \
         --preview-cmd 'bat --style=numbers,changes --color=always --language=markdown {}' \
-        --preview-window 'right:50%:wrap' \
+        --preview-window 'right:65%' \
         --prompt 'Select note > '
 ")
 exit_code=$?
@@ -47,7 +46,5 @@ if [ $exit_code -eq 0 ] && [ -n "$selected_note" ]; then
     # Load the path into buffer and paste it
     echo -n "$full_path" | tmux load-buffer -
     tmux paste-buffer -p -t "$target_pane"
-else
-    # User cancelled or error occurred
-    tmux display-message "No note selected"
 fi
+# Silent exit if cancelled
