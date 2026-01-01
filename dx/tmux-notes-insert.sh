@@ -36,15 +36,15 @@ exit_code=$?
 
 # If selection was made, insert it into the pane
 if [ $exit_code -eq 0 ] && [ -n "$selected_note" ]; then
-    # Convert relative path to absolute
-    full_path="$NOTES_DIR/$selected_note"
+    # Use .notes/ prefix for relative path
+    relative_path=".notes/$selected_note"
 
     # Escape to normal mode, then A to append at end of line
     tmux send-keys -t "$target_pane" Escape
     tmux send-keys -t "$target_pane" A
 
     # Load the path into buffer and paste it
-    echo -n "$full_path" | tmux load-buffer -
+    echo -n "$relative_path" | tmux load-buffer -
     tmux paste-buffer -p -t "$target_pane"
 fi
 # Silent exit if cancelled
