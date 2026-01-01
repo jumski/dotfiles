@@ -1,4 +1,28 @@
 {
+  "hooks": {
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "command": "bd prime",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bd prime",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(./script/test:*)",
@@ -35,7 +59,9 @@
       "Bash(yay -Qs:*)",
       "Bash(yay -Si:*)",
       "Bash(yay -Ss:*)",
-      "WebFetch(domain:fishshell.com)"
+      "WebFetch(domain:fishshell.com)",
+      "Bash(bd:*)",
+      "Skill(beads:beads)"
     ],
     "deny": []
   }

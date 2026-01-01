@@ -45,6 +45,18 @@ Write tests with `@test` syntax - see [TESTING.md](./TESTING.md)
 Git worktree management with tmux integration:
 - `wt-create`, `wt-switch`, `wt-remove`, `wt-list`
 
+## Issue Tracking (bd/beads)
+
+This project uses **bd (beads)** for issue tracking.
+
+**Quick reference:**
+- `bd ready` - Find unblocked work
+- `bd create "Title" --type task --priority 2` - Create issue
+- `bd close <id>` - Complete work
+- `bd sync` - Sync with git (run at session end)
+
+Run `bd prime` for full workflow context.
+
 ## Development
 
 1. Follow existing patterns
