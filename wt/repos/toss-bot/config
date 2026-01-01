@@ -1,0 +1,10 @@
+# Worktree repository configuration
+REPO_NAME=toss-bot
+
+# Default paths (uncomment to override)
+# BARE_PATH=.bare
+# WORKTREES_PATH=worktrees
+# ENVS_PATH=envs
+
+# Default branch
+DEFAULT_TRUNK=main

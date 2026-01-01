@@ -1,0 +1,7 @@
+#!/bin/bash
+# Pre-remove hook for worktrees
+# This script runs in the worktree directory before removal
+# Add cleanup commands like: docker-compose down, clean up temp files, etc.
+
+echo "Pre-remove hook executed in: $(pwd)"
+# Add your cleanup commands here
