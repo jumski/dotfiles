@@ -160,28 +160,16 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color brblack
     echo "  → Creating bin/start_flow..."
     set_color normal
-    printf '%s\n' \
-        '#!/usr/bin/env bash' \
-        '' \
-        'COUNT=${1:-1}' \
-        'psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" \' \
-        '  -v COUNT="$COUNT" \' \
-        '  -f queries/start_flow.sql' \
-        > "$temp_dir/bin/start_flow"
+    set -l lib_dir (dirname (status --current-filename))
+    set -l templates_dir (realpath "$lib_dir/../templates")
+    cp "$templates_dir/bin/start_flow" "$temp_dir/bin/start_flow"
     chmod +x "$temp_dir/bin/start_flow"
 
     # Create bin/runs script
     set_color brblack
     echo "  → Creating bin/runs..."
     set_color normal
-    printf '%s\n' \
-        '#!/usr/bin/env bash' \
-        '' \
-        'COUNT=${1:-1}' \
-        'psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" \' \
-        '  -v COUNT="$COUNT" \' \
-        '  -f queries/runs.sql' \
-        > "$temp_dir/bin/runs"
+    cp "$templates_dir/bin/runs" "$temp_dir/bin/runs"
     chmod +x "$temp_dir/bin/runs"
 
     # Stage and commit initial files
