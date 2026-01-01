@@ -184,6 +184,53 @@ else
     fi
 fi
 
+# --- 8b. Create bridge for VM mDNS access ---
+# VMs need to be on the same L2 network as host for mDNS (.local) to work
+# This creates a bridge but does NOT activate it (user must do that manually)
+if nmcli connection show br0 &>/dev/null; then
+    info "Bridge br0 already exists"
+else
+    # Find primary ethernet interface (the one currently connected)
+    PRIMARY_IFACE=$(nmcli -t -f DEVICE,TYPE,STATE device status | awk -F: '$2=="ethernet" && $3=="connected" {print $1; exit}')
+
+    if [[ -n "$PRIMARY_IFACE" ]]; then
+        step "Creating bridge br0 for mDNS connectivity..."
+        nmcli connection add type bridge ifname br0 con-name br0
+        nmcli connection add type bridge-slave ifname "$PRIMARY_IFACE" master br0 con-name "br0-slave-$PRIMARY_IFACE"
+        info "Bridge br0 created with $PRIMARY_IFACE as slave"
+        warn "To activate, run: nmcli connection down 'Wired connection 1' && nmcli connection up br0"
+        echo "    (This will briefly interrupt network - don't run over SSH)"
+    else
+        warn "Could not detect primary ethernet interface for bridge setup"
+        echo "    Manually create bridge with:"
+        echo "    nmcli connection add type bridge ifname br0 con-name br0"
+        echo "    nmcli connection add type bridge-slave ifname <your-interface> master br0"
+    fi
+fi
+
+# --- 8c. Allow QEMU to use br0 bridge ---
+QEMU_BRIDGE_CONF="/etc/qemu/bridge.conf"
+if [[ -f "$QEMU_BRIDGE_CONF" ]] && grep -q "allow br0" "$QEMU_BRIDGE_CONF"; then
+    info "QEMU bridge ACL already allows br0"
+else
+    mkdir -p /etc/qemu
+    echo "allow br0" >> "$QEMU_BRIDGE_CONF"
+    info "Added br0 to QEMU bridge ACL"
+fi
+
+# Ensure qemu-bridge-helper has setuid (required for unprivileged bridge access)
+BRIDGE_HELPER="/usr/lib/qemu/qemu-bridge-helper"
+if [[ -u "$BRIDGE_HELPER" ]]; then
+    info "qemu-bridge-helper has setuid bit"
+else
+    if [[ -f "$BRIDGE_HELPER" ]]; then
+        chmod u+s "$BRIDGE_HELPER"
+        info "Set setuid on qemu-bridge-helper"
+    else
+        warn "qemu-bridge-helper not found at $BRIDGE_HELPER"
+    fi
+fi
+
 # --- 9. Check for SSH key ---
 if [[ -f "${TARGET_HOME}/.ssh/id_ed25519.pub" ]] || [[ -f "${TARGET_HOME}/.ssh/id_rsa.pub" ]]; then
     info "SSH public key found (will be injected into VMs)"
