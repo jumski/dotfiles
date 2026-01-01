@@ -3,12 +3,15 @@
 
 function wt_init
     # Show help if requested
-    _wt_show_help_if_requested $argv "Usage: wt init <repo-name> [--switch]
+    _wt_show_help_if_requested $argv "Usage: wt init <repo-name|path> [--switch]
 
 Initialize new local repository with worktree structure
 
 Arguments:
-  <repo-name>    Repository name or path
+  <repo-name|path>  Repository name or path
+                    - Simple name (e.g. 'my-app') → \$DEFAULT_CODE_DIR/my-app
+                    - Relative path (e.g. 'projects/my-app') → <cwd>/projects/my-app
+                    - Absolute path (e.g. '/home/user/my-app') → /home/user/my-app
 
 Options:
   --switch       Automatically switch to the main worktree after creation"
