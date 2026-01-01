@@ -208,6 +208,60 @@ else
     fi
 fi
 
+# --- 8d. Offer to activate br0 bridge ---
+# Activation interrupts network briefly - requires user confirmation
+if nmcli -f GENERAL.STATE connection show br0 2>/dev/null | grep -q 'activated'; then
+    info "Bridge br0 is already active"
+else
+    echo ""
+    warn "Would you like to activate br0 now?"
+    echo "  This will briefly interrupt network connectivity (~2-5 seconds)"
+    echo "  Command: nmcli connection down 'Wired connection 1' && nmcli connection up br0"
+    echo ""
+    read -p "Activate br0 now? [y/N] " -n 1 -r
+    echo ""
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        # Detect if running over SSH
+        if [[ -n "${SSH_CLIENT:-}${SSH_CONNECTION:-}" ]]; then
+            warn "WARNING: You appear to be running over SSH"
+            echo "  Activating the bridge may disconnect your session"
+            read -p "Continue anyway? [y/N] " -n 1 -r
+            echo ""
+            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                warn "Skipping bridge activation"
+                info "To activate later, run: nmcli connection down 'Wired connection 1' && nmcli connection up br0"
+            fi
+        fi
+
+        # Find the active wired connection (usually "Wired connection 1" or similar)
+        ACTIVE_CONN=$(nmcli -t -f NAME,TYPE,DEVICE connection show --active | awk -F: '$2=="ethernet" {print $1; exit}')
+
+        if [[ -n "$ACTIVE_CONN" ]]; then
+            step "Activating br0 bridge (this will briefly interrupt network)..."
+            if nmcli connection down "$ACTIVE_CONN" && nmcli connection up br0; then
+                info "Bridge br0 is now active"
+                # Verify connectivity
+                if ping -c 1 -W 2 8.8.8.8 &>/dev/null; then
+                    info "Network connectivity confirmed"
+                else
+                    warn "Network may not be working - check manually"
+                fi
+            else
+                error "Failed to activate br0"
+                warn "You may need to manually reactivate: nmcli connection up '$ACTIVE_CONN'"
+            fi
+        else
+            warn "Could not detect active wired connection"
+            echo "  Manually run: nmcli connection down '<conn-name>' && nmcli connection up br0"
+        fi
+    else
+        info "Skipping bridge activation"
+        warn "VMs will NOT have mDNS connectivity until br0 is activated"
+        echo "  To activate later: nmcli connection down 'Wired connection 1' && nmcli connection up br0"
+    fi
+fi
+
 # --- 8c. Allow QEMU to use br0 bridge ---
 QEMU_BRIDGE_CONF="/etc/qemu/bridge.conf"
 if [[ -f "$QEMU_BRIDGE_CONF" ]] && grep -q "allow br0" "$QEMU_BRIDGE_CONF"; then
