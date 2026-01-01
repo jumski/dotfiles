@@ -1,0 +1,5 @@
+# Default Go packages to install with asdf-golang
+# One package per line - comments start with //
+# See: https://github.com/asdf-community/asdf-golang#default-go-get-packages
+
+github.com/steveyegge/beads/cmd/bd@latest
