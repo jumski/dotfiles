@@ -1,8 +1,10 @@
 function claude --description "Wrapper for claude command that disables focus-events in tmux"
     # Check if we're in tmux
     if test -n "$TMUX"
-        # Capture session:window for auto-rename
+        # Capture session:window for auto-rename and notifications
         set -l target (tmux display-message -p '#S:#I')
+        set -gx CLAUDE_TMUX_TARGET $target
+        set -gx CLAUDE_TMUX_WINDOW_NAME (tmux display-message -p '#W')
 
         # Disable focus-events for this pane to prevent [O[I sequences
         tmux set-option -p focus-events off >/dev/null 2>&1

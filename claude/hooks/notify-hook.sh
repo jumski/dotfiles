@@ -15,13 +15,21 @@ if [ -z "$TMUX" ]; then
     exit 0
 fi
 
-session_name=$(tmux display-message -p '#S' 2>/dev/null || echo "?")
-window_index=$(tmux display-message -p '#I' 2>/dev/null || echo "?")
-window_name=$(tmux display-message -p '#W' 2>/dev/null || echo "?")
-window_active=$(tmux display-message -p '#{window_active}' 2>/dev/null || echo "0")
+# Use env vars set by claude.fish wrapper (captures window at claude start)
+if [ -n "$CLAUDE_TMUX_TARGET" ]; then
+    session_name=$(echo "$CLAUDE_TMUX_TARGET" | cut -d: -f1)
+    window_index=$(echo "$CLAUDE_TMUX_TARGET" | cut -d: -f2)
+    window_name="${CLAUDE_TMUX_WINDOW_NAME:-?}"
+else
+    # Fallback to current window if env vars not set
+    session_name=$(tmux display-message -p '#S' 2>/dev/null || echo "?")
+    window_index=$(tmux display-message -p '#I' 2>/dev/null || echo "?")
+    window_name=$(tmux display-message -p '#W' 2>/dev/null || echo "?")
+fi
 
 # Format: session / index name
 window_id="$session_name / $window_index $window_name"
+target="$session_name:$window_index"
 
 # Check if Kitty terminal is focused
 active_window_class=$(xdotool getactivewindow getwindowclassname 2>/dev/null || echo "")
@@ -30,8 +38,15 @@ if [[ "$active_window_class" == "kitty" ]]; then
     terminal_focused=1
 fi
 
-# Skip if terminal focused AND this tmux window is active
-if [ "$terminal_focused" = "1" ] && [ "$window_active" = "1" ]; then
+# Check if target window is the active one in its session
+current_window=$(tmux display-message -t "$session_name" -p '#{window_index}' 2>/dev/null || echo "")
+target_is_active=0
+if [ "$current_window" = "$window_index" ]; then
+    target_is_active=1
+fi
+
+# Skip if terminal focused AND target tmux window is active
+if [ "$terminal_focused" = "1" ] && [ "$target_is_active" = "1" ]; then
     exit 0
 fi
 
@@ -54,9 +69,6 @@ case "$notification_type" in
         body="$message"
         ;;
 esac
-
-# Capture tmux info for background subshell
-target="$session_name:$window_index"
 
 # Export TMUX env for subshell
 export TMUX="$TMUX"
