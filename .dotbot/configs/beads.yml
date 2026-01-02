@@ -1,0 +1,5 @@
+- shell:
+    - [mkdir -p ~/.config/systemd/user, Creating systemd user directory]
+
+- link:
+    ~/.config/systemd/user/beads-daemon.service: beads/beads-daemon.service
