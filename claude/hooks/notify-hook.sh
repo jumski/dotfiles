@@ -1,6 +1,10 @@
 #!/bin/bash
 
+# Debug: log every invocation
+echo "=== Hook invoked at $(date) ===" >> /tmp/claude-notify-debug.log
+
 json_input=$(cat)
+echo "json_input: $json_input" >> /tmp/claude-notify-debug.log
 message=$(echo "$json_input" | jq -r '.message')
 notification_type=$(echo "$json_input" | jq -r '.notification_type')
 
@@ -51,4 +55,32 @@ case "$notification_type" in
         ;;
 esac
 
-notify-send -u normal -i /home/jumski/.dotfiles/claude/icon.png "$title" "$body"
+# Capture tmux info for background subshell
+target="$session_name:$window_index"
+
+# Export TMUX env for subshell
+export TMUX="$TMUX"
+
+# Run notification with action in background
+(
+  action=$(notify-send -u normal \
+    --action="focus=Focus" \
+    -i /home/jumski/.dotfiles/claude/icon.png \
+    "$title" "$body")
+
+  echo "action=$action TMUX=$TMUX target=$target" >> /tmp/claude-notify-debug.log
+
+  if [ "$action" = "focus" ]; then
+    # Focus kitty terminal
+    kitty_window=$(xdotool search --class kitty | head -1)
+    if [ -n "$kitty_window" ]; then
+      xdotool windowactivate "$kitty_window"
+    fi
+
+    # Switch all tmux clients to the target session/window
+    sleep 0.1
+    for client in $(tmux list-clients -F '#{client_tty}'); do
+      tmux switch-client -c "$client" -t "$target"
+    done
+  fi
+) &
