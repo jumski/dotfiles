@@ -1,10 +1,6 @@
 #!/bin/bash
 
-# Debug: log every invocation
-echo "=== Hook invoked at $(date) ===" >> /tmp/claude-notify-debug.log
-
 json_input=$(cat)
-echo "json_input: $json_input" >> /tmp/claude-notify-debug.log
 message=$(echo "$json_input" | jq -r '.message')
 notification_type=$(echo "$json_input" | jq -r '.notification_type')
 
@@ -15,17 +11,18 @@ if [ -z "$TMUX" ]; then
     exit 0
 fi
 
-# Use env vars set by claude.fish wrapper (captures window at claude start)
+# Use env var set by claude.fish wrapper (captures session:index at claude start)
 if [ -n "$CLAUDE_TMUX_TARGET" ]; then
     session_name=$(echo "$CLAUDE_TMUX_TARGET" | cut -d: -f1)
     window_index=$(echo "$CLAUDE_TMUX_TARGET" | cut -d: -f2)
-    window_name="${CLAUDE_TMUX_WINDOW_NAME:-?}"
 else
-    # Fallback to current window if env vars not set
+    # Fallback to current window if env var not set
     session_name=$(tmux display-message -p '#S' 2>/dev/null || echo "?")
     window_index=$(tmux display-message -p '#I' 2>/dev/null || echo "?")
-    window_name=$(tmux display-message -p '#W' 2>/dev/null || echo "?")
 fi
+
+# Look up current window name (may have changed since claude started)
+window_name=$(tmux display-message -t "$session_name:$window_index" -p '#W' 2>/dev/null || echo "?")
 
 # Format: session / index name
 window_id="$session_name / $window_index $window_name"
@@ -79,8 +76,6 @@ export TMUX="$TMUX"
     --action="focus=Focus" \
     -i /home/jumski/.dotfiles/claude/icon.png \
     "$title" "$body")
-
-  echo "action=$action TMUX=$TMUX target=$target" >> /tmp/claude-notify-debug.log
 
   if [ "$action" = "focus" ]; then
     # Focus kitty terminal
