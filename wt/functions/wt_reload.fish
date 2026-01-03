@@ -31,6 +31,7 @@ without restarting your shell."
     # Explicitly reload all function files (don't rely on autoloading)
     set -l func_count 0
     for func_file in $wt_dir/functions/*.fish
+        echo -e "\033[90m  Loading $(basename $func_file)...\033[0m"
         source $func_file
         or begin
             echo -e "\033[31m✗\033[0m Failed to reload $(basename $func_file)" >&2
@@ -38,7 +39,7 @@ without restarting your shell."
         end
         set func_count (math $func_count + 1)
     end
-    echo -e "\033[90m  Loaded $func_count functions\033[0m"
+    echo -e "\033[90m  Loaded $func_count functions total\033[0m"
 
     # Source completions
     if test -f $wt_dir/completions.fish
