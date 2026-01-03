@@ -1,0 +1,7 @@
+#!/bin/bash
+# Post-creation hook for new worktrees
+# This script runs in the new worktree directory after creation
+# Add commands like: pnpm install, npm install, etc.
+
+echo "Post-creation hook executed in: $(pwd)"
+# Add your setup commands here

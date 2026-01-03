@@ -88,10 +88,25 @@
       "Bash(yay -Si:*)",
       "Bash(yay -Ss:*)",
       "Bash(~/.claude/skills/reading-websites/fetch-url.sh:*)",
+      "Skill(superpowers:systematic-debugging)",
       "Skill(logseq-format)",
+      "Skill(lovable-prompts)",
       "Skill(perplexity)",
+      "Skill(prd-builder)",
       "Skill(reading-websites)",
       "Skill(skill-builder)",
+      "Bash(echo WORKAROUND: Skill permissions for slash commands - see issues #11459 #15842 #14956 #15006:*)",
+      "Bash(echo ISSUE: User-typed slash commands like /gt:restack still require permission prompts because skills and commands share the Skill tool but have separate permission checks:*)",
+      "Skill(adhd)",
+      "Skill(create-pr)",
+      "Skill(perplexity:ask)",
+      "Skill(perplexity:reason)",
+      "Skill(perplexity:research)",
+      "Skill(perplexity:search)",
+      "Skill(pgflow:hn-copywriting-prompt)",
+      "Skill(tts)",
+      "Skill(wt:capture)",
+      "Bash(echo END WORKAROUND - remove above when issues are fixed:*)",
       "mcp__context7__get-library-docs",
       "mcp__context7__resolve-library-id",
       "mcp__perplexity__perplexity_ask",
@@ -121,6 +136,7 @@
   },
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true,
-    "dev-browser@dev-browser-marketplace": true
+    "dev-browser@dev-browser-marketplace": true,
+    "beads@beads-marketplace": true
   }
 }

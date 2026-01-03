@@ -1,0 +1,14 @@
+[Unit]
+Description=Beads Daemon for pgflow-dev
+After=network.target
+
+[Service]
+Type=simple
+Environment=BEADS_DB=/home/jumski/Code/pgflow-dev/beads-db/.beads
+WorkingDirectory=/home/jumski/Code/pgflow-dev/beads-db
+ExecStart=/home/jumski/.asdf/installs/golang/1.25.5/bin/bd daemon --start --foreground
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

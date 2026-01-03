@@ -53,3 +53,8 @@ function wip-notes
   echo Done
   popd
 end
+
+
+function supabase-serve --wraps "npx supabase functions serve --no-verify-jwt"
+  npx -y supabase functions serve --no-verify-jwt $argv 2>&1 | grep -Pv 'serving the request with supabase/functions/[a-zA-Z0-9-]+-worker|^\d{4}-\d{2}-\d{2}T[\d:.]+Z\s*$'
+end

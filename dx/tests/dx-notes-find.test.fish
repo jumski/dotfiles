@@ -3,134 +3,53 @@
 source (dirname (status -f))/../functions/dx-file-select.fish
 source (dirname (status -f))/../functions/dx-notes-find.fish
 
-function setup
-    # Create test markdown files
+# Helper to create test environment and run dx-notes-find
+function _test_dx_notes_find
     set -l test_dir (mktemp -d)
-    mkdir -p $test_dir/notes
-    mkdir -p $test_dir/branch-docs
-    mkdir -p $test_dir/nested/dir
-    mkdir -p $test_dir/node_modules
+    mkdir -p $test_dir/.notes
+    echo "# Note" > $test_dir/.notes/note.md
 
-    echo "# Note 1" > $test_dir/notes/note1.md
-    echo "# Note 2" > $test_dir/notes/note2.md
-    echo "# Branch Doc" > $test_dir/branch-docs/doc1.md
-    echo "# Root Note" > $test_dir/root.md
-    echo "# Nested Note" > $test_dir/nested/dir/nested.md
-    echo "# Ignored" > $test_dir/node_modules/ignored.md
+    # Mock fzf
+    function fzf
+        head -n 1
+    end
 
-    echo $test_dir
-end
+    cd $test_dir
+    set result (dx-notes-find 2>/dev/null)
+    set code $status
 
-function teardown
-    set -l test_dir $argv[1]
     rm -rf $test_dir
+    functions -e fzf
+
+    if test $code -eq 0; and string match -q "*.notes/*" -- $result
+        return 0
+    end
+    return 1
 end
 
-@test "finds files in .notes directory" (
-    set -l test_dir (setup)
-
+# Helper to test missing .notes dir
+function _test_dx_notes_find_missing
+    set -l test_dir (mktemp -d)
     cd $test_dir
-    # Rename notes to .notes to match the actual priority
-    mv notes .notes
-
-    # Mock fzf to return the first file
-    function fzf
-        head -n 1
-    end
-
-    set result (dx-notes-find)
-    set exit_code $status
-
-    test $exit_code -eq 0
-    or return 1
-
-    string match -q "*/.notes/*" -- $result
-    or return 1
-
-    teardown $test_dir
-)
-
-@test "falls back to branch-docs when .notes not present" (
-    set -l test_dir (setup)
-
-    cd $test_dir
-    # Don't create .notes, so it falls back to branch-docs
-
-    function fzf
-        head -n 1
-    end
-
-    set result (dx-notes-find)
-    set exit_code $status
-
-    test $exit_code -eq 0
-    or return 1
-
-    string match -q "*/branch-docs/doc1.md" -- $result
-    or return 1
-
-    teardown $test_dir
-)
-
-@test "finds all markdown files recursively when no specific directory" (
-    set -l test_dir (setup)
-
-    cd $test_dir
-    # Remove branch-docs so it falls back to recursive search from current dir
-    rm -rf branch-docs
-
-    function fzf
-        grep "nested.md"
-    end
-
-    set result (dx-notes-find)
-    set exit_code $status
-
-    test $exit_code -eq 0
-    or return 1
-
-    string match -q "*/nested/dir/nested.md" -- $result
-    or return 1
-
-    teardown $test_dir
-)
-
-@test "excludes node_modules from search" (
-    set -l test_dir (setup)
-
-    cd $test_dir
-    # Remove branch-docs so it searches recursively from current dir
-    rm -rf branch-docs
-
-    function fzf
-        read -z files
-        echo $files | string match -q "*node_modules*"
-        and return 1
-        or echo $files | head -n 1
-    end
-
-    set result (dx-notes-find)
-
-    echo $result | string match -q "*node_modules*"
-    and return 1
-    or return 0
-
-    teardown $test_dir
-)
-
-@test "returns error when no markdown files found" (
-    set -l empty_dir (mktemp -d)
-
-    cd $empty_dir
-
     dx-notes-find 2>/dev/null
-    set exit_code $status
+    set code $status
+    rm -rf $test_dir
+    test $code -ne 0
+end
 
-    test $exit_code -ne 0
-    or begin
-        rm -rf $empty_dir
-        return 1
-    end
+# Helper to test empty .notes dir
+function _test_dx_notes_find_empty
+    set -l test_dir (mktemp -d)
+    mkdir -p $test_dir/.notes
+    cd $test_dir
+    dx-notes-find 2>/dev/null
+    set code $status
+    rm -rf $test_dir
+    test $code -ne 0
+end
 
-    rm -rf $empty_dir
-)
+@test "finds files in .notes directory" (_test_dx_notes_find; echo $status) -eq 0
+
+@test "returns error when .notes directory missing" (_test_dx_notes_find_missing; echo $status) -eq 0
+
+@test "returns error when .notes has no markdown files" (_test_dx_notes_find_empty; echo $status) -eq 0

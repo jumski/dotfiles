@@ -72,6 +72,13 @@ function vmw_spawn --description "Spawn a VM for a worktree"
     echo "instance-id: $vm_name" > $cloudinit_dir/meta-data
     echo "local-hostname: $vm_name" >> $cloudinit_dir/meta-data
 
+    # Generate network-config (DHCP for eth0)
+    # Note: network-config should NOT have 'network:' wrapper for NoCloud datasource
+    echo "version: 2" > $cloudinit_dir/network-config
+    echo "ethernets:" >> $cloudinit_dir/network-config
+    echo "  eth0:" >> $cloudinit_dir/network-config
+    echo "    dhcp4: true" >> $cloudinit_dir/network-config
+
     # Generate user-data (simplified version)
     echo "#cloud-config" > $cloudinit_dir/user-data
     echo "hostname: $vm_name" >> $cloudinit_dir/user-data
@@ -89,7 +96,8 @@ function vmw_spawn --description "Spawn a VM for a worktree"
 
     # Create ISO
     genisoimage -output $cloudinit_iso -volid cidata -joliet -rock \
-        $cloudinit_dir/user-data $cloudinit_dir/meta-data 2>/dev/null
+        $cloudinit_dir/user-data $cloudinit_dir/meta-data \
+        $cloudinit_dir/network-config 2>/dev/null
     if test $status -ne 0
         echo "Error: Failed to create cloud-init ISO" >&2
         return 1
@@ -123,7 +131,7 @@ function vmw_spawn --description "Spawn a VM for a worktree"
     # Generate domain XML
     echo "Generating libvirt domain XML..."
     set -l template_dir (dirname (status filename))/../templates
-    set -l bridge_name "virbr0"  # Default libvirt bridge
+    set -l bridge_name "br0"  # Bridge to physical network for mDNS
 
     # Read template and substitute variables
     sed -e "s|{{VM_NAME}}|$vm_name|g" \

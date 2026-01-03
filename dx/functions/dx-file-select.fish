@@ -9,7 +9,8 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
     #   --preview-cmd CMD         Preview command (use {} as placeholder for file)
     #   --preview-window LAYOUT   fzf preview window layout (default: right:60%:wrap)
     #   --prompt TEXT             fzf prompt text (default: 'Select file > ')
-    #   --sort                    Sort files alphabetically (default: true)
+    #   --sort                    Sort files alphabetically
+    #   --sort-mtime              Sort files by modification time (newest first)
 
     argparse \
         'dirs=+' \
@@ -19,6 +20,7 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
         'preview-window=' \
         'prompt=' \
         'sort' \
+        'sort-mtime' \
         -- $argv
     or return 1
 
@@ -35,11 +37,6 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
     set -l prompt $_flag_prompt
     test -z "$prompt"; and set prompt "Select file > "
 
-    set -l do_sort true
-    if set -q _flag_sort
-        set do_sort $_flag_sort
-    end
-
     # Build list of files
     set -l files_list
 
@@ -49,8 +46,8 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
             # Expand env variables or use as-is
             set -l dir (eval echo $dir_spec 2>/dev/null)
 
-            # Build find command with exclusions
-            set -l find_args $dir -type f -name $pattern
+            # Build find command with exclusions (-L follows symlinks)
+            set -l find_args -L $dir -type f -name $pattern
 
             # Add exclusions
             if set -q _flag_exclude_dir
@@ -59,8 +56,8 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
                 end
             end
 
-            # Execute find and store results
-            set files_list (find $find_args 2>/dev/null)
+            # Execute find and store results, strip ./ prefix
+            set files_list (find $find_args 2>/dev/null | string replace -r '^\./' '')
 
             if test (count $files_list) -gt 0
                 break
@@ -74,9 +71,13 @@ function dx-file-select -d "Generic file selector with fzf and customizable opti
         return 1
     end
 
-    # Sort if requested
-    if test "$do_sort" = true
-        set files_list (printf '%s\n' $files_list | sort)
+    # Sort files
+    if set -q _flag_sort_mtime
+        # Sort by modification time (newest at bottom where fzf cursor starts)
+        set files_list (printf '%s\n' $files_list | xargs ls -1t 2>/dev/null | string split \n)
+    else if set -q _flag_sort
+        # Sort alphabetically
+        set files_list (printf '%s\n' $files_list | sort | string split \n)
     end
 
     # Use fzf to select a file

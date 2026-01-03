@@ -6,6 +6,27 @@ prepare-commit-msg:
         - meta
         - summary
         - error
+
+# bd (beads) hooks - delegates to 'bd hooks run <hookname>'
+pre-commit:
+  commands:
+    bd-hooks:
+      run: bd hooks run pre-commit
+
+post-merge:
+  commands:
+    bd-hooks:
+      run: bd hooks run post-merge
+
+post-checkout:
+  commands:
+    bd-hooks:
+      run: bd hooks run post-checkout {1} {2} {3}
+
+pre-push:
+  commands:
+    bd-hooks:
+      run: bd hooks run pre-push
 # commit-msg:
 #   commands:
 #     "lint commit message":
