@@ -301,26 +301,25 @@ Note:
     end
     set -l old_tmux_session "$current_worktree_name@$REPO_NAME"
 
-    cd $repo_root
-
     # Step 1: Switch current worktree to trunk (MUST do this first!)
+    # Note: Must run from worktree dir, not repo_root (which isn't a git working tree)
     _wt_action "Switching current worktree away from '$branch_to_capture'..."
 
     if test $is_tracked = true
         gt checkout $trunk_branch
         or begin
             echo "Error: Failed to switch to trunk branch '$trunk_branch'" >&2
-            cd $saved_pwd
             return 1
         end
     else if test $force = true
         git checkout -
         or begin
             echo "Error: Failed to switch to previous branch" >&2
-            cd $saved_pwd
             return 1
         end
     end
+
+    cd $repo_root
 
     # Step 2: Reset Claude in old tmux session
     _wt_action "Resetting Claude window in $old_tmux_session..."
