@@ -15,7 +15,10 @@ echo "active=$active"
 echo "remote=$remote"
 echo "local=$local_kitty"
 
-# Toggle logic: if in remote → go to local, otherwise → go to remote
+# Toggle logic:
+#   - if in remote → go to local
+#   - if in local → go to remote
+#   - if in neither → go to local (default)
 if [ "$active" == "$remote" ]; then
   if [ -n "$local_kitty" ]; then
     echo "activating local-kitty"
@@ -23,13 +26,21 @@ if [ "$active" == "$remote" ]; then
   else
     echo "no local-kitty found"
   fi
-else
+elif [ "$active" == "$local_kitty" ]; then
   if [ -n "$remote" ]; then
     echo "activating remote-kitty"
     dotool windowactivate "$remote"
-  elif [ -n "$local_kitty" ]; then
-    echo "activating local-kitty (no remote available)"
+  else
+    echo "no remote-kitty found"
+  fi
+else
+  # Neither kitty is focused - default to local, fallback to remote
+  if [ -n "$local_kitty" ]; then
+    echo "activating local-kitty (default)"
     dotool windowactivate "$local_kitty"
+  elif [ -n "$remote" ]; then
+    echo "activating remote-kitty (no local available)"
+    dotool windowactivate "$remote"
   else
     echo "no kitty windows found"
   fi
