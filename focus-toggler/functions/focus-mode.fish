@@ -1,6 +1,6 @@
 function focus-mode -d "Manage window focus mode (activities or windows)"
     set -l mode_file "$HOME/.config/window-focus-mode"
-    set -l valid_modes activities windows
+    set -l valid_modes activities windows kitties
     set -l move_windows false
 
     # Parse arguments
@@ -18,12 +18,12 @@ function focus-mode -d "Manage window focus mode (activities or windows)"
         if test -f "$mode_file"
             set -l current_mode (cat "$mode_file" | string trim)
             if test -z "$current_mode"
-                echo "activities (default)"
+                echo "kitties (default)"
             else
                 echo "$current_mode"
             end
         else
-            echo "activities (default)"
+            echo "kitties (default)"
         end
         return 0
     end
@@ -31,7 +31,7 @@ function focus-mode -d "Manage window focus mode (activities or windows)"
     # Validate mode
     if not contains $mode_arg $valid_modes
         echo "Error: Invalid mode '$mode_arg'" >&2
-        echo "Valid modes: activities, windows" >&2
+        echo "Valid modes: activities, windows, kitties" >&2
         return 1
     end
 

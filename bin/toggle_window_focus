@@ -3,7 +3,7 @@
 # ALWAYS_FOCUS_TERMINAL - When set to "1", skip toggling and always focus terminal.
 # Useful for dictation workflows where you always want to return to terminal.
 # Example: ALWAYS_FOCUS_TERMINAL=1 toggle_window_focus
-ALWAYS_FOCUS_TERMINAL=1
+ALWAYS_FOCUS_TERMINAL=0
 
 if [ "$ALWAYS_FOCUS_TERMINAL" = "1" ]; then
   # Source helper for smart Kitty window detection (remote > local > any)
@@ -24,9 +24,9 @@ if [ -f "$MODE_FILE" ]; then
   MODE=$(cat "$MODE_FILE" | tr -d '[:space:]')
 fi
 
-# Default to 'activities' if MODE is empty
+# Default to 'kitties' if MODE is empty
 if [ -z "$MODE" ]; then
-  MODE="activities"
+  MODE="kitties"
 fi
 
 # Get the directory where this script is located
@@ -40,6 +40,9 @@ case "$MODE" in
     ;;
   windows)
     exec "$FOCUS_TOGGLER_DIR/toggle_windows.sh"
+    ;;
+  kitties)
+    exec "$FOCUS_TOGGLER_DIR/toggle_kitties.sh"
     ;;
   *)
     echo "Error: Unknown mode '$MODE'. Defaulting to 'activities'."

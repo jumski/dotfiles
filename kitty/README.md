@@ -45,6 +45,24 @@ This means if you have both local and remote Kitty running, the toggle will alwa
 3. Use `toggle_window_focus` keybind - it will prefer the remote Kitty
 4. When remote Kitty is closed, toggle falls back to local Kitty
 
+### Focus Modes
+
+Set focus mode with `focus-mode <mode>`:
+
+| Mode | Behavior |
+|------|----------|
+| `kitties` | Toggle kitty-remote ↔ kitty-local **(default)** |
+| `activities` | Toggle browser ↔ terminal (with KDE activity switching) |
+| `windows` | Toggle browser ↔ terminal (no activity switching) |
+
+```bash
+# Check current mode
+focus-mode           # shows "kitties (default)"
+
+# Switch to browser/terminal toggle if needed
+focus-mode activities
+```
+
 ### Verifying Window Classes
 
 ```bash
