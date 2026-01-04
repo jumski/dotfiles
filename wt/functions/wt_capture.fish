@@ -229,13 +229,12 @@ Note:
         echo -e "\033[32m  ✓\033[0m Switch current worktree to trunk (via gt checkout $trunk_branch)"
     end
 
-    echo -e "\033[32m  ✓\033[0m Kill Claude window (window 4) and start fresh Claude session"
     echo -e "\033[32m  ✓\033[0m Create worktree '\033[1m$worktree_name\033[0m' for branch '\033[1m$branch_to_capture\033[0m'"
 
     # Session migration info
     if test "$skip_claude_session" = false
         if test (count $branch_sessions) -gt 0
-            echo -e "\033[32m  ✓\033[0m Migrate "(count $branch_sessions)" Claude session(s):"
+            echo -e "\033[32m  ✓\033[0m Migrate "(count $branch_sessions)" Claude session(s) and resume most recent:"
             for session_file in $branch_sessions
                 set -l session_id (basename $session_file .jsonl)
 
@@ -260,10 +259,10 @@ Note:
                 end
             end
         else
-            echo -e "\033[90m  →\033[0m No Claude sessions found for this branch"
+            echo -e "\033[32m  ✓\033[0m Start fresh Claude session in new worktree"
         end
     else
-        echo -e "\033[90m  →\033[0m Skip Claude session migration"
+        echo -e "\033[32m  ✓\033[0m Start fresh Claude session in new worktree"
     end
 
     # Switch info
@@ -301,35 +300,27 @@ Note:
     end
     set -l old_tmux_session "$current_worktree_name@$REPO_NAME"
 
-    cd $repo_root
-
     # Step 1: Switch current worktree to trunk (MUST do this first!)
+    # Note: Must run from worktree dir, not repo_root (which isn't a git working tree)
     _wt_action "Switching current worktree away from '$branch_to_capture'..."
 
     if test $is_tracked = true
         gt checkout $trunk_branch
         or begin
             echo "Error: Failed to switch to trunk branch '$trunk_branch'" >&2
-            cd $saved_pwd
             return 1
         end
     else if test $force = true
         git checkout -
         or begin
             echo "Error: Failed to switch to previous branch" >&2
-            cd $saved_pwd
             return 1
         end
     end
 
-    # Step 2: Reset Claude in old tmux session
-    _wt_action "Resetting Claude window in $old_tmux_session..."
+    cd $repo_root
 
-    tmux kill-window -t "$old_tmux_session:4" 2>/dev/null
-    tmux new-window -t "$old_tmux_session:4" -n repl -c "$saved_pwd"
-    tmux send-keys -t "$old_tmux_session:4" 'claude' Enter
-
-    # Step 3: Create worktree for captured branch
+    # Step 2: Create worktree for captured branch
     _wt_action "Creating worktree for '$branch_to_capture'..."
 
     wt_new $worktree_name $branch_to_capture --yes
@@ -355,13 +346,13 @@ Note:
         end
     end
 
-    # Step 5: Start Claude in new worktree (with resume if we copied sessions)
+    # Step 4: Start Claude in new worktree
     if test $sessions_copied -gt 0 -a -n "$most_recent_session"
         _wt_action "Starting Claude with resumed session in new worktree..."
-
-        tmux send-keys -t "$new_tmux_session:4" C-c 2>/dev/null
-        sleep 1
         tmux send-keys -t "$new_tmux_session:4" "claude --resume $most_recent_session" Enter
+    else
+        _wt_action "Starting fresh Claude session in new worktree..."
+        tmux send-keys -t "$new_tmux_session:4" "claude" Enter
     end
 
     echo ""

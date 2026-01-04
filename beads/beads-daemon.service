@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-Environment=BEADS_DB=/home/jumski/Code/pgflow-dev/beads-db/.beads
+Environment=SSH_AUTH_SOCK=/run/user/1000/ssh-agent.socket
 WorkingDirectory=/home/jumski/Code/pgflow-dev/beads-db
 ExecStart=/home/jumski/.asdf/installs/golang/1.25.5/bin/bd daemon --start --foreground
 Restart=always

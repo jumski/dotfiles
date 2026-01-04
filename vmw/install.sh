@@ -208,15 +208,27 @@ else
     fi
 fi
 
+# --- 8b-continued. Ensure slave connection exists ---
+# If br0 exists but slave doesn't, create it
+PRIMARY_IFACE=$(nmcli -t -f DEVICE,TYPE,STATE device status | awk -F: '$2=="ethernet" && $3=="connected" {print $1; exit}')
+SLAVE_CON="br0-slave-$PRIMARY_IFACE"
+
+if [[ -n "$PRIMARY_IFACE" ]] && ! nmcli connection show "$SLAVE_CON" &>/dev/null; then
+    step "Creating missing slave connection for br0..."
+    nmcli connection add type bridge-slave ifname "$PRIMARY_IFACE" master br0 con-name "$SLAVE_CON"
+    info "Slave connection $SLAVE_CON created"
+fi
+
 # --- 8d. Offer to activate br0 bridge ---
 # Activation interrupts network briefly - requires user confirmation
-if nmcli -f GENERAL.STATE connection show br0 2>/dev/null | grep -q 'activated'; then
+# Check if br0 has an IP address (indicates it's truly active)
+if ip addr show br0 2>/dev/null | grep -q 'inet '; then
     info "Bridge br0 is already active"
 else
     echo ""
     warn "Would you like to activate br0 now?"
     echo "  This will briefly interrupt network connectivity (~2-5 seconds)"
-    echo "  Command: nmcli connection down 'Wired connection 1' && nmcli connection up br0"
+    echo "  Command: nmcli connection up br0-slave-enp24s0"
     echo ""
     read -p "Activate br0 now? [y/N] " -n 1 -r
     echo ""
@@ -230,16 +242,18 @@ else
             echo ""
             if [[ ! $REPLY =~ ^[Yy]$ ]]; then
                 warn "Skipping bridge activation"
-                info "To activate later, run: nmcli connection down 'Wired connection 1' && nmcli connection up br0"
+                info "To activate later, run: nmcli connection up br0-slave-enp24s0"
             fi
         fi
 
-        # Find the active wired connection (usually "Wired connection 1" or similar)
-        ACTIVE_CONN=$(nmcli -t -f NAME,TYPE,DEVICE connection show --active | awk -F: '$2=="ethernet" {print $1; exit}')
+        # Find the active wired connection and slave connection
+        ACTIVE_CONN=$(nmcli -t -f NAME,TYPE,DEVICE connection show --active | awk -F: '$2=="802-3-ethernet" {print $1; exit}')
+        SLAVE_CON="br0-slave-$PRIMARY_IFACE"
 
-        if [[ -n "$ACTIVE_CONN" ]]; then
+        if [[ -n "$ACTIVE_CONN" ]] && [[ -n "$SLAVE_CON" ]]; then
             step "Activating br0 bridge (this will briefly interrupt network)..."
-            if nmcli connection down "$ACTIVE_CONN" && nmcli connection up br0; then
+            # Activate the slave - nmcli will automatically handle the switch
+            if nmcli connection up "$SLAVE_CON"; then
                 info "Bridge br0 is now active"
                 # Verify connectivity
                 if ping -c 1 -W 2 8.8.8.8 &>/dev/null; then
@@ -252,13 +266,14 @@ else
                 warn "You may need to manually reactivate: nmcli connection up '$ACTIVE_CONN'"
             fi
         else
-            warn "Could not detect active wired connection"
-            echo "  Manually run: nmcli connection down '<conn-name>' && nmcli connection up br0"
+            warn "Could not detect active wired connection or slave connection"
+            echo "  Active: $ACTIVE_CONN, Slave: $SLAVE_CON"
+            echo "  Manually run: nmcli connection up '$SLAVE_CON'"
         fi
     else
         info "Skipping bridge activation"
         warn "VMs will NOT have mDNS connectivity until br0 is activated"
-        echo "  To activate later: nmcli connection down 'Wired connection 1' && nmcli connection up br0"
+        echo "  To activate later: nmcli connection up br0-slave-enp24s0"
     fi
 fi
 
