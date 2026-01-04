@@ -6,7 +6,10 @@
 ALWAYS_FOCUS_TERMINAL=1
 
 if [ "$ALWAYS_FOCUS_TERMINAL" = "1" ]; then
-  terminal=$(dotool search --classname "Kitty" | tail -1)
+  # Source helper for smart Kitty window detection (remote > local > any)
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  source "$(dirname "$SCRIPT_DIR")/focus-toggler/find_kitty_window.sh"
+  terminal=$(find_kitty_window)
   if [ -n "$terminal" ]; then
     dotool windowactivate "$terminal"
   fi

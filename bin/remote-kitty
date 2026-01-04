@@ -1,0 +1,2 @@
+#!/bin/bash
+exec kitty --class kitty-remote --title "Remote Kitty" -o "env=KITTY_INSTANCE=remote"

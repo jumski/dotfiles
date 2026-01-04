@@ -90,8 +90,13 @@ if [ -n "$FIREFOX_WINDOWS" ]; then
   fi
 fi
 
-# Find and move Kitty
-KITTY_WINDOWS=$(dotool search --class kitty 2>/dev/null || true)
+# Find and move Kitty (all variants: kitty-remote, kitty-local, generic kitty)
+KITTY_WINDOWS=$(
+  { dotool search --class '^kitty-remote$' 2>/dev/null
+    dotool search --class '^kitty-local$' 2>/dev/null
+    dotool search --class '^kitty$' 2>/dev/null
+  } | sort -u
+)
 if [ -n "$KITTY_WINDOWS" ]; then
   # Kitty might have multiple windows, move all of them
   while IFS= read -r KITTY_WIN; do
