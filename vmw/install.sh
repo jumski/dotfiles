@@ -64,7 +64,7 @@ KVM_CONF_DST="/etc/modules-load.d/kvm.conf"
 if [[ -f "$KVM_CONF_DST" ]] && diff -q "$KVM_CONF_SRC" "$KVM_CONF_DST" &>/dev/null; then
     info "KVM modules config already installed"
 else
-    cp "$KVM_CONF_SRC" "$KVM_CONF_DST"
+    sudo cp "$KVM_CONF_SRC" "$KVM_CONF_DST"
     info "Installed KVM modules config to $KVM_CONF_DST"
 fi
 
