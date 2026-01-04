@@ -2,6 +2,24 @@
 # Default Theme
 # If changes made here does not take effect, then try to re-create the tmux session to force reload.
 
+# Hostname-based color schemes
+HOSTNAME=$(hostname)
+if [ "$HOSTNAME" = "laptop" ]; then
+	# Laptop theme: terminal bg, cyan accents
+	TMUX_POWERLINE_DEFAULT_BG="terminal"
+	TMUX_POWERLINE_DEFAULT_FG="109"
+	TMUX_POWERLINE_ACCENT="109"
+	TMUX_POWERLINE_SESSION_ACCENT="109"
+	TMUX_POWERLINE_TIME_ACCENT="116"
+else
+	# PC theme: terminal bg, purple accents
+	TMUX_POWERLINE_DEFAULT_BG="terminal"
+	TMUX_POWERLINE_DEFAULT_FG="141"
+	TMUX_POWERLINE_ACCENT="141"
+	TMUX_POWERLINE_SESSION_ACCENT="141"
+	TMUX_POWERLINE_TIME_ACCENT="146"
+fi
+
 if tp_patched_font_in_use; then
 	TMUX_POWERLINE_SEPARATOR_LEFT_BOLD=""
 	TMUX_POWERLINE_SEPARATOR_LEFT_THIN=""
@@ -15,9 +33,9 @@ else
 fi
 
 # See Color formatting section below for details on what colors can be used here.
-# Tokyo Night: dark bg (235), purple fg (141) - inverse makes selected window purple
-TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR:-'235'}
-TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR:-'141'}
+# Set hostname-based theme colors
+TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR:-$TMUX_POWERLINE_DEFAULT_BG}
+TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR=${TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR:-$TMUX_POWERLINE_DEFAULT_FG}
 # shellcheck disable=SC2034
 TMUX_POWERLINE_SEG_AIR_COLOR=$(tp_air_color)
 
@@ -28,29 +46,26 @@ TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SEPARATOR=${TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SE
 # The `format regular` and `format inverse` functions are provided as conveniences
 
 # shellcheck disable=SC2128
-# Current window: [purple #I:#W] ◤
+# Current window: [accent #I:#W]
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-		"#[fg=colour235,bg=colour141]◤"              # dark→purple diagonal
-		"#[fg=colour232,bg=colour141,bold]#I#F #{=12:window_name}"  # number name
-		"#[fg=colour141,bg=colour235,nobold]◤"       # purple→dark diagonal
+		"#[fg=terminal,bg=colour${TMUX_POWERLINE_ACCENT}]◤"
+		"#[fg=colour232,bg=colour${TMUX_POWERLINE_ACCENT},bold]#I#F #{=12:window_name}"
 	)
 fi
 
 # shellcheck disable=SC2128
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_STYLE" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_STYLE=(
-		"#[fg=colour146,bg=colour235]"
+		"#[fg=colour${TMUX_POWERLINE_TIME_ACCENT},bg=terminal]"
 	)
 fi
 
 # shellcheck disable=SC2128
-# Regular window: [darker #I:#W]
+# Regular window: [terminal #I:#W]
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_FORMAT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
-		"#[fg=colour235,bg=colour234]◤"        # dark→darker diagonal
-		"#[fg=colour255,bg=colour234]#I#F #{=12:window_name}"  # number name
-		"#[fg=colour234,bg=colour235]◤"        # darker→dark diagonal
+		"#[fg=colour${TMUX_POWERLINE_ACCENT},bg=terminal]#I#F #{=12:window_name}"
 	)
 fi
 
@@ -100,19 +115,19 @@ fi
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-		"battery_if_present 141 232"
-		"tmux_session_info 117 232"
-		"last_session 234 245"
-		"separator 235 235"
+		"tmux_session_info ${TMUX_POWERLINE_SESSION_ACCENT} 232"
+		"last_session ${TMUX_POWERLINE_DEFAULT_BG} 245"
+		"separator ${TMUX_POWERLINE_DEFAULT_BG} ${TMUX_POWERLINE_DEFAULT_BG}"
 	)
 fi
 
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=(
-		"date 235 146"
-		"time 235 146 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
-		"hostname_laptop 215 232"
-		"hostname_pc 149 232"
+		"date ${TMUX_POWERLINE_DEFAULT_BG} ${TMUX_POWERLINE_TIME_ACCENT}"
+		"time ${TMUX_POWERLINE_DEFAULT_BG} ${TMUX_POWERLINE_TIME_ACCENT} ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
+		"battery_if_present ${TMUX_POWERLINE_ACCENT} 232"
+		"hostname_laptop ${TMUX_POWERLINE_ACCENT} 232"
+		"hostname_pc ${TMUX_POWERLINE_ACCENT} 232"
 	)
 fi
