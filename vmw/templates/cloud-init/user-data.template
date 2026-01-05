@@ -28,13 +28,33 @@ runcmd:
   # Create mount points
   - mkdir -p /home/jumski/Code
   - mkdir -p /home/jumski/.secrets
+  - mkdir -p /mnt/claude-config
   - mkdir -p /home/jumski/.claude
   - chown jumski:jumski /home/jumski/Code /home/jumski/.secrets /home/jumski/.claude
 
   # Mount virtiofs filesystems (base mounts)
   - mount -t virtiofs code /home/jumski/Code -o ro
   - mount -t virtiofs secrets /home/jumski/.secrets -o ro
-  - mount -t virtiofs claude /home/jumski/.claude -o ro
+  - mount -t virtiofs claude /mnt/claude-config -o ro
+
+  # Bind-mount specific claude config items into ~/.claude (read-only)
+  # Other subdirs (todos, sessions, memory, debug, projects) remain writable
+  - |
+    CLAUDE_MOUNT_ITEMS="{{CLAUDE_MOUNT_ITEMS}}"
+    for item in $CLAUDE_MOUNT_ITEMS; do
+      if [ -n "$item" ]; then
+        src="/mnt/claude-config/$item"
+        dst="/home/jumski/.claude/$item"
+        if [ -e "$src" ]; then
+          # Create parent dir if needed
+          mkdir -p "$(dirname "$dst")"
+          # Bind mount read-only
+          mount --bind "$src" "$dst"
+          mount -o remount,ro,noload "$dst"
+          chown jumski:jumski "$dst"
+        fi
+      fi
+    done
 
   # Mount writable paths (overlay rw on top of ro Code)
   # WRITABLE_PATHS is a newline-separated list of relative paths under /home/jumski/Code
@@ -55,7 +75,7 @@ runcmd:
   # Add mounts to fstab for persistence
   - echo 'code /home/jumski/Code virtiofs ro 0 0' >> /etc/fstab
   - echo 'secrets /home/jumski/.secrets virtiofs ro 0 0' >> /etc/fstab
-  - echo 'claude /home/jumski/.claude virtiofs ro 0 0' >> /etc/fstab
+  - echo 'claude /mnt/claude-config virtiofs ro 0 0' >> /etc/fstab
 
   # Install Node.js 24 via nodesource
   - curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
@@ -101,12 +121,12 @@ write_files:
   - path: /etc/systemd/system/virtiofs-claude.mount
     content: |
       [Unit]
-      Description=Mount virtiofs claude config share
+      Description=Mount virtiofs claude config share (staging)
       After=local-fs.target
 
       [Mount]
       What=claude
-      Where=/home/jumski/.claude
+      Where=/mnt/claude-config
       Type=virtiofs
       Options=ro
 

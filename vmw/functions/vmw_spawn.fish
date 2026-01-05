@@ -131,10 +131,23 @@ function vmw_spawn --description "Spawn a VM with read-only ~/Code and optional 
         set writable_paths_list "$writable_paths_list$relative_path\n"
     end
 
+    # Generate claude mount items list (space-separated) from claude-mount.list
+    set -l claude_mount_items ""
+    set -l claude_mount_list (dirname (status filename))/../claude-mount.list
+    if test -f "$claude_mount_list"
+        for line in (cat "$claude_mount_list")
+            set -l trimmed (string trim $line)
+            if test -n "$trimmed"; and not string match -q '#*' $trimmed
+                set claude_mount_items "$claude_mount_items$trimmed "
+            end
+        end
+    end
+
     # user-data
     sed -e "s|{{VM_NAME}}|$vm_name|g" \
         -e "s|{{SSH_PUBLIC_KEY}}|$ssh_key|g" \
         -e "s|{{WRITABLE_PATHS}}|$writable_paths_list|g" \
+        -e "s|{{CLAUDE_MOUNT_ITEMS}}|$claude_mount_items|g" \
         $template_dir/cloud-init/user-data.template > $cloudinit_dir/user-data
 
     # Create ISO
