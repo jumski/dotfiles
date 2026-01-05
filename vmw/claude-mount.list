@@ -1,0 +1,21 @@
+# Files/dirs from ~/.claude/ to mount in VMs
+# One path per line (relative to ~/.claude/)
+# All items are mounted read-only at /home/claude/.claude/
+#
+# NOTE: Local state (projects/, sessions/, todos/, memory/) is NOT mounted
+# because VM folder structure differs from host.
+
+# Credentials
+.credentials.json
+
+# Global config
+CLAUDE.md
+settings.json
+
+# Scripts and tools
+file-suggestion.sh
+statusline.sh
+
+# Skills and commands (directories)
+skills
+commands
