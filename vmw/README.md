@@ -9,31 +9,33 @@ Run Claude Code with `--dangerously-skip-permissions` safely inside isolated KVM
 sudo ./vmw/install.sh
 
 # Daily usage
-vmw spawn /path/to/worktree    # Start VM for a worktree
-vmw ssh <name>                 # SSH into VM (agent forwarding enabled)
-vmw list                       # List all VMs
-vmw stop <name>                # Graceful shutdown
-vmw destroy <name>             # Force stop and remove VM
+vmw spawn dev-vm                     # Read-only ~/Code access
+vmw spawn dev-vm ~/Code/myproject    # myproject is writable
+vmw spawn dev-vm .                   # Current dir is writable
+vmw spawn dev-vm ~/Code/a ~/Code/b   # Multiple writable paths
+vmw ssh <name>                       # SSH into VM (agent forwarding enabled)
+vmw list                             # List all VMs
+vmw stop <name>                      # Graceful shutdown
+vmw destroy <name>                   # Force stop and remove VM
 ```
 
 ## Cheat Sheet
 
 | Command | Description |
 |---------|-------------|
-| `vmw spawn <path>` | Create and start VM for worktree at `<path>` |
+| `vmw spawn <name> [path...]` | Create VM with optional writable paths |
 | `vmw ssh <name>` | SSH into VM with agent forwarding (`-A`) |
 | `vmw list` | List all VMs (running and stopped) |
 | `vmw stop <name>` | Graceful shutdown (ACPI) |
 | `vmw destroy <name>` | Force stop and undefine VM |
 
-**VM naming**: The VM name is derived from the last directory component of the path.
-- `/home/user/project/worktrees/feature-x` → VM name: `feature-x`
+**Mount model**: `~/Code` is always mounted read-only. Positional arguments specify writable paths.
 
 **Accessing VMs**: After spawning, wait ~60-90 seconds for cloud-init to complete, then:
 ```bash
-vmw ssh feature-x
+vmw ssh dev-vm
 # or
-ssh -A claude@feature-x.local
+ssh -A jumski@dev-vm.local
 ```
 
 ---
@@ -43,8 +45,10 @@ ssh -A claude@feature-x.local
 vmw creates lightweight KVM virtual machines for running Claude Code in a sandboxed environment. Each VM:
 
 - Is a linked clone of a Debian 12 golden image (~450MB base)
-- Has your worktree mounted at `/home/claude/repo` via virtiofs
-- Has API keys mounted at `/home/claude/.secrets` (read-only)
+- Has `~/Code` mounted read-only (full codebase access)
+- Has specified paths mounted read-write (overlay on top of ro base)
+- Has `~/.claude` config mounted (credentials, skills, commands)
+- Has API keys mounted at `/home/jumski/.secrets` (read-only)
 - Comes with Node.js 24 and Claude Code pre-installed
 - Is accessible via mDNS (`<vm-name>.local`)
 
@@ -61,10 +65,10 @@ vmw creates lightweight KVM virtual machines for running Claude Code in a sandbo
 │         │virtiofs         │virtiofs          │         │
 │  ┌──────┴─────────────────┴──────────────────┴───────┐ │
 │  │                     KVM VM                        │ │
-│  │  /home/claude/repo     /home/claude/.secrets      │ │
-│  │       (rw)                   (ro)                 │ │
+│  │  /home/jumski/Code (ro) + writable paths (rw)     │ │
+│  │  /home/jumski/.claude (ro) /home/jumski/.secrets  │ │
 │  │                                                   │ │
-│  │  claude@<vm-name>.local                           │ │
+│  │  jumski@<vm-name>.local                           │ │
 │  │  - Node.js 24                                     │ │
 │  │  - Claude Code (npm global)                       │ │
 │  │  - API keys auto-loaded from .secrets/secrets.env │ │
@@ -76,10 +80,11 @@ vmw creates lightweight KVM virtual machines for running Claude Code in a sandbo
 
 | Component | Host | VM |
 |-----------|------|-----|
-| Worktree files | Full access | Read/write via virtiofs |
+| ~/Code | Full access | Read-only base, writable paths overlaid |
+| ~/.claude | Full access | Read-only (credentials, skills) |
 | API keys | `~/.config/vmw/secrets.env` | Read-only mount |
 | Network | Bridge (br0) | Same L2 network, mDNS enabled |
-| SSH | Your key injected | claude user, passwordless sudo |
+| SSH | Your key injected | jumski user, passwordless sudo |
 
 If a VM is compromised, revoke the API keys in `secrets.env` without affecting your host keys.
 
@@ -129,13 +134,23 @@ These are automatically sourced when you SSH into a VM.
 ### Starting a VM
 
 ```bash
-vmw spawn ~/Code/myproject/worktrees/feature-branch
+# Read-only access to all of ~/Code
+vmw spawn dev-vm
+
+# Make specific project writable
+vmw spawn dev-vm ~/Code/myproject
+
+# Current directory writable (if under ~/Code)
+cd ~/Code/myproject && vmw spawn dev-vm .
+
+# Multiple writable paths
+vmw spawn dev-vm ~/Code/project1 ~/Code/project2
 ```
 
 This:
 1. Creates a linked clone disk from the golden image
 2. Generates cloud-init configuration with your SSH key
-3. Starts virtiofsd for worktree and secrets mounts
+3. Starts virtiofsd for Code, claude config, secrets, and writable paths
 4. Defines and starts the VM
 
 Wait ~60-90 seconds for cloud-init to install packages and configure mDNS.
@@ -148,7 +163,7 @@ vmw ssh feature-branch
 
 Or directly:
 ```bash
-ssh -A claude@feature-branch.local
+ssh -A jumski@dev-vm.local
 ```
 
 SSH agent forwarding (`-A`) is enabled, so your git credentials work inside the VM.
@@ -156,11 +171,12 @@ SSH agent forwarding (`-A`) is enabled, so your git credentials work inside the 
 ### Inside the VM
 
 ```bash
-cd ~/repo                    # Your worktree is here
+cd ~/Code/myproject          # Your writable project
 claude --dangerously-skip-permissions
 ```
 
 API keys are automatically loaded from `~/.secrets/secrets.env`.
+Claude credentials are available from `~/.claude/` (read-only from host).
 
 ### Stopping VMs
 
@@ -258,16 +274,18 @@ A Debian 12 cloud image is downloaded once and used as a backing file for all VM
 
 On first boot, cloud-init:
 1. Sets the hostname
-2. Creates the `claude` user with your SSH key
+2. Creates the `jumski` user with your SSH key
 3. Installs packages (avahi-daemon, Node.js, etc.)
-4. Mounts virtiofs shares
+4. Mounts virtiofs shares (Code ro, writable paths rw, claude ro, secrets ro)
 5. Installs Claude Code globally
 
 ### Virtiofs
 
-Two virtiofsd instances run per VM:
-- **repo**: Mounts your worktree at `/home/claude/repo` (read-write)
-- **secrets**: Mounts `~/.config/vmw/` at `/home/claude/.secrets` (read-only)
+Multiple virtiofsd instances run per VM:
+- **code**: Mounts `~/Code` at `/home/jumski/Code` (read-only)
+- **rw_N**: Mounts each writable path (read-write overlay)
+- **claude**: Mounts `~/.claude` staging at `/home/jumski/.claude` (read-only)
+- **secrets**: Mounts `~/.config/vmw/` at `/home/jumski/.secrets` (read-only)
 
 ### Networking
 

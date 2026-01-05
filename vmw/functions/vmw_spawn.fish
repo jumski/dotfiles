@@ -1,21 +1,24 @@
-function vmw_spawn --description "Spawn a VM for a worktree"
-    set -l worktree_path $argv[1]
+function vmw_spawn --description "Spawn a VM with read-only ~/Code and optional writable paths"
+    # Parse: vmw spawn <vm-name> [writable-path...]
+    if test (count $argv) -lt 1
+        echo "Usage: vmw spawn <vm-name> [writable-path...]" >&2
+        echo "" >&2
+        echo "Examples:" >&2
+        echo "  vmw spawn dev-vm                           # read-only ~/Code" >&2
+        echo "  vmw spawn dev-vm ~/Code/myproject          # myproject is writable" >&2
+        echo "  vmw spawn dev-vm .                         # current dir is writable" >&2
+        echo "  vmw spawn dev-vm ~/Code/proj1 ~/Code/proj2 # multiple writable" >&2
+        return 1
+    end
+
+    set -l vm_name $argv[1]
+    set -l raw_writable_paths $argv[2..-1]
 
     # Set defaults if not defined
     set -q VMW_CONFIG_DIR; or set -l VMW_CONFIG_DIR ~/.config/vmw
     set -l golden_image $VMW_CONFIG_DIR/golden-image.qcow2
     set -l instances_dir $VMW_CONFIG_DIR/instances
-
-    # Validate path
-    if test -z "$worktree_path"
-        echo "Error: Worktree path is required" >&2
-        return 1
-    end
-
-    if not test -d "$worktree_path"
-        echo "Error: Path does not exist: $worktree_path" >&2
-        return 1
-    end
+    set -l code_dir ~/Code
 
     # Validate golden image exists
     if not test -f "$golden_image"
@@ -24,11 +27,38 @@ function vmw_spawn --description "Spawn a VM for a worktree"
         return 1
     end
 
-    # Extract VM name from path
-    set -l vm_name (vmw_extract_name "$worktree_path")
-    if test $status -ne 0
-        echo "Error: Could not extract VM name from path" >&2
+    # Validate ~/Code exists
+    if not test -d "$code_dir"
+        echo "Error: Code directory not found at $code_dir" >&2
         return 1
+    end
+
+    # Process writable paths: expand "." and resolve to absolute paths
+    set -l writable_paths
+    for raw_path in $raw_writable_paths
+        set -l resolved_path
+        if test "$raw_path" = "."
+            set resolved_path $PWD
+        else
+            set resolved_path (realpath -m "$raw_path" 2>/dev/null; or echo "$raw_path")
+        end
+
+        # Expand ~ to home directory
+        set resolved_path (string replace -r '^~' $HOME $resolved_path)
+
+        # Validate path is under ~/Code
+        if not string match -q "$code_dir/*" "$resolved_path"
+            echo "Error: Writable path must be under ~/Code: $resolved_path" >&2
+            return 1
+        end
+
+        # Auto-create if doesn't exist
+        if not test -d "$resolved_path"
+            echo "Creating directory: $resolved_path"
+            mkdir -p "$resolved_path"
+        end
+
+        set -a writable_paths $resolved_path
     end
 
     # Create instance directory
@@ -41,7 +71,13 @@ function vmw_spawn --description "Spawn a VM for a worktree"
     set -l secrets_dir $VMW_CONFIG_DIR
 
     echo "Spawning VM: $vm_name"
-    echo "Worktree: $worktree_path"
+    echo "Code directory: $code_dir (read-only)"
+    if test (count $writable_paths) -gt 0
+        echo "Writable paths:"
+        for wp in $writable_paths
+            echo "  - $wp"
+        end
+    end
 
     # Create linked clone from golden image
     if not test -f $disk_path
@@ -51,6 +87,16 @@ function vmw_spawn --description "Spawn a VM for a worktree"
             echo "Error: Failed to create disk clone" >&2
             return 1
         end
+    end
+
+    # Stage ~/.claude/ for mounting
+    echo "Staging ~/.claude/ for mount..."
+    set -l claude_staging_dir $instance_dir/claude-staging
+    rm -rf $claude_staging_dir
+    _vmw_stage_claude $claude_staging_dir
+    if test $status -ne 0
+        echo "Error: Failed to stage claude directory" >&2
+        return 1
     end
 
     # Generate cloud-init ISO
@@ -78,9 +124,17 @@ function vmw_spawn --description "Spawn a VM for a worktree"
     # network-config (uses driver matching for interface name flexibility)
     cp $template_dir/cloud-init/network-config.template $cloudinit_dir/network-config
 
-    # user-data (includes avahi-daemon for mDNS)
+    # Generate writable paths list for cloud-init (relative paths under /home/jumski/Code)
+    set -l writable_paths_list ""
+    for wp in $writable_paths
+        set -l relative_path (string replace "$code_dir/" "" "$wp")
+        set writable_paths_list "$writable_paths_list$relative_path\n"
+    end
+
+    # user-data
     sed -e "s|{{VM_NAME}}|$vm_name|g" \
         -e "s|{{SSH_PUBLIC_KEY}}|$ssh_key|g" \
+        -e "s|{{WRITABLE_PATHS}}|$writable_paths_list|g" \
         $template_dir/cloud-init/user-data.template > $cloudinit_dir/user-data
 
     # Create ISO
@@ -93,41 +147,75 @@ function vmw_spawn --description "Spawn a VM for a worktree"
     end
 
     # Start virtiofsd instances
-    echo "Starting virtiofsd for worktree..."
-    set -l repo_socket $instance_dir/virtiofsd-repo.sock
-    set -l secrets_socket $instance_dir/virtiofsd-secrets.sock
+    echo "Starting virtiofsd daemons..."
     set -l virtiofsd_bin (_vmw_virtiofsd_path)
 
+    # Socket paths
+    set -l code_socket $instance_dir/virtiofsd-code.sock
+    set -l secrets_socket $instance_dir/virtiofsd-secrets.sock
+    set -l claude_socket $instance_dir/virtiofsd-claude.sock
+
     # Kill any existing virtiofsd for this VM
-    pkill -f "virtiofsd.*$repo_socket" 2>/dev/null
-    pkill -f "virtiofsd.*$secrets_socket" 2>/dev/null
+    pkill -f "virtiofsd.*$instance_dir" 2>/dev/null
 
-    # Start virtiofsd for repo (writable)
-    $virtiofsd_bin --socket-path=$repo_socket \
-        --shared-dir=$worktree_path \
+    # Start virtiofsd for ~/Code (ro enforced at mount level in VM)
+    $virtiofsd_bin --socket-path=$code_socket \
+        --shared-dir=$code_dir \
         --cache=auto &
-    set -l repo_pid $last_pid
 
-    # Start virtiofsd for secrets (read-only would be ideal but virtiofsd doesn't support it directly)
+    # Start virtiofsd for secrets
     $virtiofsd_bin --socket-path=$secrets_socket \
         --shared-dir=$secrets_dir \
         --cache=auto &
-    set -l secrets_pid $last_pid
+
+    # Start virtiofsd for claude config
+    $virtiofsd_bin --socket-path=$claude_socket \
+        --shared-dir=$claude_staging_dir \
+        --cache=auto &
+
+    # Start virtiofsd for each writable path
+    set -l rw_sockets
+    set -l rw_index 0
+    for wp in $writable_paths
+        set -l rw_socket $instance_dir/virtiofsd-rw-$rw_index.sock
+        set -a rw_sockets $rw_socket
+        $virtiofsd_bin --socket-path=$rw_socket \
+            --shared-dir=$wp \
+            --cache=auto &
+        set rw_index (math $rw_index + 1)
+    end
 
     # Wait for sockets to be created
     sleep 1
 
     # Generate domain XML
     echo "Generating libvirt domain XML..."
-    set -l bridge_name "br0"  # Bridge to physical network for mDNS
+    set -l bridge_name "br0"
+
+    # Build writable filesystem entries for domain.xml
+    set -l rw_filesystem_entries ""
+    set rw_index 0
+    for rw_socket in $rw_sockets
+        set -l relative_path (string replace "$code_dir/" "" "$writable_paths[$rw_index + 1]")
+        set rw_filesystem_entries "$rw_filesystem_entries
+    <!-- Virtiofs: writable path $relative_path -->
+    <filesystem type='mount' accessmode='passthrough'>
+      <driver type='virtiofs'/>
+      <source socket='$rw_socket'/>
+      <target dir='rw_$rw_index'/>
+    </filesystem>"
+        set rw_index (math $rw_index + 1)
+    end
 
     # Read template and substitute variables
     sed -e "s|{{VM_NAME}}|$vm_name|g" \
         -e "s|{{DISK_PATH}}|$disk_path|g" \
         -e "s|{{CLOUDINIT_ISO}}|$cloudinit_iso|g" \
-        -e "s|{{VIRTIOFS_REPO_SOCKET}}|$repo_socket|g" \
+        -e "s|{{VIRTIOFS_CODE_SOCKET}}|$code_socket|g" \
         -e "s|{{VIRTIOFS_SECRETS_SOCKET}}|$secrets_socket|g" \
+        -e "s|{{VIRTIOFS_CLAUDE_SOCKET}}|$claude_socket|g" \
         -e "s|{{BRIDGE_NAME}}|$bridge_name|g" \
+        -e "s|{{RW_FILESYSTEM_ENTRIES}}|$rw_filesystem_entries|g" \
         $template_dir/domain.xml.template > $domain_xml
 
     # Define and start VM
@@ -147,5 +235,5 @@ function vmw_spawn --description "Spawn a VM for a worktree"
     echo ""
     echo "VM '$vm_name' started successfully!"
     echo "Wait for mDNS, then connect with: vmw ssh $vm_name"
-    echo "Or manually: ssh -A claude@$vm_name.local"
+    echo "Or manually: ssh -A jumski@$vm_name.local"
 end

@@ -4,7 +4,7 @@ hostname: {{VM_NAME}}
 manage_etc_hosts: true
 
 users:
-  - name: claude
+  - name: jumski
     uid: 1000
     groups: sudo
     shell: /bin/bash
@@ -26,17 +26,36 @@ runcmd:
   - systemctl enable --now avahi-daemon
 
   # Create mount points
-  - mkdir -p /home/claude/repo
-  - mkdir -p /home/claude/.secrets
-  - chown claude:claude /home/claude/repo /home/claude/.secrets
+  - mkdir -p /home/jumski/Code
+  - mkdir -p /home/jumski/.secrets
+  - mkdir -p /home/jumski/.claude
+  - chown jumski:jumski /home/jumski/Code /home/jumski/.secrets /home/jumski/.claude
 
-  # Mount virtiofs filesystems
-  - mount -t virtiofs repo /home/claude/repo
-  - mount -t virtiofs secrets /home/claude/.secrets -o ro
+  # Mount virtiofs filesystems (base mounts)
+  - mount -t virtiofs code /home/jumski/Code -o ro
+  - mount -t virtiofs secrets /home/jumski/.secrets -o ro
+  - mount -t virtiofs claude /home/jumski/.claude -o ro
+
+  # Mount writable paths (overlay rw on top of ro Code)
+  # WRITABLE_PATHS is a newline-separated list of relative paths under /home/jumski/Code
+  - |
+    WRITABLE_PATHS="{{WRITABLE_PATHS}}"
+    index=0
+    echo "$WRITABLE_PATHS" | while IFS= read -r relative_path; do
+      if [ -n "$relative_path" ]; then
+        full_path="/home/jumski/Code/$relative_path"
+        mkdir -p "$full_path"
+        mount -t virtiofs "rw_$index" "$full_path"
+        chown jumski:jumski "$full_path"
+        echo "rw_$index $full_path virtiofs defaults 0 0" >> /etc/fstab
+        index=$((index + 1))
+      fi
+    done
 
   # Add mounts to fstab for persistence
-  - echo 'repo /home/claude/repo virtiofs defaults 0 0' >> /etc/fstab
-  - echo 'secrets /home/claude/.secrets virtiofs ro 0 0' >> /etc/fstab
+  - echo 'code /home/jumski/Code virtiofs ro 0 0' >> /etc/fstab
+  - echo 'secrets /home/jumski/.secrets virtiofs ro 0 0' >> /etc/fstab
+  - echo 'claude /home/jumski/.claude virtiofs ro 0 0' >> /etc/fstab
 
   # Install Node.js 24 via nodesource
   - curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
@@ -45,21 +64,21 @@ runcmd:
   # Install Claude Code globally
   - npm install -g @anthropic-ai/claude-code
 
-  # Add secrets sourcing to claude's profile
-  - echo 'if [ -f ~/.secrets/secrets.env ]; then set -a; source ~/.secrets/secrets.env; set +a; fi' >> /home/claude/.bashrc
+  # Add secrets sourcing to jumski's profile
+  - echo 'if [ -f ~/.secrets/secrets.env ]; then set -a; source ~/.secrets/secrets.env; set +a; fi' >> /home/jumski/.bashrc
 
 write_files:
-  - path: /etc/systemd/system/virtiofs-repo.mount
+  - path: /etc/systemd/system/virtiofs-code.mount
     content: |
       [Unit]
-      Description=Mount virtiofs repo share
+      Description=Mount virtiofs Code share (read-only)
       After=local-fs.target
 
       [Mount]
-      What=repo
-      Where=/home/claude/repo
+      What=code
+      Where=/home/jumski/Code
       Type=virtiofs
-      Options=defaults
+      Options=ro
 
       [Install]
       WantedBy=multi-user.target
@@ -72,7 +91,22 @@ write_files:
 
       [Mount]
       What=secrets
-      Where=/home/claude/.secrets
+      Where=/home/jumski/.secrets
+      Type=virtiofs
+      Options=ro
+
+      [Install]
+      WantedBy=multi-user.target
+
+  - path: /etc/systemd/system/virtiofs-claude.mount
+    content: |
+      [Unit]
+      Description=Mount virtiofs claude config share
+      After=local-fs.target
+
+      [Mount]
+      What=claude
+      Where=/home/jumski/.claude
       Type=virtiofs
       Options=ro
 

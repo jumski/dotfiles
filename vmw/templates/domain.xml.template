@@ -38,11 +38,11 @@
       <readonly/>
     </disk>
 
-    <!-- Virtiofs: worktree mount -->
+    <!-- Virtiofs: ~/Code mount (ro enforced in cloud-init) -->
     <filesystem type='mount' accessmode='passthrough'>
       <driver type='virtiofs'/>
-      <source socket='{{VIRTIOFS_REPO_SOCKET}}'/>
-      <target dir='repo'/>
+      <source socket='{{VIRTIOFS_CODE_SOCKET}}'/>
+      <target dir='code'/>
     </filesystem>
 
     <!-- Virtiofs: secrets mount -->
@@ -51,6 +51,16 @@
       <source socket='{{VIRTIOFS_SECRETS_SOCKET}}'/>
       <target dir='secrets'/>
     </filesystem>
+
+    <!-- Virtiofs: ~/.claude config mount (ro enforced in cloud-init) -->
+    <filesystem type='mount' accessmode='passthrough'>
+      <driver type='virtiofs'/>
+      <source socket='{{VIRTIOFS_CLAUDE_SOCKET}}'/>
+      <target dir='claude'/>
+    </filesystem>
+
+    <!-- Virtiofs: writable path mounts (dynamically generated) -->
+{{RW_FILESYSTEM_ENTRIES}}
 
     <!-- Network: bridged -->
     <interface type='bridge'>

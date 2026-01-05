@@ -6,5 +6,5 @@ function vmw_ssh --description "SSH into a VMW VM"
         return 1
     end
 
-    ssh -A claude@$vm_name.local
+    ssh -A jumski@$vm_name.local
 end
