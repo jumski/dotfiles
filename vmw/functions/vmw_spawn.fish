@@ -68,31 +68,20 @@ function vmw_spawn --description "Spawn a VM for a worktree"
         echo "Warning: No SSH public key found" >&2
     end
 
-    # Generate meta-data
-    echo "instance-id: $vm_name" > $cloudinit_dir/meta-data
-    echo "local-hostname: $vm_name" >> $cloudinit_dir/meta-data
+    # Generate cloud-init files from templates
+    set -l template_dir (dirname (status filename))/../templates
 
-    # Generate network-config (DHCP for eth0)
-    # Note: network-config should NOT have 'network:' wrapper for NoCloud datasource
-    echo "version: 2" > $cloudinit_dir/network-config
-    echo "ethernets:" >> $cloudinit_dir/network-config
-    echo "  eth0:" >> $cloudinit_dir/network-config
-    echo "    dhcp4: true" >> $cloudinit_dir/network-config
+    # meta-data
+    sed -e "s|{{VM_NAME}}|$vm_name|g" \
+        $template_dir/cloud-init/meta-data.template > $cloudinit_dir/meta-data
 
-    # Generate user-data (simplified version)
-    echo "#cloud-config" > $cloudinit_dir/user-data
-    echo "hostname: $vm_name" >> $cloudinit_dir/user-data
-    echo "manage_etc_hosts: true" >> $cloudinit_dir/user-data
-    echo "users:" >> $cloudinit_dir/user-data
-    echo "  - name: claude" >> $cloudinit_dir/user-data
-    echo "    uid: 1000" >> $cloudinit_dir/user-data
-    echo "    groups: sudo" >> $cloudinit_dir/user-data
-    echo "    shell: /bin/bash" >> $cloudinit_dir/user-data
-    echo "    sudo: ALL=(ALL) NOPASSWD:ALL" >> $cloudinit_dir/user-data
-    if test -n "$ssh_key"
-        echo "    ssh_authorized_keys:" >> $cloudinit_dir/user-data
-        echo "      - $ssh_key" >> $cloudinit_dir/user-data
-    end
+    # network-config (uses driver matching for interface name flexibility)
+    cp $template_dir/cloud-init/network-config.template $cloudinit_dir/network-config
+
+    # user-data (includes avahi-daemon for mDNS)
+    sed -e "s|{{VM_NAME}}|$vm_name|g" \
+        -e "s|{{SSH_PUBLIC_KEY}}|$ssh_key|g" \
+        $template_dir/cloud-init/user-data.template > $cloudinit_dir/user-data
 
     # Create ISO
     genisoimage -output $cloudinit_iso -volid cidata -joliet -rock \
@@ -130,7 +119,6 @@ function vmw_spawn --description "Spawn a VM for a worktree"
 
     # Generate domain XML
     echo "Generating libvirt domain XML..."
-    set -l template_dir (dirname (status filename))/../templates
     set -l bridge_name "br0"  # Bridge to physical network for mDNS
 
     # Read template and substitute variables
