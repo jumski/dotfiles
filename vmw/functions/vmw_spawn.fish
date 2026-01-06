@@ -1,6 +1,6 @@
 function vmw_spawn --description "Spawn a VM with read-only ~/Code and optional writable paths"
-    # Parse: vmw spawn <vm-name> [writable-path...]
-    if test (count $argv) -lt 1
+    # Handle --help / -h
+    if contains -- --help $argv; or contains -- -h $argv; or test (count $argv) -lt 1
         echo "Usage: vmw spawn <vm-name> [writable-path...]" >&2
         echo "" >&2
         echo "Examples:" >&2
