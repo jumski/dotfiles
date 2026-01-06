@@ -111,7 +111,9 @@
       "mcp__context7__resolve-library-id",
       "mcp__perplexity__perplexity_ask",
       "mcp__perplexity__perplexity_reason",
-      "mcp__perplexity__perplexity_search"
+      "mcp__perplexity__perplexity_search",
+      "Read(~/Downloads/conversation.md)",
+      "Bash(mv ~/Downloads/conversation.md ~/Code/pgflow-dev/notes/chatgpt/:*)"
     ],
     "deny": [],
     "defaultMode": "default"
@@ -137,6 +139,7 @@
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true,
     "dev-browser@dev-browser-marketplace": true,
-    "beads@beads-marketplace": true
+    "beads@beads-marketplace": true,
+    "ralph-wiggum@claude-plugins-official": true
   }
 }
