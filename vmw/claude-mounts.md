@@ -22,7 +22,15 @@ Host                              VM
 ├── sessions/        (NOT MOUNTED - host-specific state)
 ├── todos/           (NOT MOUNTED - host-specific state)
 └── memory/          (NOT MOUNTED - host-specific state)
+
+~/.dotfiles/claude/               /home/jumski/.dotfiles/claude/
+├── commands/ ──────────────────► ├── commands/ (ro)
+├── skills/ ────────────────────► ├── skills/ (ro)
+├── settings.json ──────────────► ├── settings.json (ro)
+└── ... ────────────────────────► └── ... (ro)
 ```
+
+The `~/.dotfiles/claude/` mount ensures symlinks in `~/.claude/` that point to dotfiles resolve correctly inside the VM.
 
 ## Configuration
 
@@ -45,8 +53,8 @@ commands
 |-----------|---------|
 | `vmw/claude-mount.list` | Config listing paths to mount |
 | `vmw/functions/_vmw_stage_claude.fish` | Creates staging dir with symlinks |
-| `vmw_spawn.fish` | Starts virtiofsd for claude staging |
-| `domain.xml.template` | Defines virtiofs filesystem entry |
-| `user-data.template` | Mounts claude share as read-only |
+| `vmw_spawn.fish` | Starts virtiofsd for claude staging and dotfiles-claude |
+| `domain.xml.template` | Defines virtiofs filesystem entries |
+| `user-data.template` | Mounts claude and dotfiles-claude shares as read-only |
 
-The staging approach (symlinks in a temp directory) allows selective mounting without exposing the entire `~/.claude/` directory.
+The staging approach (symlinks in a temp directory) allows selective mounting without exposing the entire `~/.claude/` directory. The separate `~/.dotfiles/claude/` mount ensures symlinks resolve correctly.

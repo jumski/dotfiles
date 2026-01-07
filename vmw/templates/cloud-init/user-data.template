@@ -30,12 +30,14 @@ runcmd:
   - mkdir -p /home/jumski/.secrets
   - mkdir -p /mnt/claude-config
   - mkdir -p /home/jumski/.claude
-  - chown jumski:jumski /home/jumski/Code /home/jumski/.secrets /home/jumski/.claude
+  - mkdir -p /home/jumski/.dotfiles/claude
+  - chown jumski:jumski /home/jumski/Code /home/jumski/.secrets /home/jumski/.claude /home/jumski/.dotfiles/claude
 
   # Mount virtiofs filesystems (base mounts)
   - mount -t virtiofs code /home/jumski/Code -o ro
   - mount -t virtiofs secrets /home/jumski/.secrets -o ro
   - mount -t virtiofs claude /mnt/claude-config -o ro
+  - mount -t virtiofs dotfiles-claude /home/jumski/.dotfiles/claude -o ro
 
   # Bind-mount specific claude config items into ~/.claude (read-only)
   # Other subdirs (todos, sessions, memory, debug, projects) remain writable
@@ -76,6 +78,7 @@ runcmd:
   - echo 'code /home/jumski/Code virtiofs ro 0 0' >> /etc/fstab
   - echo 'secrets /home/jumski/.secrets virtiofs ro 0 0' >> /etc/fstab
   - echo 'claude /mnt/claude-config virtiofs ro 0 0' >> /etc/fstab
+  - echo 'dotfiles-claude /home/jumski/.dotfiles/claude virtiofs ro 0 0' >> /etc/fstab
 
   # Install Node.js 24 via nodesource
   - curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
@@ -127,6 +130,21 @@ write_files:
       [Mount]
       What=claude
       Where=/mnt/claude-config
+      Type=virtiofs
+      Options=ro
+
+      [Install]
+      WantedBy=multi-user.target
+
+  - path: /etc/systemd/system/virtiofs-dotfiles-claude.mount
+    content: |
+      [Unit]
+      Description=Mount virtiofs dotfiles claude share (symlink target)
+      After=local-fs.target
+
+      [Mount]
+      What=dotfiles-claude
+      Where=/home/jumski/.dotfiles/claude
       Type=virtiofs
       Options=ro
 

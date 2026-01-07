@@ -167,6 +167,7 @@ function vmw_spawn --description "Spawn a VM with read-only ~/Code and optional 
     set -l code_socket $instance_dir/virtiofsd-code.sock
     set -l secrets_socket $instance_dir/virtiofsd-secrets.sock
     set -l claude_socket $instance_dir/virtiofsd-claude.sock
+    set -l dotfiles_claude_socket $instance_dir/virtiofsd-dotfiles-claude.sock
 
     # Kill any existing virtiofsd for this VM
     pkill -f "virtiofsd.*$instance_dir" 2>/dev/null
@@ -184,6 +185,12 @@ function vmw_spawn --description "Spawn a VM with read-only ~/Code and optional 
     # Start virtiofsd for claude config
     $virtiofsd_bin --socket-path=$claude_socket \
         --shared-dir=$claude_staging_dir \
+        --cache=auto &
+
+    # Start virtiofsd for ~/.dotfiles/claude/ (symlink target for ~/.claude/ items)
+    set -l dotfiles_claude_dir ~/.dotfiles/claude
+    $virtiofsd_bin --socket-path=$dotfiles_claude_socket \
+        --shared-dir=$dotfiles_claude_dir \
         --cache=auto &
 
     # Start virtiofsd for each writable path
@@ -227,6 +234,7 @@ function vmw_spawn --description "Spawn a VM with read-only ~/Code and optional 
         -e "s|{{VIRTIOFS_CODE_SOCKET}}|$code_socket|g" \
         -e "s|{{VIRTIOFS_SECRETS_SOCKET}}|$secrets_socket|g" \
         -e "s|{{VIRTIOFS_CLAUDE_SOCKET}}|$claude_socket|g" \
+        -e "s|{{VIRTIOFS_DOTFILES_CLAUDE_SOCKET}}|$dotfiles_claude_socket|g" \
         -e "s|{{BRIDGE_NAME}}|$bridge_name|g" \
         -e "s|{{RW_FILESYSTEM_ENTRIES}}|$rw_filesystem_entries|g" \
         $template_dir/domain.xml.template > $domain_xml

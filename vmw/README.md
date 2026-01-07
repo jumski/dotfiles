@@ -285,6 +285,7 @@ Multiple virtiofsd instances run per VM:
 - **code**: Mounts `~/Code` at `/home/jumski/Code` (read-only)
 - **rw_N**: Mounts each writable path (read-write overlay)
 - **claude**: Mounts `~/.claude` staging at `/home/jumski/.claude` (read-only)
+- **dotfiles-claude**: Mounts `~/.dotfiles/claude/` at same path (read-only, symlink target)
 - **secrets**: Mounts `~/.config/vmw/` at `/home/jumski/.secrets` (read-only)
 
 ### Networking
