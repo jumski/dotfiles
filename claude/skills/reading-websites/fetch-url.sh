@@ -24,4 +24,8 @@ if [[ -n "${JINA_API_KEY:-}" ]]; then
   CURL_ARGS+=(-H "Authorization: Bearer ${JINA_API_KEY}")
 fi
 
-curl "${CURL_ARGS[@]}" "https://r.jina.ai/${URL}" | head -c "$LIMIT"
+# Capture output - exit 23 (broken pipe) is expected when head closes early
+# Real errors have different exit codes (6=dns fail, 7=connect fail, etc.)
+output=$(curl "${CURL_ARGS[@]}" "https://r.jina.ai/${URL}" 2>&1) || true
+# Truncate to limit, ignoring SIGPIPE from head closing early
+printf '%s' "$output" | head -c "$LIMIT" || true
