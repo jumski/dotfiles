@@ -16,7 +16,6 @@ TARGET_USER=$(stat -c '%U' "$SCRIPT_DIR")
 TARGET_HOME=$(eval echo "~$TARGET_USER")
 
 VMW_CONFIG_DIR="${TARGET_HOME}/.config/vmw"
-VMW_SECRETS_FILE="${VMW_CONFIG_DIR}/secrets.env"
 VMW_INSTANCES_DIR="${VMW_CONFIG_DIR}/instances"
 
 info() { echo -e "${GREEN}[✓]${NC} $1"; }
@@ -145,21 +144,23 @@ else
     info "Created instances directory: $VMW_INSTANCES_DIR"
 fi
 
-# --- 7. Create secrets.env template ---
+# --- 7. Create guest directory and secrets.env ---
+VMW_GUEST_DIR="${VMW_CONFIG_DIR}/guest"
+VMW_SECRETS_FILE="${VMW_GUEST_DIR}/secrets.env"
+
+if [[ -d "$VMW_GUEST_DIR" ]]; then
+    info "Guest directory exists: $VMW_GUEST_DIR"
+else
+    as_user "mkdir -p '$VMW_GUEST_DIR'"
+    info "Created guest directory: $VMW_GUEST_DIR"
+fi
+
 if [[ -f "$VMW_SECRETS_FILE" ]]; then
     info "Secrets file exists: $VMW_SECRETS_FILE"
 else
-    as_user "cat > '$VMW_SECRETS_FILE'" << 'EOF'
-# VMW secrets - API keys for VMs
-# These are separate from your host keys for security isolation
-# If a VM is compromised, revoke these without affecting host
-
-# ANTHROPIC_API_KEY=sk-ant-xxx
-# PERPLEXITY_API_KEY=pplx-xxx
-# OPENAI_API_KEY=sk-xxx
-EOF
+    as_user "cp '${SCRIPT_DIR}/guest/secrets.env.example' '$VMW_SECRETS_FILE'"
     as_user "chmod 600 '$VMW_SECRETS_FILE'"
-    info "Created secrets template: $VMW_SECRETS_FILE"
+    info "Created secrets from example: $VMW_SECRETS_FILE"
     warn "Edit $VMW_SECRETS_FILE to add your API keys"
 fi
 
@@ -332,6 +333,7 @@ fi
 step "Setup summary"
 echo ""
 echo "Config directory:  $VMW_CONFIG_DIR"
+echo "Guest directory:   $VMW_GUEST_DIR"
 echo "Secrets file:      $VMW_SECRETS_FILE"
 echo "Instances dir:     $VMW_INSTANCES_DIR"
 echo "Golden image:      $VMW_GOLDEN_IMAGE"
@@ -339,5 +341,5 @@ echo ""
 echo "Next steps:"
 echo "  1. Log out and back in (if added to libvirt group)"
 echo "  2. Edit $VMW_SECRETS_FILE with your API keys"
-echo "  3. Run: vmw spawn /path/to/worktree"
+echo "  3. Run: vmw spawn <vm-name> [writable-path...]"
 echo ""

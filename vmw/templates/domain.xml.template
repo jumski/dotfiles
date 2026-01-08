@@ -45,11 +45,11 @@
       <target dir='code'/>
     </filesystem>
 
-    <!-- Virtiofs: secrets mount -->
+    <!-- Virtiofs: ~/host mount (secrets.env, functions.sh) -->
     <filesystem type='mount' accessmode='passthrough'>
       <driver type='virtiofs'/>
-      <source socket='{{VIRTIOFS_SECRETS_SOCKET}}'/>
-      <target dir='secrets'/>
+      <source socket='{{VIRTIOFS_HOST_SOCKET}}'/>
+      <target dir='host'/>
     </filesystem>
 
     <!-- Virtiofs: ~/.claude config mount (ro enforced in cloud-init) -->

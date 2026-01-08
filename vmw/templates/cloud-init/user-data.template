@@ -27,15 +27,15 @@ runcmd:
 
   # Create mount points
   - mkdir -p /home/jumski/Code
-  - mkdir -p /home/jumski/.secrets
+  - mkdir -p /home/jumski/host
   - mkdir -p /mnt/claude-config
   - mkdir -p /home/jumski/.claude
   - mkdir -p /home/jumski/.dotfiles/claude
-  - chown jumski:jumski /home/jumski/Code /home/jumski/.secrets /home/jumski/.claude /home/jumski/.dotfiles/claude
+  - chown jumski:jumski /home/jumski/Code /home/jumski/host /home/jumski/.claude /home/jumski/.dotfiles/claude
 
   # Mount virtiofs filesystems (base mounts)
   - mount -t virtiofs code /home/jumski/Code -o ro
-  - mount -t virtiofs secrets /home/jumski/.secrets -o ro
+  - mount -t virtiofs host /home/jumski/host -o ro
   - mount -t virtiofs claude /mnt/claude-config -o ro
   - mount -t virtiofs dotfiles-claude /home/jumski/.dotfiles/claude -o ro
 
@@ -76,7 +76,7 @@ runcmd:
 
   # Add mounts to fstab for persistence
   - echo 'code /home/jumski/Code virtiofs ro 0 0' >> /etc/fstab
-  - echo 'secrets /home/jumski/.secrets virtiofs ro 0 0' >> /etc/fstab
+  - echo 'host /home/jumski/host virtiofs ro 0 0' >> /etc/fstab
   - echo 'claude /mnt/claude-config virtiofs ro 0 0' >> /etc/fstab
   - echo 'dotfiles-claude /home/jumski/.dotfiles/claude virtiofs ro 0 0' >> /etc/fstab
 
@@ -87,8 +87,10 @@ runcmd:
   # Install Claude Code globally
   - npm install -g @anthropic-ai/claude-code
 
-  # Add secrets sourcing to jumski's profile
-  - echo 'if [ -f ~/.secrets/secrets.env ]; then set -a; source ~/.secrets/secrets.env; set +a; fi' >> /home/jumski/.bashrc
+  # Add host files sourcing to jumski's profile
+  - echo '# Source host-provided secrets and functions' >> /home/jumski/.bashrc
+  - echo '[ -f ~/host/secrets.env ] && source ~/host/secrets.env' >> /home/jumski/.bashrc
+  - echo '[ -f ~/host/functions.sh ] && source ~/host/functions.sh' >> /home/jumski/.bashrc
 
 write_files:
   - path: /etc/systemd/system/virtiofs-code.mount
@@ -106,15 +108,15 @@ write_files:
       [Install]
       WantedBy=multi-user.target
 
-  - path: /etc/systemd/system/virtiofs-secrets.mount
+  - path: /etc/systemd/system/virtiofs-host.mount
     content: |
       [Unit]
-      Description=Mount virtiofs secrets share
+      Description=Mount virtiofs host share (secrets, functions)
       After=local-fs.target
 
       [Mount]
-      What=secrets
-      Where=/home/jumski/.secrets
+      What=host
+      Where=/home/jumski/host
       Type=virtiofs
       Options=ro
 

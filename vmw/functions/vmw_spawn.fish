@@ -68,7 +68,7 @@ function vmw_spawn --description "Spawn a VM with read-only ~/Code and optional 
     set -l disk_path $instance_dir/disk.qcow2
     set -l cloudinit_iso $instance_dir/cloud-init.iso
     set -l domain_xml $instance_dir/domain.xml
-    set -l secrets_dir $VMW_CONFIG_DIR
+    set -l host_dir $VMW_CONFIG_DIR/guest
 
     echo "Spawning VM: $vm_name"
     echo "Code directory: $code_dir (read-only)"
@@ -165,7 +165,7 @@ function vmw_spawn --description "Spawn a VM with read-only ~/Code and optional 
 
     # Socket paths
     set -l code_socket $instance_dir/virtiofsd-code.sock
-    set -l secrets_socket $instance_dir/virtiofsd-secrets.sock
+    set -l host_socket $instance_dir/virtiofsd-host.sock
     set -l claude_socket $instance_dir/virtiofsd-claude.sock
     set -l dotfiles_claude_socket $instance_dir/virtiofsd-dotfiles-claude.sock
 
@@ -177,9 +177,9 @@ function vmw_spawn --description "Spawn a VM with read-only ~/Code and optional 
         --shared-dir=$code_dir \
         --cache=auto &
 
-    # Start virtiofsd for secrets
-    $virtiofsd_bin --socket-path=$secrets_socket \
-        --shared-dir=$secrets_dir \
+    # Start virtiofsd for ~/host (guest files: secrets.env, functions.sh)
+    $virtiofsd_bin --socket-path=$host_socket \
+        --shared-dir=$host_dir \
         --cache=auto &
 
     # Start virtiofsd for claude config
@@ -232,7 +232,7 @@ function vmw_spawn --description "Spawn a VM with read-only ~/Code and optional 
         -e "s|{{DISK_PATH}}|$disk_path|g" \
         -e "s|{{CLOUDINIT_ISO}}|$cloudinit_iso|g" \
         -e "s|{{VIRTIOFS_CODE_SOCKET}}|$code_socket|g" \
-        -e "s|{{VIRTIOFS_SECRETS_SOCKET}}|$secrets_socket|g" \
+        -e "s|{{VIRTIOFS_HOST_SOCKET}}|$host_socket|g" \
         -e "s|{{VIRTIOFS_CLAUDE_SOCKET}}|$claude_socket|g" \
         -e "s|{{VIRTIOFS_DOTFILES_CLAUDE_SOCKET}}|$dotfiles_claude_socket|g" \
         -e "s|{{BRIDGE_NAME}}|$bridge_name|g" \

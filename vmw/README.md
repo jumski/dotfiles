@@ -82,11 +82,11 @@ vmw creates lightweight KVM virtual machines for running Claude Code in a sandbo
 |-----------|------|-----|
 | ~/Code | Full access | Read-only base, writable paths overlaid |
 | ~/.claude | Full access | Read-only (credentials, skills) |
-| API keys | `~/.config/vmw/secrets.env` | Read-only mount |
+| API keys | `~/.config/vmw/guest/secrets.env` | Read-only at `~/host/` |
 | Network | Bridge (br0) | Same L2 network, mDNS enabled |
 | SSH | Your key injected | jumski user, passwordless sudo |
 
-If a VM is compromised, revoke the API keys in `secrets.env` without affecting your host keys.
+If a VM is compromised, revoke the API keys in `guest/secrets.env` without affecting your host keys.
 
 ---
 
@@ -117,15 +117,16 @@ The installer (idempotent, safe to re-run):
 
 ### Configure API Keys
 
-Edit `~/.config/vmw/secrets.env`:
+Edit `~/.config/vmw/guest/secrets.env`:
 ```bash
-ANTHROPIC_API_KEY=sk-ant-xxx
+export ANTHROPIC_API_KEY=sk-ant-xxx
+export ZAI_API_KEY=xxx
 # Optional:
-PERPLEXITY_API_KEY=pplx-xxx
-OPENAI_API_KEY=sk-xxx
+# export PERPLEXITY_API_KEY=pplx-xxx
+# export OPENAI_API_KEY=sk-xxx
 ```
 
-These are automatically sourced when you SSH into a VM.
+These are automatically sourced when you SSH into a VM. The `zai` function is also available for z.ai API access.
 
 ---
 
@@ -173,9 +174,12 @@ SSH agent forwarding (`-A`) is enabled, so your git credentials work inside the 
 ```bash
 cd ~/Code/myproject          # Your writable project
 claude --dangerously-skip-permissions
+# Or use z.ai API:
+zai --dangerously-skip-permissions
 ```
 
-API keys are automatically loaded from `~/.secrets/secrets.env`.
+API keys are automatically loaded from `~/host/secrets.env`.
+Bash functions (like `zai`) are loaded from `~/host/functions.sh`.
 Claude credentials are available from `~/.claude/` (read-only from host).
 
 ### Stopping VMs
@@ -286,7 +290,7 @@ Multiple virtiofsd instances run per VM:
 - **rw_N**: Mounts each writable path (read-write overlay)
 - **claude**: Mounts `~/.claude` staging at `/home/jumski/.claude` (read-only)
 - **dotfiles-claude**: Mounts `~/.dotfiles/claude/` at same path (read-only, symlink target)
-- **secrets**: Mounts `~/.config/vmw/` at `/home/jumski/.secrets` (read-only)
+- **host**: Mounts `~/.config/vmw/guest/` at `/home/jumski/host/` (read-only, secrets + functions)
 
 ### Networking
 
