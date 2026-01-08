@@ -30,6 +30,11 @@
       "*": "ask"
     }
   },
+  "keybinds": {
+    "app.exit": "<leader>ctrl-c",
+    "messages_half_page_up": "ctrl+pageup",
+    "messages_half_page_down": "ctrl+pagedown"
+  },
   "mcp": {
     "crawl4ai": {},
     "context7": {}
