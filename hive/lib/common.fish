@@ -175,10 +175,37 @@ end
 # Returns: "new-session" or session name
 function _hive_pick_destination
     set -l sessions (_hive_list_sessions)
+    set -l current_session ""
     
-    set -l options "[+] New Session"
+    # Get current session if in tmux
+    if test -n "$TMUX"
+        set current_session (tmux display-message -p '#S' 2>/dev/null)
+    end
+    
+    # Build options list - current session first (so it's highlighted)
+    set -l options
+    
+    # Check if current session exists and is a hive session
+    set -l current_is_hive 0
+    if test -n "$current_session"
+        set current_is_hive (_hive_is_hive_session "$current_session")
+    end
+    
+    if test $current_is_hive -eq 0
+        # Current session is a hive session - put it first (highlighted)
+        set -a options "$current_session"
+        # Then add "[+] New Session"
+        set -a options "[+] New Session"
+    else
+        # Not in a hive session - just show "[+] New Session" first
+        set -a options "[+] New Session"
+    end
+    
+    # Add other hive sessions (exclude current if already added)
     for s in $sessions
-        set -a options $s
+        if test "$s" != "$current_session"
+            set -a options $s
+        end
     end
     
     set -l choice (printf '%s\n' $options | fzf --prompt='Destination: ' --height=40%)

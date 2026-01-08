@@ -40,6 +40,7 @@ Window:  worktree name (or "main" for non-worktree repos)
 Step 1: Select worktree (from muxit cache)
 Step 2: Choose destination
   • [+ New Session]    → creates new hive session
+  • current session     → (if in hive session) highlighted by default
   • existing session    → proceed to step 3
 Step 3: Choose window (only if existing session)
   • [+ New Window]    → creates new window
