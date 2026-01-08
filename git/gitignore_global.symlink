@@ -74,3 +74,11 @@ __pycache__
 **/.claude/settings.local.json
 
 branch-docs
+
+
+.opencode/
+AGENTS.md
+pkgs/cli/AGENTS.md
+pkgs/client/AGENTS.md
+pkgs/edge-worker/AGENTS.md
+pkgs/website/AGENTS.md
