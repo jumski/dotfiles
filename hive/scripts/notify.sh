@@ -61,36 +61,14 @@ esac
 # Get current window name
 WINDOW_NAME=$(tmux display-message -p '#W')
 
-# Prepend badge to window name (if not already present)
-# Check if window name already starts with a badge
-FIRST_CHAR="${WINDOW_NAME:0:1}"
-case "$FIRST_CHAR" in
-    R|I|!|A)
-        # Already has a badge, check if it's in badge format "[X] name"
-        if [[ "$WINDOW_NAME" =~ ^\[[RIA!]\]\ .* ]]; then
-            # Already badged, update the badge
-            CLEAN_NAME="${WINDOW_NAME:4}"
-            tmux rename-window "[$BADGE] $CLEAN_NAME"
-        else
-            # Not in badge format, add badge
-            tmux rename-window "[$BADGE] $WINDOW_NAME"
-        fi
-        ;;
-    \[)
-        # Check if it starts with [X] pattern
-        if [[ "$WINDOW_NAME" =~ ^\[[RIA!]\]\ .* ]]; then
-            # Already badged, update the badge
-            CLEAN_NAME="${WINDOW_NAME:4}"
-            tmux rename-window "[$BADGE] $CLEAN_NAME"
-        else
-            tmux rename-window "[$BADGE] $WINDOW_NAME"
-        fi
-        ;;
-    *)
-        # No badge, add one
-        tmux rename-window "[$BADGE] $WINDOW_NAME"
-        ;;
-esac
+# Prepend badge to window name (update existing or add new)
+if [[ "$WINDOW_NAME" =~ ^\[[RIA!]\]\ (.*)$ ]]; then
+    # Already badged, update the badge
+    tmux rename-window "[$BADGE] ${BASH_REMATCH[1]}"
+else
+    # No badge, add one
+    tmux rename-window "[$BADGE] $WINDOW_NAME"
+fi
 
 # Check if we need system notification (different session focused)
 # Get the session that the client is currently viewing

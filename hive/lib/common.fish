@@ -4,12 +4,6 @@
 # Environment Variables
 set -g HIVE_VERSION "0.1.0"
 
-# Badge icons for notifications
-set -g HIVE_BADGE_PERMISSION "R"
-set -g HIVE_BADGE_IDLE "I"
-set -g HIVE_BADGE_ERROR "!"
-set -g HIVE_BADGE_ACTIVITY "A"
-
 # Check if a session is a hive session
 # Usage: _hive_is_hive_session [session_name]
 # Returns 0 if it's a hive session, 1 otherwise
@@ -118,6 +112,22 @@ function _hive_list_windows
     end
     
     tmux list-windows -t "$session_name" -F '#{window_index}:#{window_name}' 2>/dev/null
+end
+
+# Get window names in a session (just the names, no indices)
+# Usage: _hive_get_window_names <session_name>
+function _hive_get_window_names
+    set -l session_name $argv[1]
+    tmux list-windows -t "$session_name" -F '#{window_name}' 2>/dev/null
+end
+
+# Check if a window with given name exists in session
+# Usage: _hive_window_exists <session_name> <window_name>
+function _hive_window_exists
+    set -l session_name $argv[1]
+    set -l window_name $argv[2]
+    
+    _hive_get_window_names "$session_name" | string match -q "$window_name"
 end
 
 # Get full path from muxit cache entry
