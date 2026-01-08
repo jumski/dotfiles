@@ -132,13 +132,16 @@ return {
         deno = {
           enable = true,
           lint = true,
+          cacheOnSave = true,
           unstable = { "sloppy-imports" },
           suggest = {
             imports = {
+              autoDiscover = true,
               hosts = {
                 ["https://deno.land"] = true,
                 ["https://cdn.nest.land"] = true,
                 ["https://crux.land"] = true,
+                ["https://jsr.io"] = true,
               },
             },
           },
