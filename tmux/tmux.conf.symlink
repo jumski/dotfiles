@@ -25,5 +25,8 @@ source-file ~/.dotfiles/tmux/notes-selector.conf
 # Claude Code integration (see claude-neovim/README.md)
 source-file ~/.dotfiles/claude-neovim/tmux-keys.conf
 
+# Hive - workspace management for agentic coding
+source-file ~/.dotfiles/hive/tmux-hive.conf
+
 # Plugins and theme (must be at the end)
 source-file ~/.dotfiles/tmux/plugins.conf
