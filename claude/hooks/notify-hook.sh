@@ -72,13 +72,13 @@ export TMUX="$TMUX"
 
 # Run notification with action in background
 (
-  # 'default' action = click anywhere triggers it, no button shown (KDE Plasma)
   action=$(notify-send -u normal \
     --action="default=" \
+    --action="focus=Focus" \
     -i /home/jumski/.dotfiles/claude/icon.png \
     "$title" "$body")
 
-  if [ "$action" = "default" ]; then
+  if [ "$action" = "default" ] || [ "$action" = "focus" ]; then
     # Focus kitty terminal
     kitty_window=$(xdotool search --class kitty | head -1)
     if [ -n "$kitty_window" ]; then
