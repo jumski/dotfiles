@@ -66,6 +66,13 @@
       <target dir='dotfiles-claude'/>
     </filesystem>
 
+    <!-- Virtiofs: ~/.dotfiles/opencode/ mount -->
+    <filesystem type='mount' accessmode='passthrough'>
+      <driver type='virtiofs'/>
+      <source socket='{{VIRTIOFS_OPENCODE_SOCKET}}'/>
+      <target dir='opencode'/>
+    </filesystem>
+
     <!-- Virtiofs: writable path mounts (dynamically generated) -->
 {{RW_FILESYSTEM_ENTRIES}}
 
