@@ -20,9 +20,13 @@ export default async function HiveNotifyPlugin({ $ }) {
       try {
         if (event && event.type) {
           switch (event.type) {
-            case "session.idle":
-              await $`${NOTIFY_SCRIPT} --type idle --message 'Waiting for input'`
+            case "session.status": {
+              // Check if status changed to idle (ready for input)
+              if (event.properties.status.type === "idle") {
+                await $`${NOTIFY_SCRIPT} --type idle --message 'Waiting for input'`
+              }
               break
+            }
 
             case "session.error":
               await $`${NOTIFY_SCRIPT} --type error --message 'Session error'`
