@@ -75,10 +75,12 @@ __pycache__
 
 branch-docs
 
-
+# temporary
+.ignore
 .opencode/
 AGENTS.md
 pkgs/cli/AGENTS.md
 pkgs/client/AGENTS.md
 pkgs/edge-worker/AGENTS.md
 pkgs/website/AGENTS.md
+
