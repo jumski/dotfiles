@@ -134,6 +134,10 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
         > "$temp_dir/bin/serve"
     chmod +x "$temp_dir/bin/serve"
 
+    # Set up templates directory path
+    set -l lib_dir (dirname (status --current-filename))
+    set -l templates_dir (realpath "$lib_dir/../templates")
+
     # Create queries directory and SQL files
     set_color brblack
     echo "  → Creating queries/start_flow.sql..."
@@ -156,12 +160,20 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
         "LIMIT :COUNT::int;" \
         > "$temp_dir/queries/runs.sql"
 
+    set_color brblack
+    echo "  → Creating queries/results.sql..."
+    set_color normal
+    cp "$templates_dir/queries/results.sql" "$temp_dir/queries/results.sql"
+
+    set_color brblack
+    echo "  → Creating queries/step_states.sql..."
+    set_color normal
+    cp "$templates_dir/queries/step_states.sql" "$temp_dir/queries/step_states.sql"
+
     # Create bin/start_flow script
     set_color brblack
     echo "  → Creating bin/start_flow..."
     set_color normal
-    set -l lib_dir (dirname (status --current-filename))
-    set -l templates_dir (realpath "$lib_dir/../templates")
     cp "$templates_dir/bin/start_flow" "$temp_dir/bin/start_flow"
     chmod +x "$temp_dir/bin/start_flow"
 
@@ -171,6 +183,41 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
     set_color normal
     cp "$templates_dir/bin/runs" "$temp_dir/bin/runs"
     chmod +x "$temp_dir/bin/runs"
+
+    # Create bin/prune script
+    set_color brblack
+    echo "  → Creating bin/prune..."
+    set_color normal
+    cp "$templates_dir/bin/prune" "$temp_dir/bin/prune"
+    chmod +x "$temp_dir/bin/prune"
+
+    # Create bin/benchmark script
+    set_color brblack
+    echo "  → Creating bin/benchmark..."
+    set_color normal
+    cp "$templates_dir/bin/benchmark" "$temp_dir/bin/benchmark"
+    chmod +x "$temp_dir/bin/benchmark"
+
+    # Create bin/results script
+    set_color brblack
+    echo "  → Creating bin/results..."
+    set_color normal
+    cp "$templates_dir/bin/results" "$temp_dir/bin/results"
+    chmod +x "$temp_dir/bin/results"
+
+    # Create bin/worker script
+    set_color brblack
+    echo "  → Creating bin/worker..."
+    set_color normal
+    cp "$templates_dir/bin/worker" "$temp_dir/bin/worker"
+    chmod +x "$temp_dir/bin/worker"
+
+    # Create bin/workers script
+    set_color brblack
+    echo "  → Creating bin/workers..."
+    set_color normal
+    cp "$templates_dir/bin/workers" "$temp_dir/bin/workers"
+    chmod +x "$temp_dir/bin/workers"
 
     # Stage and commit initial files
     set_color brblack

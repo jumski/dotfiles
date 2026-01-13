@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+COUNT=${1:-8}
+
+for i in $(seq 1 "$COUNT"); do
+  bin/worker "$i" &
+done
+
+wait
+echo "All $COUNT workers started"

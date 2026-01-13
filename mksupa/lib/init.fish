@@ -122,6 +122,32 @@ function __mksupa_init -d "Initialize Supabase in current directory"
     eval "$npx_cmd stop --no-backup --project-id supatemp" 2>/dev/null
     echo ""
 
+    # Copy seed.sql template
+    set -l lib_dir (dirname (status --current-filename))
+    set -l templates_dir (realpath "$lib_dir/../templates")
+    if test -f "$templates_dir/supabase/seed.sql"
+        set_color brblack
+        echo "  → Copying seed.sql..."
+        set_color normal
+        cp "$templates_dir/supabase/seed.sql" "supabase/seed.sql"
+        set_color green
+        echo "  ✓ Created supabase/seed.sql"
+        set_color normal
+    end
+
+    # Copy greet-user.ts flow template
+    if test -f "$templates_dir/supabase/flows/greet-user.ts"
+        set_color brblack
+        echo "  → Copying greet-user.ts flow..."
+        set_color normal
+        mkdir -p "supabase/flows"
+        cp "$templates_dir/supabase/flows/greet-user.ts" "supabase/flows/greet-user.ts"
+        set_color green
+        echo "  ✓ Created supabase/flows/greet-user.ts"
+        set_color normal
+    end
+    echo ""
+
     # Update project_id in config.toml
     set -l config_file "supabase/config.toml"
     if test -f "$config_file"
@@ -141,6 +167,32 @@ function __mksupa_init -d "Initialize Supabase in current directory"
             echo "  ⚠ Failed to update project_id"
             set_color normal
         end
+
+        # Enable seed.sql
+        set_color brblack
+        echo "  → Enabling seed.sql..."
+        set_color normal
+        sed -i 's/^enabled = false.*# seed.sql/enabled = true  # seed.sql/' "$config_file"
+        sed -i 's|^sql_paths = \["./seed.sql"\]|sql_paths = ["./seed.sql"]|' "$config_file"
+
+        # Add worker function definitions (w1-w8)
+        set_color brblack
+        echo "  → Adding worker definitions (w1-w8)..."
+        set_color normal
+        printf '\n# Worker functions (w1-w8) - all point to greet-user-worker\n' >> "$config_file"
+        for i in (seq 1 8)
+            printf '[functions.w%d]\n' $i >> "$config_file"
+            printf 'enabled = true\n' >> "$config_file"
+            printf 'verify_jwt = false\n' >> "$config_file"
+            printf 'import_map = "./functions/greet-user-worker/deno.json"\n' >> "$config_file"
+            printf 'entrypoint = "./functions/greet-user-worker/index.ts"\n' >> "$config_file"
+            if test $i -lt 8
+                printf '\n' >> "$config_file"
+            end
+        end
+        set_color green
+        echo "  ✓ Added 8 worker definitions"
+        set_color normal
         echo ""
     else
         set_color yellow
