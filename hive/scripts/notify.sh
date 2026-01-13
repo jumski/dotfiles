@@ -105,8 +105,10 @@ SESSION_BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-session-badge.sh" "$TARGET_SESSION_
 log DEBUG "hive-add-session-badge.sh output: $SESSION_BADGE_OUTPUT"
 
 # System notification if different session focused (use session ID for comparison)
-CURRENT_SESSION_ID=$(tmux display-message -p '#{session_id}' 2>/dev/null || echo "$TARGET_SESSION_ID")
-log DEBUG "Session comparison: TARGET=$TARGET_SESSION_ID CURRENT=$CURRENT_SESSION_ID"
+# Note: We need to get the CLIENT's current session, not the script's pane context
+CURRENT_SESSION_NAME=$(tmux display-message -p '#{client_session}' 2>/dev/null)
+CURRENT_SESSION_ID=$(tmux display-message -t "$CURRENT_SESSION_NAME" -p '#{session_id}' 2>/dev/null || echo "$TARGET_SESSION_ID")
+log DEBUG "Session comparison: TARGET=$TARGET_SESSION_ID CURRENT=$CURRENT_SESSION_ID (client viewing: $CURRENT_SESSION_NAME)"
 if [ "$CURRENT_SESSION_ID" != "$TARGET_SESSION_ID" ]; then
     log INFO "Different session focused, sending system notification"
     
