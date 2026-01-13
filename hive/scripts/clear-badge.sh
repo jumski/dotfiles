@@ -1,12 +1,12 @@
 #!/bin/bash
 # Clear badge from window name on focus
-# Called by tmux window-focus-in hook
+# Called by tmux pane-focus-in hook
 
 # Must be in tmux
 [ -z "${TMUX:-}" ] && exit 0
 
-# Get current session and window name
-CURRENT_SESSION=$(tmux display-message -p '#S')
+# Get current session ID and window name
+CURRENT_SESSION_ID=$(tmux display-message -p '#{session_id}')
 WINDOW_NAME=$(tmux display-message -p '#W')
 
 # Check if window name starts with badge pattern [X] where X is R, I, !, or A
@@ -20,5 +20,5 @@ if [[ "$WINDOW_NAME" =~ ^\[[RIA!]\]\ (.*)$ ]]; then
     
     # Check if session badge should be cleared (run silently)
     SCRIPT_DIR="$(dirname "$0")"
-    "$SCRIPT_DIR/hive-clear-session-badge.sh" "$CURRENT_SESSION" >/dev/null 2>&1 || true
+    "$SCRIPT_DIR/hive-clear-session-badge.sh" "$CURRENT_SESSION_ID" >/dev/null 2>&1 || true
 fi

@@ -51,14 +51,16 @@ CONTEXT=$("$SCRIPT_DIR/hive-get-context.sh" 2>&1) || {
     exit 0
 }
 
-TARGET_SESSION=$(echo "$CONTEXT" | cut -d: -f1)
-TARGET_WINDOW=$(echo "$CONTEXT" | cut -d: -f2)
-TARGET_PANE=$(echo "$CONTEXT" | cut -d: -f3)
+TARGET_SESSION_NAME=$(echo "$CONTEXT" | cut -d: -f1)
+TARGET_WINDOW_INDEX=$(echo "$CONTEXT" | cut -d: -f2)
+TARGET_PANE_ID=$(echo "$CONTEXT" | cut -d: -f3)
+TARGET_SESSION_ID=$(echo "$CONTEXT" | cut -d: -f4)
+TARGET_WINDOW_ID=$(echo "$CONTEXT" | cut -d: -f5)
 
-log DEBUG "Context from TMUX_PANE: session=$TARGET_SESSION window=$TARGET_WINDOW pane=$TARGET_PANE"
+log DEBUG "Context from TMUX_PANE: session=$TARGET_SESSION_NAME($TARGET_SESSION_ID) window=$TARGET_WINDOW_INDEX($TARGET_WINDOW_ID) pane=$TARGET_PANE_ID"
 
-# Check if this is a hive session
-IS_HIVE=$(tmux show-options -t "$TARGET_SESSION" -qv @hive 2>/dev/null || echo "")
+# Check if this is a hive session (use session ID for precision)
+IS_HIVE=$(tmux show-options -t "$TARGET_SESSION_ID" -qv @hive 2>/dev/null || echo "")
 log DEBUG "IS_HIVE: '$IS_HIVE'"
 
 if [ "$IS_HIVE" != 'true' ]; then
@@ -67,8 +69,8 @@ if [ "$IS_HIVE" != 'true' ]; then
     exit 0
 fi
 
-# Check if we should notify (target not focused)
-SHOULD_NOTIFY_OUTPUT=$("$SCRIPT_DIR/hive-should-notify.sh" "$TARGET_SESSION" "$TARGET_WINDOW" 2>&1) || {
+# Check if we should notify (target not focused) - use IDs for precision
+SHOULD_NOTIFY_OUTPUT=$("$SCRIPT_DIR/hive-should-notify.sh" "$TARGET_SESSION_ID" "$TARGET_WINDOW_ID" 2>&1) || {
     log INFO "Target window is focused, skipping badge"
     log DEBUG "hive-should-notify.sh output: $SHOULD_NOTIFY_OUTPUT"
     exit 0
@@ -77,35 +79,81 @@ SHOULD_NOTIFY_OUTPUT=$("$SCRIPT_DIR/hive-should-notify.sh" "$TARGET_SESSION" "$T
 log DEBUG "hive-should-notify.sh output: $SHOULD_NOTIFY_OUTPUT"
 log INFO "Target window not focused, proceeding with badge"
 
-# Select badge based on notification type
+# Select badge and emoji based on notification type
 case "$NOTIFY_TYPE" in
-    permission) BADGE='R' ;;
-    idle)       BADGE='I' ;;
-    error)      BADGE='!' ;;
-    *)          BADGE='A' ;;
+    permission) BADGE='R'; EMOJI='⚠️' ;;
+    idle)       BADGE='I'; EMOJI='💤' ;;
+    error)      BADGE='!'; EMOJI='❗' ;;
+    *)          BADGE='A'; EMOJI='🔔' ;;
 esac
 
-log INFO "Adding badge '$BADGE' to $TARGET_SESSION:$TARGET_WINDOW"
+log INFO "Adding badge '$BADGE' to $TARGET_SESSION_NAME:$TARGET_WINDOW_INDEX ($TARGET_WINDOW_ID)"
 
-# Add badge to window
-BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-badge.sh" "$TARGET_SESSION" "$TARGET_WINDOW" "$BADGE" 2>&1) || {
+# Add badge to window (use window ID for precision)
+BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-badge.sh" "$TARGET_WINDOW_ID" "$BADGE" 2>&1) || {
     log ERROR "hive-add-badge.sh failed: $BADGE_OUTPUT"
     exit 1
 }
 
 log DEBUG "hive-add-badge.sh output: $BADGE_OUTPUT"
 
-# Add session badge
-SESSION_BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-session-badge.sh" "$TARGET_SESSION" 2>&1) || {
+# Add session badge (use session ID for precision)
+SESSION_BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-session-badge.sh" "$TARGET_SESSION_ID" 2>&1) || {
     log ERROR "hive-add-session-badge.sh failed: $SESSION_BADGE_OUTPUT"
-    # Non-fatal, continue with window badge
+    true  # Non-fatal, continue
 }
+log DEBUG "hive-add-session-badge.sh output: $SESSION_BADGE_OUTPUT"
 
-# System notification if different session focused
-CURRENT_SESSION=$(tmux display-message -p '#{client_session}' 2>/dev/null || echo "$TARGET_SESSION")
-if [ "$CURRENT_SESSION" != "$TARGET_SESSION" ]; then
+# System notification if different session focused (use session ID for comparison)
+CURRENT_SESSION_ID=$(tmux display-message -p '#{session_id}' 2>/dev/null || echo "$TARGET_SESSION_ID")
+log DEBUG "Session comparison: TARGET=$TARGET_SESSION_ID CURRENT=$CURRENT_SESSION_ID"
+if [ "$CURRENT_SESSION_ID" != "$TARGET_SESSION_ID" ]; then
     log INFO "Different session focused, sending system notification"
-    notify-send -u normal "OpenCode: $TARGET_SESSION" "$MESSAGE" 2>/dev/null || true
+    
+    # Get window name for notification title (use window ID for precision)
+    TARGET_WINDOW_NAME=$(tmux display-message -t "$TARGET_WINDOW_ID" -p '#W' 2>/dev/null || echo "?")
+    
+    # Format: "💤 pgflow / 1 main" (use names for display)
+    NOTIFY_TITLE="$EMOJI $TARGET_SESSION_NAME / $TARGET_WINDOW_INDEX $TARGET_WINDOW_NAME"
+    
+    # Export TMUX env for subshell
+    export TMUX="$TMUX"
+    
+    # Run notification with click action in background
+    (
+        log INFO "Subshell: waiting for notification click..."
+        
+        action=$(notify-send -u normal --wait \
+            --action="default=Open" \
+            -i /home/jumski/.dotfiles/claude/icon.png \
+            "$NOTIFY_TITLE" "$MESSAGE")
+        
+        log INFO "Subshell: action='$action'"
+        
+        if [ "$action" = "default" ]; then
+            log INFO "Subshell: focusing kitty..."
+            
+            # Use full path in case PATH differs
+            kitty_window=$(/home/jumski/.dotfiles/bin/dotool search --class kitty | head -1)
+            log INFO "Subshell: kitty_window='$kitty_window'"
+            
+            if [ -n "$kitty_window" ]; then
+                /home/jumski/.dotfiles/bin/dotool windowactivate "$kitty_window"
+                log INFO "Subshell: activated kitty"
+            fi
+            
+            # Switch all tmux clients to target session/window (use window ID for precision)
+            sleep 0.1
+            for client in $(tmux list-clients -F '#{client_tty}'); do
+                log INFO "Subshell: switching client $client to $TARGET_WINDOW_ID"
+                tmux switch-client -c "$client" -t "$TARGET_WINDOW_ID"
+            done
+            
+            log INFO "Subshell: focus complete"
+        else
+            log INFO "Subshell: notification dismissed (action='$action')"
+        fi
+    ) &
 fi
 
 log INFO "=== NOTIFY COMPLETE ==="

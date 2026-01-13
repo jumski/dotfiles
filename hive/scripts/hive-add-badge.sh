@@ -1,25 +1,23 @@
 #!/bin/bash
 # hive-add-badge.sh - Add badge to a specific tmux window
 # 
-# Usage: ./hive-add-badge.sh <session> <window> <badge>
-#   session: tmux session name (e.g., "pgflow")
-#   window:  window index (e.g., "1")
-#   badge:   single char badge (R=permission, I=idle, !=error, A=activity)
+# Usage: ./hive-add-badge.sh <window_id> <badge>
+#   window_id: tmux window ID (e.g., "@123")
+#   badge:     single char badge (R=permission, I=idle, !=error, A=activity)
 #
-# Test: ./hive-add-badge.sh pgflow 1 I
+# Test: ./hive-add-badge.sh @123 I
 #       Should show "[I] <window_name>" in status bar
 
 set -euo pipefail
 
-if [ $# -lt 3 ]; then
-    echo "Usage: $0 <session> <window> <badge>" >&2
-    echo "Example: $0 pgflow 1 I" >&2
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <window_id> <badge>" >&2
+    echo "Example: $0 @123 I" >&2
     exit 1
 fi
 
-SESSION="$1"
-WINDOW="$2"
-BADGE="$3"
+WINDOW_ID="$1"
+BADGE="$2"
 
 # Validate badge
 case "$BADGE" in
@@ -27,10 +25,10 @@ case "$BADGE" in
     *) echo "ERROR: Invalid badge '$BADGE'. Must be R, I, !, or A" >&2; exit 1 ;;
 esac
 
-# Get current window name
-WINDOW_NAME=$(tmux display-message -t "$SESSION:$WINDOW" -p '#W' 2>/dev/null)
+# Get current window name using window ID
+WINDOW_NAME=$(tmux display-message -t "$WINDOW_ID" -p '#W' 2>/dev/null)
 if [ -z "$WINDOW_NAME" ]; then
-    echo "ERROR: Could not get window name for $SESSION:$WINDOW" >&2
+    echo "ERROR: Could not get window name for $WINDOW_ID" >&2
     exit 1
 fi
 
@@ -43,10 +41,10 @@ fi
 
 # Add new badge
 NEW_NAME="[$BADGE] $CLEAN_NAME"
-tmux rename-window -t "$SESSION:$WINDOW" "$NEW_NAME"
+tmux rename-window -t "$WINDOW_ID" "$NEW_NAME"
 
 # Set window badge option (for tracking)
-tmux set-option -w -t "$SESSION:$WINDOW" @hive_window_badge "$BADGE"
+tmux set-option -w -t "$WINDOW_ID" @hive_window_badge "$BADGE"
 
 echo "OK: '$WINDOW_NAME' -> '$NEW_NAME' (set @hive_window_badge=$BADGE)"
 
