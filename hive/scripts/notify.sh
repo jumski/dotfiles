@@ -81,10 +81,10 @@ log INFO "Target window not focused, proceeding with badge"
 
 # Select badge and emoji based on notification type
 case "$NOTIFY_TYPE" in
-    permission) BADGE='R'; EMOJI='⚠️' ;;
-    idle)       BADGE='I'; EMOJI='💤' ;;
-    error)      BADGE='!'; EMOJI='❗' ;;
-    *)          BADGE='A'; EMOJI='🔔' ;;
+    permission) BADGE='R'; EMOJI='🔐' ;;
+    idle)       BADGE='I'; EMOJI='󰭻' ;;
+    error)      BADGE='!'; EMOJI='🔴' ;;
+    activity)    BADGE='A'; EMOJI='🔔' ;;
 esac
 
 log INFO "Adding badge '$BADGE' to $TARGET_SESSION_NAME:$TARGET_WINDOW_INDEX ($TARGET_WINDOW_ID)"
@@ -105,10 +105,11 @@ SESSION_BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-session-badge.sh" "$TARGET_SESSION_
 log DEBUG "hive-add-session-badge.sh output: $SESSION_BADGE_OUTPUT"
 
 # System notification if different session focused (use session ID for comparison)
-# Note: We need to get the CLIENT's current session, not the script's pane context
+# Note: We need to get CLIENT's current session, not script's pane context
 CURRENT_SESSION_NAME=$(tmux display-message -p '#{client_session}' 2>/dev/null)
-CURRENT_SESSION_ID=$(tmux display-message -t "$CURRENT_SESSION_NAME" -p '#{session_id}' 2>/dev/null || echo "$TARGET_SESSION_ID")
+CURRENT_SESSION_ID=$(tmux display-message -t "$CURRENT_SESSION_NAME" -p '#{session_id}' 2>/dev/null)
 log DEBUG "Session comparison: TARGET=$TARGET_SESSION_ID CURRENT=$CURRENT_SESSION_ID (client viewing: $CURRENT_SESSION_NAME)"
+
 if [ "$CURRENT_SESSION_ID" != "$TARGET_SESSION_ID" ]; then
     log INFO "Different session focused, sending system notification"
     

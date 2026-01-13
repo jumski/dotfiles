@@ -31,8 +31,8 @@ else
     CLEAN_NAME="$SESSION_NAME"
 fi
 
-# Add generic attention badge
-NEW_NAME="[*] $CLEAN_NAME"
+# Add generic attention badge using emoji as badge marker
+NEW_NAME="󰭻 $CLEAN_NAME"
 tmux rename-session -t "$SESSION_ID" "$NEW_NAME"
 
 # Set session badge option

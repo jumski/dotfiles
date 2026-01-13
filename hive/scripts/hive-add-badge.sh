@@ -46,5 +46,9 @@ tmux rename-window -t "$WINDOW_ID" "$NEW_NAME"
 # Set window badge option (for tracking)
 tmux set-option -w -t "$WINDOW_ID" @hive_window_badge "$BADGE"
 
-echo "OK: '$WINDOW_NAME' -> '$NEW_NAME' (set @hive_window_badge=$BADGE)"
+# Save original name (for restoration when clearing badges)
+ORIGINAL_NAME="$WINDOW_NAME"
+tmux set-option -w -t "$WINDOW_ID" @hive_window_original_name "$ORIGINAL_NAME"
+
+echo "OK: '$WINDOW_NAME' -> '$NEW_NAME' (set @hive_window_badge=$BADGE, original=$ORIGINAL_NAME)"
 
