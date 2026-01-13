@@ -138,8 +138,6 @@
   },
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true,
-    "dev-browser@dev-browser-marketplace": true,
-    "beads@beads-marketplace": true,
-    "ralph-wiggum@claude-plugins-official": true
+    "beads@beads-marketplace": true
   }
 }
