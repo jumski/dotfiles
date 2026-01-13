@@ -41,18 +41,6 @@ function __mksupa_init -d "Initialize Supabase in current directory"
         printf '%s\n' $env_lines > .env
     end
 
-    # Only create .envrc if it doesn't exist
-    if not test -f .envrc
-        set_color brblack
-        echo "  → Creating .envrc"
-        set_color normal
-        printf '%s\n' 'use asdf' 'dotenv_if_exists ~/.env.local' 'dotenv_if_exists .env' '' 'PATH_add bin' > .envrc
-    else
-        set_color brblack
-        echo "  → .envrc already exists"
-        set_color normal
-    end
-
     set_color brblack
     echo "  → Running direnv allow"
     set_color normal
@@ -75,44 +63,6 @@ function __mksupa_init -d "Initialize Supabase in current directory"
         set_color normal
         return 1
     end
-    echo ""
-
-    # Create local supa command wrapper
-    set_color yellow
-    echo "⚙  Setting up local 'supa' command..."
-    set_color normal
-    set_color brblack
-    echo "  → Creating bin/ directory"
-    set_color normal
-    mkdir -p bin
-
-    set_color brblack
-    echo "  → Creating bin/supa wrapper script"
-    set_color normal
-    printf '%s\n' '#!/bin/bash' 'exec npx -y supabase@${SUPABASE_VERSION:-2.62.10} "$@"' > bin/supa
-    chmod +x bin/supa
-    set_color brblack
-    echo "    (wraps: npx -y supabase@\${SUPABASE_VERSION:-2.62.10})"
-    set_color normal
-
-    # Create bin/pgflow wrapper if pgflow version is provided
-    if test -n "$pgflow_version"
-        set_color brblack
-        echo "  → Creating bin/pgflow wrapper script"
-        set_color normal
-        printf '%s\n' '#!/bin/bash' 'exec npx -y pgflow@${PGFLOW_VERSION:-latest} "$@"' > bin/pgflow
-        chmod +x bin/pgflow
-        set_color brblack
-        echo "    (wraps: npx -y pgflow@\${PGFLOW_VERSION:-latest})"
-        set_color normal
-    end
-
-    set_color green
-    echo "  ✓ Local 'supa' command is now available"
-    if test -n "$pgflow_version"
-        echo "  ✓ Local 'pgflow' command is now available"
-    end
-    set_color normal
     echo ""
 
     # Stop other supatemp projects
@@ -144,6 +94,17 @@ function __mksupa_init -d "Initialize Supabase in current directory"
         cp "$templates_dir/supabase/flows/greet-user.ts" "supabase/flows/greet-user.ts"
         set_color green
         echo "  ✓ Created supabase/flows/greet-user.ts"
+        set_color normal
+    end
+
+    # Copy shared deno.json
+    if test -f "$templates_dir/supabase/deno.json"
+        set_color brblack
+        echo "  → Copying deno.json..."
+        set_color normal
+        cp "$templates_dir/supabase/deno.json" "supabase/deno.json"
+        set_color green
+        echo "  ✓ Created supabase/deno.json"
         set_color normal
     end
     echo ""

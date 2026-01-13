@@ -48,12 +48,15 @@ function __mksupa_remove -d "Stop and cleanup current supatemp project"
     set_color blue
     echo "⏹  Stopping Supabase..."
     set_color normal
-    if test -x "$project_path/bin/supa"
+    if test -x "$base_dir/bin/supa"
+        cd "$project_path"
+        ../bin/supa stop --no-backup
+    else if test -x "$project_path/bin/supa"
         cd "$project_path"
         bin/supa stop --no-backup
     else
         set_color yellow
-        echo "  ⚠ bin/supa not found, skipping stop"
+        echo "  ⚠ supa not found, skipping stop"
         set_color normal
     end
     echo ""

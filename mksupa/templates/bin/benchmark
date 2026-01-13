@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-COUNT=${1:-1000}
-
-bin/prune
-bin/start_flow "$COUNT"

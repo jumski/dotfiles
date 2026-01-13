@@ -71,11 +71,15 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
         printf '%s\n' $env_lines > "$temp_dir/.env"
     end
 
-    # Create .envrc from template
+    # Set up templates directory path
+    set -l lib_dir (dirname (status --current-filename))
+    set -l templates_dir (realpath "$lib_dir/../templates")
+
+    # Copy .envrc from template
     set_color brblack
     echo "  → Creating .envrc..."
     set_color normal
-    printf '%s\n' 'use asdf' 'dotenv_if_exists ~/.env.local' 'dotenv_if_exists .env' '' 'PATH_add bin' > "$temp_dir/.envrc"
+    cp "$templates_dir/.envrc" "$temp_dir/.envrc"
 
     # Allow direnv immediately to prevent error in tmux windows
     set_color brblack
@@ -122,102 +126,20 @@ function __mksupa_new_temp -d "Create new temporary Supabase project"
             > "$temp_dir/PGFLOW.md"
     end
 
-    # Create bin/serve script
+    # Create bin/.gitkeep for local overrides
     set_color brblack
-    echo "  → Creating bin/serve..."
+    echo "  → Creating bin/.gitkeep..."
     set_color normal
     mkdir -p "$temp_dir/bin"
-    printf '%s\n' \
-        '#!/usr/bin/env bash' \
-        '' \
-        'supabase functions serve --no-verify-jwt 2>&1 | grep -Pv '\''serving the request with supabase/functions/[a-zA-Z0-9-]+-worker|^\d{4}-\d{2}-\d{2}T[\d:.]+Z\s\*$'\''' \
-        > "$temp_dir/bin/serve"
-    chmod +x "$temp_dir/bin/serve"
+    touch "$temp_dir/bin/.gitkeep"
 
-    # Set up templates directory path
-    set -l lib_dir (dirname (status --current-filename))
-    set -l templates_dir (realpath "$lib_dir/../templates")
-
-    # Create queries directory and SQL files
-    set_color brblack
-    echo "  → Creating queries/start_flow.sql..."
-    set_color normal
-    mkdir -p "$temp_dir/queries"
-    printf '%s\n' \
-        "SELECT pgflow.start_flow(" \
-        "  flow_slug => 'greetUser'," \
-        "  input => '{\"firstName\": \"Alice\", \"lastName\": \"Smith\"}'::jsonb" \
-        ") FROM generate_series(1, :COUNT::int);" \
-        > "$temp_dir/queries/start_flow.sql"
-
-    set_color brblack
-    echo "  → Creating queries/runs.sql..."
-    set_color normal
-    printf '%s\n' \
-        "SELECT status, remaining_steps, output FROM pgflow.runs" \
-        "WHERE flow_slug = 'greetUser'" \
-        "ORDER BY started_at DESC" \
-        "LIMIT :COUNT::int;" \
-        > "$temp_dir/queries/runs.sql"
-
-    set_color brblack
-    echo "  → Creating queries/results.sql..."
-    set_color normal
-    cp "$templates_dir/queries/results.sql" "$temp_dir/queries/results.sql"
-
-    set_color brblack
-    echo "  → Creating queries/step_states.sql..."
-    set_color normal
-    cp "$templates_dir/queries/step_states.sql" "$temp_dir/queries/step_states.sql"
-
-    # Create bin/start_flow script
-    set_color brblack
-    echo "  → Creating bin/start_flow..."
-    set_color normal
-    cp "$templates_dir/bin/start_flow" "$temp_dir/bin/start_flow"
-    chmod +x "$temp_dir/bin/start_flow"
-
-    # Create bin/runs script
-    set_color brblack
-    echo "  → Creating bin/runs..."
-    set_color normal
-    cp "$templates_dir/bin/runs" "$temp_dir/bin/runs"
-    chmod +x "$temp_dir/bin/runs"
-
-    # Create bin/prune script
-    set_color brblack
-    echo "  → Creating bin/prune..."
-    set_color normal
-    cp "$templates_dir/bin/prune" "$temp_dir/bin/prune"
-    chmod +x "$temp_dir/bin/prune"
-
-    # Create bin/benchmark script
-    set_color brblack
-    echo "  → Creating bin/benchmark..."
-    set_color normal
-    cp "$templates_dir/bin/benchmark" "$temp_dir/bin/benchmark"
-    chmod +x "$temp_dir/bin/benchmark"
-
-    # Create bin/results script
-    set_color brblack
-    echo "  → Creating bin/results..."
-    set_color normal
-    cp "$templates_dir/bin/results" "$temp_dir/bin/results"
-    chmod +x "$temp_dir/bin/results"
-
-    # Create bin/worker script
-    set_color brblack
-    echo "  → Creating bin/worker..."
-    set_color normal
-    cp "$templates_dir/bin/worker" "$temp_dir/bin/worker"
-    chmod +x "$temp_dir/bin/worker"
-
-    # Create bin/workers script
-    set_color brblack
-    echo "  → Creating bin/workers..."
-    set_color normal
-    cp "$templates_dir/bin/workers" "$temp_dir/bin/workers"
-    chmod +x "$temp_dir/bin/workers"
+    # Copy templates directory contents (e.g., supabase/seed.sql)
+    if test -d "$templates_dir"
+        set_color brblack
+        echo "  → Copying templates directory contents..."
+        set_color normal
+        cp -r "$templates_dir/"* "$temp_dir/"
+    end
 
     # Stage and commit initial files
     set_color brblack

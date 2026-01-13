@@ -5,18 +5,24 @@ function mksupa -d "Manage temporary Supabase projects"
     source "$lib_dir/new_temp.fish"
     source "$lib_dir/init.fish"
     source "$lib_dir/remove.fish"
+    source "$lib_dir/path.fish"
+    source "$lib_dir/switch.fish"
 
     # Show help if no arguments or --help
     if test (count $argv) -eq 0; or test "$argv[1]" = "--help"
         echo "Usage: mksupa new <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
         echo "       mksupa --init [--supabase=VERSION] [--pgflow=VERSION] [--commit]"
         echo "       mksupa remove"
+        echo "       mksupa path"
+        echo "       mksupa switch"
         echo "       mksupa --help"
         echo ""
         echo "Commands:"
         echo "  new <prefix>  Create new temporary Supabase project"
         echo "  --init        Initialize Supabase in current directory"
         echo "  remove        Stop, cleanup and remove current supatemp project"
+        echo "  path          Search and copy project path to clipboard"
+        echo "  switch        Search and switch to project using muxit"
         echo "  --help        Show this help message"
         echo ""
         echo "Options:"
@@ -83,11 +89,25 @@ function mksupa -d "Manage temporary Supabase projects"
         return $status
     end
 
+    # Handle 'path' subcommand
+    if test "$subcommand" = "path"
+        __mksupa_path
+        return $status
+    end
+
+    # Handle 'switch' subcommand
+    if test "$subcommand" = "switch"
+        __mksupa_switch
+        return $status
+    end
+
     # Invalid subcommand
     echo "Error: unknown command '$subcommand'"
     echo "Usage: mksupa new <prefix> [--supabase=VERSION] [--pgflow=VERSION]"
     echo "       mksupa --init [--supabase=VERSION] [--pgflow=VERSION] [--commit]"
     echo "       mksupa remove"
+    echo "       mksupa path"
+    echo "       mksupa switch"
     echo "       mksupa --help"
     return 1
 end

@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-psql -f queries/results.sql
