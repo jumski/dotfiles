@@ -31,15 +31,15 @@ runcmd:
   - mkdir -p /mnt/claude-config
   - mkdir -p /home/jumski/.claude
   - mkdir -p /home/jumski/.dotfiles/claude
-  - mkdir -p /home/jumski/.config/opencode
-  - chown jumski:jumski /home/jumski/Code /home/jumski/host /home/jumski/.claude /home/jumski/.dotfiles/claude /home/jumski/.config/opencode
+  - mkdir -p /home/jumski/.opencode
+  - chown jumski:jumski /home/jumski/Code /home/jumski/host /home/jumski/.claude /home/jumski/.dotfiles/claude /home/jumski/.opencode
 
   # Mount virtiofs filesystems (base mounts)
   - mount -t virtiofs code /home/jumski/Code -o ro
   - mount -t virtiofs host /home/jumski/host -o ro
   - mount -t virtiofs claude /mnt/claude-config -o ro
   - mount -t virtiofs dotfiles-claude /home/jumski/.dotfiles/claude -o ro
-  - mount -t virtiofs opencode /home/jumski/.config/opencode -o ro
+  - mount -t virtiofs opencode /home/jumski/.opencode -o ro
 
   # Bind-mount specific claude config items into ~/.claude (read-only)
   # Other subdirs (todos, sessions, memory, debug, projects) remain writable
@@ -81,7 +81,7 @@ runcmd:
   - echo 'host /home/jumski/host virtiofs ro 0 0' >> /etc/fstab
   - echo 'claude /mnt/claude-config virtiofs ro 0 0' >> /etc/fstab
   - echo 'dotfiles-claude /home/jumski/.dotfiles/claude virtiofs ro 0 0' >> /etc/fstab
-  - echo 'opencode /home/jumski/.config/opencode virtiofs ro 0 0' >> /etc/fstab
+  - echo 'opencode /home/jumski/.opencode virtiofs ro 0 0' >> /etc/fstab
 
   # Install Node.js 24 via nodesource
   - curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
@@ -164,7 +164,7 @@ write_files:
 
       [Mount]
       What=opencode
-      Where=/home/jumski/.config/opencode
+      Where=/home/jumski/.opencode
       Type=virtiofs
       Options=ro
 
