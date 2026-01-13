@@ -19,11 +19,8 @@ fi
 WINDOW_ID="$1"
 BADGE="$2"
 
-# Validate badge
-case "$BADGE" in
-    R|I|!|A) ;;
-    *) echo "ERROR: Invalid badge '$BADGE'. Must be R, I, !, or A" >&2; exit 1 ;;
-esac
+# No validation - emoji-based badges
+# Just pass through the badge type
 
 # Get current window name using window ID
 WINDOW_NAME=$(tmux display-message -t "$WINDOW_ID" -p '#W' 2>/dev/null)

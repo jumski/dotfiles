@@ -185,13 +185,12 @@ function _hive_pick_destination
     # Build options list - current session first (so it's highlighted)
     set -l options
     
-    # Check if current session exists and is a hive session
-    set -l current_is_hive 0
-    if test -n "$current_session"
-        set current_is_hive (_hive_is_hive_session "$current_session")
+    set -l is_current_hive false
+    if test -n "$current_session"; and _hive_is_hive_session "$current_session"
+        set is_current_hive true
     end
-    
-    if test $current_is_hive -eq 0
+
+    if test "$is_current_hive" = true
         # Current session is a hive session - put it first (highlighted)
         set -a options "$current_session"
         # Then add "[+] New Session"

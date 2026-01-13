@@ -79,18 +79,21 @@ SHOULD_NOTIFY_OUTPUT=$("$SCRIPT_DIR/hive-should-notify.sh" "$TARGET_SESSION_ID" 
 log DEBUG "hive-should-notify.sh output: $SHOULD_NOTIFY_OUTPUT"
 log INFO "Target window not focused, proceeding with badge"
 
-# Select badge and emoji based on notification type
+# Select badge emoji based on notification type
+# Badges are now emoji-only, no text prefixes like [I], [R], etc.
 case "$NOTIFY_TYPE" in
-    permission) BADGE='R'; EMOJI='🔐' ;;
-    idle)       BADGE='I'; EMOJI='󰭻' ;;
-    error)      BADGE='!'; EMOJI='🔴' ;;
-    activity)    BADGE='A'; EMOJI='🔔' ;;
+    permission) EMOJI='🔐' ;;
+    idle)       EMOJI='󰭻' ;;
+    error)      EMOJI='🔴' ;;
+    *)          EMOJI='🔔' ;;
 esac
 
-log INFO "Adding badge '$BADGE' to $TARGET_SESSION_NAME:$TARGET_WINDOW_INDEX ($TARGET_WINDOW_ID)"
+# Pass EMJI directly to hive-add-badge.sh (no BADGE variable needed)
+
+log INFO "Adding badge '$EMOJI' to $TARGET_SESSION_NAME:$TARGET_WINDOW_INDEX ($TARGET_WINDOW_ID)"
 
 # Add badge to window (use window ID for precision)
-BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-badge.sh" "$TARGET_WINDOW_ID" "$BADGE" 2>&1) || {
+BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-badge.sh" "$TARGET_WINDOW_ID" "$EMOJI" 2>&1) || {
     log ERROR "hive-add-badge.sh failed: $BADGE_OUTPUT"
     exit 1
 }
