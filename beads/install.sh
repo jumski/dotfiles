@@ -3,6 +3,13 @@ set -e
 
 echo "Setting up Beads daemon systemd service..."
 
+# Ensure user systemd directory exists
+mkdir -p ~/.config/systemd/user
+
+# Link the service file
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ln -sf "$SCRIPT_DIR/beads-daemon.service" ~/.config/systemd/user/beads-daemon.service
+
 # Reload systemd to pick up the new service file
 systemctl --user daemon-reload
 
