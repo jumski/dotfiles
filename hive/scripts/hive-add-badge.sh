@@ -45,4 +45,8 @@ fi
 NEW_NAME="[$BADGE] $CLEAN_NAME"
 tmux rename-window -t "$SESSION:$WINDOW" "$NEW_NAME"
 
-echo "OK: '$WINDOW_NAME' -> '$NEW_NAME'"
+# Set window badge option (for tracking)
+tmux set-option -w -t "$SESSION:$WINDOW" @hive_window_badge "$BADGE"
+
+echo "OK: '$WINDOW_NAME' -> '$NEW_NAME' (set @hive_window_badge=$BADGE)"
+

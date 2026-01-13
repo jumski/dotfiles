@@ -95,6 +95,12 @@ BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-badge.sh" "$TARGET_SESSION" "$TARGET_WINDOW
 
 log DEBUG "hive-add-badge.sh output: $BADGE_OUTPUT"
 
+# Add session badge
+SESSION_BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-session-badge.sh" "$TARGET_SESSION" 2>&1) || {
+    log ERROR "hive-add-session-badge.sh failed: $SESSION_BADGE_OUTPUT"
+    # Non-fatal, continue with window badge
+}
+
 # System notification if different session focused
 CURRENT_SESSION=$(tmux display-message -p '#{client_session}' 2>/dev/null || echo "$TARGET_SESSION")
 if [ "$CURRENT_SESSION" != "$TARGET_SESSION" ]; then
