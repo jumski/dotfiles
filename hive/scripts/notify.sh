@@ -1,10 +1,15 @@
 #!/bin/bash
-# Hive notification script with debugging
+# Hive notification script - orchestrates badge notifications
 # Called by OpenCode plugin or other agents with: --type <type> --message <msg>
-# Adds badge to window name and optionally sends system notification
+#
+# Uses modular scripts:
+#   - hive-get-context.sh: Get pane's session/window using $TMUX_PANE
+#   - hive-should-notify.sh: Check if target is focused
+#   - hive-add-badge.sh: Add badge to window name
 
 set -euo pipefail
 
+SCRIPT_DIR="$(dirname "$0")"
 NOTIFY_TYPE=""
 MESSAGE=""
 LOG_FILE="$HOME/.cache/hive-notify.log"
@@ -13,9 +18,7 @@ LOG_FILE="$HOME/.cache/hive-notify.log"
 log() {
     local level="$1"
     shift
-    local msg="$*"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "[$timestamp] [$level] $*" >> "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$level] $*" >> "$LOG_FILE"
 }
 
 # Parse arguments
@@ -32,87 +35,71 @@ if [ -z "$MESSAGE" ]; then
     MESSAGE="Notification"
 fi
 
-log INFO "NOTIFY: type=$NOTIFY_TYPE message='$MESSAGE'"
+log INFO "=== NOTIFY START: type=$NOTIFY_TYPE message='$MESSAGE' ==="
 
 # Must be in tmux for badge functionality
 if [ -z "${TMUX:-}" ]; then
     log INFO "Not in tmux, using notify-send"
-    # Fallback to system notification only
     notify-send -u normal -i /home/jumski/.dotfiles/claude/icon.png "OpenCode" "$MESSAGE" 2>/dev/null || true
     exit 0
 fi
 
-# Get tmux context of THIS process (where OpenCode is running)
-TARGET_SESSION=$(tmux display-message -p '#S')
-TARGET_WINDOW=$(tmux display-message -p '#I')
-TARGET_PANE=$(tmux display-message -p '#{pane_id}')
+# Get context using TMUX_PANE (the pane where this script runs)
+CONTEXT=$("$SCRIPT_DIR/hive-get-context.sh" 2>&1) || {
+    log ERROR "hive-get-context.sh failed: $CONTEXT"
+    notify-send -u normal -i /home/jumski/.dotfiles/claude/icon.png "OpenCode" "$MESSAGE" 2>/dev/null || true
+    exit 0
+}
 
-log DEBUG "TMUX context: session=$TARGET_SESSION window=$TARGET_WINDOW pane=$TARGET_PANE"
+TARGET_SESSION=$(echo "$CONTEXT" | cut -d: -f1)
+TARGET_WINDOW=$(echo "$CONTEXT" | cut -d: -f2)
+TARGET_PANE=$(echo "$CONTEXT" | cut -d: -f3)
+
+log DEBUG "Context from TMUX_PANE: session=$TARGET_SESSION window=$TARGET_WINDOW pane=$TARGET_PANE"
 
 # Check if this is a hive session
 IS_HIVE=$(tmux show-options -t "$TARGET_SESSION" -qv @hive 2>/dev/null || echo "")
-log DEBUG "IS_HIVE: $IS_HIVE"
+log DEBUG "IS_HIVE: '$IS_HIVE'"
 
 if [ "$IS_HIVE" != 'true' ]; then
     log INFO "Not a hive session, using notify-send"
-    # Not a hive session - fallback to system notification
     notify-send -u normal -i /home/jumski/.dotfiles/claude/icon.png "OpenCode" "$MESSAGE" 2>/dev/null || true
     exit 0
 fi
 
-# Get session and window currently being viewed
-CURRENT_SESSION=$(tmux display-message -p '#{client_session}' 2>/dev/null || echo "$TARGET_SESSION")
-CURRENT_WINDOW=$(tmux display-message -p '#{window_index}' 2>/dev/null || echo "$TARGET_WINDOW")
-CURRENT_PANE=$(tmux display-message -p '#{pane_id}' 2>/dev/null || echo "$TARGET_PANE")
-
-log DEBUG "Current view: session=$CURRENT_SESSION window=$CURRENT_WINDOW pane=$CURRENT_PANE"
-log DEBUG "Target session: $TARGET_SESSION == Current: $CURRENT_SESSION"
-log DEBUG "Target window: $TARGET_WINDOW == Current: $CURRENT_WINDOW"
-log DEBUG "Target pane: $TARGET_PANE == Current: $CURRENT_PANE"
-
-# Check if target pane/window is currently active
-# Only show badge if user is NOT already looking at that pane
-if [ "$TARGET_SESSION" = "$CURRENT_SESSION" ] && [ "$TARGET_PANE" = "$CURRENT_PANE" ]; then
-    log INFO "Target pane is currently active, skipping notification"
+# Check if we should notify (target not focused)
+SHOULD_NOTIFY_OUTPUT=$("$SCRIPT_DIR/hive-should-notify.sh" "$TARGET_SESSION" "$TARGET_WINDOW" 2>&1) || {
+    log INFO "Target window is focused, skipping badge"
+    log DEBUG "hive-should-notify.sh output: $SHOULD_NOTIFY_OUTPUT"
     exit 0
-fi
+}
 
-log INFO "Target pane not active, proceeding with badge"
+log DEBUG "hive-should-notify.sh output: $SHOULD_NOTIFY_OUTPUT"
+log INFO "Target window not focused, proceeding with badge"
 
 # Select badge based on notification type
 case "$NOTIFY_TYPE" in
-    permission) BADGE='R' ;;  # Request/Permission
-    idle)       BADGE='I' ;;  # Idle/waiting
-    error)      BADGE='!' ;;  # Error
-    *)           BADGE='A' ;;  # Activity (default)
+    permission) BADGE='R' ;;
+    idle)       BADGE='I' ;;
+    error)      BADGE='!' ;;
+    *)          BADGE='A' ;;
 esac
 
-log INFO "Badge: $BADGE"
+log INFO "Adding badge '$BADGE' to $TARGET_SESSION:$TARGET_WINDOW"
 
-# Get target window name from pane ID
-TARGET_WINDOW=$(tmux display-message -t "$TARGET_PANE" -p '#{window_index}')
+# Add badge to window
+BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-badge.sh" "$TARGET_SESSION" "$TARGET_WINDOW" "$BADGE" 2>&1) || {
+    log ERROR "hive-add-badge.sh failed: $BADGE_OUTPUT"
+    exit 1
+}
 
-log DEBUG "Target window (from pane): $TARGET_WINDOW"
-log DEBUG "Target window == Current: $TARGET_WINDOW == Current: $CURRENT_WINDOW"
+log DEBUG "hive-add-badge.sh output: $BADGE_OUTPUT"
 
-# Prepend badge to window name (update existing or add new)
-if [[ "$TARGET_WINDOW_NAME" =~ ^\[[RIA!]\]\ (.*)$ ]]; then
-    # Already badged, update the badge
-    CLEAN_NAME="${BASH_REMATCH[1]}"
-    log INFO "Updating badge from existing: '$TARGET_WINDOW_NAME' -> '[$BADGE] $CLEAN_NAME'"
-    tmux rename-window -t "$TARGET_SESSION:$TARGET_WINDOW" "[$BADGE] $CLEAN_NAME"
-else
-    # No badge, add one
-    log INFO "Adding badge to: '$TARGET_WINDOW_NAME'"
-    tmux rename-window -t "$TARGET_SESSION:$TARGET_WINDOW" "[$BADGE] $TARGET_WINDOW_NAME"
-fi
-
-# Check if we need system notification (different session focused)
+# System notification if different session focused
+CURRENT_SESSION=$(tmux display-message -p '#{client_session}' 2>/dev/null || echo "$TARGET_SESSION")
 if [ "$CURRENT_SESSION" != "$TARGET_SESSION" ]; then
-    log INFO "System notification: session '$TARGET_SESSION' != current '$CURRENT_SESSION'"
+    log INFO "Different session focused, sending system notification"
     notify-send -u normal "OpenCode: $TARGET_SESSION" "$MESSAGE" 2>/dev/null || true
-else
-    log INFO "No system notification (same session focused)"
 fi
 
-log INFO "Notification complete"
+log INFO "=== NOTIFY COMPLETE ==="
