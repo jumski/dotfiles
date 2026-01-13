@@ -1,3 +1,4 @@
 - link:
     ~/.opencode/commands: claude/commands
     ~/.opencode/opencode.json: opencode/opencode.json
+    ~/.opencode/plugin/superpowers.js: ~/.config/opencode/superpowers/.opencode/plugin/superpowers.js
