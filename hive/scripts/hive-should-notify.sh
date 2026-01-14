@@ -23,9 +23,15 @@ if [ -z "${TMUX:-}" ]; then
     exit 0
 fi
 
-# Get currently focused session/window IDs
-CURRENT_SESSION_ID=$(tmux display-message -p '#{session_id}' 2>/dev/null || echo "")
-CURRENT_WINDOW_ID=$(tmux display-message -p '#{window_id}' 2>/dev/null || echo "")
+# Get what the CLIENT is currently viewing (not what pane the script runs in)
+CLIENT_SESSION_NAME=$(tmux display-message -p '#{client_session}' 2>/dev/null || echo "")
+if [ -n "$CLIENT_SESSION_NAME" ]; then
+    CURRENT_SESSION_ID=$(tmux display-message -t "$CLIENT_SESSION_NAME" -p '#{session_id}' 2>/dev/null || echo "")
+    CURRENT_WINDOW_ID=$(tmux display-message -t "$CLIENT_SESSION_NAME" -p '#{window_id}' 2>/dev/null || echo "")
+else
+    CURRENT_SESSION_ID=""
+    CURRENT_WINDOW_ID=""
+fi
 
 echo "Target:  $TARGET_SESSION_ID:$TARGET_WINDOW_ID"
 echo "Current: $CURRENT_SESSION_ID:$CURRENT_WINDOW_ID"
