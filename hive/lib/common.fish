@@ -161,7 +161,7 @@ function _hive_pick_worktree
         return 1
     end
     
-    set -l selection (cat "$cache_file" | fzf --prompt='Worktree: ' --height=40%)
+    set -l selection (cat "$cache_file" | fzf --prompt='Worktree: ')
     
     if test -z "$selection"
         return 1
@@ -207,7 +207,7 @@ function _hive_pick_destination
         end
     end
     
-    set -l choice (printf '%s\n' $options | fzf --prompt='Destination: ' --height=40%)
+    set -l choice (printf '%s\n' $options | fzf --prompt='Destination: ')
     
     if test -z "$choice"
         echo "cancel"
@@ -234,7 +234,7 @@ function _hive_pick_window
         set -a options $w
     end
     
-    set -l choice (printf '%s\n' $options | fzf --prompt='Window: ' --height=40%)
+    set -l choice (printf '%s\n' $options | fzf --prompt='Window: ')
     
     if test -z "$choice"
         echo "cancel"

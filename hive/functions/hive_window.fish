@@ -47,10 +47,12 @@ function hive_window
     # Derive window name
     set -l window_name (_hive_get_window_name "$worktree_path")
     
-    # Check for duplicate window name
-    if _hive_window_exists "$session_name" "$window_name"
-        _hive_error "Window '$window_name' already exists in session '$session_name'"
-        return 1
+    # Auto-suffix if duplicate exists
+    set -l counter 1
+    set -l original_name "$window_name"
+    while _hive_window_exists "$session_name" "$window_name"
+        set counter (math $counter + 1)
+        set window_name "$original_name-$counter"
     end
     
     _hive_action "Adding window '$window_name' to session '$session_name'"
