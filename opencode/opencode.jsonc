@@ -28,7 +28,11 @@
     },
     "perplexity": {
       "type": "local",
-      "command": ["npx", "-y", "@perplexity-ai/mcp-server"],
+      "command": [
+        "npx",
+        "-y",
+        "@perplexity-ai/mcp-server"
+      ],
       "enabled": true,
       "environment": {
         "PERPLEXITY_API_KEY": "{env:PERPLEXITY_API_KEY}",
@@ -37,8 +41,8 @@
   },
   "agent": {
     "plan": {
-      "model": "openai/gpt-5.2-chat-latest",
-      // "model": "zai-coding-plan/glm-4.7"
+      // "model": "openai/gpt-5.2-chat-latest",
+      "model": "zai-coding-plan/glm-4.7"
     },
     "build": {
       "model": "zai-coding-plan/glm-4.7",
