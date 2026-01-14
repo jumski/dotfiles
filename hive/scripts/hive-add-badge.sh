@@ -29,23 +29,19 @@ if [ -z "$WINDOW_NAME" ]; then
     exit 1
 fi
 
-# Strip existing badge if present
-if [[ "$WINDOW_NAME" =~ ^\[[RIA!]\]\ (.*)$ ]]; then
-    CLEAN_NAME="${BASH_REMATCH[1]}"
-else
-    CLEAN_NAME="$WINDOW_NAME"
+# Resolve original window name (stored or current)
+ORIGINAL_NAME=$(tmux show-options -w -t "$WINDOW_ID" -qv @hive_window_original_name 2>/dev/null || echo "")
+if [ -z "$ORIGINAL_NAME" ]; then
+    ORIGINAL_NAME="$WINDOW_NAME"
+    tmux set-option -w -t "$WINDOW_ID" @hive_window_original_name "$ORIGINAL_NAME"
 fi
 
 # Add new badge
-NEW_NAME="[$BADGE] $CLEAN_NAME"
+NEW_NAME="$BADGE $ORIGINAL_NAME"
 tmux rename-window -t "$WINDOW_ID" "$NEW_NAME"
 
 # Set window badge option (for tracking)
 tmux set-option -w -t "$WINDOW_ID" @hive_window_badge "$BADGE"
-
-# Save original name (for restoration when clearing badges)
-ORIGINAL_NAME="$WINDOW_NAME"
-tmux set-option -w -t "$WINDOW_ID" @hive_window_original_name "$ORIGINAL_NAME"
 
 echo "OK: '$WINDOW_NAME' -> '$NEW_NAME' (set @hive_window_badge=$BADGE, original=$ORIGINAL_NAME)"
 

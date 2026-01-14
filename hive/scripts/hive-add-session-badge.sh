@@ -24,15 +24,15 @@ if [ -z "$SESSION_NAME" ]; then
     exit 1
 fi
 
-# Strip existing badge if present
-if [[ "$SESSION_NAME" =~ ^\[\*\]\ (.*)$ ]]; then
-    CLEAN_NAME="${BASH_REMATCH[1]}"
-else
-    CLEAN_NAME="$SESSION_NAME"
+# Resolve original session name (stored or current)
+ORIGINAL_NAME=$(tmux show-options -t "$SESSION_ID" -qv @hive_session_original_name 2>/dev/null || echo "")
+if [ -z "$ORIGINAL_NAME" ]; then
+    ORIGINAL_NAME="$SESSION_NAME"
+    tmux set-option -t "$SESSION_ID" @hive_session_original_name "$ORIGINAL_NAME"
 fi
 
 # Add generic attention badge using emoji as badge marker
-NEW_NAME="󰭻 $CLEAN_NAME"
+NEW_NAME="󰭻 $ORIGINAL_NAME"
 tmux rename-session -t "$SESSION_ID" "$NEW_NAME"
 
 # Set session badge option
