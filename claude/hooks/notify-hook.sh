@@ -1,17 +1,50 @@
 #!/bin/bash
 
+# Debug logging
+HOOK_LOG="$HOME/.cache/claude-hook-debug.log"
+log_debug() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$HOOK_LOG"
+}
+
 json_input=$(cat)
 message=$(echo "$json_input" | jq -r '.message')
 notification_type=$(echo "$json_input" | jq -r '.notification_type')
 
+log_debug "=== HOOK START ==="
+log_debug "TMUX=$TMUX"
+log_debug "TMUX_PANE=$TMUX_PANE"
+log_debug "CLAUDE_TMUX_TARGET=$CLAUDE_TMUX_TARGET"
+log_debug "notification_type=$notification_type"
+
 # Get tmux context
 if [ -z "$TMUX" ]; then
     # Not in tmux, always notify
+    log_debug "Not in tmux, using notify-send"
     notify-send -u normal -i /home/jumski/.dotfiles/claude/icon.png "Claude" "$message"
     exit 0
 fi
 
-# Use env var set by claude.fish wrapper (captures session:index at claude start)
+# Check if this is a hive session
+is_hive=$(tmux show-options -qv @hive 2>/dev/null || echo "")
+log_debug "is_hive=$is_hive (from tmux show-options -qv @hive)"
+
+if [ "$is_hive" = "true" ]; then
+    # --- HIVE PATH ---
+    log_debug "Taking HIVE path"
+    # Map Claude notification types to hive types
+    case "$notification_type" in
+        permission_prompt|elicitation_dialog) hive_type="permission" ;;
+        idle_prompt)                          hive_type="idle" ;;
+        *)                                    hive_type="default" ;;
+    esac
+
+    log_debug "Calling notify.sh with type=$hive_type"
+    # Delegate to hive notification system
+    ~/.dotfiles/hive/scripts/notify.sh --type "$hive_type" --message "$message"
+else
+    log_debug "Taking LEGACY path"
+    # --- LEGACY PATH ---
+    # Use env var set by claude.fish wrapper (captures session:index at claude start)
 if [ -n "$CLAUDE_TMUX_TARGET" ]; then
     session_name=$(echo "$CLAUDE_TMUX_TARGET" | cut -d: -f1)
     window_index=$(echo "$CLAUDE_TMUX_TARGET" | cut -d: -f2)
@@ -92,3 +125,4 @@ export TMUX="$TMUX"
     done
   fi
 ) &
+fi

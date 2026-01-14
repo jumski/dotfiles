@@ -4,13 +4,14 @@ function claude --description "Wrapper for claude command that disables focus-ev
         # Capture session:window index for notifications (name looked up at notify time)
         set -l target (tmux display-message -p '#S:#I')
         set -gx CLAUDE_TMUX_TARGET $target
+        set -lx TMUX_PANE $TMUX_PANE
 
         # Disable focus-events for this pane to prevent [O[I sequences
         tmux set-option -p focus-events off >/dev/null 2>&1
 
         # Schedule auto-rename after 3 minutes (background, detached)
-        fish -c "sleep 180; ~/.dotfiles/tmux/scripts/ai-rename-window.sh '$target' >/dev/null 2>&1" &
-        disown
+        # fish -c "sleep 180; ~/.dotfiles/tmux/scripts/ai-rename-window.sh '$target' >/dev/null 2>&1" &
+        # disown
 
         # Run the actual claude command from local installation with bash shell
         env SHELL=/bin/bash ~/.claude/local/claude $argv
