@@ -2,21 +2,34 @@
 # Create a new hive session from a worktree path
 
 function hive_session
-    set -l worktree_path $argv[1]
+    argparse 'h/help' 'p/path=' 's/session-name=' 'w/window-name=' -- $argv
+    or return 1
     
-    # Show help if requested
-    if test "$worktree_path" = "--help" -o "$worktree_path" = "-h"
-        echo "Usage: hive session <worktree_path>"
+    if set -q _flag_help
+        echo "Usage: hive session <worktree_path> [options]"
         echo ""
         echo "Creates a new hive-marked tmux session for the given worktree."
         echo "Session name is derived from the repository name."
         echo "Window name is derived from the worktree/branch name."
+        echo ""
+        echo "Options:"
+        echo "  -p, --path <path>           Path to directory (overrides positional arg)"
+        echo "  -s, --session-name <name>   Custom session name"
+        echo "  -w, --window-name <name>    Custom window name for first window"
+        echo "  -h, --help                  Show this help"
         return 0
+    end
+    
+    set -l worktree_path $argv[1]
+    
+    # Use --path flag if provided
+    if set -q _flag_path
+        set worktree_path $_flag_path
     end
     
     # Require path argument
     if test -z "$worktree_path"
-        _hive_error "Worktree path required"
+        _hive_error "Path required (use positional arg or --path)"
         echo "Usage: hive session <worktree_path>"
         return 1
     end
@@ -28,9 +41,23 @@ function hive_session
     end
     set worktree_path (realpath "$worktree_path")
     
-    # Derive names
-    set -l session_name (_hive_get_session_name "$worktree_path")
-    set -l window_name (_hive_get_window_name "$worktree_path")
+    # Derive or override session name
+    set -l session_name
+    
+    if set -q _flag_session_name
+        set session_name $_flag_session_name
+    else
+        set session_name (_hive_get_session_name "$worktree_path")
+    end
+    
+    # Derive or override window name
+    set -l window_name
+    
+    if set -q _flag_window_name
+        set window_name $_flag_window_name
+    else
+        set window_name (_hive_get_window_name "$worktree_path")
+    end
     
     # Check if session already exists
     if tmux has-session -t "=$session_name" 2>/dev/null

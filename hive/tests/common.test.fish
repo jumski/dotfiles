@@ -23,8 +23,8 @@ source /home/jumski/.dotfiles/hive/lib/common.fish
 @test "window name from worktree path" \
     (_hive_get_window_name "/home/jumski/Code/org/pgflow/worktrees/feat-auth") = "feat-auth"
 
-@test "window name from regular repo defaults to main" \
-    (_hive_get_window_name "/home/jumski/Code/org/myrepo") = "main"
+@test "window name from regular repo uses dirname" \
+    (_hive_get_window_name "/home/jumski/Code/org/myrepo") = "myrepo"
 
 @test "window name requires path" \
     (_hive_get_window_name; echo $status) -eq 1
@@ -38,3 +38,12 @@ source /home/jumski/.dotfiles/hive/lib/common.fish
 
 @test "resolve worktree path" \
     (_hive_resolve_path "org/pgflow/worktrees/main") = "/home/jumski/Code/org/pgflow/worktrees/main"
+
+# _hive_next_window_name tests
+# Note: These tests only cover the no-session case since _hive_window_exists
+# requires tmux to be running and cannot be easily mocked in subshell
+@test "next window name with no session returns base" \
+    (_hive_next_window_name "" "test") = "test"
+
+# The following tests would require mocking _hive_window_exists which depends on tmux
+# They are tested manually in the spawn wizard workflow

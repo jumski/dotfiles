@@ -84,8 +84,8 @@ function _hive_get_window_name
         return 0
     end
     
-    # Regular repo: default to "main"
-    echo "main"
+    # Regular repo: use directory name
+    basename "$path"
 end
 
 # List all hive sessions
@@ -168,6 +168,65 @@ function _hive_pick_worktree
     end
     
     _hive_resolve_path "$selection"
+end
+
+# Pick a path using fzf (current directory, custom path, or worktree)
+# Usage: _hive_pick_path
+# Returns: full path to selected location
+function _hive_pick_path
+    set -l cache_file ~/.cache/muxit-projects
+    set -l current_dir (pwd)
+    set -l current_dir_display "$current_dir"
+    
+    # Shorten display for current directory if under home
+    set -l home_display (string replace -r "^$HOME" "~" "$current_dir_display")
+    
+    set -l options "$current_dir_display|Current directory" "Custom path"
+    
+    # Add muxit worktrees if cache exists
+    if test -f "$cache_file"
+        for entry in (cat "$cache_file")
+            set -l resolved (_hive_resolve_path "$entry")
+            set -l display (string replace -r "^$HOME" "~" "$resolved")
+            set -a options "$resolved|$display"
+        end
+    end
+    
+    set -l selection (printf '%s\n' $options | cut -d'|' -f2 | fzf --prompt='Path: ' --header="Press Enter for $home_display")
+    
+    if test -z "$selection"
+        return 1
+    end
+    
+    if test "$selection" = "Custom path"
+        read -l -P "Enter path: " custom_path
+        
+        if test -z "$custom_path"
+            return 1
+        end
+        
+        # Expand ~ to home
+        set custom_path (string replace -r "^~" "$HOME" "$custom_path")
+        
+        if not test -d "$custom_path"
+            echo "Error: Directory not found: $custom_path" >&2
+            return 1
+        end
+        
+        realpath "$custom_path"
+        return 0
+    end
+    
+    # Find the full path from selection
+    for opt in $options
+        if string match -q "*|$selection" "$opt"
+            set -l full_path (string split '|' "$opt")[1]
+            echo "$full_path"
+            return 0
+        end
+    end
+    
+    return 1
 end
 
 # Pick destination (new session or existing hive session)
@@ -263,4 +322,60 @@ end
 function _hive_error
     set -l message $argv[1]
     echo -e "\033[31m!\033[0m $message" >&2
+end
+
+# Get next available window name with auto-suffix
+# Usage: _hive_next_window_name <session_name> <base_name>
+# Returns: base_name, base_name-2, base_name-3, etc.
+function _hive_next_window_name
+    set -l session_name $argv[1]
+    set -l base_name $argv[2]
+    
+    if test -z "$session_name"
+        echo "$base_name"
+        return 0
+    end
+    
+    set -l counter 1
+    set -l candidate "$base_name"
+    
+    while _hive_window_exists "$session_name" "$candidate"
+        set counter (math $counter + 1)
+        set candidate "$base_name-$counter"
+    end
+    
+    echo "$candidate"
+end
+
+# Prompt for window name with default preselected
+# Usage: _hive_prompt_window_name <session_name> <base_name>
+# Returns: selected window name
+function _hive_prompt_window_name
+    set -l session_name $argv[1]
+    set -l base_name $argv[2]
+    
+    set -l suggested (_hive_next_window_name "$session_name" "$base_name")
+    
+    set -l choices "$suggested" "Custom name"
+    set -l choice (printf '%s\n' $choices | fzf --prompt='Window name: ' --header="Press Enter for $suggested or select 'Custom name'")
+    
+    if test -z "$choice"
+        echo "$suggested"
+        return 0
+    end
+    
+    if test "$choice" = "Custom name"
+        read -l -P "Enter window name: " custom_name
+        
+        if test -z "$custom_name"
+            echo "$suggested"
+            return 0
+        end
+        
+        # Auto-suffix if custom name collides
+        set -l resolved (_hive_next_window_name "$session_name" "$custom_name")
+        echo "$resolved"
+    else
+        echo "$choice"
+    end
 end

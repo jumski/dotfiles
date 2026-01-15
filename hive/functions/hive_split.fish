@@ -2,21 +2,32 @@
 # Split the current window with a new worktree pane
 
 function hive_split
-    set -l worktree_path $argv[1]
+    argparse 'h/help' 'p/path=' -- $argv
+    or return 1
     
-    # Show help if requested
-    if test "$worktree_path" = "--help" -o "$worktree_path" = "-h"
-        echo "Usage: hive split <worktree_path>"
+    if set -q _flag_help
+        echo "Usage: hive split <worktree_path> [options]"
         echo ""
         echo "Splits the current tmux window horizontally (side-by-side)"
         echo "with a new pane for the specified worktree."
         echo "Must be run from within a hive session."
+        echo ""
+        echo "Options:"
+        echo "  -p, --path <path>           Path to directory (overrides positional arg)"
+        echo "  -h, --help                  Show this help"
         return 0
+    end
+    
+    set -l worktree_path $argv[1]
+    
+    # Use --path flag if provided
+    if set -q _flag_path
+        set worktree_path $_flag_path
     end
     
     # Require path argument
     if test -z "$worktree_path"
-        _hive_error "Worktree path required"
+        _hive_error "Path required (use positional arg or --path)"
         echo "Usage: hive split <worktree_path>"
         return 1
     end

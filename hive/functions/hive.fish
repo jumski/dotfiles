@@ -39,22 +39,27 @@ function _hive_help
     echo ""
     echo $bold"Hive"$r" - Tmux workspace management for agentic coding"
     echo ""
-    echo $dim"Organize multiple worktrees in a single tmux session."$r
-    echo $dim"Each repo gets one session, each worktree gets a window."$r
+    echo $dim"Organize multiple directories in a single tmux session."$r
+    echo $dim"Each repo gets one session, each directory gets a window."$r
     echo ""
     echo $yellow"USAGE"$r
     echo "  hive <command> [args]"
     echo ""
     echo $yellow"COMMANDS"$r
-    echo "  "$green"spawn"$r", "$dim"sp"$r"      Interactive wizard - pick worktree, pick destination"
+    echo "  "$green"spawn"$r", "$dim"sp"$r"      Interactive wizard - pick path, pick destination"
     echo "  "$green"session"$r", "$dim"ses"$r"   Create new hive session from a directory"
     echo "  "$green"window"$r", "$dim"win"$r"    Add window to existing hive session"
-    echo "  "$green"split"$r"          Split current window with another worktree"
+    echo "  "$green"split"$r"          Split current window with another directory"
     echo "  "$green"list"$r", "$dim"ls"$r"       List all hive sessions and their windows"
     echo ""
     echo $yellow"OPTIONS"$r
     echo "  "$cyan"--help"$r", "$cyan"-h"$r"      Show this help"
     echo "  "$cyan"--version"$r", "$cyan"-v"$r"   Show version"
+    echo ""
+    echo $yellow"COMMON FLAGS"$r
+    echo "  "$cyan"--path <path>"$r"          Arbitrary directory (skip picker)"
+    echo "  "$cyan"--session-name <name>"$r"   Custom session name"
+    echo "  "$cyan"--window-name <name>"$r"    Custom window name"
     echo ""
     echo $yellow"EXAMPLES"$r
     echo ""
@@ -64,24 +69,34 @@ function _hive_help
     echo "  "$dim"# Create hive session for current directory"$r
     echo "  \$ "$bold"hive session ."$r
     echo ""
-    echo "  "$dim"# Create hive session for a worktree"$r
-    echo "  \$ "$bold"hive session ~/Code/org/repo/worktrees/feat-auth"$r
+    echo "  "$dim"# Create hive session for a specific path"$r
+    echo "  \$ "$bold"hive session --path ~/path/to/project"$r
     echo ""
-    echo "  "$dim"# Add another worktree as new window in current session"$r
-    echo "  \$ "$bold"hive window ~/Code/org/repo/worktrees/fix-bug"$r
+    echo "  "$dim"# Create session with custom names"$r
+    echo "  \$ "$bold"hive session . --session-name myapp --window-name main"$r
+    echo ""
+    echo "  "$dim"# Add window with custom name to current session"$r
+    echo "  \$ "$bold"hive window ~/other/path --window-name tools"$r
     echo ""
     echo "  "$dim"# Add window to a specific session"$r
     echo "  \$ "$bold"hive window ~/Code/org/repo/worktrees/main pgflow"$r
     echo ""
-    echo "  "$dim"# Split current window side-by-side with another worktree"$r
-    echo "  \$ "$bold"hive split ~/Code/org/other/worktrees/task"$r
+    echo "  "$dim"# Split current window side-by-side with another path"$r
+    echo "  \$ "$bold"hive split ~/path/to/other"$r
     echo ""
     echo "  "$dim"# See all hive sessions"$r
     echo "  \$ "$bold"hive list"$r
     echo ""
     echo $yellow"NAMING"$r
     echo "  Session = repo name      "$dim"(e.g., pgflow, dotfiles)"$r
-    echo "  Window  = worktree name  "$dim"(e.g., main, feat-auth)"$r
+    echo "  Window  = directory name "$dim"(e.g., main, feat-auth, docs)"$r
+    echo "  Duplicate windows auto-suffix (-2, -3, ...)"
+    echo ""
+    echo $yellow"PICKER"$r
+    echo "  The spawn wizard offers:"
+    echo "  - Current directory (preselected)"
+    echo "  - Custom path (enter any directory)"
+    echo "  - Known worktrees from ~/.cache/muxit-projects"
     echo ""
     echo $yellow"NOTIFICATIONS"$r
     echo "  Windows show badges when agents need attention:"
