@@ -199,20 +199,12 @@ function _hive_pick_path
     end
     
     if test "$selection" = "Custom path"
-        read -l -P "Enter path: " custom_path
-        
+        set -l custom_path (fzf --walker=dir,hidden --walker-root=$HOME --prompt="Path: ")
+
         if test -z "$custom_path"
             return 1
         end
-        
-        # Expand ~ to home
-        set custom_path (string replace -r "^~" "$HOME" "$custom_path")
-        
-        if not test -d "$custom_path"
-            echo "Error: Directory not found: $custom_path" >&2
-            return 1
-        end
-        
+
         realpath "$custom_path"
         return 0
     end
