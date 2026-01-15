@@ -103,15 +103,8 @@ function hive_spawn
                     set -l base_name (_hive_get_window_name "$worktree_path")
                     set -l window_name (_hive_prompt_window_name "$session_name" "$base_name")
 
-                    # DEBUG: Log spawn flow values
-                    set -l debug_log /tmp/hive-debug.log
-                    echo "DEBUG spawn: base_name='$base_name'" | tee -a $debug_log >&2
-                    echo "DEBUG spawn: window_name='$window_name'" | tee -a $debug_log >&2
-                    echo "DEBUG spawn: calling hive_window '$worktree_path' '$session_name' --window-name '$window_name'" | tee -a $debug_log >&2
-
                     hive_window "$worktree_path" "$session_name" --window-name "$window_name"
                     set -l window_status $status
-                    echo "DEBUG spawn: hive_window returned status: $window_status" | tee -a $debug_log >&2
 
                     # Switch to the session after adding window
                     if test $window_status -eq 0

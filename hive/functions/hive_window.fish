@@ -77,24 +77,10 @@ function hive_window
         set window_name (_hive_prompt_window_name "$session_name" "$base_name")
     end
     
-    # DEBUG: Log values before window creation (both stderr and file for popup debugging)
-    set -l debug_log /tmp/hive-debug.log
-    echo "DEBUG hive_window: window_name='$window_name'" | tee -a $debug_log >&2
-    echo "DEBUG hive_window: session_name='$session_name'" | tee -a $debug_log >&2
-    echo "DEBUG hive_window: worktree_path='$worktree_path'" | tee -a $debug_log >&2
-
     _hive_action "Adding window '$window_name' to session '$session_name'"
 
     # Create the window (-a appends at next available index)
-    set -l tmux_output (tmux new-window -a -t "$session_name" -n "$window_name" -c "$worktree_path" 2>&1)
-    set -l tmux_status $status
-    echo "DEBUG hive_window: tmux output: '$tmux_output'" | tee -a $debug_log >&2
-    echo "DEBUG hive_window: tmux new-window exit status: $tmux_status" | tee -a $debug_log >&2
-
-    if test $tmux_status -ne 0
-        _hive_error "tmux new-window failed with status $tmux_status"
-        return $tmux_status
-    end
+    tmux new-window -a -t "$session_name" -n "$window_name" -c "$worktree_path"
 
     _hive_success "Added window '$window_name' to '$session_name'"
 end
