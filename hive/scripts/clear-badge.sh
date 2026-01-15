@@ -26,6 +26,10 @@ if [ -n "$ORIGINAL_NAME" ]; then
     tmux set-option -w -t "$CURRENT_WINDOW_ID" -u @hive_window_badge
     tmux set-option -w -t "$CURRENT_WINDOW_ID" -u @hive_window_original_name
 
+    # Clear notification timestamp
+    SCRIPT_DIR="$(dirname "$0")"
+    "$SCRIPT_DIR/hivectl.sh" notify clear --window-id "$CURRENT_WINDOW_ID" >/dev/null 2>&1 || true
+
     # Check if session badge should be cleared (run silently)
     SCRIPT_DIR="$(dirname "$0")"
     "$SCRIPT_DIR/hive-clear-session-badge.sh" "$CURRENT_SESSION_ID" >/dev/null 2>&1 || true

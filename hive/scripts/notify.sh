@@ -100,6 +100,13 @@ BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-badge.sh" "$TARGET_WINDOW_ID" "$EMOJI" 2>&1
 
 log DEBUG "hive-add-badge.sh output: $BADGE_OUTPUT"
 
+# Mark notification timestamp
+MARK_OUTPUT=$("$SCRIPT_DIR/hivectl.sh" notify mark --session-id "$TARGET_SESSION_ID" --window-id "$TARGET_WINDOW_ID" 2>&1) || {
+    log ERROR "hivectl.sh notify mark failed: $MARK_OUTPUT"
+    true  # Non-fatal, continue
+}
+log DEBUG "hivectl.sh notify mark output: $MARK_OUTPUT"
+
 # Add session badge (use session ID for precision)
 SESSION_BADGE_OUTPUT=$("$SCRIPT_DIR/hive-add-session-badge.sh" "$TARGET_SESSION_ID" 2>&1) || {
     log ERROR "hive-add-session-badge.sh failed: $SESSION_BADGE_OUTPUT"
