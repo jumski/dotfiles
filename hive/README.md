@@ -88,16 +88,16 @@ List all hive sessions and their windows.
 
 ## Notification Badges
 
-Windows show badges when agents need attention:
+Windows show badges when agents need attention (any tmux session, no setup required):
 
 | Badge | Meaning |
 |--------|----------|
-| `[R]` | Permission needed |
-| `[I]` | Idle/waiting for input |
-| `[!]` | Error occurred |
-| `[A]` | Activity/other |
+| `🔐` | Permission needed |
+| `󰭻` | Idle/waiting for input |
+| `🔴` | Error occurred |
+| `🔔` | Activity/other |
 
-Badges **auto-clear** when you focus the window.
+Badges **auto-clear** when you focus the window. Manual renames preserve correctly during active badges.
 
 ## Workflow Examples
 

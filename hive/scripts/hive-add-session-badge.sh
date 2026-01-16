@@ -1,41 +1,16 @@
-#!/bin/bash
-# hive-add-session-badge.sh - Add generic badge to tmux session name
-#
-# Usage: ./hive-add-session-badge.sh <session_id>
-#   session_id: tmux session ID (e.g., "$123")
-#
-# Test: ./hive-add-session-badge.sh \$123
-#       Should add "[*] <session_name>" to session list
-
+#!/usr/bin/env bash
 set -euo pipefail
 
-if [ $# -lt 1 ]; then
-    echo "Usage: $0 <session_id>" >&2
-    echo "Example: $0 \$123" >&2
-    exit 1
+source "$(dirname "$0")/badge-config.sh"
+
+SESSION_ID="${1:-}"
+
+if [ -z "$SESSION_ID" ]; then
+  SESSION_ID=$(tmux display-message -p '#{session_id}')
 fi
 
-SESSION_ID="$1"
+CURRENT_NAME=$(tmux display-message -t "$SESSION_ID" -p '#{session_name}')
 
-# Get current session name using session ID
-SESSION_NAME=$(tmux display-message -t "$SESSION_ID" -p '#S' 2>/dev/null)
-if [ -z "$SESSION_NAME" ]; then
-    echo "ERROR: Could not get session name for $SESSION_ID" >&2
-    exit 1
+if [[ "$CURRENT_NAME" != "$HIVE_BADGE "* ]]; then
+  tmux rename-session -t "$SESSION_ID" "$HIVE_BADGE $CURRENT_NAME"
 fi
-
-# Resolve original session name (stored or current)
-ORIGINAL_NAME=$(tmux show-options -t "$SESSION_ID" -qv @hive_session_original_name 2>/dev/null || echo "")
-if [ -z "$ORIGINAL_NAME" ]; then
-    ORIGINAL_NAME="$SESSION_NAME"
-    tmux set-option -t "$SESSION_ID" @hive_session_original_name "$ORIGINAL_NAME"
-fi
-
-# Add generic attention badge using emoji as badge marker
-NEW_NAME="󰭻 $ORIGINAL_NAME"
-tmux rename-session -t "$SESSION_ID" "$NEW_NAME"
-
-# Set session badge option
-tmux set-option -t "$SESSION_ID" @hive_session_badge "*"
-
-echo "OK: '$SESSION_NAME' -> '$NEW_NAME' (set @hive_session_badge=*)"
