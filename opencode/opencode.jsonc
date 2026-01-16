@@ -28,11 +28,7 @@
     },
     "perplexity": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@perplexity-ai/mcp-server"
-      ],
+      "command": ["npx", "-y", "@perplexity-ai/mcp-server"],
       "enabled": true,
       "environment": {
         "PERPLEXITY_API_KEY": "{env:PERPLEXITY_API_KEY}",
@@ -41,10 +37,12 @@
   },
   "agent": {
     "plan": {
-      "model": "openai/gpt-5.2-codex"
+      "model": "anthropic/claude-opus-4-5",
+      // "model": "openai/gpt-5.2-codex"
     },
     "build": {
-      "model": "openai/gpt-5.2-codex",
+      "model": "zai-coding-plan/glm-4.7",
+      // "model": "openai/gpt-5.2-codex",
     },
   },
 }
